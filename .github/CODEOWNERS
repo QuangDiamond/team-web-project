@@ -1,0 +1,5 @@
+# Replace placeholders with your GitHub usernames/teams.
+/frontend/ @frontend-team
+/backend/ @backend-team
+/database/ @database-team
+/docs/ @project-lead
