@@ -1,11 +1,11 @@
 import { responseCode } from "./constants/constants.js";
 
 export const responseCommon = (
-  res,
+  {res,
   data = null,
-  message = null,
+  message = "",
   statusCode = 200,
-  success = responseCode.SUCCESSED,
+  success = responseCode.SUCCESSED} = {}
 ) => {
   return res.status(statusCode).json({
     success,
