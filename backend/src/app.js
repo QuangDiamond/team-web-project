@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import { env } from './config/environment.js';
 import healthRoutes from './routes/health.routes.js';
-import { notFound, errorHandler } from './middlewares/error.middleware.js';
+import { notFound, errorHandler } from './common/middlewares/error.middleware.js';
 
 const app = express();
 
