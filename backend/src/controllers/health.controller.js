@@ -8,5 +8,6 @@ export function health(_req, res) {
       database: getDatabaseStatus(),
       timestamp: new Date().toISOString(),
     }
-  return responseCommon(res, data, "Backend is running", 200, responseCode.SUCCESSED);
+
+  return responseCommon (res, data, "Backend is running", 200, responseCode.SUCCESSED);
 }
