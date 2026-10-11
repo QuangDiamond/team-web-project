@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import {User} from '../models/users.js';
+import {User} from '../models/User.js';
 import {AppError} from '../common/utils/AppError.js';
 import bcrypt from 'bcryptjs';
 
@@ -14,12 +14,11 @@ const issueToken = (user) => {
   );
 };
 
-export const register = async ({username, email, password}) =>{
-    console.log({username, email, password})
+export const register = async ({username, email, password, role}) =>{
     if(await User.findOne({email})) throw new AppError('Email already existed', 409);
     if(await User.findOne({username})) throw new AppError('Username already existed', 409);
     const hashed = await bcrypt.hash(password, 10);
-    const user = await User.create({username, email, password: hashed});
+    const user = await User.create({username, email, password: hashed, role});
     return {user, token: issueToken(user)};
 }
 
