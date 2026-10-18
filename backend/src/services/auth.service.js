@@ -19,16 +19,18 @@ export const register = async ({username, email, password, role}) =>{
     if(await User.findOne({username})) throw new AppError('Username already existed', 409);
     const hashed = await bcrypt.hash(password, 10);
     const user = await User.create({username, email, password: hashed, role});
-    return {user, token: issueToken(user)};
+    const { password: _, ...safeUser } = user.toObject();
+    return {user:safeUser, token: issueToken(user)};
 }
 
 export const login = async (userLogin) =>{
-    const {identifier, password} = userLogin;
-    const user = await User.findOne(userLogin.identifier ? {username: identifier} : {email: identifier}).select("+password");
+    const {email, password} = userLogin;
+    const user = await User.findOne({email: email}).select("+password");
     if(!user || !(await bcrypt.compare(password, user.password))){
         throw new AppError("Invalid username or password", 401)
     }
-    return {user, token: issueToken(user)};
+    const { password: _, ...safeUser } = user.toObject();
+    return {user: safeUser, token: issueToken(user)};
 }
 
 export const me = async (userId) =>{
