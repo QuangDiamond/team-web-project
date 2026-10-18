@@ -8,7 +8,14 @@ export const register = asyncHandler (async (req, res) =>{
 })
 
 export const login = asyncHandler (async (req, res) =>{
-    return responseCommon(res, await authService.login(req.body), "Login successfully!", 200, responseCode.SUCCESSED);
+    const { user, token } = await authService.login(req.body);
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 12 * 60 * 60 * 1000,
+    });
+    return responseCommon(res, user, "Login successfully!", 200, responseCode.SUCCESSED);
 })
 
 export const me = asyncHandler (async (req, res) =>{

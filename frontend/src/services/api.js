@@ -1,10 +1,16 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.BACKEND_URL || 'http://localhost:5000/api',
+  baseURL: import.meta.env.BACKEND_URL || 'http://localhost:9999/api',
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+api.interceptors.response.use(
+  (res) => res.data,
+  (err) => Promise.reject(new Error(err.response?.data?.message || 'Có lỗi xảy ra'))
+);
 
 export default api;

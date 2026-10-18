@@ -5,7 +5,8 @@ import { responseCode } from '../common/constants/constants.js';
 export function health(_req, res) {
   const data =  {
       service: 'backend',
-      database: getDatabaseStatus(),
+      databaseConnection: getDatabaseStatus(),
+      databaseType: process.env.NODE_ENV === "development" ? "mongodb":"mongodb+srv",
       timestamp: new Date().toISOString(),
     }
 

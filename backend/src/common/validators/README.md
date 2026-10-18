@@ -1,2 +1,0 @@
-# Validators
-Request validation schemas.

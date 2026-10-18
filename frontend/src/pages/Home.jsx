@@ -1,0 +1,24 @@
+import { useEffect, useState } from 'react';
+import api from '../services/api';
+
+export default function Home() {
+const [status, setStatus] = useState('Checking backend and database...');
+
+  useEffect(() => {
+    api.get('/health')
+      .then((response) => {
+        setStatus(response.data?.data?.database === 'connected'
+          ? 'Backend + MongoDB connected'
+          : 'Backend connected, MongoDB not connected');
+      })
+      .catch(() => setStatus('Backend unavailable'));
+  }, []);
+
+  return (
+    <main className="container">
+      <h1>Team Web Project</h1>
+      <p>React + Express + MongoDB environment is ready.</p>
+      <p className="status">{status}</p>
+    </main>
+  );
+}
