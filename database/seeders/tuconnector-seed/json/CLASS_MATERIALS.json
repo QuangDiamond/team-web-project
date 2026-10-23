@@ -1,0 +1,62 @@
+[
+  {
+    "_id": {
+      "$oid": "819b0274039c59b1b0d88d48"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "topic_id": {
+      "$oid": "39fab13364f18a64ddbebe2b"
+    },
+    "uploader_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "title": "Lý thuyết căn bậc hai",
+    "material_type": "DOCUMENT",
+    "file_url": "https://cdn.tuconnector.vn/materials/can-bac-hai.pdf",
+    "file_size": {
+      "$numberInt": "1048576"
+    },
+    "visibility": "ALL_MEMBERS",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791774000000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1791774000000"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6481da1f3aec8858075db593"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "topic_id": {
+      "$oid": "5453609bb958230fd4d06146"
+    },
+    "uploader_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "title": "Video: hệ thức lượng",
+    "material_type": "LINK",
+    "file_url": "https://youtube.com/watch?v=seed",
+    "file_size": null,
+    "visibility": "STUDENTS_ONLY",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791946800000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1791946800000"
+      }
+    }
+  }
+]

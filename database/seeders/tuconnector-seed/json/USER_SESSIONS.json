@@ -1,0 +1,17 @@
+[
+  {
+    "_id": {
+      "$oid": "1dec67b53bcd7e4beb160075"
+    },
+    "user_id": {
+      "$oid": "30804191684e6bf3765634dd"
+    },
+    "refresh_token": "rt_seed_minh_7c1e9b0d3a5f",
+    "is_revoked": false,
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1830272399000"
+      }
+    }
+  }
+]

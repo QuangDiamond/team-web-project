@@ -1,0 +1,71 @@
+[
+  {
+    "_id": {
+      "$oid": "472792446f1a433f4742a4e2"
+    },
+    "assignment_id": {
+      "$oid": "af7c4148bdaa569630aa04d5"
+    },
+    "student_user_id": {
+      "$oid": "32935467beb3ada708d525ea"
+    },
+    "attempt_number": {
+      "$numberInt": "1"
+    },
+    "status": "SUBMITTED",
+    "timeliness": "ON_TIME",
+    "provisional_score": {
+      "$numberDouble": "2.0"
+    },
+    "final_score": null,
+    "overall_feedback": null,
+    "submitted_at": {
+      "$date": {
+        "$numberLong": "1792588500000"
+      }
+    },
+    "graded_at": null,
+    "answers": [
+      {
+        "question_id": {
+          "$oid": "759f0c6a1f0104962f544983"
+        },
+        "text_response": "4",
+        "file_url": null,
+        "file_size": null,
+        "score": {
+          "$numberDouble": "2.0"
+        },
+        "is_auto_graded": true,
+        "is_overridden": false,
+        "comment": null
+      },
+      {
+        "question_id": {
+          "$oid": "d7f38dcdbb22e917c0d68a5c"
+        },
+        "text_response": "x = 25",
+        "file_url": null,
+        "file_size": null,
+        "score": null,
+        "is_auto_graded": false,
+        "is_overridden": false,
+        "comment": null
+      },
+      {
+        "question_id": {
+          "$oid": "23edc23d82fac750b95aec6b"
+        },
+        "text_response": null,
+        "file_url": "https://cdn.tuconnector.vn/submissions/an-cau3.jpg",
+        "file_size": {
+          "$numberInt": "524288"
+        },
+        "score": null,
+        "is_auto_graded": false,
+        "is_overridden": false,
+        "comment": null
+      }
+    ]
+  }
+]

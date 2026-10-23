@@ -1,0 +1,17 @@
+[
+  {
+    "_id": {
+      "$oid": "cbe7cec379822cd1de9a2bf4"
+    },
+    "user_id": {
+      "$oid": "86ade579a5af4da591895948"
+    },
+    "token_value": "evt_seed_9f2c7a1b4e",
+    "expired_at": {
+      "$date": {
+        "$numberLong": "1830272399000"
+      }
+    },
+    "is_used": false
+  }
+]

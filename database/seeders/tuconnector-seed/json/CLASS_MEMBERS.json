@@ -1,0 +1,38 @@
+[
+  {
+    "_id": {
+      "$oid": "f6a46d3e41ca0a20988103c0"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "user_id": {
+      "$oid": "32935467beb3ada708d525ea"
+    },
+    "joined_at": {
+      "$date": {
+        "$numberLong": "1791720000000"
+      }
+    },
+    "status": "ACTIVE",
+    "removal_reason": null
+  },
+  {
+    "_id": {
+      "$oid": "de9627b3b60e7cc47e8de9ac"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "user_id": {
+      "$oid": "2c15f53000dfedc3e5f327a9"
+    },
+    "joined_at": {
+      "$date": {
+        "$numberLong": "1791720300000"
+      }
+    },
+    "status": "ACTIVE",
+    "removal_reason": null
+  }
+]

@@ -1,0 +1,252 @@
+[
+  {
+    "related_apply_id": null,
+    "related_invitation_id": null,
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1793466000000"
+      }
+    },
+    "_id": {
+      "$oid": "a6315f9d1d07646a37751af5"
+    },
+    "user_id": {
+      "$oid": "30804191684e6bf3765634dd"
+    },
+    "amount": {
+      "$numberInt": "30"
+    },
+    "type": "MONTHLY_GRANT",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790787790000"
+      }
+    }
+  },
+  {
+    "related_apply_id": {
+      "$oid": "a601989d8a7867459435f77c"
+    },
+    "related_invitation_id": null,
+    "expires_at": null,
+    "_id": {
+      "$oid": "79b8119275277ae27dc696e0"
+    },
+    "user_id": {
+      "$oid": "30804191684e6bf3765634dd"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791165600000"
+      }
+    }
+  },
+  {
+    "related_apply_id": null,
+    "related_invitation_id": null,
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1793466000000"
+      }
+    },
+    "_id": {
+      "$oid": "53a994cb5f06a61f759d8b60"
+    },
+    "user_id": {
+      "$oid": "7130929c2f953794c695a5b4"
+    },
+    "amount": {
+      "$numberInt": "5"
+    },
+    "type": "MONTHLY_GRANT",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790787600000"
+      }
+    }
+  },
+  {
+    "related_apply_id": {
+      "$oid": "bfd9d610c5d813dded92c8b3"
+    },
+    "related_invitation_id": null,
+    "expires_at": null,
+    "_id": {
+      "$oid": "1901c824328270d470b4ac63"
+    },
+    "user_id": {
+      "$oid": "7130929c2f953794c695a5b4"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791172800000"
+      }
+    }
+  },
+  {
+    "related_apply_id": {
+      "$oid": "8137e1353c56f620e7509e08"
+    },
+    "related_invitation_id": null,
+    "expires_at": null,
+    "_id": {
+      "$oid": "264c1d8342f0a2ce52efac04"
+    },
+    "user_id": {
+      "$oid": "7130929c2f953794c695a5b4"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791774000000"
+      }
+    }
+  },
+  {
+    "related_apply_id": null,
+    "related_invitation_id": null,
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1793466000000"
+      }
+    },
+    "_id": {
+      "$oid": "b1d71106e4b87970f70dbd6e"
+    },
+    "user_id": {
+      "$oid": "2945321e553a9da5e1bc430d"
+    },
+    "amount": {
+      "$numberInt": "5"
+    },
+    "type": "MONTHLY_GRANT",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790787600000"
+      }
+    }
+  },
+  {
+    "related_apply_id": null,
+    "related_invitation_id": null,
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1793466000000"
+      }
+    },
+    "_id": {
+      "$oid": "114b6f445178c17c2f3aa022"
+    },
+    "user_id": {
+      "$oid": "2c15f53000dfedc3e5f327a9"
+    },
+    "amount": {
+      "$numberInt": "3"
+    },
+    "type": "MONTHLY_GRANT",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790787600000"
+      }
+    }
+  },
+  {
+    "related_apply_id": null,
+    "related_invitation_id": null,
+    "expires_at": null,
+    "_id": {
+      "$oid": "5db2402d4a78c5066829e130"
+    },
+    "user_id": {
+      "$oid": "2c15f53000dfedc3e5f327a9"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "PURCHASE",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792072510000"
+      }
+    }
+  },
+  {
+    "related_apply_id": null,
+    "related_invitation_id": {
+      "$oid": "cd1ef3b9e0275eeffd0d0c68"
+    },
+    "expires_at": null,
+    "_id": {
+      "$oid": "cc8454bd938e2872d6901c3c"
+    },
+    "user_id": {
+      "$oid": "2c15f53000dfedc3e5f327a9"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_INVITATION",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792072800000"
+      }
+    }
+  },
+  {
+    "related_apply_id": null,
+    "related_invitation_id": null,
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1793466000000"
+      }
+    },
+    "_id": {
+      "$oid": "8af8fb4055877eb3222b9631"
+    },
+    "user_id": {
+      "$oid": "2b083b58a3f55796d955cfbd"
+    },
+    "amount": {
+      "$numberInt": "3"
+    },
+    "type": "MONTHLY_GRANT",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790787600000"
+      }
+    }
+  },
+  {
+    "related_apply_id": null,
+    "related_invitation_id": {
+      "$oid": "2fa419d544d5c00f471d2f45"
+    },
+    "expires_at": null,
+    "_id": {
+      "$oid": "2e0dbf62103fa3093307fd86"
+    },
+    "user_id": {
+      "$oid": "2b083b58a3f55796d955cfbd"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_INVITATION",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791460800000"
+      }
+    }
+  }
+]

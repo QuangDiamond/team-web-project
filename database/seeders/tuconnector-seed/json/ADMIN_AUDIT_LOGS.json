@@ -1,0 +1,26 @@
+[
+  {
+    "_id": {
+      "$oid": "0e5d42bf87cfdaef365c703c"
+    },
+    "admin_user_id": {
+      "$oid": "d7ce04216585ebae4f4677d1"
+    },
+    "target_user_id": {
+      "$oid": "7130929c2f953794c695a5b4"
+    },
+    "action": "WARN_USER",
+    "reason": "Đăng số điện thoại cá nhân trong bài đăng (vi phạm quy định).",
+    "details_json": {
+      "report_id": "460e069378092c4c274c2d55",
+      "post_id": "9bbbaf9cec70460526864815",
+      "snapshot": "Liên hệ trực tiếp 09xx…"
+    },
+    "ip_address": "113.190.0.10",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792292400000"
+      }
+    }
+  }
+]

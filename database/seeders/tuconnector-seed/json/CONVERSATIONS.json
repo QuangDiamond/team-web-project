@@ -1,0 +1,152 @@
+[
+  {
+    "_id": {
+      "$oid": "ae07b88f00137f2919b65c5a"
+    },
+    "parent_user_id": {
+      "$oid": "2c15f53000dfedc3e5f327a9"
+    },
+    "tutor_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "is_active": true,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791291600000"
+      }
+    },
+    "request_id": {
+      "$oid": "4cb663caeb5645122da3b2e9"
+    },
+    "class_id": null,
+    "type": "DIRECT",
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1791294000000"
+      }
+    },
+    "read_states": [
+      {
+        "user_id": {
+          "$oid": "2c15f53000dfedc3e5f327a9"
+        },
+        "last_read_message_id": {
+          "$oid": "0e3f71852eddab605c1fbfad"
+        },
+        "read_at": {
+          "$date": {
+            "$numberLong": "1791294300000"
+          }
+        }
+      },
+      {
+        "user_id": {
+          "$oid": "30804191684e6bf3765634dd"
+        },
+        "last_read_message_id": {
+          "$oid": "0e3f71852eddab605c1fbfad"
+        },
+        "read_at": {
+          "$date": {
+            "$numberLong": "1791294000000"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "d22bacbb9f41174adb8ac7d3"
+    },
+    "parent_user_id": {
+      "$oid": "2b083b58a3f55796d955cfbd"
+    },
+    "tutor_profile_id": {
+      "$oid": "3ebe8b43a871d39bbbde35ba"
+    },
+    "is_active": true,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791468000000"
+      }
+    },
+    "request_id": {
+      "$oid": "6607027307c08a538629aaf5"
+    },
+    "class_id": null,
+    "type": "DIRECT",
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1791469200000"
+      }
+    },
+    "read_states": [
+      {
+        "user_id": {
+          "$oid": "2b083b58a3f55796d955cfbd"
+        },
+        "last_read_message_id": {
+          "$oid": "4fcc73e205283e549a961475"
+        },
+        "read_at": {
+          "$date": {
+            "$numberLong": "1791469500000"
+          }
+        }
+      },
+      {
+        "user_id": {
+          "$oid": "2945321e553a9da5e1bc430d"
+        },
+        "last_read_message_id": {
+          "$oid": "13a29dcbe72057deb4c26ee2"
+        },
+        "read_at": {
+          "$date": {
+            "$numberLong": "1791468600000"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "4f68c9c95f695e63c709a43c"
+    },
+    "parent_user_id": null,
+    "tutor_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "is_active": true,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791684000000"
+      }
+    },
+    "request_id": null,
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "type": "CLASS_GROUP_CHAT",
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792069200000"
+      }
+    },
+    "read_states": [
+      {
+        "user_id": {
+          "$oid": "32935467beb3ada708d525ea"
+        },
+        "last_read_message_id": {
+          "$oid": "5f30ec652c1d1be53e0e8600"
+        },
+        "read_at": {
+          "$date": {
+            "$numberLong": "1792072800000"
+          }
+        }
+      }
+    ]
+  }
+]

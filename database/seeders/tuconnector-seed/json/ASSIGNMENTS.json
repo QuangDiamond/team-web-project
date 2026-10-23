@@ -1,0 +1,102 @@
+[
+  {
+    "_id": {
+      "$oid": "af7c4148bdaa569630aa04d5"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "creator_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "title": "Bài kiểm tra 15 phút – Căn bậc hai",
+    "instructions": "Làm trong 15 phút, câu 3 chụp ảnh bài làm và nộp file.",
+    "is_ai_generated": false,
+    "status": "PUBLISHED",
+    "due_date": {
+      "$date": {
+        "$numberLong": "1793379540000"
+      }
+    },
+    "allow_late_submission": false,
+    "allow_resubmission": true,
+    "total_points": {
+      "$numberInt": "10"
+    },
+    "published_at": {
+      "$date": {
+        "$numberLong": "1792504800000"
+      }
+    },
+    "results_published_at": null,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792503000000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792504800000"
+      }
+    },
+    "questions": [
+      {
+        "_id": {
+          "$oid": "759f0c6a1f0104962f544983"
+        },
+        "question_number": {
+          "$numberInt": "1"
+        },
+        "question_type": "MULTIPLE_CHOICE",
+        "content": "Căn bậc hai số học của 16 là?",
+        "options": [
+          "-4",
+          "4",
+          "±4",
+          "8"
+        ],
+        "correct_answer": "4",
+        "points": {
+          "$numberInt": "2"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "d7f38dcdbb22e917c0d68a5c"
+        },
+        "question_number": {
+          "$numberInt": "2"
+        },
+        "question_type": "SHORT_ANSWER",
+        "content": "Tìm x biết √x = 5.",
+        "options": null,
+        "correct_answer": null,
+        "points": {
+          "$numberInt": "3"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "23edc23d82fac750b95aec6b"
+        },
+        "question_number": {
+          "$numberInt": "3"
+        },
+        "question_type": "FILE_UPLOAD",
+        "content": "Rút gọn biểu thức A = √12 + √27 − √48 (trình bày chi tiết).",
+        "options": null,
+        "correct_answer": null,
+        "points": {
+          "$numberInt": "5"
+        }
+      }
+    ],
+    "attachments": [
+      {
+        "material_id": {
+          "$oid": "819b0274039c59b1b0d88d48"
+        }
+      }
+    ]
+  }
+]

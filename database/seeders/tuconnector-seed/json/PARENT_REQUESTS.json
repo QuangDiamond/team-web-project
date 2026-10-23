@@ -1,0 +1,104 @@
+[
+  {
+    "_id": {
+      "$oid": "4cb663caeb5645122da3b2e9"
+    },
+    "parent_user_id": {
+      "$oid": "2c15f53000dfedc3e5f327a9"
+    },
+    "title": "Tìm gia sư Toán lớp 9 ôn thi vào 10",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "250000"
+    },
+    "schedule": "Tối thứ 3, thứ 5 (19:00–20:30)",
+    "description": "Con học khá, cần luyện đề và củng cố hình học.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "image_urls": [],
+    "status": "CLOSED",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791032400000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1791640800000"
+      }
+    },
+    "student_id": {
+      "$oid": "32935467beb3ada708d525ea"
+    },
+    "tutor_requirements": "Ưu tiên gia sư có kinh nghiệm luyện thi vào 10"
+  },
+  {
+    "_id": {
+      "$oid": "6607027307c08a538629aaf5"
+    },
+    "parent_user_id": {
+      "$oid": "2b083b58a3f55796d955cfbd"
+    },
+    "title": "Tìm gia sư Tiếng Anh lớp 7",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "Lớp 7",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "180000"
+    },
+    "schedule": "Sáng thứ 7, chủ nhật",
+    "description": "Cần cải thiện ngữ pháp và nghe nói.",
+    "location_address": "Thanh Xuân, Hà Nội",
+    "image_urls": [],
+    "status": "IN_PROGRESS",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791201600000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1791462600000"
+      }
+    },
+    "student_id": {
+      "$oid": "2431a25fff9589b2f8036019"
+    },
+    "tutor_requirements": null
+  },
+  {
+    "_id": {
+      "$oid": "3e61a021b9fca3194cb67871"
+    },
+    "parent_user_id": {
+      "$oid": "2c15f53000dfedc3e5f327a9"
+    },
+    "title": "Tìm gia sư Vật lý lớp 11",
+    "subject_name": "Vật lý",
+    "grade_level": "Lớp 11",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "300000"
+    },
+    "schedule": "Linh hoạt các tối trong tuần",
+    "description": "Mất gốc phần điện học.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "image_urls": [
+      "https://cdn.tuconnector.vn/requests/ly11-diem.jpg"
+    ],
+    "status": "OPEN",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791813600000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1791813600000"
+      }
+    },
+    "student_id": null,
+    "tutor_requirements": "Gia sư nam hoặc nữ đều được, có kinh nghiệm dạy lớp 11"
+  }
+]

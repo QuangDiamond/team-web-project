@@ -1,0 +1,141 @@
+[
+  {
+    "_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "user_id": {
+      "$oid": "30804191684e6bf3765634dd"
+    },
+    "headline": "Gia sư Toán THCS – 5 năm luyện thi vào 10",
+    "bio": "Tốt nghiệp ĐH Sư phạm Hà Nội ngành Toán. Dạy theo hướng hệ thống kiến thức, luyện đề sát cấu trúc thi.",
+    "avatar_url": "https://cdn.tuconnector.vn/avatars/minh.jpg",
+    "cover_url": null,
+    "address": "Cầu Giấy, Hà Nội",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": {
+      "$numberDouble": "5.0"
+    },
+    "experiences": [
+      {
+        "title": "Giáo viên Toán",
+        "company": "Trung tâm Học Mãi",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1630429200000"
+          }
+        },
+        "end_date": {
+          "$date": {
+            "$numberLong": "1719680400000"
+          }
+        }
+      },
+      {
+        "title": "Gia sư Toán tự do",
+        "company": "Freelance",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1719766800000"
+          }
+        },
+        "end_date": null
+      }
+    ],
+    "achievements": [
+      {
+        "title": "Giải Nhất HSG Toán cấp Tỉnh 2017",
+        "description": "Tỉnh Nam Định"
+      }
+    ],
+    "educations": [
+      {
+        "school": "ĐH Sư phạm Hà Nội",
+        "degree": "Cử nhân Sư phạm Toán",
+        "graduation_year": {
+          "$numberInt": "2021"
+        },
+        "description": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "3ebe8b43a871d39bbbde35ba"
+    },
+    "user_id": {
+      "$oid": "2945321e553a9da5e1bc430d"
+    },
+    "headline": "Gia sư Tiếng Anh – IELTS 8.0",
+    "bio": "Sinh viên năm 4 ĐH Ngoại ngữ, chuyên dạy Tiếng Anh THCS và giao tiếp.",
+    "avatar_url": null,
+    "cover_url": null,
+    "address": "Thanh Xuân, Hà Nội",
+    "is_address_hidden": true,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": {
+      "$numberDouble": "0.0"
+    },
+    "experiences": [
+      {
+        "title": "Trợ giảng IELTS",
+        "company": "IELTS Fighter",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1735664400000"
+          }
+        },
+        "end_date": null
+      }
+    ],
+    "achievements": [
+      {
+        "title": "IELTS 8.0",
+        "description": "Thi tháng 3/2025"
+      }
+    ],
+    "educations": [
+      {
+        "school": "ĐH Ngoại ngữ – ĐHQG Hà Nội",
+        "degree": "Ngôn ngữ Anh",
+        "graduation_year": {
+          "$numberInt": "2027"
+        },
+        "description": "Đang học năm 4"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "83a6b95dc906b13934f510c6"
+    },
+    "user_id": {
+      "$oid": "7130929c2f953794c695a5b4"
+    },
+    "headline": "Gia sư Vật lý THPT",
+    "bio": "Kỹ sư Bách khoa, dạy Vật lý 10–12 và luyện thi THPT Quốc gia.",
+    "avatar_url": null,
+    "cover_url": null,
+    "address": "Hai Bà Trưng, Hà Nội",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "NOT_AVAILABLE",
+    "average_rating": {
+      "$numberDouble": "0.0"
+    },
+    "experiences": [],
+    "achievements": [],
+    "educations": [
+      {
+        "school": "ĐH Bách khoa Hà Nội",
+        "degree": "Kỹ sư Điện",
+        "graduation_year": {
+          "$numberInt": "2023"
+        },
+        "description": null
+      }
+    ]
+  }
+]

@@ -1,0 +1,91 @@
+[
+  {
+    "_id": {
+      "$oid": "465cd6bc2f1307ff92ac6a31"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "tutor_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "rule_id": {
+      "$oid": "3ba6dd44616636908fb294d2"
+    },
+    "title": "Buổi 3: Luyện tập căn bậc hai",
+    "start_time": {
+      "$date": {
+        "$numberLong": "1792497600000"
+      }
+    },
+    "end_time": {
+      "$date": {
+        "$numberLong": "1792503000000"
+      }
+    },
+    "meeting_link": "Nhà học sinh – Cầu Giấy",
+    "status": "COMPLETED",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791685200000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792503300000"
+      }
+    },
+    "attendance": [
+      {
+        "student_user_id": {
+          "$oid": "32935467beb3ada708d525ea"
+        },
+        "status": "PRESENT",
+        "comment": null,
+        "marked_at": {
+          "$date": {
+            "$numberLong": "1792503300000"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "5839c42a9ebcf6d0c7c9e141"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "tutor_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "rule_id": {
+      "$oid": "3ba6dd44616636908fb294d2"
+    },
+    "title": "Buổi 5: Hệ thức lượng",
+    "start_time": {
+      "$date": {
+        "$numberLong": "1793102400000"
+      }
+    },
+    "end_time": {
+      "$date": {
+        "$numberLong": "1793107800000"
+      }
+    },
+    "meeting_link": "Nhà học sinh – Cầu Giấy",
+    "status": "SCHEDULED",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791685200000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1791685200000"
+      }
+    },
+    "attendance": []
+  }
+]

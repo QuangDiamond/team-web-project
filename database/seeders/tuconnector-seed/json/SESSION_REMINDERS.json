@@ -1,0 +1,42 @@
+[
+  {
+    "_id": {
+      "$oid": "b94a1d2f15b9739bc442d5de"
+    },
+    "session_id": {
+      "$oid": "5839c42a9ebcf6d0c7c9e141"
+    },
+    "user_id": {
+      "$oid": "32935467beb3ada708d525ea"
+    },
+    "channel": "EMAIL",
+    "trigger_time": "BEFORE_24H",
+    "scheduled_for": {
+      "$date": {
+        "$numberLong": "1793016000000"
+      }
+    },
+    "status": "PENDING",
+    "sent_at": null
+  },
+  {
+    "_id": {
+      "$oid": "c4e7ee01dd3e7ac24f39f2e5"
+    },
+    "session_id": {
+      "$oid": "5839c42a9ebcf6d0c7c9e141"
+    },
+    "user_id": {
+      "$oid": "30804191684e6bf3765634dd"
+    },
+    "channel": "SMS",
+    "trigger_time": "BEFORE_30M",
+    "scheduled_for": {
+      "$date": {
+        "$numberLong": "1793100600000"
+      }
+    },
+    "status": "PENDING",
+    "sent_at": null
+  }
+]

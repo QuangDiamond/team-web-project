@@ -1,0 +1,117 @@
+[
+  {
+    "_id": {
+      "$oid": "d9018e6e6a872ba5c16c1e19"
+    },
+    "order_code": "TUC20261001001",
+    "user_id": {
+      "$oid": "30804191684e6bf3765634dd"
+    },
+    "item_type": "PLAN_UPGRADE",
+    "plan_id": {
+      "$oid": "57d94341621103294eababa8"
+    },
+    "pack_id": null,
+    "quantity": null,
+    "duration_months": {
+      "$numberInt": "3"
+    },
+    "amount": {
+      "$numberDecimal": "597000"
+    },
+    "payment_method": "VIETQR",
+    "status": "SUCCESS",
+    "ipn_signature": "sig_seed_a1b2c3",
+    "paid_at": {
+      "$date": {
+        "$numberLong": "1790787780000"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790787600000"
+      }
+    },
+    "receipt": {
+      "receipt_url": "https://cdn.tuconnector.vn/receipts/TUC20261001001.pdf",
+      "created_at": {
+        "$date": {
+          "$numberLong": "1790787785000"
+        }
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c3c15d44bd3c22f604df8452"
+    },
+    "order_code": "TUC20261015002",
+    "user_id": {
+      "$oid": "2c15f53000dfedc3e5f327a9"
+    },
+    "item_type": "CREDIT_PACK",
+    "plan_id": null,
+    "pack_id": {
+      "$oid": "852a8d6a67676a5fde13e646"
+    },
+    "quantity": {
+      "$numberInt": "2"
+    },
+    "duration_months": null,
+    "amount": {
+      "$numberDecimal": "98000"
+    },
+    "payment_method": "ATM_CARD",
+    "status": "SUCCESS",
+    "ipn_signature": "sig_seed_d4e5f6",
+    "paid_at": {
+      "$date": {
+        "$numberLong": "1792072500000"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792072200000"
+      }
+    },
+    "receipt": {
+      "receipt_url": "https://cdn.tuconnector.vn/receipts/TUC20261015002.pdf",
+      "created_at": {
+        "$date": {
+          "$numberLong": "1792072505000"
+        }
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "e8d4903feb4d579f4b9f5589"
+    },
+    "order_code": "TUC20261018003",
+    "user_id": {
+      "$oid": "7130929c2f953794c695a5b4"
+    },
+    "item_type": "CREDIT_PACK",
+    "plan_id": null,
+    "pack_id": {
+      "$oid": "bebaf19bc207de83cd116d11"
+    },
+    "quantity": {
+      "$numberInt": "1"
+    },
+    "duration_months": null,
+    "amount": {
+      "$numberDecimal": "129000"
+    },
+    "payment_method": "VIETQR",
+    "status": "EXPIRED",
+    "ipn_signature": null,
+    "paid_at": null,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792288800000"
+      }
+    },
+    "receipt": null
+  }
+]

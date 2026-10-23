@@ -1,0 +1,34 @@
+[
+  {
+    "_id": {
+      "$oid": "6a5c9d192874bd4fbbccd900"
+    },
+    "session_id": {
+      "$oid": "5839c42a9ebcf6d0c7c9e141"
+    },
+    "requester_user_id": {
+      "$oid": "2c15f53000dfedc3e5f327a9"
+    },
+    "responder_user_id": null,
+    "request_type": "MOVE",
+    "proposed_start_time": {
+      "$date": {
+        "$numberLong": "1793188800000"
+      }
+    },
+    "proposed_end_time": {
+      "$date": {
+        "$numberLong": "1793194200000"
+      }
+    },
+    "reason": "Con có lịch kiểm tra ở trường tối thứ 3.",
+    "status": "PENDING",
+    "response_comment": null,
+    "responded_at": null,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792717200000"
+      }
+    }
+  }
+]

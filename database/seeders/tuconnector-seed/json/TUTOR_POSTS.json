@@ -1,0 +1,91 @@
+[
+  {
+    "_id": {
+      "$oid": "fb8ae0dc05e8715e873abaf1"
+    },
+    "profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "title": "Nhận dạy Toán 8–9, luyện thi vào 10",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 8–9",
+    "teaching_mode": "OFFLINE",
+    "price": {
+      "$numberDecimal": "250000"
+    },
+    "schedule": "Các tối trong tuần",
+    "description": "Lộ trình 3 tháng, có đề thi thử hằng tuần.",
+    "image_urls": [],
+    "status": "PUBLISHED",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790910000000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1790910000000"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "4e11ad55d02d80a7b6afc877"
+    },
+    "profile_id": {
+      "$oid": "3ebe8b43a871d39bbbde35ba"
+    },
+    "title": "Tiếng Anh THCS – online qua Google Meet",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "Lớp 6–9",
+    "teaching_mode": "ONLINE",
+    "price": {
+      "$numberDecimal": "180000"
+    },
+    "schedule": "Cuối tuần",
+    "description": "Tập trung ngữ pháp và phát âm.",
+    "image_urls": [
+      "https://cdn.tuconnector.vn/posts/lan-ielts.jpg"
+    ],
+    "status": "PUBLISHED",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790928000000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1790928000000"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "9bbbaf9cec70460526864815"
+    },
+    "profile_id": {
+      "$oid": "83a6b95dc906b13934f510c6"
+    },
+    "title": "Vật lý 10–12, luyện thi THPT",
+    "subject_name": "Vật lý",
+    "grade_level": "Lớp 10–12",
+    "teaching_mode": "HYBRID",
+    "price": {
+      "$numberDecimal": "300000"
+    },
+    "schedule": "Tối thứ 2, 4, 6",
+    "description": "Dạy chắc lý thuyết, nhiều bài tập vận dụng.",
+    "image_urls": [],
+    "status": "PUBLISHED",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791079200000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792288800000"
+      }
+    }
+  }
+]

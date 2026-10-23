@@ -1,0 +1,17 @@
+[
+  {
+    "_id": {
+      "$oid": "f44767766fbb12f05b073210"
+    },
+    "user_id": {
+      "$oid": "2c15f53000dfedc3e5f327a9"
+    },
+    "search_name": "Gia sư Toán gần nhà",
+    "filter_criteria_json": "{\"subject\":\"Toán\",\"grade\":\"Lớp 9\",\"area\":\"Cầu Giấy\",\"max_price\":300000,\"mode\":\"OFFLINE\"}",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791030600000"
+      }
+    }
+  }
+]

@@ -1,0 +1,143 @@
+[
+  {
+    "_id": {
+      "$oid": "98cc88fa2903046bfee923fd"
+    },
+    "recipient_user_id": {
+      "$oid": "2c15f53000dfedc3e5f327a9"
+    },
+    "category": "APPLICATION",
+    "title": "Có gia sư mới ứng tuyển",
+    "body": "Lê Quang Huy vừa ứng tuyển vào yêu cầu \"Tìm gia sư Vật lý lớp 11\".",
+    "target_type": null,
+    "target_id": null,
+    "is_read": false,
+    "read_at": null,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791774005000"
+      }
+    },
+    "delivery_logs": [
+      {
+        "recipient_user_id": {
+          "$oid": "2c15f53000dfedc3e5f327a9"
+        },
+        "channel": "IN_APP",
+        "status": "SENT",
+        "error_message": null,
+        "dispatched_at": {
+          "$date": {
+            "$numberLong": "1791774005000"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "2ebab5f7fa214d968ef261a7"
+    },
+    "recipient_user_id": {
+      "$oid": "30804191684e6bf3765634dd"
+    },
+    "category": "INVITATION",
+    "title": "Bạn nhận được lời mời dạy",
+    "body": "Phạm Thu Hà mời bạn dạy Vật lý lớp 11.",
+    "target_type": null,
+    "target_id": null,
+    "is_read": true,
+    "read_at": {
+      "$date": {
+        "$numberLong": "1792076400000"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792072805000"
+      }
+    },
+    "delivery_logs": [
+      {
+        "recipient_user_id": {
+          "$oid": "30804191684e6bf3765634dd"
+        },
+        "channel": "IN_APP",
+        "status": "SENT",
+        "error_message": null,
+        "dispatched_at": {
+          "$date": {
+            "$numberLong": "1792072805000"
+          }
+        }
+      },
+      {
+        "recipient_user_id": {
+          "$oid": "30804191684e6bf3765634dd"
+        },
+        "channel": "EMAIL",
+        "status": "SENT",
+        "error_message": null,
+        "dispatched_at": {
+          "$date": {
+            "$numberLong": "1792072810000"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "d519ed415168a1a3d976f9dd"
+    },
+    "recipient_user_id": {
+      "$oid": "32935467beb3ada708d525ea"
+    },
+    "category": "ASSIGNMENT",
+    "title": "Bài tập mới",
+    "body": "Thầy Minh vừa giao \"Bài kiểm tra 15 phút – Căn bậc hai\".",
+    "target_type": "ASSIGNMENT",
+    "target_id": {
+      "$oid": "af7c4148bdaa569630aa04d5"
+    },
+    "is_read": true,
+    "read_at": {
+      "$date": {
+        "$numberLong": "1792506600000"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792504805000"
+      }
+    },
+    "delivery_logs": [
+      {
+        "recipient_user_id": {
+          "$oid": "32935467beb3ada708d525ea"
+        },
+        "channel": "IN_APP",
+        "status": "SENT",
+        "error_message": null,
+        "dispatched_at": {
+          "$date": {
+            "$numberLong": "1792504805000"
+          }
+        }
+      },
+      {
+        "recipient_user_id": {
+          "$oid": "32935467beb3ada708d525ea"
+        },
+        "channel": "SMS",
+        "status": "FALLBACK_EMAIL",
+        "error_message": "Học sinh chưa có số điện thoại",
+        "dispatched_at": {
+          "$date": {
+            "$numberLong": "1792504806000"
+          }
+        }
+      }
+    ]
+  }
+]

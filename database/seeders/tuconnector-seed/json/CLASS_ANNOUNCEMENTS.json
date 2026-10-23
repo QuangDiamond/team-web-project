@@ -1,0 +1,25 @@
+[
+  {
+    "_id": {
+      "$oid": "892920552a7426c01981c7ce"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "author_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "content": "<p>Chào mừng An đến với lớp! Lịch học: tối thứ 3 và thứ 5.</p>",
+    "is_pinned": true,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791685800000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1791685800000"
+      }
+    }
+  }
+]
