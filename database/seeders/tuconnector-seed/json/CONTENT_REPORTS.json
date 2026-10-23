@@ -1,0 +1,32 @@
+[
+  {
+    "_id": {
+      "$oid": "460e069378092c4c274c2d55"
+    },
+    "reporter_user_id": {
+      "$oid": "2b083b58a3f55796d955cfbd"
+    },
+    "target_type": "POST",
+    "target_id": {
+      "$oid": "9bbbaf9cec70460526864815"
+    },
+    "reason": "Bài đăng chứa số điện thoại",
+    "severity": "MEDIUM",
+    "status": "RESOLVED",
+    "action_taken": "WARNING_SENT",
+    "admin_note": "Đã cảnh báo gia sư, gia sư đã sửa bài.",
+    "resolved_by_admin_id": {
+      "$oid": "d7ce04216585ebae4f4677d1"
+    },
+    "resolved_at": {
+      "$date": {
+        "$numberLong": "1792292400000"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792249200000"
+      }
+    }
+  }
+]

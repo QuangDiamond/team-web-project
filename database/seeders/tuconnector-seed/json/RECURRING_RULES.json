@@ -1,0 +1,23 @@
+[
+  {
+    "_id": {
+      "$oid": "3ba6dd44616636908fb294d2"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "days_of_week": [
+      "TUE",
+      "THU"
+    ],
+    "start_time": "19:00",
+    "duration_minutes": {
+      "$numberInt": "90"
+    },
+    "end_date": {
+      "$date": {
+        "$numberLong": "1811696400000"
+      }
+    }
+  }
+]

@@ -1,0 +1,1215 @@
+// TuConnector – ERD bản 3: MongoDB, đã embed các entity con vào document cha
+// Table thường = collection. Table tên emb_* = subdocument được NHÚNG trong collection cha (không phải collection riêng).
+// Mỗi collection cha và các emb_* của nó được gom trong 1 TableGroup.
+// Kiểu MongoDB dùng trong file này:
+//   ObjectId = _id và mọi tham chiếu (ref) sang collection khác
+//   String / Int32 / Double / Decimal128 (tiền) / Boolean / Date / Object / Array<...>
+//   *_enum   = String, chỉ nhận các giá trị liệt kê trong Enum (dùng JSON Schema validator hoặc enum của Mongoose)
+//   not null = required: true ; null = không required (cho phép null) ; default = default
+//   unique   = unique index ; indexes { } = index / compound unique index / TTL index
+
+Enum plan_target_role_enum {
+  TUTOR
+  PARENT
+}
+
+Enum user_account_status_enum {
+  ACTIVE
+  BANNED
+  SUSPENDED
+}
+
+Enum tutor_profiles_availability_status_enum {
+  AVAILABLE
+  NOT_AVAILABLE
+}
+
+Enum reviews_status_enum {
+  APPROVED
+  PENDING_MODERATION
+  REJECTED
+}
+
+Enum tutor_posts_teaching_mode_enum {
+  ONLINE
+  OFFLINE
+  HYBRID
+}
+
+Enum tutor_posts_status_enum {
+  DRAFT
+  PUBLISHED
+  PENDING_MODERATION
+  HIDDEN
+  DELETED
+}
+
+Enum parent_requests_teaching_mode_enum {
+  ONLINE
+  OFFLINE
+  HYBRID
+}
+
+Enum parent_requests_status_enum {
+  DRAFT
+  PENDING_MODERATION
+  OPEN
+  IN_PROGRESS
+  CLOSED
+  CANCELLED
+  EXPIRED
+}
+
+Enum conversations_type_enum {
+  DIRECT
+  CLASS_GROUP_CHAT
+}
+
+Enum apply_requests_status_enum {
+  PENDING
+  CONTINUED
+  SKIPPED
+  WITHDRAWN
+}
+
+Enum tutor_invitations_status_enum {
+  PENDING
+  ACCEPTED
+  DECLINED
+  CANCELLED
+}
+
+Enum tutoring_agreements_status_enum {
+  DRAFT
+  PENDING
+  CONFIRMED
+  REJECTED
+  CANCELLED
+}
+
+Enum subscriptions_status_enum {
+  ACTIVE
+  EXPIRED
+}
+
+Enum payment_orders_item_type_enum {
+  PLAN_UPGRADE
+  CREDIT_PACK
+}
+
+Enum payment_orders_payment_method_enum {
+  VIETQR
+  ATM_CARD
+  CREDIT_CARD
+}
+
+Enum payment_orders_status_enum {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+  EXPIRED
+}
+
+Enum credit_transactions_type_enum {
+  MONTHLY_GRANT
+  PURCHASE
+  USED_APPLY
+  USED_INVITATION
+  EXPIRED_GRANT
+}
+
+Enum classrooms_status_enum {
+  ACTIVE
+  ARCHIVED
+}
+
+Enum class_members_status_enum {
+  ACTIVE
+  REMOVED
+}
+
+Enum class_materials_material_type_enum {
+  DOCUMENT
+  SLIDE
+  VIDEO
+  LINK
+}
+
+Enum class_materials_visibility_enum {
+  ALL_MEMBERS
+  STUDENTS_ONLY
+}
+
+Enum assignments_status_enum {
+  DRAFT
+  PUBLISHED
+}
+
+Enum assignment_questions_question_type_enum {
+  MULTIPLE_CHOICE
+  SHORT_ANSWER
+  FILE_UPLOAD
+}
+
+Enum assignment_submissions_status_enum {
+  IN_PROGRESS
+  SUBMITTED
+  GRADED
+}
+
+Enum assignment_submissions_timeliness_enum {
+  ON_TIME
+  LATE
+}
+
+Enum class_sessions_status_enum {
+  SCHEDULED
+  CANCELLED
+  COMPLETED
+}
+
+Enum session_attendance_status_enum {
+  PRESENT
+  ABSENT
+  LATE
+}
+
+Enum schedule_change_requests_request_type_enum {
+  MOVE
+  CANCEL
+}
+
+Enum schedule_change_requests_status_enum {
+  PENDING
+  APPROVED
+  REJECTED
+  WITHDRAWN
+}
+
+Enum session_reminders_channel_enum {
+  EMAIL
+  SMS
+}
+
+Enum session_reminders_trigger_time_enum {
+  BEFORE_24H
+  BEFORE_30M
+}
+
+Enum session_reminders_status_enum {
+  PENDING
+  SENT
+  FAILED
+}
+
+Enum session_calendar_sync_sync_status_enum {
+  SYNCED
+  PENDING
+  FAILED
+}
+
+Enum messages_message_type_enum {
+  TEXT
+  IMAGE
+  FILE
+  CONTACT_CARD
+}
+
+Enum notifications_category_enum {
+  APPLICATION
+  INVITATION
+  CONVERSATION
+  SESSION
+  SCHEDULE_CHANGE
+  ASSIGNMENT
+  SYSTEM
+}
+
+Enum notifications_target_type_enum {
+  ASSIGNMENT
+  SESSION
+  CONVERSATION
+  CLASSROOM
+  CLASS_MATERIAL
+}
+
+Enum notification_delivery_logs_channel_enum {
+  IN_APP
+  EMAIL
+  SMS
+}
+
+Enum notification_delivery_logs_status_enum {
+  PENDING
+  SENT
+  FAILED
+  FALLBACK_EMAIL
+}
+
+Enum parent_child_links_status_enum {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+Enum admin_audit_logs_action_enum {
+  MODERATE_CONTENT
+  WARN_USER
+  LOCK_USER
+  UNLOCK_USER
+  UPDATE_PLAN
+  UPDATE_SETTINGS
+}
+
+Enum content_reports_target_type_enum {
+  POST
+  REQUEST
+  REVIEW
+  MESSAGE
+  USER
+  CLASSROOM
+}
+
+Enum content_reports_severity_enum {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+Enum content_reports_status_enum {
+  PENDING
+  INVESTIGATING
+  RESOLVED
+  DISMISSED
+}
+
+Enum content_reports_action_taken_enum {
+  NONE
+  WARNING_SENT
+  CONTENT_HIDDEN
+  CONTENT_REMOVED
+  USER_BANNED
+}
+
+Enum user_role_enum {
+  PARENT
+  STUDENT
+  TUTOR
+  ADMIN
+}
+
+Table User {
+  _id ObjectId [pk, note: 'Id của user']
+  full_name String [not null]
+  email String [unique, not null]
+  phone String [null]
+  password_hash String [null]
+  email_verify_status Boolean [default: false, note: 'Field này để lưu trạng thái xác thực email lúc nó đăng nhập nhé ae']
+  role user_role_enum [not null, note: 'Thay cho bảng ROLES + role_id: PARENT, STUDENT, TUTOR, ADMIN']
+  is_onboarded Boolean [default: false, note: 'Mục đích: Lưu lại xem tài khoản đăng nhập bằng Google đã khởi tạo xong thông tin cơ bản chưa. - Giá trị: + false: Chưa khởi tạo xong thông tin cơ bản (cần ép chuyển sang màn hình Onboarding). + true: Đã hoàn thành phần thông tin cơ bản.']
+  created_at Date [default: `now()`]
+  account_status user_account_status_enum [default: 'ACTIVE', note: 'Trạng thái của tài khoản - ACTIVE, BANED, SUSPENDED. gồm 3 state này ACTIVE LÀ HOẠT ĐỘNG, SUSPENDED là bị đình chỉ/ tạm ngưng Banned là khóa luôn (do admin) Cái state này sẽ do bên Hệ thống và Admin quản lý (nếu report nhiều => suspend xong admin check để lock || làm gì đó)']
+  failed_login_attempts Int32 [default: 0, note: 'Số lần đăng nhập sai mk liên tiếp']
+  last_login_at Date [null]
+  updated_at Date [default: `now()`]
+  has_password Boolean [note: 'Xem có password ko (case đặt mk cho tài khoản đăng ký bằng google)']
+  avatar_url String [null]
+  is_login_locked Boolean [note: 'state khóa do đăng nhập sai quá nhiều lần']
+  google_account "Object<emb_GOOGLE_ACCOUNTS>" [note: 'EMBED từ bảng GOOGLE_ACCOUNTS: 1-1 với User; unique index trên google_account.google_id', null]
+  credit_wallet "Object<emb_USER_CREDITS>" [note: 'EMBED từ bảng USER_CREDITS: 1-1 với User; trừ/cộng bằng $inc nguyên tử trên credit_wallet.balance']
+  notification_preferences "Object<emb_NOTIFICATION_PREFERENCES>" [note: 'EMBED từ bảng NOTIFICATION_PREFERENCES: 1-1 với User, luôn đọc khi gửi thông báo']
+  subscription "Object<emb_SUBSCRIPTIONS>" [note: 'EMBED từ bảng SUBSCRIPTIONS: gói hiện tại của người dùng (gia sư hoặc phụ huynh), 1-1 với User']
+  student_profile "Object<emb_STUDENTS>" [note: 'EMBED từ bảng STUDENTS: 1-1 với User (role STUDENT); quan hệ phụ huynh lấy từ PARENT_CHILD_LINKS', null]
+
+  Note: 'Tài khoản dùng chung cho mọi vai trò (Parent, Tutor, Student, Admin): thông tin đăng nhập, vai trò, trạng thái tài khoản và trạng thái khóa do đăng nhập sai (UC01–UC05, UC39).'
+}
+
+Table EMAIL_VERIFICATION_TOKENS {
+  _id ObjectId [pk, note: 'Mã định danh duy nhất cho bản ghi token, đóng vai trò là Khóa chính (PK).']
+  user_id ObjectId [note: 'Khóa ngoại trỏ đến tài khoản người dùng cần được verify (Xác thực email, Reset mật khẩu...).']
+  token_value String [unique, not null, note: 'Giá trị chuỗi token hoặc mã OTP để Backend tiến hành so khớp và validate.']
+  expired_at Date [not null, note: 'Mốc thời gian tuyệt đối mà token sẽ tự động hết hạn, chặn các request gửi mã quá hạn.']
+  is_used Boolean [default: false, note: '“Đánh dấu token đã dùng, chống dùng lại (BR-03)”.']
+
+  indexes {
+    expired_at [note: 'TTL index, expireAfterSeconds: 0']
+  }
+
+  Note: 'Token / OTP gửi qua email để xác thực tài khoản sau khi đăng ký; dùng 1 lần, có hạn (UC01, BR-03).'
+}
+
+Table USER_SESSIONS {
+  _id ObjectId [pk]
+  user_id ObjectId
+  refresh_token String [unique, not null, note: 'Chuỗi Refresh Token dài hạn cấp cho Client. Dùng để đối soát dưới DB khi Access Token hết hạn. Nếu hợp lệ và chưa expired, hệ thống sẽ cấp lại Access Token mới và gia hạn Session.']
+  is_revoked Boolean [default: false, note: 'Trạng thái thu hồi Token. - Case Đăng xuất (Logout): Client xóa token ở bộ nhớ local, đồng thời gửi request báo BE chuyển is_revoked = true để vô hiệu hóa token ngay lập tức dưới DB (chống việc lừa lại token đã logout). - Case Đổi mật khẩu/Khóa nick: Chuyển tất cả is_revoked = true để đá user ra khỏi mọi thiết bị khác.']
+  expires_at Date [not null, note: 'Thời gian hết hạn của Session. Do thông tin hết hạn nằm trong JWT của Client nên Server không thể tự động biết/truy vấn nếu Client không gửi lên. Cột này giúp Server query trực tiếp dưới DB để check hết hạn nhanh và phục vụ các tiến trình chạy ngầm (Cron Job) tự động xóa/dọn dẹp Data hết hạn định kỳ.']
+
+  indexes {
+    expires_at [note: 'TTL index, expireAfterSeconds: 0']
+    user_id
+  }
+
+  Note: 'Phiên đăng nhập của người dùng, lưu refresh token theo từng thiết bị; dùng để cấp lại access token, đăng xuất và thu hồi phiên khi đổi mật khẩu / bị khóa (UC02–UC04, UC39).'
+}
+
+Table PASSWORD_RESET_TOKENS {
+  _id ObjectId [pk]
+  user_id ObjectId
+  token_value String [unique, not null, note: 'Lưu giá trị chuỗi token hoặc mã OTP để BE so khớp xem Client gửi lên có đúng khớp không.']
+  expired_at Date [not null, note: 'Mốc thời gian token tự động hết hiệu lực, chặn không cho sử dụng mã cũ để reset password sau một khoảng thời gian nhất định (ví dụ: quá 15 phút).']
+  is_used Boolean [default: false, note: '- Chống Replay Attack: Đảm bảo mỗi token chỉ được dùng duy nhất 1 lần (BR-03). Dùng xong đánh dấu true. - Xử lý Request mới: Khi user yêu cầu gửi lại mã mới do chưa nhận được mail, BE sẽ set is_used = true cho token cũ để vô hiệu hóa lập tức, tránh việc có nhiều token active cùng lúc.']
+
+  indexes {
+    expired_at [note: 'TTL index, expireAfterSeconds: 0']
+  }
+
+  Note: '& Reactivate Locked Account (do đăng nhập sai quá nhiều) Token đặt lại mật khẩu gửi qua email. Dùng cho 2 trường hợp: quên mật khẩu (UC03) và mở khóa tài khoản bị khóa do đăng nhập sai quá 5 lần (UC02, BR-02) - đổi mật khẩu thành công thì tài khoản được mở khóa.'
+}
+
+Table TUTOR_PROFILES {
+  _id ObjectId [pk, note: 'Khóa chính định danh duy nhất cho bản ghi profile cá nhân.']
+  user_id ObjectId [unique, note: 'Khóa ngoại liên kết 1-1 với bảng USERS. Mỗi tài khoản tương ứng với đúng 1 hồ sơ chi tiết.']
+  headline String [null, note: 'Câu châm ngôn, chức danh ngắn gọn hiển thị ngay dưới tên (Ví dụ: *"Senior Software Engineer']
+  bio String [null, note: 'Đoạn giới thiệu bản thân chi tiết hơn về kinh nghiệm, phương pháp giảng dạy hoặc sở thích cá nhân.']
+  avatar_url String [null, note: 'Lưu đường dẫn (URL) trỏ đến file ảnh đại diện của người dùng trên Cloud storage.']
+  cover_url String [null, note: 'Lưu đường dẫn (URL) trỏ đến ảnh bìa (banner) trang trí đầu trang cá nhân.']
+  address String [null, note: 'Địa chỉ của người dùng/tutor (hỗ trợ cho học viên tìm kiếm gia sư theo khu vực địa lý).']
+  is_address_hidden Boolean [default: false, note: 'Cờ ẩn/hiện địa chỉ cá nhân nhằm bảo mật thông tin riêng tư theo mong muốn của chủ profile.']
+  is_complete Boolean [default: false, note: 'Trạng thái hoàn thiện hồ sơ: Bắt buộc lưu để ép buộc user/tutor khi đăng nhập lần đầu phải hoàn thành nốt các bước nhập thông tin profile tối thiểu trước khi được phép sử dụng các tính năng chính']
+  availability_status tutor_profiles_availability_status_enum [note: 'Trường để xem dạo này gia sư còn sử dụng hệ thống ko ?& snawx sàng nhận lớp ko vd 1 tháng gần nhất, hoặc tự config tay gia sư Available Not_available']
+  average_rating Double [note: 'average rating của gia sư, tính lại khi có review mới || ngày mới, check có review mới nào ko ? => update']
+  experiences "Array<emb_EXPERIENCES>" [note: 'EMBED từ bảng EXPERIENCES: luôn đọc cùng hồ sơ gia sư, số lượng ít', default: '[]']
+  achievements "Array<emb_ACHIEVEMENTS>" [note: 'EMBED từ bảng ACHIEVEMENTS: luôn đọc cùng hồ sơ gia sư, số lượng ít', default: '[]']
+  educations "Array<emb_EDUCATIONS>" [note: 'EMBED từ bảng EDUCATIONS: luôn đọc cùng hồ sơ gia sư, số lượng ít', default: '[]']
+
+  Note: 'Hồ sơ công khai của gia sư (kiểu LinkedIn): giới thiệu, địa chỉ, trạng thái hoàn thiện, sẵn sàng nhận lớp và điểm đánh giá trung bình. Quan hệ 1-1 với User (UC05, UC06, UC07).'
+}
+
+Table SAVED_SEARCHES {
+  _id ObjectId [pk, note: 'Khóa chính của bộ lọc tìm kiếm được lưu.']
+  user_id ObjectId [note: 'Parent user ID (A2) (Liên kết đến tài khoản phụ huynh thực hiện lưu).']
+  search_name String [note: 'Name for the saved search criteria (Tên gợi nhớ cho bộ lọc).']
+  filter_criteria_json String [note: 'JSON storing filter options (subject, area, price...) (Chứa toàn bộ tùy chọn lọc).']
+  created_at Date [note: 'Saved date (Thời điểm lưu bộ lọc).']
+
+  Note: 'Bộ lọc tìm kiếm gia sư được phụ huynh lưu lại để dùng lại và nhận thông báo khi có gia sư mới phù hợp (UC06 A2).'
+}
+
+Table REVIEWS {
+  _id ObjectId [pk, note: 'Khóa chính định danh đánh giá.']
+  tutor_profile_id ObjectId [note: 'Tutor profile being reviewed (Hồ sơ gia sư đang nhận đánh giá).']
+  rating Int32 [note: 'Rating value (1-5 stars) (Điểm số đánh giá sao).']
+  comment String [note: 'Review comment (Nội dung bình luận).']
+  created_at Date [note: 'Thời điểm tạo đánh giá.']
+  agreement_id ObjectId [unique, note: 'Liên kết kết nối CONFIRMED. -> Lý do UC38 cần: Đảm bảo quy tắc mỗi kết nối chỉ được đánh giá 1 lần duy nhất (PRE-1, BR-22, E1).']
+  parent_user_id ObjectId [note: 'Tham chiếu USERS phụ huynh. -> Lý do UC38 cần: Định danh Phụ huynh thực hiện gửi/chỉnh sửa đánh giá (Primary Actor, A1).']
+  knowledge_rating Int32 [null, note: 'Đánh giá kiến thức (1 - 5 sao). -> Lý do UC38 cần: Điểm đánh giá tiêu chí Kiến thức chuyên môn của gia sư (Step 1).']
+  punctuality_rating Int32 [null, note: 'Đánh giá đúng giờ (1 - 5 sao). -> Lý do UC38 cần: Điểm đánh giá tiêu chí Đúng giờ/Chuyên cần của gia sư (Step 1).']
+  communication_rating Int32 [null, note: 'Đánh giá giao tiếp (1 - 5 sao). -> Lý do UC38 cần: Điểm đánh giá tiêu chí Khả năng giao tiếp/Truyền đạt (Step 1).']
+  tutor_reply String [null, note: 'Phản hồi công khai của gia sư. -> Lý do UC38 cần: Lưu 1 phản hồi duy nhất của Gia sư đối với nhận xét (A2).']
+  replied_at Date [null, note: 'Timestamp gia sư phản hồi. -> Lý do UC38 cần: Ghi nhận thời điểm Gia sư đăng câu trả lời công khai (A2).']
+  status reviews_status_enum [note: 'APPROVED, PENDING_MODERATION, REJECTED. -> Lý do UC38 cần: Trạng thái kiểm duyệt nội dung theo bộ lọc BR-22 (APPROVED: hiển thị ngay; PENDING_MODERATION: vi phạm từ ngữ thô tục/chờ Admin duyệt ở E2).']
+  updated_at Date [null, note: 'Timestamp chỉnh sửa gần nhất. -> Lý do UC38 cần: Ghi nhận thời gian Phụ huynh chỉnh sửa lại đánh giá trong thời hạn 7 ngày (A1).']
+
+  Note: 'Đánh giá và nhận xét của phụ huynh về gia sư sau khi kết nối được xác nhận, kèm điểm thành phần, phản hồi của gia sư và trạng thái kiểm duyệt. Mỗi kết nối chỉ đánh giá 1 lần (UC38).'
+}
+
+Table TUTOR_POSTS {
+  _id ObjectId [pk, note: 'Mã định danh duy nhất cho bài đăng tuyển/tìm học viên.']
+  profile_id ObjectId [note: 'Link to Tutor profile (Khóa ngoại tham chiếu 1-N đến Profile gia sư tạo bài).']
+  title String [note: 'Post title (Tiêu đề bài đăng gia sư).']
+  subject_name String [note: 'Teaching subject (Môn học đăng ký giảng dạy).']
+  grade_level String [note: 'Target grade level (Khối lớp / Trình độ học viên hướng tới).']
+  teaching_mode tutor_posts_teaching_mode_enum [note: 'ONLINE, OFFLINE, HYBRID (Hình thức dạy học).']
+  price Decimal128 [note: 'Price per hour/session (Mức học phí theo giờ hoặc theo buổi).']
+  schedule String [note: 'Free schedule description (Mô tả khung giờ/lịch rảnh có thể dạy).']
+  description String [note: 'Detailed introduction (Nội dung bài đăng giới thiệu chi tiết).']
+  image_urls "Array<String>" [note: 'Attached promo image links (Đường dẫn các ảnh minh họa/chứng chỉ kèm theo bài đăng).']
+  status tutor_posts_status_enum [note: 'PUBLISHED: đã đăng Draft: nháp, chưa đăng PENDING_MODERATION: bị (phụ huynh) báo cáo là có vấn đề HIDDEN: Ẩn bài đăng (TUTOR) DELETED (Trạng thái duyệt/hiển thị của bài đăng). Lưu lại để tự động xóa sau bao nhiêu ngày gì đó']
+  created_at Date [note: 'Thời điểm bài đăng được khởi tạo.']
+  updated_at Date [note: 'Thời điểm cập nhật bài đăng gần nhất.']
+
+  indexes {
+    (status, created_at)
+    profile_id
+  }
+
+  Note: 'Bài đăng quảng cáo dịch vụ dạy học của gia sư (môn, lớp, hình thức, học phí, lịch), hiển thị trong kết quả tìm kiếm (UC08).'
+}
+
+Table PARENT_REQUESTS {
+  _id ObjectId [pk, note: 'Khóa chính định danh yêu cầu tìm gia sư.']
+  parent_user_id ObjectId [note: 'Parent who created the request (ID tài khoản phụ huynh tạo yêu cầu, tham chiếu trực tiếp đến bảng USERS thay vì profile).']
+  title String [note: 'Request title (Dropdown selector) (Tiêu đề yêu cầu / chọn nhanh qua dropdown).']
+  subject_name String [note: 'Teaching subject constraint (Môn học cần tìm gia sư).']
+  grade_level String [note: 'Target grade level constraint (Khối lớp yêu cầu).']
+  teaching_mode parent_requests_teaching_mode_enum [note: 'ONLINE, OFFLINE, HYBRID (Hình thức học mong muốn).']
+  budget Decimal128 [note: 'Expected price per hour/session (Mức học phí dự kiến trả).']
+  schedule String [note: 'Desired schedule description (Mô tả thời gian/lịch học rảnh của con).']
+  description String [note: 'Detailed requirement description (Mô tả chi tiết yêu cầu thêm).']
+  location_address String [note: 'Area for hard constraints filter (Địa điểm học, phục vụ lọc cứng vùng miền/khu vực).']
+  image_urls "Array<String>" [note: 'Attached requirement images/documents (Ảnh hoặc tài liệu đính kèm yêu cầu nếu có).']
+  status parent_requests_status_enum [note: 'DRAFT- chưa đăng, nháp PENDING_MODERATION- người dùng report vi phạm OPEN - request đang mở IN_PROGRESS - request đang trong giai đoạn thương lượng CLOSED - Đã xong. CANCELLED (Trạng thái của yêu cầu tìm gia sư). EXPIRED- bài đăng tự hết hạn sau 30 ngày (BR-05)']
+  created_at Date [note: 'Thời điểm khởi tạo yêu cầu.']
+  updated_at Date [note: 'Thời điểm cập nhật yêu cầu gần nhất.']
+  student_id ObjectId [note: 'Linked student (Học sinh được gán cho bài đăng - Field 1 - optional).']
+  tutor_requirements String [note: 'Yêu cầu riêng về gia sư (Giới tính, kinh nghiệm, trường học...).']
+
+  indexes {
+    (status, created_at)
+    parent_user_id
+  }
+
+  Note: 'Yêu cầu tìm gia sư do phụ huynh đăng (môn, lớp, mục tiêu, hình thức, lịch, ngân sách, yêu cầu với gia sư); gia sư xem và ứng tuyển (UC12, UC13, BR-05).'
+}
+
+Table AI_SUGGESTIONS {
+  _id ObjectId [pk, note: 'Khóa chính định danh duy nhất cho mỗi bản ghi gợi ý của AI.']
+  request_id ObjectId [note: 'Tham chiếu đến yêu cầu tìm gia sư của phụ huynh để gắn kết kết quả gợi ý.']
+  tutor_post_id ObjectId [note: 'Lưu bài đăng gia sư được AI ghép nối phù hợp.']
+  tutor_profile_id ObjectId [note: 'Lưu profile gia sư tương ứng được đề xuất.']
+  match_score Double [note: 'Lý do lưu trữ: Lưu trữ điểm phần trăm tương thích (match_score) đã được tính toán sẵn để hiển thị ngay lập tức lên UI mà không phải tính lại.']
+  ai_reason String [note: 'Lý do lưu trữ: Lưu văn bản giải thích ngắn gọn do AI sinh ra (ví dụ: lý do hợp môn, hợp giờ) giúp phụ huynh đọc hiểu nhanh lý do được gợi ý.']
+  weights_json Object [note: 'Lý do lưu trữ: Lưu trữ trọn gói các trọng số ưu tiên thời điểm đó (Học phí, Đánh giá, Khoảng cách...) phục vụ việc audit hoặc phân tích cải tiến thuật toán.']
+  cached_until Date [note: 'Lý do lưu trữ: Đặt thời gian hết hạn cache (ví dụ: 24 giờ) để tránh việc cứ mỗi lần phụ huynh mở app là lại gọi API AI tốn kém chi phí token và gây độ trễ hệ thống.']
+  created_at Date [note: 'Lưu mốc thời gian bản ghi gợi ý được tạo.']
+
+  indexes {
+    cached_until [note: 'TTL index, expireAfterSeconds: 0']
+    request_id
+  }
+
+  Note: 'Kết quả AI gợi ý gia sư phù hợp cho một yêu cầu của phụ huynh, gồm điểm phù hợp và lý do; được cache để không gọi AI lại liên tục (UC09).'
+}
+
+Table CONVERSATIONS {
+  _id ObjectId [pk, note: 'Khóa chính định danh phiên hội thoại chat.']
+  parent_user_id ObjectId [null, note: 'ID tài khoản Phụ huynh tham gia chat.']
+  tutor_profile_id ObjectId [null, note: 'ID profile Gia sư tham gia chat.']
+  is_active Boolean [note: 'Trạng thái chat đang hoạt động (Dùng kiểm tra luồng A1 - Continue in chat / UC34).']
+  created_at Date [note: 'Thời điểm khởi tạo phiên chat.']
+  request_id ObjectId [null, note: 'Associated tutoring request. -> Lý do UC15 cần: Gắn phiên chat này với bài yêu cầu cụ thể.']
+  class_id ObjectId [unique, null, note: 'Liên kết 1-1 với lớp học. -> Lý do UC21 cần: Gắn kết phòng chat nhóm trực tiếp với lớp học vừa khởi tạo (POST-1).']
+  type conversations_type_enum [note: 'Value: DIRECT - trực tiếp 1-1 CLASS_GROUP_CHAT.: group chat của lớp CLASS_GROUP_CHAT. -> Lý do UC21 cần: Phân loại phòng chat nhóm lớp học khác với chat 1-1 giữa Phụ huynh - Gia sư.']
+  updated_at Date
+  read_states "Array<emb_CONVERSATION_READ_STATES>" [note: 'EMBED từ bảng CONVERSATION_READ_STATES: mỗi phòng chat ít người; cập nhật bằng $set read_states.$', default: '[]']
+
+  Note: 'Cuộc trò chuyện: chat 1-1 phụ huynh - gia sư (mở sau khi bấm Continue, UC15/UC17) hoặc chat nhóm của lớp học (UC33, UC34).'
+}
+
+Table APPLY_REQUESTS {
+  _id ObjectId [pk, note: 'Khóa chính định danh lượt xin ứng tuyển']
+  request_id ObjectId [note: 'Tutoring request (Tham chiếu bài yêu cầu của phụ huynh).']
+  tutor_profile_id ObjectId [note: 'Tutor who ứng tuyển (Profile gia sư ứng tuyển/bày tỏ quan tâm).']
+  note String [note: 'Lời nhắn / Lời giới thiệu ngắn từ gia sư (Introductory note from tutor).']
+  match_score Double [note: 'Điểm số tương thích tính toán cho màn hình SC17.']
+  status apply_requests_status_enum [note: 'Trạng thái ứng tuyển: PENDING - chờ phụ huynh rep CONTINUED - phụ huynh accept -> mở conversation SKIPPED (Step 7). -> phụ huynh bỏ qua WITHDRAWN - rút lại đơn ứng tuyển']
+  created_at Date [note: 'Thời điểm gia sư bấm ứng tuyển']
+  updated_at Date [note: 'Thời điểm cập nhật trạng thái ứng tuyển.']
+
+  indexes {
+    (request_id, tutor_profile_id) [unique, note: '1 gia sư ứng tuyển 1 request 1 lần']
+  }
+
+  Note: 'Đơn ứng tuyển của gia sư vào yêu cầu của phụ huynh, kèm lời nhắn và điểm phù hợp; phụ huynh chọn Continue hoặc Skip (UC14, UC15).'
+}
+
+Table BOOKMARKED_REQUESTS {
+  _id ObjectId [pk, note: 'Khóa chính định danh lượt lưu/bookmark bài đăng.']
+  tutor_profile_id ObjectId [note: 'Tutor who bookmarked (Profile gia sư thực hiện bookmark - A1).']
+  request_id ObjectId [note: 'Bookmarked tutoring request (Bài yêu cầu được gia sư lưu lại - A1).']
+  created_at Date [note: 'Saved date (Mốc thời gian gia sư bấm lưu bài - A1).']
+
+  indexes {
+    (tutor_profile_id, request_id) [unique]
+  }
+
+  Note: 'Các yêu cầu của phụ huynh được gia sư lưu lại để xem sau (UC13 A1).'
+}
+
+Table AI_POST_SUGGESTIONS {
+  _id ObjectId [pk, note: 'Khóa chính định danh kết quả AI gợi ý bài đăng.']
+  tutor_profile_id ObjectId [note: 'Tutor receiving AI suggestion (Profile gia sư nhận gợi ý).']
+  request_id ObjectId [note: 'Suggested tutoring request (Bài đăng yêu cầu được AI đề xuất).']
+  match_score Double [note: 'Match percentage for ranking (Điểm % tương thích để sắp xếp danh sách).']
+  ai_reason String [note: 'Short explanation generated by AI Provider (Lý do AI gợi ý bài này).']
+  cached_until Date [note: 'Cache duration for AI results (Thời hạn lưu cache tránh gọi API AI quá nhiều).']
+  created_at Date [note: 'Mốc thời gian bản ghi gợi ý được tạo.']
+
+  indexes {
+    cached_until [note: 'TTL index, expireAfterSeconds: 0']
+    tutor_profile_id
+  }
+
+  Note: 'Kết quả AI gợi ý các yêu cầu phù hợp với hồ sơ gia sư (mục "Suggested for you"), gồm điểm phù hợp và lý do; có cache (UC13).'
+}
+
+Table TUTOR_INVITATIONS {
+  _id ObjectId [pk, note: 'Khóa chính định danh lời mời. -> Lý do UC16 cần: Quản lý riêng biệt từng bản ghi lời mời do phụ huynh gửi đi.']
+  parent_user_id ObjectId [note: 'Parent sender (UC16). -> Lý do UC16 cần: Lưu vết Phụ huynh nào là người đã gửi lời mời này.']
+  tutor_profile_id ObjectId [note: 'Tutor receiver (UC16). -> Lý do UC16 cần: Xác định Gia sư cụ thể nhận được lời mời trong hộp thư đến.']
+  request_id ObjectId [note: 'Selected open request (E1 UK pair). -> Lý do UC16 cần: Gắn kết lời mời với bài yêu cầu cụ thể, tạo cặp khóa độc lập chống gửi trùng lặp lời mời cho cùng một gia sư trên cùng một bài (ngoại lệ E1).']
+  message String [note: 'Optional message (Step 2). -> Lý do UC16 cần: Lưu lời nhắn tùy chọn của phụ huynh gửi kèm cho gia sư ở bước 2.']
+  status tutor_invitations_status_enum [note: 'PENDING, - chờ tutor rep ACCEPTED - tutor đồng ý với đề nghị -> mở conversation DECLINED, - đã bị tutor từ chối CANCELLED. - phụ huynh tự xóa/ hủy -> Lý do UC16 cần: Lưu trạng thái lời mời (`PENDING` khi mới tạo theo POST-1, hoặc `CANCELLED` nếu phụ huynh hủy theo A1).']
+  created_at Date [note: 'Step 4: Saved timestamp. -> Lý do UC16 cần: Lưu mốc thời gian chính xác lời mời được gửi đi thành công (POST-1).']
+  updated_at Date [note: 'Timestamp cập nhật. -> Lý do UC16 cần: Theo dõi thời điểm trạng thái lời mời có sự thay đổi.']
+
+  indexes {
+    (request_id, tutor_profile_id) [unique, note: 'chống gửi trùng lời mời (UC16 E1)']
+  }
+
+  Note: 'Lời mời phụ huynh gửi cho gia sư gắn với một yêu cầu; gia sư chọn Continue (trừ 1 credit, mở chat) hoặc Skip (UC16, UC17).'
+}
+
+Table TUTORING_AGREEMENTS {
+  _id ObjectId [pk, note: 'Khóa chính định danh mối liên kết / kết nối. -> Lý do UC18 cần: Quản lý riêng biệt từng bản ghi kết nối giữa phụ huynh và gia sư sau khi trò chuyện.']
+  conversation_id ObjectId [note: 'Associated conversation => tham chiếu đến request_id. -> Lý do UC18 cần: Gắn kết nối với bài đăng tìm gia sư gốc, dùng để đóng bài (Closed) khi xác nhận thành công (POST-1).']
+  proposer_user_id ObjectId [note: 'Parent user participant (Tham chiếu user_id trong USERS). -> Lý do UC18 cần: Xác định Phụ huynh tham gia kết nối.']
+  accepted_by_user_id ObjectId [null, note: 'Tutor profile participant. -> Lý do UC18 cần: Xác định Gia sư tham gia kết nối.']
+  agreed_subject String [note: 'Subject agreed in chat (Optional step 1). -> Lý do UC18 cần: Lưu lại môn học mà hai bên đã thống nhất chốt kèo.']
+  agreed_schedule String [note: 'Schedule agreed in chat (Optional step 1). -> Lý do UC18 cần: Lưu lại lịch học đã chốt giữa hai bên.']
+  agreed_price Decimal128 [note: 'Price agreed in chat (Optional step 1). -> Lý do UC18 cần: Lưu lại mức học phí thỏa thuận cuối cùng.']
+  status tutoring_agreements_status_enum [note: 'DRAFT - nháp PENDING, - chờ bên kia chấp thuận. CONFIRMED, - được bên kia chấp thuận REJECTED = bên được đề nghị từ chối xác nhận (UC18 A1). CANCELLED - người đề nghị tự ý hủy -> Lý do UC38 cần: Kiểm tra điều kiện kết nối phải ở trạng thái CONFIRMED mới cho phép đánh giá (UC38 PRE-1).']
+  created_at Date [note: 'Timestamp tạo kết nối. -> Lý do UC18 cần: Lưu vết thời điểm phiên kết nối được khởi tạo.']
+  updated_at Date [note: 'Timestamp cập nhật trạng thái. -> Lý do UC18 cần: Theo dõi thời điểm hai bên bấm xác nhận chốt thỏa thuận.']
+
+  Note: 'Kết nối giữa phụ huynh và gia sư sau khi mở chat, lưu thỏa thuận (môn, lịch, học phí) và trạng thái xác nhận "Agreed" của hai bên. Là điều kiện để đánh giá và tạo lớp (UC18, UC21, UC38).'
+}
+
+
+
+Table PAYMENT_ORDERS {
+  _id ObjectId [pk, note: 'Khóa chính đơn hàng thanh toán. -> Lý do UC19/UC20 cần: Lưu thông tin lệnh thanh toán được khởi tạo khi gia sư bấm "Checkout" (UC19 bước 3, BR-10).']
+  order_code String [unique, note: 'Mã đơn hàng VietQR/IPN. -> Lý do UC19/UC20 cần: Đối soát giao dịch với cổng thanh toán và chống trùng lặp dữ liệu (UC19 E2, BR-10).']
+  user_id ObjectId [note: 'Người tạo đơn hàng -> Lý do UC19/UC20 cần: Xác định tài khoản (gia sư hoặc phụ huynh) thực hiện thanh toán (UC19).']
+  item_type payment_orders_item_type_enum [note: 'PLAN_UPGRADE, CREDIT_PACK. -> Lý do UC19/UC20 cần: Phân biệt đơn hàng mua nâng cấp gói cước hay mua thêm gói credit lẻ (UC19 bước 2).']
+  plan_id ObjectId [null, note: 'Gói cước mục tiêu. -> Lý do UC19/UC20 cần: Liên kết đến gói cước cần nâng cấp (nếu item_type = PLAN_UPGRADE).']
+  pack_id ObjectId [null, note: 'Gói credit mục tiêu. -> Lý do UC19/UC20 cần: Liên kết đến gói credit cần mua (nếu item_type = CREDIT_PACK).']
+  quantity Int32 [null, default: 1, note: 'Số lượng credit pack mua trong đơn (chỉ dùng khi item_type = CREDIT_PACK). amount = CREDIT_PACKS.price × quantity; credit cộng = credit_amount × quantity.']
+  duration_months Int32 [null, note: 'Số tháng mua gói (chỉ dùng khi item_type = PLAN_UPGRADE, vd 1/3/6/12). amount = PLANS.monthly_price × duration_months; khi SUCCESS thì subscription.expires_at cộng thêm duration_months tháng.']
+  amount Decimal128 [note: 'Tổng tiền thanh toán (VND). -> Lý do UC19/UC20 cần: Lưu giá trị tiền thực tế của giao dịch (UC19).']
+  payment_method payment_orders_payment_method_enum [note: 'VIETQR, ATM_CARD, CREDIT_CARD. -> Lý do UC19/UC20 cần: Lưu phương thức thanh toán gia sư lựa chọn ở UC19 bước 4.']
+  status payment_orders_status_enum [note: 'EXPIRED - hết hạn sau 15 tạo (BR-10) PENDING - đang chờ SUCCESS, - thành công FAILED, - fail CANCELLED - hủy. -> Lý do UC19/UC20 cần: Theo dõi tiến trình đơn hàng (xử lý ngoại lệ E1 khi thất bại, xác thực IPN thành công ở UC19 bước 6).']
+  ipn_signature String [note: 'Chữ ký xác thực IPN. -> Lý do UC19/UC20 cần: Kiểm tra chữ ký bảo mật từ cổng thanh toán để chống giả mạo callback (UC19 E2, BR-10).']
+  paid_at Date [null, note: 'Timestamp hoàn tất thanh toán. -> Lý do UC19/UC20 cần: Ghi nhận mốc thời gian tiền về thành công để kích hoạt gói/credit (UC19 POST-1).']
+  created_at Date [note: 'Timestamp tạo đơn hàng. -> Lý do UC19/UC20 cần: Lưu mốc thời gian khởi tạo lệnh thanh toán ban đầu (UC19 bước 3).']
+  receipt "Object<emb_RECEIPTS>" [note: 'EMBED từ bảng RECEIPTS: 1-1 với đơn hàng']
+
+  Note: 'Đơn thanh toán của gia sư khi nâng cấp gói hoặc mua credit, gồm phương thức, trạng thái và chữ ký IPN từ cổng thanh toán (UC19, BR-10).'
+}
+
+Table PLANS {
+  _id ObjectId [pk]
+  target_role plan_target_role_enum [not null, note: 'Gói dành cho vai trò nào: TUTOR hoặc PARENT. Người dùng chỉ đăng ký được gói đúng vai trò của mình. Gói PARENT để null các quyền chỉ có ở gia sư (max_classrooms, sms_reminders_enabled).']
+  name String [note: 'FREE_DEFAULT, PRO. -> Lý do UC19/UC20 cần: Phân loại tên gói cước hiển thị trên màn hình Checkout (SC20) và Credits & Transactions (SC12).']
+  monthly_price Decimal128 [note: 'Giá cước hàng tháng. -> Lý do UC19/UC20 cần: Hiển thị mức giá tiền VND tương ứng khi gia sư chọn nâng cấp gói Pro (UC19 bước 2).']
+  monthly_credits Int32 [note: 'Số credit cấp hàng tháng. -> Lý do UC19/UC20 cần: Xác định số lượng điểm kết nối cộng định kỳ (Free: 5, Pro: 30 theo BR-10).']
+  ai_quota Int32 [note: 'Giới hạn AI hàng tháng. -> Lý do UC19/UC20 cần: Quy định định mức sử dụng AI tương ứng với gói (UC19, UC20 bước 1).']
+  sms_reminders_enabled Boolean [null, note: 'Cờ tính năng SMS. -> Lý do UC19/UC20 cần: Xác định quyền lợi bật tính năng nhắc nhở SMS khi nâng cấp gói Pro (BR-10).']
+  is_active Boolean [note: 'Trạng thái khả dụng. -> Lý do UC19/UC20 cần: Lọc các gói cước đang mở bán để hiển thị cho gia sư lựa chọn ở UC19.']
+  max_classrooms Int32 [null]
+
+  Note: 'Danh mục gói dịch vụ (Free, Pro): giá, credit hàng tháng, AI quota, nhắc lịch SMS, số lớp tối đa. Admin cấu hình (UC41).'
+}
+
+Table CREDIT_PACKS {
+  _id ObjectId [pk, note: 'Khóa chính gói credit lẻ. -> Lý do UC19/UC20 cần: Định danh các gói bán lẻ credit (ví dụ gói 10 credit) hiển thị cho gia sư lựa chọn mua ở UC19 bước 1 (cấu hình bởi UC41).']
+  target_role plan_target_role_enum [null, note: 'Gói credit dành cho vai trò nào; null = bán cho cả gia sư và phụ huynh.']
+  name String [note: 'Tên gói credit. -> Lý do UC19/UC20 cần: Hiển thị tên gói credit trên màn hình Checkout (SC20).']
+  credit_amount Int32 [note: 'Số lượng credit trong gói. -> Lý do UC19/UC20 cần: Xác định số điểm credit vĩnh viễn được cộng dồn vào ví khi thanh toán thành công gói này (UC19 POST-1).']
+  price Decimal128 [note: 'Giá bán gói credit (VND). -> Lý do UC19/UC20 cần: Xác định số tiền thanh toán của đơn hàng mua credit pack (UC19 bước 2).']
+  is_active Boolean [note: 'Trạng thái mở bán. -> Lý do UC19/UC20 cần: Kiểm tra gói credit còn khả dụng để hiển thị cho gia sư mua hay không.']
+
+  Note: 'Danh mục gói mua thêm credit (số credit, giá). Admin cấu hình (UC19, UC41).'
+}
+
+Table CREDIT_TRANSACTIONS {
+  _id ObjectId [pk, note: 'Khóa chính, định danh từng dòng biến động credit. -> UC20: liệt kê lịch sử biến động số dư.']
+  user_id ObjectId [note: 'Chủ ví credit (gia sư hoặc phụ huynh). -> UC20 bước 2: lọc lịch sử biến động của đúng người đang xem.']
+  amount Int32 [not null, note: 'Số credit thay đổi: dương = cộng (nhận tháng, mua, hoàn), âm = trừ (ứng tuyển, gửi lời mời, hết hạn). -> UC20: hiển thị +/- trong lịch sử.']
+  type credit_transactions_type_enum [not null, note: 'MONTHLY_GRANT = nhận định kỳ theo gói; PURCHASE = mua thêm qua credit pack; USED_APPLY = gia sư bị trừ khi ứng tuyển vào request (UC14); USED_INVITATION = phụ huynh bị trừ khi gửi lời mời cho gia sư (UC16); EXPIRED_GRANT = trừ phần credit tháng hết hạn. -> UC20 bước 3: lọc theo loại giao dịch.']
+  related_apply_id ObjectId [null, note: 'Lượt ứng tuyển làm phát sinh giao dịch. Chỉ có giá trị khi type = USED_APPLY (hoặc REFUND của lượt ứng tuyển). -> UC20 bước 2: bấm vào xem chi tiết lượt ứng tuyển.']
+  related_invitation_id ObjectId [null, note: 'Lời mời làm phát sinh giao dịch. Chỉ có giá trị khi type = USED_INVITATION (hoặc REFUND của lời mời). -> UC20 bước 2: bấm vào xem chi tiết lời mời.']
+  expires_at Date [null, note: 'Ngày hết hạn của credit được cộng. Credit tháng có hạn; credit mua từ pack để NULL (vĩnh viễn).']
+  created_at Date [default: `now()`, note: 'Thời điểm phát sinh giao dịch. -> UC20 bước 3: sắp xếp và lọc theo thời gian.']
+
+  indexes {
+    (user_id, created_at)
+  }
+
+  Note: 'Lịch sử biến động credit của gia sư: cấp hàng tháng, mua thêm, trừ khi mở chat, hoàn lại (UC20).'
+}
+
+Table CLASSROOMS {
+  _id ObjectId [pk, note: 'Khóa chính định danh lớp học. -> Lý do UC21 cần: Định danh bản ghi lớp học vừa được khởi tạo thành công (POST-1).']
+  tutor_profile_id ObjectId [note: 'Gia sư sở hữu lớp (Owner Tutor). -> Lý do UC21 cần: Gắn quyền chủ lớp cho Gia sư tạo và phục vụ kiểm tra trùng tên lớp cho cùng 1 gia sư (Primary Actor, E1).']
+  agreement_id ObjectId [null, note: 'Liên kết kết nối đã xác nhận (UC18). -> Lý do UC21 cần: Gắn vết bản ghi kết nối gốc nếu lớp được tạo từ luồng "Create a classroom after a confirmed agreement_id" (UC21.A1).']
+  name String [note: 'Tên lớp học. -> Lý do UC21 cần: Lưu tên lớp do gia sư nhập ở Bước 2 và kiểm tra trùng tên đối với cùng một gia sư (E1).']
+  subject String [note: 'Môn học giảng dạy. -> Lý do UC21 cần: Lưu môn học nhập ở Bước 2 (hoặc tự điền từ connection ở A1) để hiển thị tại Class header (SC33).']
+  grade String [note: 'Khối / Lớp học. -> Lý do UC21 cần: Lưu khối lớp nhập ở Bước 2 (hoặc tự điền từ connection ở A1) để hiển thị tại Class header (SC33).']
+  description String [null, note: 'Mô tả lớp học. -> Lý do UC21 cần: Lưu mô tả chi tiết lớp học tùy chọn do gia sư nhập ở Bước 2.']
+  capacity Int32 [note: 'Sức chứa tối đa của lớp. -> Lý do UC21 cần: Lưu số lượng học sinh tối đa cho phép tham gia lớp do gia sư nhập ở Bước 2.']
+  join_code String [unique, note: 'Mã tham gia lớp độc nhất. -> Lý do UC21 cần: Mã ngẫu nhiên duy nhất do hệ thống tự động sinh ra cho học sinh nhập tham gia lớp (BR-12, POST-1).']
+  invite_link String [unique, note: 'Đường dẫn mời tham gia lớp độc nhất. -> Lý do UC21 cần: URL mời duy nhất do hệ thống tự sinh ra để gia sư chia sẻ cho học sinh/phụ huynh (BR-12, POST-1, SC33).']
+  status classrooms_status_enum [note: 'ACTIVE, ARCHIVED. -> Lý do UC21 cần: Khởi tạo trạng thái hoạt động của lớp học là ACTIVE ngay sau khi tạo thành công.']
+  created_at Date [note: 'Thời điểm tạo lớp (Class create time). -> Lý do UC21 cần: Lưu mốc thời gian khởi tạo lớp (POST-1), dùng để sắp xếp danh sách trên SC32 và kiểm tra hạn ngạch số lớp tạo trong chu kỳ (BR-12).']
+  updated_at Date [note: 'Timestamp cập nhật thông tin lớp. -> Lý do UC21 cần: Ghi nhận thời điểm thay đổi thông tin lớp học.']
+  topics "Array<emb_MATERIAL_TOPICS>" [note: 'EMBED từ bảng MATERIAL_TOPICS: ít thư mục mỗi lớp; giữ _id để CLASS_MATERIALS.topic_id tham chiếu', default: '[]']
+
+  Note: 'Lớp học trực tuyến do gia sư tạo, có mã tham gia và link mời; có thể tạo từ một kết nối đã xác nhận (UC21, UC22, BR-12).'
+}
+
+Table CLASS_MEMBERS {
+  _id ObjectId [pk, note: 'Khóa chính thành viên lớp. -> Lý do UC22 cần: Định danh bản ghi thành viên/học sinh đã tham gia lớp.']
+  class_id ObjectId [note: 'Liên kết lớp học. -> Lý do UC22 cần: Cho phép hệ thống đếm số lượng thành viên hiện có để kích hoạt cảnh báo khi gia sư muốn xóa lớp (E1).']
+  user_id ObjectId [note: 'Tài khoản thành viên tham gia. -> Lý do UC22 cần: Xác định danh sách người dùng trong lớp để gửi thông báo khi có thông báo mới (POST-1).']
+  joined_at Date [note: 'Thời điểm tham gia lớp. -> Lý do UC22 cần: Lưu mốc thời gian thành viên gia nhập lớp.']
+  status class_members_status_enum [note: 'ACTIVE, REMOVED. -> Lý do UC23 cần: Quản lý trạng thái thành viên (chuyển sang REMOVED khi gia sư xóa khỏi lớp ở A1; tự động thu hồi quyền chat nhóm khi REMOVED - BR-18).']
+  removal_reason String [null, note: 'Lý do xóa thành viên. -> Lý do UC23 cần: Lưu lý do gia sư nhập khi khai trừ học sinh/phụ huynh khỏi lớp (A1).']
+
+  indexes {
+    (class_id, user_id) [unique]
+    user_id
+  }
+
+  Note: 'Thành viên của lớp (học sinh, phụ huynh), vai trò và trạng thái trong lớp; phụ huynh gắn với học sinh là con mình (UC23, UC24).'
+}
+
+Table CLASS_ANNOUNCEMENTS {
+  _id ObjectId [pk, note: 'Khóa chính thông báo lớp học. -> Lý do UC22 cần: Định danh thông báo mới được đăng trên bảng tin lớp học (Trigger, Bước 2).']
+  class_id ObjectId [note: 'Liên kết lớp học. -> Lý do UC22 cần: Định danh thông báo thuộc về lớp học cụ thể nào (Bước 2).']
+  author_profile_id ObjectId [note: 'Profile gia sư đăng bài. -> Lý do UC22 cần: Xác định gia sư là người tạo và đăng bài thông báo.']
+  content String [note: 'Nội dung rich text (Tối đa 5000 ký tự). -> Lý do UC22 cần: Lưu nội dung bài đăng thông báo gia sư nhập ở Bước 2 (SC33 - Field 3).']
+  is_pinned Boolean [note: 'Cờ ghim bài viết lên đầu. -> Lý do UC22 cần: Cho phép ghim bài thông báo quan trọng lên đầu bảng tin lớp.']
+  created_at Date [note: 'Timestamp đăng thông báo. -> Lý do UC22 cần: Lưu mốc thời gian đăng bài (POST-1) và dùng gửi thông báo cho các thành viên.']
+  updated_at Date [note: 'Timestamp chỉnh sửa bài đăng. -> Lý do UC22 cần: Ghi nhận thời điểm gia sư cập nhật lại nội dung bài thông báo.']
+
+  Note: 'Thông báo gia sư đăng trên bảng tin của lớp, có thể ghim (UC22).'
+}
+
+Table CLASS_MATERIALS {
+  _id ObjectId [pk, note: 'Khóa chính tài liệu học tập. -> Lý do UC25 cần: Định danh từng bản ghi tài liệu học tập được tải lên hoặc đính kèm.']
+  class_id ObjectId [note: 'Liên kết lớp học. -> Lý do UC25 cần: Định danh tài liệu thuộc lớp học nào.']
+  topic_id ObjectId [null, note: 'Chủ đề phân loại. -> Lý do UC25 cần: Gắn tài liệu vào thư mục tương ứng nếu gia sư chọn.']
+  uploader_profile_id ObjectId [note: 'Profile gia sư tải lên. -> Lý do UC25 cần: Ghi nhận người sở hữu/tải tài liệu lên.']
+  title String [note: 'Tiêu đề tài liệu. -> Lý do UC25 cần: Lưu tiêu đề tài liệu do gia sư nhập ở Bước 2 (UC25).']
+  material_type class_materials_material_type_enum [note: 'DOCUMENT, SLIDE, VIDEO, LINK. -> Lý do UC25 cần: Phân loại định dạng tài liệu học tập.']
+  file_url String [note: 'URL lưu trữ file hoặc liên kết ngoài. -> Lý do UC25 cần: Lưu đường dẫn file tài liệu trên cloud storage hoặc link ngoài (UC25 Step 3).']
+  file_size Int32 [note: 'Dung lượng file (bytes). -> Lý do UC25 cần: Kiểm tra giới hạn dung lượng file tải lên theo BR-16 (UC25 E1).']
+  visibility class_materials_visibility_enum [note: 'ALL_MEMBERS, STUDENTS_ONLY. -> Lý do UC25 cần: Quy định quyền hiển thị tài liệu cho học sinh hoặc toàn bộ thành viên.']
+  created_at Date [note: 'Timestamp tạo tài liệu. -> Lý do UC25 cần: Ghi nhận thời gian đăng tài liệu và gửi thông báo cho học sinh (POST-1).']
+  updated_at Date [note: 'Timestamp cập nhật tài liệu. -> Lý do UC25 cần: Ghi nhận thời gian chỉnh sửa tài liệu.']
+
+  Note: 'Tài liệu học tập của lớp (file, video, link), kèm chủ đề và phạm vi hiển thị (UC25, BR-16).'
+}
+
+Table ASSIGNMENTS {
+  _id ObjectId [pk, note: 'Khóa chính bài tập. -> Lý do UC26-UC27 cần: Định danh duy nhất từng bài kiểm tra/bài tập được tạo.']
+  class_id ObjectId [note: 'Liên kết lớp học. -> Lý do UC26-UC27 cần: Định danh bài tập thuộc về lớp học nào.']
+  creator_profile_id ObjectId [note: 'Gia sư tạo bài tập. -> Lý do UC26 cần: Ghi nhận gia sư khởi tạo bản nháp/xuất bản bài tập.']
+  title String [note: 'Tiêu đề bài tập. -> Lý do UC26-UC27 cần: Lưu tên bài tập hiển thị ở SC33 và SC39.']
+  instructions String [note: 'Hướng dẫn làm bài (Rich text). -> Lý do UC26-UC27 cần: Lưu hướng dẫn làm bài cho học sinh khi mở bài tập (UC27 Step 1).']
+  is_ai_generated Boolean [note: 'Cờ nhận biết bài tập tạo từ AI. -> Lý do UC26 cần: Đánh dấu bài tập được sinh tự động bởi AI Provider (UC26 Step 3, BR-17).']
+  status assignments_status_enum [note: 'DRAFT, PUBLISHED. -> Lý do UC26-UC27 cần: Quản lý bản nháp (DRAFT) và bài tập chính thức phát hành cho học sinh làm (PUBLISHED) (UC26 Step 6, UC27 PRE-2).']
+  due_date Date [note: 'Hạn nộp bài (Deadline). -> Lý do UC26-UC27 cần: Kiểm tra thời hạn nộp bài của học sinh và tính trạng thái nộp trễ/khóa nộp bài (UC26 Step 5, UC27 Step 1, E1, BR-15).']
+  allow_late_submission Boolean [note: 'Chính sách nộp trễ. -> Lý do UC26-UC27 cần: Cấu hình cho phép học sinh nộp bài sau hạn hay không (UC26 Step 5, UC27 E1, BR-15).']
+  allow_resubmission Boolean [note: 'Chính sách nộp lại bài. -> Lý do UC27 cần: Cấu hình cho phép học sinh nộp lại phiên bản mới trước hạn (UC27.A2).']
+  total_points Int32 [note: 'Tổng điểm bài tập. -> Lý do UC26-UC27 cần: Tổng điểm quy đổi của toàn bộ các câu hỏi trong bài tập.']
+  published_at Date [note: 'Timestamp xuất bản bài tập. -> Lý do UC26-UC27 cần: Ghi nhận thời điểm phát hành bài tập và gửi thông báo cho học sinh (UC26 Step 6).']
+  results_published_at Date [null, note: 'Timestamp công bố điểm. -> Lý do UC26-UC27 cần: Ghi nhận mốc thời gian gia sư công bố điểm và nhận xét cho học sinh/phụ huynh xem (UC26 Step 9, UC27.A1).']
+  created_at Date [note: 'Timestamp tạo bản ghi. -> Lý do UC26 cần: Ghi nhận thời điểm bài tập bắt đầu được tạo nháp.']
+  updated_at Date [note: 'Timestamp chỉnh sửa. -> Lý do UC26 cần: Ghi nhận thời gian cập nhật thông tin bài tập.']
+  questions "Array<emb_ASSIGNMENT_QUESTIONS>" [note: 'EMBED từ bảng ASSIGNMENT_QUESTIONS: luôn đọc cùng bài tập; giữ _id để SUBMISSION_ANSWERS tham chiếu', default: '[]']
+  attachments "Array<emb_ASSIGNMENT_ATTACHMENTS>" [note: 'EMBED từ bảng ASSIGNMENT_ATTACHMENTS: chỉ là danh sách material_id đính kèm bài tập', default: '[]']
+
+  Note: 'Bài tập của lớp (tạo bằng AI hoặc thủ công), hạn nộp, quy định nộp muộn / nộp lại, thời điểm công bố bài và kết quả (UC26, BR-15, BR-17).'
+}
+
+Table ASSIGNMENT_SUBMISSIONS {
+  _id ObjectId [pk, note: 'Khóa chính bài nộp. -> Lý do UC26-UC27 cần: Định danh bài làm/nộp của một học sinh.']
+  assignment_id ObjectId [note: 'Liên kết bài tập. -> Lý do UC26-UC27 cần: Xác định bài nộp thuộc bài tập nào.']
+  student_user_id ObjectId [note: 'Học sinh thực hiện nộp bài. -> Lý do UC26-UC27 cần: Định danh học sinh thực hiện làm và nộp bài (UC27 Primary Actor).']
+  attempt_number Int32 [note: 'Số lần nộp / Phiên bản. -> Lý do UC27 cần: Lưu vết số lần nộp bài khi học sinh thực hiện nộp lại (UC27.A2).']
+  status assignment_submissions_status_enum [note: 'IN_PROGRESS, SUBMITTED, GRADED. -> Lý do UC26-UC27 cần: Theo dõi tiến trình bài nộp (Đang làm, Đã nộp, Đã chấm điểm công bố).']
+  timeliness assignment_submissions_timeliness_enum [note: 'ON_TIME, LATE. -> Lý do UC26-UC27 cần: Đánh dấu bài nộp đúng hạn hay trễ hạn dựa vào due_date (UC27 POST-1).']
+  provisional_score Double [null, note: 'Điểm tạm tính (Tự động chấm MCQ). -> Lý do UC26-UC27 cần: Lưu tổng điểm tạm thời do hệ thống tự động chấm các câu trắc nghiệm ngay khi nộp (UC27 Step 5).']
+  final_score Double [null, note: 'Điểm số chính thức. -> Lý do UC26-UC27 cần: Lưu tổng điểm cuối cùng sau khi gia sư hoàn tất chấm tự luận/file và công bố điểm (UC26 Step 9, UC27.A1).']
+  overall_feedback String [null, note: 'Nhận xét tổng quan của gia sư. -> Lý do UC26-UC27 cần: Lưu lời nhận xét tổng thể gia sư viết cho bài nộp của học sinh (UC26 Step 8, UC27.A1).']
+  submitted_at Date [note: 'Timestamp nộp bài. -> Lý do UC26-UC27 cần: Lưu thời điểm chính xác học sinh bấm "Submit" (UC27 POST-1).']
+  graded_at Date [null, note: 'Timestamp chấm điểm. -> Lý do UC26-UC27 cần: Ghi nhận thời điểm gia sư hoàn tất chấm bài.']
+  answers "Array<emb_SUBMISSION_ANSWERS>" [note: 'EMBED từ bảng SUBMISSION_ANSWERS: luôn đọc/chấm cùng bài nộp', default: '[]']
+
+  Note: 'Bài làm của học sinh cho một bài tập: lần nộp, trạng thái, điểm tạm tính (tự chấm trắc nghiệm), điểm cuối và nhận xét của gia sư (UC26, UC27).'
+}
+
+Table RECURRING_RULES {
+  _id ObjectId [pk, note: 'Khóa chính quy tắc lặp lịch. -> Lý do UC28 cần: Định danh cấu hình lặp lịch học tự động cho các buổi học cố định hàng tuần (UC28 Step 2).']
+  class_id ObjectId [note: 'Liên kết lớp học. -> Lý do UC28 cần: Xác định quy tắc lặp thuộc về lớp học nào.']
+  days_of_week "Array<String>" [note: 'Các ngày học trong tuần (vd: [\'MON\', \'WED\']). -> Lý do UC28 cần: Lưu danh sách các thứ trong tuần gia sư chọn để tự sinh chuỗi buổi học (UC28 Step 2).']
+  start_time String [note: 'Giờ bắt đầu cố định. -> Lý do UC28 cần: Khung giờ bắt đầu cho từng buổi học lặp.']
+  duration_minutes Int32 [note: 'Thời lượng buổi học (phút). -> Lý do UC28 cần: Dùng tính giờ kết thúc `end_time` cho từng buổi học lặp (UC28 Step 2).']
+  end_date Date [note: 'Ngày kết thúc lặp lịch. -> Lý do UC28 cần: Mốc thời gian dừng việc tự động tạo các buổi học lặp (UC28 Step 2).']
+
+  Note: 'Quy tắc lặp lịch học (các thứ trong tuần, giờ bắt đầu, thời lượng, ngày kết thúc), dùng để sinh các buổi học định kỳ (UC28).'
+}
+
+Table CLASS_SESSIONS {
+  _id ObjectId [pk, note: 'Khóa chính buổi học. -> Lý do UC28-UC32 cần: Định danh duy nhất từng buổi học đơn lẻ hoặc lặp (UC28, UC32), dùng để dời/hủy (UC28 A1, UC29, UC30) và điểm danh (UC28 A2).']
+  class_id ObjectId [note: 'Liên kết lớp học. -> Lý do UC28-UC32 cần: Lọc danh sách buổi học theo lớp (UC32 Step 2).']
+  tutor_profile_id ObjectId [note: 'Gia sư giảng dạy. -> Lý do UC28-UC32 cần: Kiểm tra xung đột lịch dạy của gia sư khi tạo hoặc dời lịch (UC28 Step 3, UC29 Step 4, UC30 Step 3, E1).']
+  rule_id ObjectId [null, note: 'Liên kết quy tắc lặp. -> Lý do UC28 cần: Tham chiếu đến quy tắc lặp gốc nếu buổi học được sinh ra tự động từ `RECURRING_RULES`.']
+  title String [note: 'Tiêu đề / Chủ đề buổi học. -> Lý do UC28-UC32 cần: Hiển thị tên/chủ đề buổi học trên giao diện Lịch SC13 (UC32 Step 3).']
+  start_time Date [note: 'Thời gian bắt đầu buổi học. -> Lý do UC28-UC32 cần: Hiển thị trên lịch (UC32), check điều kiện buổi học chưa diễn ra (UC29 PRE-2) và rule đổi lịch trước 12h (BR-14, UC29 E1).']
+  end_time Date [note: 'Thời gian kết thúc buổi học. -> Lý do UC28-UC32 cần: Xác định thời lượng buổi học để xếp lịch và kiểm tra xung đột thời gian (UC28 Step 3, UC29 Step 4).']
+  meeting_link String [null, note: 'Link học online hoặc địa điểm. -> Lý do UC28-UC32 cần: Lưu đường dẫn phòng học (Google Meet/Zoom) hoặc địa chỉ học trực tiếp (UC28 Step 2, UC32 Step 3).']
+  status class_sessions_status_enum [note: 'SCHEDULED, đã lên lịch CANCELLED, - đã hủy COMPLETED. -> Lý do UC28-UC32 cần: Quản lý trạng thái buổi học (Đã xếp lịch, Dời lịch, Hủy buổi, Hoàn thành) (UC28 A1, UC30 POST-1).']
+  created_at Date [note: 'Timestamp tạo buổi học. -> Lý do UC28-UC32 cần: Ghi nhận thời điểm buổi học được khởi tạo.']
+  updated_at Date [note: 'Timestamp cập nhật. -> Lý do UC28-UC32 cần: Ghi nhận thời điểm cập nhật thông tin buổi học (UC28 A1, UC30 Step 4).']
+  attendance "Array<emb_SESSION_ATTENDANCE>" [note: 'EMBED từ bảng SESSION_ATTENDANCE: số lượng giới hạn theo sĩ số lớp, ghi cùng buổi học', default: '[]']
+
+  indexes {
+    (class_id, start_time)
+    (tutor_profile_id, start_time) [note: 'check trùng lịch']
+  }
+
+  Note: 'Từng buổi học cụ thể của lớp: thời gian, link học online, trạng thái; sinh từ quy tắc lặp hoặc tạo lẻ (UC28, UC32, BR-14).'
+}
+
+Table SCHEDULE_CHANGE_REQUESTS {
+  _id ObjectId [pk, note: 'Khóa chính yêu cầu đổi lịch. -> Lý do UC29-UC30 cần: Định danh từng đơn xin dời hoặc hủy buổi học (UC29 Step 5).']
+  session_id ObjectId [note: 'Buổi học cần dời/hủy. -> Lý do UC29-UC30 cần: Xác định buổi học mục tiêu và kiểm tra tránh trùng lặp đơn PENDING (UC29 E2).']
+  requester_user_id ObjectId [note: 'Người gửi yêu cầu. -> Lý do UC29-UC30 cần: Định danh linh hoạt User (Học sinh, Phụ huynh hoặc Gia sư) thực hiện gửi yêu cầu dời/hủy lịch (UC29 Primary Actor).']
+  responder_user_id ObjectId [null, note: 'Người phản hồi yêu cầu. -> Lý do UC29-UC30 cần: Định danh linh hoạt User (Gia sư, Học sinh hoặc Phụ huynh) thực hiện duyệt/từ chối yêu cầu (UC30 Primary Actor).']
+  request_type schedule_change_requests_request_type_enum [note: 'MOVE, CANCEL. -> Lý do UC29-UC30 cần: Phân loại yêu cầu Dời lịch (`MOVE`) hay Hủy buổi (`CANCEL`) (UC29 Step 2).']
+  proposed_start_time Date [null, note: 'Giờ bắt đầu đề xuất. -> Lý do UC29-UC30 cần: Lưu thời gian mới do người gửi đề xuất khi dời lịch (UC29 Step 2, UC30 Step 1).']
+  proposed_end_time Date [null, note: 'Giờ kết thúc đề xuất. -> Lý do UC29-UC30 cần: Lưu giờ kết thúc mới do người gửi đề xuất (UC29 Step 2).']
+  reason String [note: 'Lý do xin đổi/hủy lịch. -> Lý do UC29-UC30 cần: Lưu lý do người dùng nhập để bên nhận xem xét (UC29 Step 2, UC30 Step 1).']
+  status schedule_change_requests_status_enum [note: 'PENDING, - chờ rep APPROVED, - đã đc accept REJECTED, - đã bị từ chối WITHDRAWN. -> Lý do UC29-UC30 cần: Theo dõi trạng thái đơn (PENDING khi tạo ở UC29 POST-1; APPROVED/REJECTED ở UC30; WITHDRAWN ở UC29 A1).']
+  response_comment String [null, note: 'Ghi chú/Lý do từ chối. -> Lý do UC30 cần: Lưu nhận xét từ chối hoặc lý do điều chỉnh thời gian của người phản hồi (UC30 Step 2, A1).']
+  responded_at Date [null, note: 'Timestamp phản hồi. -> Lý do UC30 cần: Ghi nhận thời điểm đơn được xử lý duyệt/từ chối.']
+  created_at Date [note: 'Timestamp tạo đơn. -> Lý do UC29 cần: Ghi nhận thời điểm gửi yêu cầu.']
+
+  Note: 'Yêu cầu đổi / hủy buổi học do học sinh hoặc phụ huynh gửi và phản hồi duyệt / từ chối của gia sư (UC29, UC30).'
+}
+
+Table SESSION_REMINDERS {
+  _id ObjectId [pk, note: 'Khóa chính nhắc lịch. -> Lý do UC28 cần: Định danh từng bản ghi thông báo nhắc lịch học tự động (UC28 Step 6).']
+  session_id ObjectId [note: 'Target session. -> Lý do UC28 cần: Xác định thông báo nhắc lịch thuộc về buổi học nào (UC28 Step 6).']
+  user_id ObjectId [note: 'Recipient user. -> Lý do UC28 cần: Định danh người dùng (Gia sư/Học sinh/Phụ huynh) nhận thông báo.']
+  channel session_reminders_channel_enum [note: 'EMAIL, SMS. -> Lý do UC28 cần: Phân loại kênh gửi: Email cho tất cả các gói; SMS dành riêng cho gia sư gói Pro (UC28 Step 6).']
+  trigger_time session_reminders_trigger_time_enum [note: 'BEFORE_24H, BEFORE_30M. -> Lý do UC28 cần: Quy định mốc thời gian phát tin nhắn nhắc nhở (Trước 24h và Trước 30p - UC28 Step 6).']
+  scheduled_for Date [note: 'Giờ lên lịch gửi tin. -> Lý do UC28 cần: Mốc thời gian tuyệt đối để hệ thống cron job quét và phát thông báo cực nhanh.']
+  status session_reminders_status_enum [note: 'PENDING, - chờ, chưa gửi SENT, - đã gửi FAILED. -> Lý do UC28 cần: Quản lý trạng thái tiến trình gửi tin nhắc lịch.']
+  sent_at Date [null, note: 'Timestamp phát tin. -> Lý do UC28 cần: Ghi nhận thời điểm tin nhắn được phát thành công.']
+
+  indexes {
+    (status, scheduled_for) [note: 'cron quét tin chờ gửi']
+  }
+
+  Note: 'Lịch nhắc buổi học gửi tới từng người qua email / SMS (24 giờ và 30 phút trước buổi học), kèm trạng thái gửi (UC28, BR-14).'
+}
+
+Table USER_CALENDAR_TOKENS {
+  _id ObjectId [pk, note: 'Khóa chính OAuth Token. -> Lý do UC28, UC31 cần: Quản lý thông tin kết nối Google Calendar API của người dùng (UC31 Step 4).']
+  user_id ObjectId [unique, note: 'User account. -> Lý do UC28, UC31 cần: Đảm bảo mỗi người dùng liên kết với 1 tài khoản Google Calendar (UC31 Step 4).']
+  provider String [note: 'GOOGLE_CALENDAR. -> Lý do UC31 cần: Định danh dịch vụ lịch bên thứ 3.']
+  access_token String [note: 'OAuth Access Token (Encrypted). -> Lý do UC28, UC31 cần: Lưu mã truy cập OAuth đã mã hóa để gọi Google Calendar API (UC28 Step 5, UC31 Step 4).']
+  refresh_token String [note: 'OAuth Refresh Token (Encrypted). -> Lý do UC28, UC31 cần: Lưu mã làm mới đã mã hóa để tự động gia hạn token khi hết hạn (UC31 POST-1).']
+  google_calendar_id String [note: 'Mã Google Calendar "TuConnector". -> Lý do UC31 cần: Lưu ID của lịch riêng "TuConnector" được tạo tự động trên Google Calendar để nhét sự kiện vào đúng ngăn tủ (UC31 Step 4).']
+  is_connected Boolean [note: 'Trạng thái kết nối. -> Lý do UC28, UC31 cần: Đánh dấu trạng thái đang kết nối (`Connected`) hoặc ngắt kết nối (`Disconnected`) (UC31 Step 5, A1).']
+  last_synced_at Date [null, note: 'Timestamp đồng bộ gần nhất. -> Lý do UC31 cần: Hiển thị thời gian đồng bộ thành công gần nhất trên màn hình SC13 (UC31 Step 5).']
+  expires_at Date [note: 'Timestamp hết hạn Token. -> Lý do UC31 cần: Kiểm tra thời hạn hiệu lực của Access Token.']
+
+  Note: 'Token OAuth kết nối Google Calendar của người dùng để đồng bộ lịch học. 1-1 với User (UC31).'
+}
+
+Table SESSION_CALENDAR_SYNC {
+  _id ObjectId [pk, note: 'Khóa chính sync event. -> Lý do UC28, UC30, UC31 cần: Quản lý việc đồng bộ từng buổi học sang Google Calendar của từng người dùng.']
+  session_id ObjectId [note: 'Synced session. -> Lý do UC28, UC30, UC31 cần: Xác định buổi học được đẩy lên Google Calendar (UC28 Step 5, UC30 Step 4, UC31 Step 4).']
+  user_id ObjectId [note: 'Target user. -> Lý do UC28, UC30, UC31 cần: Xác định tài khoản Google Calendar của ai nhận sự kiện.']
+  google_event_id String [null, note: 'ID sự kiện Google Calendar. -> Lý do UC28, UC30 cần: Lưu Event ID trả về từ Google API để tìm và cập nhật/xóa sự kiện khi dời/hủy giờ (UC28 Step 5, UC30 Step 4).']
+  sync_status session_calendar_sync_sync_status_enum [note: 'SYNCED, PENDING, FAILED. -> Lý do UC28, UC30 cần: Đánh dấu `SYNCED` thành công, hoặc `PENDING`/`FAILED` khi gặp lỗi token hết hạn hay sự cố kết nối API (UC28 E2, UC30 E2).']
+  last_error String [null, note: 'Thông báo lỗi đồng bộ. -> Lý do UC28, UC30 cần: Lưu vết chi tiết lỗi kết nối API để cảnh báo người dùng kết nối lại (UC28 E2, UC30 E2).']
+  synced_at Date [note: 'Timestamp sync. -> Lý do UC28, UC30, UC31 cần: Ghi nhận thời điểm sự kiện được đẩy lên Google Calendar thành công.']
+
+  Note: 'Trạng thái đồng bộ từng buổi học lên Google Calendar của từng người (event ID, lỗi gần nhất), dùng để cập nhật / xóa event khi lịch đổi (UC28, UC30, UC31).'
+}
+
+Table MESSAGES {
+  _id ObjectId [pk, note: 'Khóa chính tin nhắn. -> Lý do UC34 cần: Định danh duy nhất từng tin nhắn được gửi (UC34 Step 3, POST-1).']
+  conversation_id ObjectId [note: 'Liên kết phòng chat. -> Lý do UC34 cần: Định danh tin nhắn thuộc về cuộc trò chuyện nào.']
+  sender_user_id ObjectId [note: 'Người gửi tin nhắn. -> Lý do UC34 cần: Xác định tài khoản người dùng đã gửi tin nhắn (UC34 Step 3).']
+  message_type messages_message_type_enum [note: 'TEXT, IMAGE, FILE, CONTACT_CARD. -> Lý do UC34 cần: Phân loại nội dung tin nhắn (Văn bản, Hình ảnh, Tệp đính kèm hoặc Thẻ liên hệ Zalo/SĐT) (UC34 Step 3, A1).']
+  content String [null, note: 'Nội dung văn bản / thông tin SĐT/Zalo. -> Lý do UC34 cần: Lưu nội dung tin nhắn văn bản hoặc thông tin liên hệ khi chia sẻ Zalo/SĐT (UC34 Step 3, A1).']
+  created_at Date [note: 'POST-1: Timestamp gửi tin. -> Lý do UC34 cần: Ghi nhận thời gian gửi tin nhắn và phân trang tin nhắn (UC34 Step 2, POST-1).']
+  attachments "Array<emb_MESSAGE_ATTACHMENTS>" [note: 'EMBED từ bảng MESSAGE_ATTACHMENTS: luôn hiển thị cùng tin nhắn', default: '[]']
+
+  indexes {
+    (conversation_id, created_at) [note: 'phân trang tin nhắn']
+  }
+
+  Note: 'Tin nhắn trong một cuộc trò chuyện (văn bản, ảnh, file, tin hệ thống) (UC34).'
+}
+
+Table NOTIFICATIONS {
+  _id ObjectId [pk, note: 'Khóa chính thông báo. -> Lý do UC35 cần: Định danh duy nhất từng bản ghi thông báo gửi tới người dùng.']
+  recipient_user_id ObjectId [note: 'Người nhận thông báo. -> Lý do UC35 cần: Xác định tài khoản người dùng sở hữu thông báo để đếm badge số tin chưa đọc (UC35 Step 1).']
+  category notifications_category_enum [note: 'APPLICATION INVITATION, CONVERSATION, SESSION, SCHEDULE_CHANGE, ASSIGNMENT, SYSTEM. -> Lý do UC35 cần: Phân loại nhóm thông báo (Ứng tuyển (apply), Lời mời (inivitation), Chat, Buổi học, Đổi lịch, Bài tập, Hệ thống) (UC35 Description).']
+  title String [note: 'Tiêu đề thông báo. -> Lý do UC35 cần: Hiển thị dòng tiêu đề ngắn trên danh sách thông báo SC10.']
+  body String [note: 'Nội dung chi tiết thông báo. -> Lý do UC35 cần: Hiển thị tóm tắt nội dung thông báo trên bảng thông báo SC10.']
+  target_type notifications_target_type_enum [note: 'ASSIGNMENT, SESSION, CONVERSATION, CLASSROOM, CLASS_MATERIAL. -> Lý do UC35 cần: Định danh loại đối tượng liên quan để hệ thống thực hiện điều chuyển màn hình (Deep Link) khi bấm vào thông báo (UC35 Step 4).']
+  target_id ObjectId [note: 'ID đối tượng mục tiêu liên quan. -> Lý do UC35 cần: Lưu ID của đối tượng mục tiêu để hệ thống mở chính xác màn hình liên quan (UC35 Step 4) hoặc báo lỗi nếu đối tượng đã bị xóa (UC35 E1).']
+  is_read Boolean [default: false, note: 'Trạng thái đã đọc (Default: FALSE). -> Lý do UC35 cần: Dùng để tính số lượng thông báo chưa đọc (Unread badge count) và cập nhật thành TRUE khi người dùng bấm xem (UC35 Step 1, Step 4).']
+  read_at Date [null, note: 'Timestamp đã đọc. -> Lý do UC35 cần: Ghi nhận thời điểm người dùng mở xem thông báo.']
+  created_at Date [note: 'Timestamp tạo thông báo. -> Lý do UC35 cần: Ghi nhận thời điểm thông báo được sinh ra và sắp xếp thứ tự hiển thị mới nhất trên SC10.']
+  delivery_logs "Array<emb_NOTIFICATION_DELIVERY_LOGS>" [note: 'EMBED từ bảng NOTIFICATION_DELIVERY_LOGS: tối đa vài kênh (IN_APP/EMAIL/SMS) mỗi thông báo', default: '[]']
+
+  indexes {
+    (recipient_user_id, is_read, created_at) [note: 'badge chưa đọc + phân trang']
+  }
+
+  Note: 'Thông báo trong ứng dụng gửi tới người dùng (kết nối, lời mời, lịch học, bài tập, kết quả...), có trạng thái đã đọc và trỏ tới đối tượng liên quan (UC35).'
+}
+
+Table PARENT_CHILD_LINKS {
+  _id ObjectId [pk, note: 'Khóa chính liên kết Phụ huynh - Học sinh. -> Lý do UC37 / BR-13 cần: Định danh duy nhất bản ghi liên kết theo dõi giữa Phụ huynh và Học sinh (BR-13).']
+  parent_user_id ObjectId [note: 'Tham chiếu USERS (Role PARENT). -> Lý do UC37 / BR-13 cần: Định danh tài khoản Phụ huynh thực hiện theo dõi con (UC37 Primary Actor).']
+  student_user_id ObjectId [note: 'Tham chiếu USERS (Role STUDENT). -> Lý do UC37 / BR-13 cần: Định danh tài khoản Học sinh được Phụ huynh liên kết (UC37 Step 1).']
+  status parent_child_links_status_enum [note: 'PENDING, ACCEPTED, DECLINED. -> Lý do UC37 / BR-13 cần: Quản lý quy trình liên kết (PENDING khi vừa gửi lời mời ở UC37 A1, ACCEPTED khi học sinh đồng ý, DECLINED khi học sinh từ chối ở UC37 E1).']
+  created_at Date [note: 'Timestamp tạo lời mời. -> Lý do UC37 / BR-13 cần: Ghi nhận thời điểm Phụ huynh gửi yêu cầu liên kết.']
+  updated_at Date [note: 'Timestamp cập nhật trạng thái. -> Lý do UC37 / BR-13 cần: Ghi nhận thời điểm Học sinh chấp nhận hoặc từ chối yêu cầu.']
+
+  indexes {
+    (parent_user_id, student_user_id) [unique]
+  }
+
+  Note: 'Liên kết giữa tài khoản phụ huynh và tài khoản học sinh. Phụ huynh gửi yêu cầu, học sinh chấp nhận hoặc từ chối; dùng để phụ huynh theo dõi tiến độ của con (UC24 A1, UC37).'
+}
+
+Table ADMIN_AUDIT_LOGS {
+  _id ObjectId [pk, note: 'Khóa chính nhật ký Admin. -> Lý do UC40 cần: Định danh bản ghi nhật ký thao tác kiểm duyệt của Admin (BR-20).']
+  admin_user_id ObjectId [note: 'Admin thực hiện kiểm duyệt. -> Lý do UC40 cần: Truy vết tài khoản Admin thực hiện Hide/Remove nội dung hoặc Warn/Lock user (BR-20).']
+  target_user_id ObjectId [null, note: 'Tài khoản vi phạm bị tác động. -> Lý do UC40 cần: Định danh người dùng bị Admin cảnh báo hoặc khóa tài khoản do vi phạm nhiều lần (UC40 Step 3, A1).']
+  action admin_audit_logs_action_enum [note: 'MODERATE_CONTENT, WARN_USER, LOCK_USER. UNLOCK_USER UPDATE_PLAN UPDATE_SETTINGS -> Lý do UC40 cần: Phân loại hành động kiểm duyệt (Duyệt/Ẩn/Xóa nội dung, Cảnh báo, Khóa tài khoản) (BR-20).']
+  reason String [null, note: 'Lý do và ghi chú xử lý. -> Lý do UC40 cần: Lưu lý do kiểm duyệt để đối soát hậu kiểm (BR-20).']
+  details_json Object [null, note: 'Chi tiết nội dung vi phạm. -> Lý do UC40 cần: Lưu snapshot nội dung vi phạm trước khi bị ẩn/xóa để làm bằng chứng (BR-20).']
+  ip_address String [null, note: 'Địa chỉ IP của Admin. -> Lý do UC39 cần: Ghi nhận IP mạng thực hiện hành động để đảm bảo an ninh hệ thống (BR-20).']
+  created_at Date [note: 'Timestamp ghi log audit. -> Lý do UC40 cần: Ghi nhận mốc thời gian diễn ra hành động kiểm duyệt (POST-1, BR-20).']
+
+  Note: 'Nhật ký mọi hành động của Admin (khóa tài khoản, xử lý nội dung, đổi cấu hình) kèm lý do và chi tiết để truy vết (BR-20, UC39–UC41).'
+}
+
+Table CONTENT_REPORTS {
+  _id ObjectId [pk, note: 'Mã định danh duy nhất của mỗi báo cáo vi phạm (PK). Bảng dùng chung cho mọi loại báo cáo: bài đăng, yêu cầu, đánh giá, tin nhắn, người dùng, lớp học (UC34 A3, UC40).']
+  reporter_user_id ObjectId [note: 'Người gửi báo cáo (FK → User).']
+  target_type content_reports_target_type_enum [note: 'Loại đối tượng bị báo cáo: POST, REQUEST, REVIEW, MESSAGE, USER, CLASSROOM. Báo cáo tin nhắn (UC34 A3) dùng MESSAGE.']
+  target_id ObjectId [note: 'ID của đối tượng bị báo cáo, ứng với target_type (VD: target_type = MESSAGE thì target_id = message_id). Không đặt FK vì trỏ tới nhiều bảng khác nhau.']
+  reason String [note: 'Lý do báo cáo do người dùng nhập hoặc lý do hệ thống gắn khi tự flag (VD: "Chứa số điện thoại", "Ngôn từ xúc phạm").']
+  severity content_reports_severity_enum [note: 'Mức độ nghiêm trọng: LOW, MEDIUM, HIGH, CRITICAL. Dùng để sắp xếp hàng chờ cho Admin xử lý (UC40 bước 1: liệt kê theo loại và mức độ).']
+  status content_reports_status_enum [note: 'Trạng thái xử lý: PENDING (mới tạo) → INVESTIGATING (Admin đang xem) → RESOLVED (đã xử lý) hoặc DISMISSED (báo cáo không hợp lệ, bỏ qua).']
+  action_taken content_reports_action_taken_enum [null, note: 'Hành động Admin đã thực hiện: NONE, WARNING_SENT, CONTENT_HIDDEN, CONTENT_REMOVED, USER_BANNED. NULL khi chưa xử lý.']
+  admin_note String [null, note: 'Ghi chú / lý do của Admin khi xử lý. Bắt buộc nhập khi xử lý theo BR-20 (mọi hành động của Admin phải có lý do).']
+  resolved_by_admin_id ObjectId [null, note: 'Admin đã xử lý báo cáo (FK → User, Nullable). Dùng để truy vết ai xử lý, kết hợp với ADMIN_AUDIT_LOGS.']
+  resolved_at Date [null, note: 'Thời điểm báo cáo được xử lý xong (RESOLVED hoặc DISMISSED). NULL khi chưa xử lý.']
+  created_at Date [note: 'Thời điểm báo cáo được tạo.']
+
+  indexes {
+    (status, severity)
+    (target_type, target_id)
+  }
+
+  Note: 'Báo cáo vi phạm dùng chung cho mọi loại nội dung (bài đăng, yêu cầu, đánh giá, tin nhắn, người dùng, lớp học), do người dùng gửi hoặc hệ thống tự flag, kèm kết quả xử lý của Admin (UC34 A3, UC40, BR-22).'
+}
+
+Table emb_EXPERIENCES {
+  title String [not null, note: 'Chức danh công việc hoặc tiêu đề công việc gia sư (Job or tutoring title).']
+  company String [null, note: 'Nơi làm việc, trung tâm hoặc hình thức Freelance.']
+  start_date Date [null, note: 'Mốc thời gian bắt đầu và kết thúc công việc.']
+  end_date Date [null, note: 'Mốc thời gian bắt đầu và kết thúc công việc.']
+
+  Note: 'Subdocument nhúng trong TUTOR_PROFILES.experiences (mảng). Bảng gốc: EXPERIENCES. Lý do embed: luôn đọc cùng hồ sơ gia sư, số lượng ít.'
+}
+
+Table emb_ACHIEVEMENTS {
+  title String [not null, note: 'Tên thành tích / giải thưởng (VD: "Giải Nhất HSG Toán cấp Tỉnh 2022", "IELTS 8.0"). Bắt buộc nhập vì là thông tin chính hiển thị cho phụ huynh.']
+  description String [null, note: 'Mô tả chi tiết thêm về thành tích (năm đạt, đơn vị cấp, ý nghĩa...). Không bắt buộc nên để NULLABLE.']
+
+  Note: 'Subdocument nhúng trong TUTOR_PROFILES.achievements (mảng). Bảng gốc: ACHIEVEMENTS. Lý do embed: luôn đọc cùng hồ sơ gia sư, số lượng ít.'
+}
+
+Table emb_EDUCATIONS {
+  school String [not null, note: 'Tên trường Đại học, Cao đẳng hoặc cơ sở giáo dục mà user từng hoặc đang theo học.']
+  degree String [null, note: 'Bằng cấp hoặc chuyên ngành đạt được (Ví dụ: Cử nhân CNTT, Thạc sĩ Toán học...).']
+  graduation_year Int32 [null, note: 'Năm tốt nghiệp. Có thể để năm trong tương lai (Ví dụ: dự kiến 2027) đối với sinh viên đang học đại học.']
+  description String [null, note: 'Đôi lời chia sẻ, thành tích hoặc mô tả thêm về quá trình học tập tại trường đó.']
+
+  Note: 'Subdocument nhúng trong TUTOR_PROFILES.educations (mảng). Bảng gốc: EDUCATIONS. Lý do embed: luôn đọc cùng hồ sơ gia sư, số lượng ít.'
+}
+
+Table emb_SUBSCRIPTIONS {
+  plan_id ObjectId [note: 'Gói cước hiện tại. -> Lý do UC19/UC20 cần: Liên kết đến gói Free/Pro đang hoạt động để hiển thị trạng thái và quyền lợi (UC19, UC20).']
+  status subscriptions_status_enum [note: 'ACTIVE - còn hạn EXPIRED, - đã hết hạn  -> Lý do UC19/UC20 cần: Kiểm tra hiệu lực gói cước để áp dụng quyền lợi hoặc chuyển về Free.']
+  expires_at Date [note: 'Ngày hết hạn gói (A1). -> Lý do UC19/UC20 cần: Hiển thị ngày gia hạn/hết hạn trên màn hình SC12 (UC20) và phục vụ nhắc nhở gia hạn tự động (UC19 A1).']
+  ai_quota_used Int32 [note: 'Số lượt AI đã xài. -> Lý do UC19/UC20 cần: Theo dõi dung lượng AI đã dùng trong chu kỳ để hiển thị quota AI còn lại ở UC20 bước 1.']
+  ai_quota_reset_at Date [note: 'Mốc thời gian reset AI. -> Lý do UC19/UC20 cần: Quản lý thời điểm làm mới bộ đếm AI theo chu kỳ gói.']
+  start_date Date [note: 'Ngày bắt đầu gói. -> Lý do UC19/UC20 cần: Lưu mốc kích hoạt chu kỳ hiện tại.']
+  created_at Date [note: 'Timestamp tạo subscription. -> Lý do UC19/UC20 cần: Lưu vết thời điểm tạo bản ghi đăng ký gói.']
+
+  Note: 'Subdocument nhúng trong User.subscription (object). Bảng gốc: SUBSCRIPTIONS. Chỉ lưu gói hiện tại của người dùng (gia sư hoặc phụ huynh); lịch sử mua gói xem ở PAYMENT_ORDERS.'
+}
+
+Table emb_GOOGLE_ACCOUNTS {
+  google_id String [not null, note: 'ID định danh vĩnh viễn của tài khoản Google (sub). Unique index trên User.google_account.google_id.']
+  google_email String [not null, note: 'Lưu xem nó đăng nhập bằng tài khoản Google gì, email cụ thể là gì để phục vụ việc hiển thị và đối soát xác thực. Lúc nó vào còn biết nó là thk nào :)))']
+
+  Note: 'Subdocument nhúng trong User.google_account (object). Bảng gốc: GOOGLE_ACCOUNTS. Lý do embed: 1-1 với User; unique index trên google_account.google_id.'
+}
+
+Table emb_USER_CREDITS {
+  balance Int32 [note: 'Deducted by 1 on apply (POST-1, E1) -> Lý do UC15 cần: Kiểm tra xem gia sư còn đủ ít nhất 1 credit không trước khi cho phép mở chat, đồng thời trừ 1 credit khi phụ huynh bấm "apply to request" (POST-1, E1).']
+  updated_at Date [note: 'Thời điểm cập nhật số dư gần nhất.']
+
+  Note: 'Subdocument nhúng trong User.credit_wallet (object). Bảng gốc: USER_CREDITS. Lý do embed: 1-1 với User; trừ/cộng bằng $inc nguyên tử trên credit_wallet.balance.'
+}
+
+Table emb_NOTIFICATION_PREFERENCES {
+  enable_in_app Boolean [default: true, note: 'Bật/Tắt thông báo In-app (Default: TRUE). -> Lý do UC35 cần: Cấu hình cho phép hiển thị thông báo ứng dụng thời gian thực hay không (UC35 A1).']
+  enable_email Boolean [default: true, note: 'Bật/Tắt thông báo qua Email (Default: TRUE). -> Lý do UC35 cần: Cấu hình cho phép gửi thông báo qua Email hay không (UC35 A1).']
+  enable_sms Boolean [default: false, note: 'Bật/Tắt thông báo qua SMS (Default: FALSE). -> Lý do UC35 cần: Cấu hình gửi thông báo qua SMS dành riêng cho lớp học của Gia sư dùng gói Pro (UC35 A1, A2).']
+  notify_on_sessions Boolean [note: 'Cấu hình thông báo Lịch học & Đổi lịch. -> Lý do UC35 cần: Cho phép người dùng bật/tắt nhận thông báo liên quan tới lịch học và dời/hủy buổi học (UC35 A1).']
+  notify_on_assignments Boolean [note: 'Cấu hình thông báo Bài tập & Điểm số. -> Lý do UC35 cần: Cho phép người dùng bật/tắt nhận thông báo về bài tập mới hoặc kết quả chấm điểm (UC35 A1).']
+  notify_on_messages Boolean [note: 'Cấu hình thông báo Tin nhắn Chat. -> Lý do UC35 cần: Cho phép người dùng bật/tắt nhận thông báo cuộc trò chuyện mới.']
+  updated_at Date [note: 'Timestamp cập nhật cài đặt. -> Lý do UC35 cần: Ghi nhận thời gian người dùng thay đổi cài đặt thông báo gần nhất.']
+
+  Note: 'Subdocument nhúng trong User.notification_preferences (object). Bảng gốc: NOTIFICATION_PREFERENCES. Lý do embed: 1-1 với User, luôn đọc khi gửi thông báo.'
+}
+
+Table emb_STUDENTS {
+  full_name String [note: 'tên của học sinh']
+  grade_level String [note: 'lớp học sinh đang học']
+
+  Note: 'Subdocument nhúng trong User.student_profile (object). Bảng gốc: STUDENTS. Lý do embed: 1-1 với User (role STUDENT); quan hệ phụ huynh lấy từ PARENT_CHILD_LINKS.'
+}
+
+Table emb_ASSIGNMENT_QUESTIONS {
+  _id ObjectId [note: 'Khóa chính câu hỏi. -> Lý do UC26-UC27 cần: Định danh duy nhất từng câu hỏi trong bài tập.']
+  question_number Int32 [note: 'Thứ tự câu hỏi. -> Lý do UC26-UC27 cần: Sắp xếp thứ tự các câu hỏi hiển thị cho học sinh (SC39).']
+  question_type assignment_questions_question_type_enum [note: 'MULTIPLE_CHOICE, SHORT_ANSWER, FILE_UPLOAD. -> Lý do UC26-UC27 cần: Xác định dạng câu hỏi (Trắc nghiệm, Tự luận ngắn, Upload file) để kích hoạt giao diện nhập/chấm tương ứng (UC26 Step 2, UC27 Step 2).']
+  content String [note: 'Nội dung đề bài / câu hỏi. -> Lý do UC26-UC27 cần: Lưu nội dung đề bài (được sinh bởi AI hoặc gia sư tự nhập ở UC26 Step 5).']
+  options "Array<String>" [null, note: 'Các lựa chọn cho câu trắc nghiệm. -> Lý do UC26-UC27 cần: Lưu danh sách đáp án A, B, C, D cho dạng câu MULTIPLE_CHOICE.']
+  correct_answer String [null, note: 'Đáp án đúng cho câu trắc nghiệm. -> Lý do UC26-UC27 cần: Làm căn cứ chấm điểm tự động cho các câu trắc nghiệm (UC26 Step 5, E2, UC27 Step 5).']
+  points Int32 [note: 'Điểm của câu hỏi. -> Lý do UC26-UC27 cần: Lưu thang điểm chi tiết cho từng câu hỏi trong bài tập.']
+
+  Note: 'Subdocument nhúng trong ASSIGNMENTS.questions (mảng). Bảng gốc: ASSIGNMENT_QUESTIONS. Lý do embed: luôn đọc cùng bài tập; giữ _id để SUBMISSION_ANSWERS tham chiếu.'
+}
+
+Table emb_ASSIGNMENT_ATTACHMENTS {
+  material_id ObjectId [note: 'Liên kết tài liệu đính kèm. -> Lý do UC25-UC26 cần: Xác định tài liệu học tập được chọn để đính kèm vào bài tập.']
+
+  Note: 'Subdocument nhúng trong ASSIGNMENTS.attachments (mảng). Bảng gốc: ASSIGNMENT_ATTACHMENTS. Lý do embed: chỉ là danh sách material_id đính kèm bài tập.'
+}
+
+Table emb_SUBMISSION_ANSWERS {
+  question_id ObjectId [note: 'Liên kết câu hỏi. -> Lý do UC26-UC27 cần: Xác định câu trả lời dành cho câu hỏi nào.']
+  text_response String [null, note: 'Nội dung câu trả lời (MCQ / Tự luận). -> Lý do UC26-UC27 cần: Lưu lựa chọn trắc nghiệm hoặc văn bản học sinh nhập cho câu tự luận ngắn (UC27 Step 2).']
+  file_url String [null, note: 'URL file tải lên cho câu FILE_UPLOAD. -> Lý do UC26-UC27 cần: Lưu đường dẫn file đính kèm nếu câu hỏi yêu cầu upload file bài làm (UC27 Step 2, BR-16).']
+  file_size Int32 [null, note: 'Dung lượng file bài làm (bytes). -> Lý do UC27 cần: Kiểm tra kích thước file nộp bài theo quy định BR-16 (UC27 E2).']
+  score Double [null, note: 'Điểm số đạt được cho câu hỏi. -> Lý do UC26-UC27 cần: Lưu điểm của từng câu (tự động chấm cho MCQ hoặc do gia sư nhập tay ở UC26 Step 8).']
+  is_auto_graded Boolean [note: 'Cờ chấm tự động. -> Lý do UC26-UC27 cần: Đánh dấu câu hỏi được chấm tự động bởi hệ thống (MCQ).']
+  is_overridden Boolean [note: 'Cờ gia sư ghi đè điểm tự động. -> Lý do UC26 cần: Đánh dấu nếu gia sư can thiệp chỉnh sửa lại điểm câu trắc nghiệm đã tự động chấm (UC26.A2).']
+  comment String [null, note: 'Nhận xét từng câu của gia sư. -> Lý do UC26-UC27 cần: Lưu nhận xét riêng của gia sư cho từng câu hỏi hoặc lý do ghi đè điểm (UC26.A2, UC27.A1).']
+
+  Note: 'Subdocument nhúng trong ASSIGNMENT_SUBMISSIONS.answers (mảng). Bảng gốc: SUBMISSION_ANSWERS. Lý do embed: luôn đọc/chấm cùng bài nộp.'
+}
+
+Table emb_MESSAGE_ATTACHMENTS {
+  file_url String [note: 'URL lưu trữ file trên Cloud Storage. -> Lý do UC34 cần: Lưu đường dẫn file đính kèm sau khi upload để hiển thị cho người nhận (UC34 Step 4).']
+  file_name String [note: 'Tên file gốc. -> Lý do UC34 cần: Hiển thị tên tệp đính kèm trên giao diện tin nhắn.']
+  file_size Int32 [note: 'Dung lượng file (bytes). -> Lý do UC34 cần: Kiểm tra giới hạn dung lượng tệp tải lên theo quy định BR-16.']
+  mime_type String [note: 'Định dạng MIME của file. -> Lý do UC34 cần: Xác định loại tệp để hiển thị preview phù hợp (ảnh, pdf, docx...).']
+
+  Note: 'Subdocument nhúng trong MESSAGES.attachments (mảng). Bảng gốc: MESSAGE_ATTACHMENTS. Lý do embed: luôn hiển thị cùng tin nhắn.'
+}
+
+Table emb_RECEIPTS {
+  receipt_url String [note: 'Đường dẫn URL biên lai (PDF/Image). -> Lý do UC19/UC20 cần: Cho phép gia sư bấm vào xem hoặc tải về biên lai thanh toán trong lịch sử (UC20 bước 4, A1).']
+  created_at Date [note: 'Timestamp xuất biên lai. -> Lý do UC19/UC20 cần: Lưu mốc thời gian phát hành chứng từ biên lai (UC19 POST-1).']
+
+  Note: 'Subdocument nhúng trong PAYMENT_ORDERS.receipt (object). Bảng gốc: RECEIPTS. Lý do embed: 1-1 với đơn hàng.'
+}
+
+Table emb_SESSION_ATTENDANCE {
+  student_user_id ObjectId [note: 'Học sinh được điểm danh. -> Lý do UC28 cần: Xác định học sinh được gia sư đánh giá chuyên cần (UC28.A2).']
+  status session_attendance_status_enum [note: 'PRESENT, ABSENT, LATE. -> Lý do UC28 cần: Lưu trạng thái đi học (Có mặt, Vắng mặt, Đi trễ) để đổ dữ liệu thống kê lên Dashboard (UC28.A2).']
+  comment String [null, note: 'Ghi chú điểm danh. -> Lý do UC28 cần: Lưu lý do vắng hoặc ghi chú thêm của gia sư khi điểm danh (UC28.A2).']
+  marked_at Date [note: 'Timestamp thực hiện điểm danh. -> Lý do UC28 cần: Ghi nhận mốc thời gian gia sư chốt điểm danh.']
+
+  Note: 'Subdocument nhúng trong CLASS_SESSIONS.attendance (mảng). Bảng gốc: SESSION_ATTENDANCE. Lý do embed: số lượng giới hạn theo sĩ số lớp, ghi cùng buổi học.'
+}
+
+Table emb_CONVERSATION_READ_STATES {
+  user_id ObjectId [note: 'Người dùng đã đọc. -> Lý do UC34 cần: Định danh người dùng đã đọc tin nhắn.']
+  last_read_message_id ObjectId [note: 'ID tin nhắn cuối cùng đã đọc. -> Lý do UC34 cần: Lưu ID của tin nhắn cuối cùng mà người dùng đã xem; mọi tin nhắn có ID nhỏ hơn hoặc bằng tin này đều coi như đã đọc (UC34 Step 5).']
+  read_at Date [note: 'Timestamp xem tin nhắn cuối. -> Lý do UC34 cần: Ghi nhận thời điểm người dùng xem tin nhắn gần nhất (UC34 Step 5).']
+
+  Note: 'Subdocument nhúng trong CONVERSATIONS.read_states (mảng). Bảng gốc: CONVERSATION_READ_STATES. Lý do embed: mỗi phòng chat ít người; cập nhật bằng $set read_states.$.'
+}
+
+Table emb_MATERIAL_TOPICS {
+  _id ObjectId [note: 'Khóa chính thư mục/chủ đề tài liệu. -> Lý do UC25 cần: Định danh từng thư mục phân loại tài liệu trong lớp học.']
+  name String [note: 'Tên thư mục tài liệu (vd: Chapter 1). -> Lý do UC25 cần: Lưu tên thư mục do gia sư đặt để sắp xếp tài liệu học tập.']
+  created_at Date [note: 'Timestamp tạo thư mục. -> Lý do UC25 cần: Ghi nhận thời gian khởi tạo thư mục.']
+
+  Note: 'Subdocument nhúng trong CLASSROOMS.topics (mảng). Bảng gốc: MATERIAL_TOPICS. Lý do embed: ít thư mục mỗi lớp; giữ _id để CLASS_MATERIALS.topic_id tham chiếu.'
+}
+
+Table emb_NOTIFICATION_DELIVERY_LOGS {
+  recipient_user_id ObjectId [note: 'Người nhận. -> Lý do UC35 cần: Xác định địa chỉ email hoặc SĐT người nhận.']
+  channel notification_delivery_logs_channel_enum [note: 'IN_APP, EMAIL, SMS. -> Lý do UC35 cần: Phân loại kênh phát thông báo (In-app, Email hay SMS) (UC35 Description, A2).']
+  status notification_delivery_logs_status_enum [note: 'PENDING, SENT, FAILED, FALLBACK_EMAIL. -> Lý do UC35 cần: Quản lý trạng thái tiến trình gửi (Thành công, Thất bại hoặc Chuyển sang gửi Email dự phòng khi SMS gửi lỗi - UC35 E2).']
+  error_message String [null, note: 'Thông báo lỗi gửi tin. -> Lý do UC35 cần: Lưu nguyên nhân thất bại khi gửi SMS/Email để kiểm tra và xử lý ngoại lệ (UC35 E2).']
+  dispatched_at Date [note: 'Timestamp phát tin. -> Lý do UC35 cần: Ghi nhận mốc thời gian hệ thống phát thông báo qua nhà mạng SMS hoặc Email Service.']
+
+  Note: 'Subdocument nhúng trong NOTIFICATIONS.delivery_logs (mảng). Bảng gốc: NOTIFICATION_DELIVERY_LOGS. Lý do embed: tối đa vài kênh (IN_APP/EMAIL/SMS) mỗi thông báo.'
+}
+
+// ===== References (ObjectId ref) =====
+Ref: EMAIL_VERIFICATION_TOKENS.user_id > User._id
+Ref: USER_SESSIONS.user_id > User._id
+Ref: PASSWORD_RESET_TOKENS.user_id > User._id
+Ref: TUTOR_PROFILES.user_id - User._id
+Ref: SAVED_SEARCHES.user_id > User._id
+Ref: REVIEWS.tutor_profile_id > TUTOR_PROFILES._id
+Ref: REVIEWS.agreement_id - TUTORING_AGREEMENTS._id
+Ref: REVIEWS.parent_user_id > User._id
+Ref: TUTOR_POSTS.profile_id > TUTOR_PROFILES._id
+Ref: PARENT_REQUESTS.parent_user_id > User._id
+Ref: AI_SUGGESTIONS.request_id > PARENT_REQUESTS._id
+Ref: AI_SUGGESTIONS.tutor_post_id > TUTOR_POSTS._id
+Ref: AI_SUGGESTIONS.tutor_profile_id > TUTOR_PROFILES._id
+Ref: CONVERSATIONS.parent_user_id > User._id
+Ref: CONVERSATIONS.tutor_profile_id > TUTOR_PROFILES._id
+Ref: CONVERSATIONS.request_id > PARENT_REQUESTS._id
+Ref: CONVERSATIONS.class_id - CLASSROOMS._id
+Ref: APPLY_REQUESTS.request_id > PARENT_REQUESTS._id
+Ref: APPLY_REQUESTS.tutor_profile_id > TUTOR_PROFILES._id
+Ref: BOOKMARKED_REQUESTS.tutor_profile_id > TUTOR_PROFILES._id
+Ref: BOOKMARKED_REQUESTS.request_id > PARENT_REQUESTS._id
+Ref: AI_POST_SUGGESTIONS.tutor_profile_id > TUTOR_PROFILES._id
+Ref: AI_POST_SUGGESTIONS.request_id > PARENT_REQUESTS._id
+Ref: TUTOR_INVITATIONS.parent_user_id > User._id
+Ref: TUTOR_INVITATIONS.tutor_profile_id > TUTOR_PROFILES._id
+Ref: TUTOR_INVITATIONS.request_id > PARENT_REQUESTS._id
+Ref: TUTORING_AGREEMENTS.conversation_id > CONVERSATIONS._id
+Ref: TUTORING_AGREEMENTS.proposer_user_id > User._id
+Ref: TUTORING_AGREEMENTS.accepted_by_user_id > User._id
+Ref: emb_SUBSCRIPTIONS.plan_id > PLANS._id
+Ref: PAYMENT_ORDERS.user_id > User._id
+Ref: PAYMENT_ORDERS.plan_id > PLANS._id
+Ref: PAYMENT_ORDERS.pack_id > CREDIT_PACKS._id
+Ref: CREDIT_TRANSACTIONS.user_id > User._id
+Ref: CREDIT_TRANSACTIONS.related_apply_id > APPLY_REQUESTS._id
+Ref: CREDIT_TRANSACTIONS.related_invitation_id > TUTOR_INVITATIONS._id
+Ref: CLASSROOMS.tutor_profile_id > TUTOR_PROFILES._id
+Ref: CLASSROOMS.agreement_id > TUTORING_AGREEMENTS._id
+Ref: CLASS_MEMBERS.class_id > CLASSROOMS._id
+Ref: CLASS_MEMBERS.user_id > User._id
+Ref: CLASS_ANNOUNCEMENTS.class_id > CLASSROOMS._id
+Ref: CLASS_ANNOUNCEMENTS.author_profile_id > TUTOR_PROFILES._id
+Ref: CLASS_MATERIALS.class_id > CLASSROOMS._id
+Ref: CLASS_MATERIALS.topic_id > emb_MATERIAL_TOPICS._id
+Ref: CLASS_MATERIALS.uploader_profile_id > TUTOR_PROFILES._id
+Ref: emb_ASSIGNMENT_ATTACHMENTS.material_id > CLASS_MATERIALS._id
+Ref: ASSIGNMENTS.class_id > CLASSROOMS._id
+Ref: ASSIGNMENTS.creator_profile_id > TUTOR_PROFILES._id
+Ref: ASSIGNMENT_SUBMISSIONS.assignment_id > ASSIGNMENTS._id
+Ref: ASSIGNMENT_SUBMISSIONS.student_user_id > User._id
+Ref: emb_SUBMISSION_ANSWERS.question_id > emb_ASSIGNMENT_QUESTIONS._id
+Ref: RECURRING_RULES.class_id > CLASSROOMS._id
+Ref: CLASS_SESSIONS.class_id > CLASSROOMS._id
+Ref: CLASS_SESSIONS.tutor_profile_id > TUTOR_PROFILES._id
+Ref: CLASS_SESSIONS.rule_id > RECURRING_RULES._id
+Ref: emb_SESSION_ATTENDANCE.student_user_id > User._id
+Ref: SCHEDULE_CHANGE_REQUESTS.session_id > CLASS_SESSIONS._id
+Ref: SCHEDULE_CHANGE_REQUESTS.requester_user_id > User._id
+Ref: SCHEDULE_CHANGE_REQUESTS.responder_user_id > User._id
+Ref: SESSION_REMINDERS.session_id > CLASS_SESSIONS._id
+Ref: SESSION_REMINDERS.user_id > User._id
+Ref: USER_CALENDAR_TOKENS.user_id - User._id
+Ref: SESSION_CALENDAR_SYNC.session_id > CLASS_SESSIONS._id
+Ref: SESSION_CALENDAR_SYNC.user_id > User._id
+Ref: MESSAGES.conversation_id > CONVERSATIONS._id
+Ref: MESSAGES.sender_user_id > User._id
+Ref: emb_CONVERSATION_READ_STATES.user_id > User._id
+Ref: emb_CONVERSATION_READ_STATES.last_read_message_id > MESSAGES._id
+Ref: NOTIFICATIONS.recipient_user_id > User._id
+Ref: emb_NOTIFICATION_DELIVERY_LOGS.recipient_user_id > User._id
+Ref: PARENT_CHILD_LINKS.parent_user_id > User._id
+Ref: PARENT_CHILD_LINKS.student_user_id > User._id
+Ref: ADMIN_AUDIT_LOGS.admin_user_id > User._id
+Ref: ADMIN_AUDIT_LOGS.target_user_id > User._id
+Ref: CONTENT_REPORTS.reporter_user_id > User._id
+Ref: CONTENT_REPORTS.resolved_by_admin_id > User._id
+Ref: PARENT_REQUESTS.student_id > User._id
+
+// ===== Nhóm collection cha + subdocument nhúng =====
+TableGroup tutor_profiles_doc {
+  TUTOR_PROFILES
+  emb_EXPERIENCES
+  emb_ACHIEVEMENTS
+  emb_EDUCATIONS
+}
+
+TableGroup user_doc {
+  User
+  emb_GOOGLE_ACCOUNTS
+  emb_USER_CREDITS
+  emb_NOTIFICATION_PREFERENCES
+  emb_STUDENTS
+  emb_SUBSCRIPTIONS
+}
+
+TableGroup assignments_doc {
+  ASSIGNMENTS
+  emb_ASSIGNMENT_QUESTIONS
+  emb_ASSIGNMENT_ATTACHMENTS
+}
+
+TableGroup assignment_submissions_doc {
+  ASSIGNMENT_SUBMISSIONS
+  emb_SUBMISSION_ANSWERS
+}
+
+TableGroup messages_doc {
+  MESSAGES
+  emb_MESSAGE_ATTACHMENTS
+}
+
+TableGroup payment_orders_doc {
+  PAYMENT_ORDERS
+  emb_RECEIPTS
+}
+
+TableGroup class_sessions_doc {
+  CLASS_SESSIONS
+  emb_SESSION_ATTENDANCE
+}
+
+TableGroup conversations_doc {
+  CONVERSATIONS
+  emb_CONVERSATION_READ_STATES
+}
+
+TableGroup classrooms_doc {
+  CLASSROOMS
+  emb_MATERIAL_TOPICS
+}
+
+TableGroup notifications_doc {
+  NOTIFICATIONS
+  emb_NOTIFICATION_DELIVERY_LOGS
+}
+

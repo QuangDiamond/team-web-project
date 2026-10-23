@@ -1,0 +1,80 @@
+[
+  {
+    "_id": {
+      "$oid": "1bef1155471eff19914325ad"
+    },
+    "target_role": "TUTOR",
+    "name": "FREE_DEFAULT",
+    "monthly_price": {
+      "$numberDecimal": "0"
+    },
+    "monthly_credits": {
+      "$numberInt": "5"
+    },
+    "ai_quota": {
+      "$numberInt": "10"
+    },
+    "sms_reminders_enabled": false,
+    "is_active": true,
+    "max_classrooms": {
+      "$numberInt": "1"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "57d94341621103294eababa8"
+    },
+    "target_role": "TUTOR",
+    "name": "PRO",
+    "monthly_price": {
+      "$numberDecimal": "199000"
+    },
+    "monthly_credits": {
+      "$numberInt": "30"
+    },
+    "ai_quota": {
+      "$numberInt": "100"
+    },
+    "sms_reminders_enabled": true,
+    "is_active": true,
+    "max_classrooms": null
+  },
+  {
+    "_id": {
+      "$oid": "8ce4d3438a6683a5053f4920"
+    },
+    "target_role": "PARENT",
+    "name": "FREE_DEFAULT",
+    "monthly_price": {
+      "$numberDecimal": "0"
+    },
+    "monthly_credits": {
+      "$numberInt": "3"
+    },
+    "ai_quota": {
+      "$numberInt": "5"
+    },
+    "sms_reminders_enabled": null,
+    "is_active": true,
+    "max_classrooms": null
+  },
+  {
+    "_id": {
+      "$oid": "ff1d8d6780828a087e9d7a13"
+    },
+    "target_role": "PARENT",
+    "name": "PRO",
+    "monthly_price": {
+      "$numberDecimal": "99000"
+    },
+    "monthly_credits": {
+      "$numberInt": "15"
+    },
+    "ai_quota": {
+      "$numberInt": "50"
+    },
+    "sms_reminders_enabled": null,
+    "is_active": true,
+    "max_classrooms": null
+  }
+]

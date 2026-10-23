@@ -1,0 +1,21 @@
+[
+  {
+    "_id": {
+      "$oid": "54e7c76d1fd0ec2ea66e622d"
+    },
+    "session_id": {
+      "$oid": "5839c42a9ebcf6d0c7c9e141"
+    },
+    "user_id": {
+      "$oid": "30804191684e6bf3765634dd"
+    },
+    "google_event_id": "seedevent5k2j9a",
+    "sync_status": "SYNCED",
+    "last_error": null,
+    "synced_at": {
+      "$date": {
+        "$numberLong": "1791685500000"
+      }
+    }
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "name": "tuconnector-seed",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dữ liệu mẫu cho database TuConnector (MongoDB Atlas)",
+  "scripts": {
+    "validate": "node validate.js",
+    "seed": "node seed.js",
+    "seed:drop": "node seed.js --drop",
+    "export-json": "node export-json.js"
+  },
+  "dependencies": {
+    "mongodb": "6.8.0"
+  }
+}

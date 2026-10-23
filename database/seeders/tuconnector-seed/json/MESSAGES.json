@@ -1,0 +1,125 @@
+[
+  {
+    "message_type": "TEXT",
+    "attachments": [],
+    "_id": {
+      "$oid": "d22455c9d0cbd4d21623e0bf"
+    },
+    "conversation_id": {
+      "$oid": "ae07b88f00137f2919b65c5a"
+    },
+    "sender_user_id": {
+      "$oid": "2c15f53000dfedc3e5f327a9"
+    },
+    "content": "Chào thầy, thầy dạy được tối thứ 3 và thứ 5 không ạ?",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791291660000"
+      }
+    }
+  },
+  {
+    "message_type": "TEXT",
+    "attachments": [],
+    "_id": {
+      "$oid": "7f446877a5b852251dbeda87"
+    },
+    "conversation_id": {
+      "$oid": "ae07b88f00137f2919b65c5a"
+    },
+    "sender_user_id": {
+      "$oid": "30804191684e6bf3765634dd"
+    },
+    "content": "Dạ được chị, em đề xuất 250k/buổi 90 phút.",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791292200000"
+      }
+    }
+  },
+  {
+    "message_type": "CONTACT_CARD",
+    "attachments": [],
+    "_id": {
+      "$oid": "0e3f71852eddab605c1fbfad"
+    },
+    "conversation_id": {
+      "$oid": "ae07b88f00137f2919b65c5a"
+    },
+    "sender_user_id": {
+      "$oid": "30804191684e6bf3765634dd"
+    },
+    "content": "Zalo: 0901000001",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791294000000"
+      }
+    }
+  },
+  {
+    "message_type": "TEXT",
+    "attachments": [],
+    "_id": {
+      "$oid": "13a29dcbe72057deb4c26ee2"
+    },
+    "conversation_id": {
+      "$oid": "d22bacbb9f41174adb8ac7d3"
+    },
+    "sender_user_id": {
+      "$oid": "2945321e553a9da5e1bc430d"
+    },
+    "content": "Em nhận lời mời ạ, sáng thứ 7 9h được không anh?",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791468300000"
+      }
+    }
+  },
+  {
+    "message_type": "TEXT",
+    "attachments": [],
+    "_id": {
+      "$oid": "4fcc73e205283e549a961475"
+    },
+    "conversation_id": {
+      "$oid": "d22bacbb9f41174adb8ac7d3"
+    },
+    "sender_user_id": {
+      "$oid": "2b083b58a3f55796d955cfbd"
+    },
+    "content": "Được em, để anh xác nhận thỏa thuận nhé.",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791469200000"
+      }
+    }
+  },
+  {
+    "message_type": "FILE",
+    "attachments": [
+      {
+        "file_url": "https://cdn.tuconnector.vn/chat/de-cuong-buoi-3.pdf",
+        "file_name": "de-cuong-buoi-3.pdf",
+        "file_size": {
+          "$numberInt": "245760"
+        },
+        "mime_type": "application/pdf"
+      }
+    ],
+    "_id": {
+      "$oid": "5f30ec652c1d1be53e0e8600"
+    },
+    "conversation_id": {
+      "$oid": "4f68c9c95f695e63c709a43c"
+    },
+    "sender_user_id": {
+      "$oid": "30804191684e6bf3765634dd"
+    },
+    "content": "Các em xem trước đề cương buổi sau nhé.",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792069200000"
+      }
+    }
+  }
+]

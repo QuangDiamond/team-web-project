@@ -1,0 +1,25 @@
+[
+  {
+    "_id": {
+      "$oid": "b2d621194a3a9598717c1f6c"
+    },
+    "user_id": {
+      "$oid": "30804191684e6bf3765634dd"
+    },
+    "provider": "GOOGLE_CALENDAR",
+    "access_token": "enc:seed_access_token",
+    "refresh_token": "enc:seed_refresh_token",
+    "google_calendar_id": "tuconnector-minh@group.calendar.google.com",
+    "is_connected": true,
+    "last_synced_at": {
+      "$date": {
+        "$numberLong": "1792627200000"
+      }
+    },
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1792630800000"
+      }
+    }
+  }
+]

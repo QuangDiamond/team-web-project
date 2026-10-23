@@ -1,0 +1,638 @@
+[
+  {
+    "phone": null,
+    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790816400000"
+      }
+    },
+    "account_status": "ACTIVE",
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "last_login_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "has_password": true,
+    "avatar_url": null,
+    "is_login_locked": false,
+    "google_account": null,
+    "credit_wallet": null,
+    "notification_preferences": {
+      "enable_in_app": true,
+      "enable_email": true,
+      "enable_sms": false,
+      "notify_on_sessions": true,
+      "notify_on_assignments": true,
+      "notify_on_messages": true,
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1790816400000"
+        }
+      }
+    },
+    "subscription": null,
+    "student_profile": null,
+    "_id": {
+      "$oid": "d7ce04216585ebae4f4677d1"
+    },
+    "full_name": "Quản trị viên",
+    "email": "admin@tuconnector.vn",
+    "role": "ADMIN"
+  },
+  {
+    "phone": "0901000001",
+    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790816400000"
+      }
+    },
+    "account_status": "ACTIVE",
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "last_login_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "has_password": true,
+    "avatar_url": null,
+    "is_login_locked": false,
+    "google_account": null,
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "29"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1791165600000"
+        }
+      }
+    },
+    "notification_preferences": {
+      "enable_in_app": true,
+      "enable_email": true,
+      "enable_sms": true,
+      "notify_on_sessions": true,
+      "notify_on_assignments": true,
+      "notify_on_messages": true,
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1790816400000"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "57d94341621103294eababa8"
+      },
+      "status": "ACTIVE",
+      "expires_at": {
+        "$date": {
+          "$numberLong": "1798736400000"
+        }
+      },
+      "ai_quota_used": {
+        "$numberInt": "12"
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1793466000000"
+        }
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1790787600000"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1790787600000"
+        }
+      }
+    },
+    "student_profile": null,
+    "_id": {
+      "$oid": "30804191684e6bf3765634dd"
+    },
+    "full_name": "Nguyễn Văn Minh",
+    "email": "minh.tutor@gmail.com",
+    "role": "TUTOR"
+  },
+  {
+    "phone": "0901000002",
+    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790816400000"
+      }
+    },
+    "account_status": "ACTIVE",
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "last_login_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "has_password": true,
+    "avatar_url": null,
+    "is_login_locked": false,
+    "google_account": null,
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "5"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1790787600000"
+        }
+      }
+    },
+    "notification_preferences": {
+      "enable_in_app": true,
+      "enable_email": true,
+      "enable_sms": false,
+      "notify_on_sessions": true,
+      "notify_on_assignments": true,
+      "notify_on_messages": true,
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1790816400000"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1793466000000"
+        }
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1790787600000"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1790787600000"
+        }
+      }
+    },
+    "student_profile": null,
+    "_id": {
+      "$oid": "2945321e553a9da5e1bc430d"
+    },
+    "full_name": "Trần Thị Lan",
+    "email": "lan.tutor@gmail.com",
+    "role": "TUTOR"
+  },
+  {
+    "phone": "0901000003",
+    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790816400000"
+      }
+    },
+    "account_status": "ACTIVE",
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "last_login_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "has_password": true,
+    "avatar_url": null,
+    "is_login_locked": false,
+    "google_account": null,
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "3"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1791774000000"
+        }
+      }
+    },
+    "notification_preferences": {
+      "enable_in_app": true,
+      "enable_email": true,
+      "enable_sms": false,
+      "notify_on_sessions": true,
+      "notify_on_assignments": true,
+      "notify_on_messages": true,
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1790816400000"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1793466000000"
+        }
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1790787600000"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1790787600000"
+        }
+      }
+    },
+    "student_profile": null,
+    "_id": {
+      "$oid": "7130929c2f953794c695a5b4"
+    },
+    "full_name": "Lê Quang Huy",
+    "email": "huy.tutor@gmail.com",
+    "role": "TUTOR"
+  },
+  {
+    "phone": "0902000001",
+    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790816400000"
+      }
+    },
+    "account_status": "ACTIVE",
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "last_login_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "has_password": true,
+    "avatar_url": null,
+    "is_login_locked": false,
+    "google_account": null,
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "22"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1792072800000"
+        }
+      }
+    },
+    "notification_preferences": {
+      "enable_in_app": true,
+      "enable_email": true,
+      "enable_sms": false,
+      "notify_on_sessions": true,
+      "notify_on_assignments": true,
+      "notify_on_messages": true,
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1790816400000"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1793466000000"
+        }
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1790787600000"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1790787600000"
+        }
+      }
+    },
+    "student_profile": null,
+    "_id": {
+      "$oid": "2c15f53000dfedc3e5f327a9"
+    },
+    "full_name": "Phạm Thu Hà",
+    "email": "ha.parent@gmail.com",
+    "role": "PARENT"
+  },
+  {
+    "phone": "0902000002",
+    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790816400000"
+      }
+    },
+    "account_status": "ACTIVE",
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "last_login_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "has_password": true,
+    "avatar_url": null,
+    "is_login_locked": false,
+    "google_account": null,
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "2"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1791460800000"
+        }
+      }
+    },
+    "notification_preferences": {
+      "enable_in_app": true,
+      "enable_email": true,
+      "enable_sms": false,
+      "notify_on_sessions": true,
+      "notify_on_assignments": true,
+      "notify_on_messages": true,
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1790816400000"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1793466000000"
+        }
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1790787600000"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1790787600000"
+        }
+      }
+    },
+    "student_profile": null,
+    "_id": {
+      "$oid": "2b083b58a3f55796d955cfbd"
+    },
+    "full_name": "Đỗ Anh Tuấn",
+    "email": "tuan.parent@gmail.com",
+    "role": "PARENT"
+  },
+  {
+    "phone": null,
+    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790816400000"
+      }
+    },
+    "account_status": "ACTIVE",
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "last_login_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "has_password": true,
+    "avatar_url": null,
+    "is_login_locked": false,
+    "google_account": null,
+    "credit_wallet": null,
+    "notification_preferences": {
+      "enable_in_app": true,
+      "enable_email": true,
+      "enable_sms": false,
+      "notify_on_sessions": true,
+      "notify_on_assignments": true,
+      "notify_on_messages": true,
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1790816400000"
+        }
+      }
+    },
+    "subscription": null,
+    "student_profile": {
+      "full_name": "Phạm Minh An",
+      "grade_level": "Lớp 9"
+    },
+    "_id": {
+      "$oid": "32935467beb3ada708d525ea"
+    },
+    "full_name": "Phạm Minh An",
+    "email": "an.student@gmail.com",
+    "role": "STUDENT"
+  },
+  {
+    "phone": null,
+    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790816400000"
+      }
+    },
+    "account_status": "ACTIVE",
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "last_login_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "has_password": true,
+    "avatar_url": null,
+    "is_login_locked": false,
+    "google_account": null,
+    "credit_wallet": null,
+    "notification_preferences": {
+      "enable_in_app": true,
+      "enable_email": true,
+      "enable_sms": false,
+      "notify_on_sessions": true,
+      "notify_on_assignments": true,
+      "notify_on_messages": true,
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1790816400000"
+        }
+      }
+    },
+    "subscription": null,
+    "student_profile": {
+      "full_name": "Đỗ Gia Bình",
+      "grade_level": "Lớp 7"
+    },
+    "_id": {
+      "$oid": "2431a25fff9589b2f8036019"
+    },
+    "full_name": "Đỗ Gia Bình",
+    "email": "binh.student@gmail.com",
+    "role": "STUDENT"
+  },
+  {
+    "phone": null,
+    "password_hash": null,
+    "email_verify_status": false,
+    "is_onboarded": true,
+    "created_at": {
+      "$date": {
+        "$numberLong": "1790816400000"
+      }
+    },
+    "account_status": "ACTIVE",
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "last_login_at": null,
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792674000000"
+      }
+    },
+    "has_password": false,
+    "avatar_url": null,
+    "is_login_locked": false,
+    "google_account": {
+      "google_id": "109876543210987654321",
+      "google_email": "chi.student@gmail.com"
+    },
+    "credit_wallet": null,
+    "notification_preferences": {
+      "enable_in_app": true,
+      "enable_email": true,
+      "enable_sms": false,
+      "notify_on_sessions": true,
+      "notify_on_assignments": true,
+      "notify_on_messages": true,
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1790816400000"
+        }
+      }
+    },
+    "subscription": null,
+    "student_profile": {
+      "full_name": "Phạm Bảo Chi",
+      "grade_level": "Lớp 11"
+    },
+    "_id": {
+      "$oid": "86ade579a5af4da591895948"
+    },
+    "full_name": "Phạm Bảo Chi",
+    "email": "chi.student@gmail.com",
+    "role": "STUDENT"
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "_id": {
+      "$oid": "852a8d6a67676a5fde13e646"
+    },
+    "target_role": null,
+    "name": "Gói 10 credit",
+    "credit_amount": {
+      "$numberInt": "10"
+    },
+    "price": {
+      "$numberDecimal": "49000"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "bebaf19bc207de83cd116d11"
+    },
+    "target_role": "TUTOR",
+    "name": "Gói 30 credit",
+    "credit_amount": {
+      "$numberInt": "30"
+    },
+    "price": {
+      "$numberDecimal": "129000"
+    },
+    "is_active": true
+  }
+]

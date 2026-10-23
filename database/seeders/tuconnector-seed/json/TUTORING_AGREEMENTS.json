@@ -1,0 +1,60 @@
+[
+  {
+    "_id": {
+      "$oid": "638272d68b7abeecdd3abbc3"
+    },
+    "conversation_id": {
+      "$oid": "ae07b88f00137f2919b65c5a"
+    },
+    "proposer_user_id": {
+      "$oid": "30804191684e6bf3765634dd"
+    },
+    "accepted_by_user_id": {
+      "$oid": "2c15f53000dfedc3e5f327a9"
+    },
+    "agreed_subject": "Toán 9",
+    "agreed_schedule": "Thứ 3, thứ 5 – 19:00 đến 20:30",
+    "agreed_price": {
+      "$numberDecimal": "250000"
+    },
+    "status": "CONFIRMED",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791637200000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1791640800000"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6abd83a35a10c352839df37a"
+    },
+    "conversation_id": {
+      "$oid": "d22bacbb9f41174adb8ac7d3"
+    },
+    "proposer_user_id": {
+      "$oid": "2b083b58a3f55796d955cfbd"
+    },
+    "accepted_by_user_id": null,
+    "agreed_subject": "Tiếng Anh 7",
+    "agreed_schedule": "Thứ 7 – 9:00 đến 10:30",
+    "agreed_price": {
+      "$numberDecimal": "180000"
+    },
+    "status": "PENDING",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791469800000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1791469800000"
+      }
+    }
+  }
+]

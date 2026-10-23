@@ -1,0 +1,47 @@
+[
+  {
+    "_id": {
+      "$oid": "11931f8798fa60ba570996ae"
+    },
+    "request_id": {
+      "$oid": "3e61a021b9fca3194cb67871"
+    },
+    "tutor_post_id": {
+      "$oid": "9bbbaf9cec70460526864815"
+    },
+    "tutor_profile_id": {
+      "$oid": "83a6b95dc906b13934f510c6"
+    },
+    "match_score": {
+      "$numberDouble": "87.5"
+    },
+    "ai_reason": "Hợp môn Vật lý 11, lịch tối trùng khớp, học phí trong ngân sách.",
+    "weights_json": {
+      "subject": {
+        "$numberDouble": "0.4"
+      },
+      "schedule": {
+        "$numberDouble": "0.2"
+      },
+      "price": {
+        "$numberDouble": "0.2"
+      },
+      "rating": {
+        "$numberDouble": "0.1"
+      },
+      "distance": {
+        "$numberDouble": "0.1"
+      }
+    },
+    "cached_until": {
+      "$date": {
+        "$numberLong": "1830272399000"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791813900000"
+      }
+    }
+  }
+]

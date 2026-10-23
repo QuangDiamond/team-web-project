@@ -1,0 +1,27 @@
+[
+  {
+    "_id": {
+      "$oid": "523f792e5495270862a6a8ce"
+    },
+    "tutor_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "request_id": {
+      "$oid": "3e61a021b9fca3194cb67871"
+    },
+    "match_score": {
+      "$numberDouble": "72.0"
+    },
+    "ai_reason": "Khu vực Cầu Giấy gần gia sư, phụ huynh từng thuê gia sư này.",
+    "cached_until": {
+      "$date": {
+        "$numberLong": "1830272399000"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791849600000"
+      }
+    }
+  }
+]

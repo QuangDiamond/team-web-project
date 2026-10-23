@@ -1,0 +1,57 @@
+[
+  {
+    "_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "tutor_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "agreement_id": {
+      "$oid": "638272d68b7abeecdd3abbc3"
+    },
+    "name": "Toán 9 – Ôn thi vào 10",
+    "subject": "Toán",
+    "grade": "Lớp 9",
+    "description": "Lớp kèm 1-1 cho An, ôn thi vào 10.",
+    "capacity": {
+      "$numberInt": "10"
+    },
+    "join_code": "TOAN9A",
+    "invite_link": "https://tuconnector.vn/join/TOAN9A",
+    "status": "ACTIVE",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1791684000000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1791684000000"
+      }
+    },
+    "topics": [
+      {
+        "_id": {
+          "$oid": "39fab13364f18a64ddbebe2b"
+        },
+        "name": "Chương 1: Căn bậc hai",
+        "created_at": {
+          "$date": {
+            "$numberLong": "1791684600000"
+          }
+        }
+      },
+      {
+        "_id": {
+          "$oid": "5453609bb958230fd4d06146"
+        },
+        "name": "Chương 2: Hệ thức lượng trong tam giác vuông",
+        "created_at": {
+          "$date": {
+            "$numberLong": "1791684720000"
+          }
+        }
+      }
+    ]
+  }
+]
