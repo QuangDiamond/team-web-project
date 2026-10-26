@@ -10,7 +10,7 @@ const { MongoClient } = require('mongodb');
 
 const URI = process.env.MONGODB_URI;
 // Tên DB: biến DB_NAME nếu có, không thì lấy theo URI (vd .../WDP_DB), URI không ghi tên DB thì dùng 'tuconnector'
-const DB_NAME = process.env.DB_NAME || (URI || '').match(/^mongodb(?:\+srv)?:\/\/[^/]+\/([^?]+)/)?.[1] || 'tuconnector';
+const DB_NAME = process.env.DB_NAME || (URI || '').match(/^mongodb(?:\+srv)?:\/\/[^/]+\/([^?]+)/)?.[1] || 'WDP_DB';
 const DROP = process.argv.includes('--drop');
 const onlyArg = process.argv.find((a) => a.startsWith('--only='));
 const ONLY = onlyArg ? onlyArg.slice(7).split(',') : null;
