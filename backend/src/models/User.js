@@ -13,7 +13,6 @@ const userSchema = new Schema(
   {
     full_name:                { type: String, required: true },
     email:                    { type: String, required: true },
-    phone:                    { type: String, default: null },
     password_hash:            { type: String, default: null },
     // Field này để lưu trạng thái xác thực email lúc nó đăng nhập nhé ae
     email_verify_status:      { type: Boolean, default: false },

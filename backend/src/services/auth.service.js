@@ -14,11 +14,11 @@ const issueToken = (user) => {
   );
 };
 
-export const register = async ({username, email, password, role}) =>{
+export const register = async ({ full_name, email, password, role}) =>{
     if(await User.findOne({email})) throw new AppError('Email already existed', 409);
-    if(await User.findOne({username})) throw new AppError('Username already existed', 409);
+    // if(await User.findOne({username})) throw new AppError('Username already existed', 409);
     const hashed = await bcrypt.hash(password, 10);
-    const user = await User.create({username, email, password: hashed, role});
+    const user = await User.create({full_name, email, password_hash: hashed, role});
     const { password: _, ...safeUser } = user.toObject();
     return {user:safeUser, token: issueToken(user)};
 }
