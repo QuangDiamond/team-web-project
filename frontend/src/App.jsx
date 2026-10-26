@@ -7,7 +7,11 @@ function App() {
   useEffect(() => {
     api.get('/health')
       .then((response) => {
-        setStatus(response.data?.data?.database === 'connected'
+        const isDbConnected =
+          response?.data?.databaseConnection === 'connected' ||
+          response?.data?.database === 'connected' ||
+          response?.databaseConnection === 'connected';
+        setStatus(isDbConnected
           ? 'Backend + MongoDB connected'
           : 'Backend connected, MongoDB not connected');
       })
