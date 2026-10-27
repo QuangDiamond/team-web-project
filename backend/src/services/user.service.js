@@ -25,6 +25,8 @@ export const createUser = async (newUser, registerType = 'Regular') => {
       notification_preferences: {},
       google_account: isOAuth ? newUser.google_account : null,
       has_password: !isOAuth,
+      email_verify_status: isOAuth,
+      is_onboarded: isOAuth,
     });
   } catch (error) {
     if (error.code === 11000) throw new AppError('Email already existed', 409);
