@@ -7,4 +7,4 @@ export const authRoute = Router();
 
 authRoute.post('/register', validator(registerSchema), register)
 authRoute.post('/login', validator(loginSchema), login)
-authRoute.post('/me', authentication, me)
+authRoute.get('/me', authentication, me)

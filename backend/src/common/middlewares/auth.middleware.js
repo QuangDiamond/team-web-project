@@ -1,19 +1,31 @@
 import { AppError } from '../utils/AppError.js';
 import jwt from 'jsonwebtoken';
 
-export const authentication = (req, res, next) =>{
+export const getToken = (req) =>{
+    if(req.cookies.token){
+        return req.cookies.token;
+    }
+
     const authorization = req.headers.authorization;
+    if(!authorization) return null;
+
     const [scheme, token] = authorization?.split(" ") ?? [];
     
-    if(scheme !== "Bearer" || !token){
-        return next(new AppError('Unauthorized', 401));
+    if(scheme !== "Bearer"){
+        return null;
     }
+
+    return token;
+}
+
+export const authentication = (req, res, next) =>{
+    const token = getToken(req);
+    if(!token) return next(new AppError('Unauthorize', 401));
 
     try {
         const payload = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(`${payload}, type: ${typeof(payload)}`)
         if(!payload || typeof payload.sub !== "string"){
-            next(new AppError('Invalid or expired token', 401));
+           return next(new AppError('Invalid or expired token', 401));
         }
 
         req.user = {
@@ -23,6 +35,6 @@ export const authentication = (req, res, next) =>{
 
         return next();
     } catch (error) {
-        next(new AppError(error.message, 500));
+        return next(new AppError('Invalid or expired token', 401));
     }
 }
