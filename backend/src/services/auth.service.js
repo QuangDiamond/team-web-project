@@ -37,8 +37,8 @@ export const login = async (userLogin) =>{
 }
 
 export const me = async (userId) =>{
-    const me = await User.findById(userId);
+    const me = await User.findById(userId).select("-password_hash -has_password");
     if(!me) throw new AppError("User not found", 404);
-    const rs = {_id:me._id, email: me.email}
-    return rs;
+    // const rs = {_id:me._id, email: me.email}
+    return me;
 }
