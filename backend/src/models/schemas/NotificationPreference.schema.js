@@ -12,13 +12,11 @@ export const notificationPreferenceSchema = new Schema(
     // Bật/Tắt thông báo qua SMS (Default: FALSE)
     enable_sms:            { type: Boolean, default: false },
     // Cấu hình thông báo Lịch học & Đổi lịch
-    notify_on_sessions:    { type: Boolean, default: null },
+    notify_on_sessions:    { type: Boolean, default: true },
     // Cấu hình thông báo Bài tập & Điểm số
-    notify_on_assignments: { type: Boolean, default: null },
+    notify_on_assignments: { type: Boolean, default: true },
     // Cấu hình thông báo Tin nhắn Chat
-    notify_on_messages:    { type: Boolean, default: null },
-    // Timestamp cập nhật cài đặt
-    updated_at:            { type: Date, default: null },
+    notify_on_messages:    { type: Boolean, default: true },
   },
-  { _id: false }
+  { _id: false, timestamps: { createdAt: false, updatedAt: 'updated_at' }}
 );
