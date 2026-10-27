@@ -27,6 +27,16 @@ export const login = asyncHandler (async (req, res) =>{
     return responseCommon(res, user, "Login successfully!", 200, responseCode.SUCCESSED);
 })
 
+// Cookie là httpOnly nên frontend không tự xóa được, phải gọi API này
+export const logout = asyncHandler (async (req, res) =>{
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+    });
+    return responseCommon(res, null, "Logout successfully!", 200, responseCode.SUCCESSED);
+})
+
 export const me = asyncHandler (async (req, res) =>{
     return responseCommon(res, await authService.me(req.user.id), "Get current user successfully!", 200, responseCode.SUCCESSED)
 })
