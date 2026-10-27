@@ -6,9 +6,7 @@ const { Schema } = mongoose;
 export const creditWalletSchema = new Schema(
   {
     // Deducted by 1 on apply (POST-1, E1)
-    balance:    { type: Schema.Types.Int32, default: null },
-    // Thời điểm cập nhật số dư gần nhất
-    updated_at: { type: Date, default: null },
+    balance:    { type: Schema.Types.Int32, default: 20 },
   },
-  { _id: false }
+  { _id: false, timestamps: { createdAt: false, updatedAt: 'updated_at' }}
 );
