@@ -1,0 +1,12 @@
+/* Màn đăng nhập: /login */
+
+.login-options {
+  display: flex;
+  justify-content: flex-end;
+  margin: -4px 0 20px;
+  font-size: 14px;
+}
+
+.login-form .resend-verification {
+  margin-top: 12px;
+}

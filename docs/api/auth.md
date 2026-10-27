@@ -1,6 +1,7 @@
 # Auth API (`/api/auth/v1`)
 
 Response chung: `{ "success": 1 | false, "message": "...", "data": ... }`.
+Lỗi validate (422) có thêm `errors`: `{ "<field>": ["message", ...] }` để hiện lỗi dưới từng ô.
 Token đăng nhập được set vào cookie httpOnly `token` (12h). Có thể gửi qua header `Authorization: Bearer <token>` khi test bằng Postman.
 
 ## POST `/register`
@@ -46,13 +47,16 @@ Body: `{ "email": "...", "password": "..." }`
 | 401 | `Invalid username or password` (kể cả tài khoản Google chưa có mật khẩu) |
 | 403 | `Account not verified`: chưa bấm link kích hoạt |
 
+## POST `/logout`
+Xóa cookie `token`. Luôn trả 200 (không cần đăng nhập, token hết hạn vẫn logout được).
+
 ## GET `/me`
 Cần đăng nhập. Trả về user hiện tại.
 
 ## GET `/google`
 Mở bằng trình duyệt (không gọi bằng axios). Set cookie `oauth_state` (10 phút, chống CSRF) rồi redirect sang Google.
 
-## GET `/google/callback`
+## GET `/oauth/redirect`
 Google redirect về đây (giá trị `OAUTH_URI` trong `.env` phải trỏ tới endpoint này). Kết quả đều là redirect:
 - Đã có tài khoản (theo `google_id`, hoặc theo email → tự liên kết Google và kích hoạt) → set cookie `token`, redirect `{CORS_ORIGIN}/`
 - Chưa có tài khoản → redirect `{CORS_ORIGIN}/register/complete?ticket=<ticket>` (ticket hạn 15 phút)
