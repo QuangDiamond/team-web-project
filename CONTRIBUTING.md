@@ -42,14 +42,15 @@ Then open a Pull Request into `develop`.
 
 ## Backend layering
 
-`Route -> Middleware -> Controller -> Service -> Repository -> Model -> MongoDB`
+`Route -> Middleware -> Controller -> Service (business logic only) -> Model -> MongoDB`
 
 - Routes: endpoint definitions
 - Middleware: authentication, validation, request processing
-- Controllers: HTTP request/response
-- Services: business logic
-- Repositories: database access
+- Controllers: HTTP request/response; basic CRUD calls Mongoose model methods directly
+- Services: business logic only (no wrappers around a single CRUD call)
 - Models: Mongoose schemas
+
+There is no repository layer. See `AGENTS.md` for the full backend checklist.
 
 ## Frontend layering
 
