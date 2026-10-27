@@ -10,6 +10,6 @@
 8. MongoDB database changes must be documented.
 9. API response format must remain consistent.
 10. Business logic belongs in services.
-11. Database access belongs in repositories.
+11. Basic CRUD uses Mongoose model methods directly in controllers/services; no repository layer.
 12. Every new endpoint must be documented.
 13. Run lint/test/build before requesting review.
