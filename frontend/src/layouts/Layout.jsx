@@ -16,7 +16,7 @@ export default function Layout() {
   const navLinks = [
     { label: 'Trang chủ', path: '/' },
     { label: 'Tìm gia sư', path: '/tutors' },
-    { label: 'Yêu cầu tìm gia sư', path: '/requests' },
+    { label: 'Ứng tuyển gia sư (SC17)', path: '/applications' },
     { label: 'Lớp học', path: '/classes' },
     { label: 'Giới thiệu', path: '/about' },
   ];
