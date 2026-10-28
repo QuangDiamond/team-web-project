@@ -197,7 +197,7 @@ export default function Notifications() {
             <div className="noti-icon-badge">🔔</div>
             <div className="noti-title-box">
               <h1>
-                Thông báo (SC10)
+                Trung tâm thông báo
                 {unreadCount > 0 && (
                   <span className="noti-unread-tag">{unreadCount} mới</span>
                 )}

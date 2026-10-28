@@ -180,15 +180,15 @@ export default function MyConnections() {
       <nav className="conn-breadcrumb">
         <Link to="/">Trang chủ</Link>
         <span className="separator">/</span>
-        <span className="current">Kết nối của tôi (SC22)</span>
+        <span className="current">Kết nối của tôi</span>
       </nav>
 
       {/* Header */}
       <div className="conn-header-row">
         <div>
-          <h1 className="conn-title">Kết nối của tôi (My Connections)</h1>
+          <h1 className="conn-title">Kết nối của tôi</h1>
           <p className="conn-subtitle">
-            Quản lý các thỏa thuận dạy kèm đã chốt và xác nhận kết nối thành công (UC18)
+            Quản lý các thỏa thuận dạy kèm đã chốt và xác nhận kết nối hai bên
           </p>
         </div>
 
@@ -200,7 +200,7 @@ export default function MyConnections() {
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          Đề xuất thỏa thuận mới (Mark as agreed)
+          Đề xuất thỏa thuận mới
         </button>
       </div>
 
@@ -395,7 +395,7 @@ export default function MyConnections() {
                   {conn.created_at && `· ${new Date(conn.created_at).toLocaleDateString('vi-VN')}`}
                   {isConfirmed && conn.request?.status === 'CLOSED' && (
                     <span style={{ color: '#059669', marginLeft: '0.5rem', fontWeight: '600' }}>
-                      (Bài yêu cầu đã tự động đóng - POST-1)
+                      (Bài yêu cầu đã được đóng thành công)
                     </span>
                   )}
                 </div>
@@ -536,7 +536,7 @@ export default function MyConnections() {
         <div className="conn-modal-overlay" onClick={() => setRatingModalTarget(null)}>
           <div className="conn-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="conn-modal-header">
-              <span className="conn-modal-title">Đánh giá gia sư (SC24 / UC38)</span>
+              <span className="conn-modal-title">Đánh giá gia sư & dịch vụ</span>
               <button className="btn-close-modal" onClick={() => setRatingModalTarget(null)}>✕</button>
             </div>
 

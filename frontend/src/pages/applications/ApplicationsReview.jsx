@@ -146,7 +146,7 @@ export default function ApplicationsReview() {
         <span className="separator">/</span>
         <Link to="/requests">Yêu cầu tìm gia sư</Link>
         <span className="separator">/</span>
-        <span className="current">Phản hồi gia sư quan tâm (SC17)</span>
+        <span className="current">Hồ sơ gia sư ứng tuyển</span>
       </nav>
 
       {/* Parent Request Summary Banner */}

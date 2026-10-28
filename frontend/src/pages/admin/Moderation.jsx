@@ -186,7 +186,7 @@ export default function Moderation() {
           <div className="mod-title-wrap">
             <div className="mod-shield-badge">🛡️</div>
             <div className="mod-title-box">
-              <h1>Kiểm duyệt nội dung & Báo cáo (SC43)</h1>
+              <h1>Kiểm duyệt nội dung & Báo cáo vi phạm</h1>
               <p>
                 Xử lý khiếu nại, bài đăng vi phạm và nhật ký kiểm duyệt hệ thống
                 theo quy tắc BR-20
