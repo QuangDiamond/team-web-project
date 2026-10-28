@@ -7,6 +7,7 @@ import { invitationRoutes } from "./invitation.routes.js";
 import { agreementRoutes } from "./agreement.routes.js";
 import { notificationRoutes } from "./notification.routes.js";
 import { moderationRoutes } from "./moderation.routes.js";
+import { statsRoutes } from "./stats.routes.js";
 import { Router } from 'express';
 
 export const router = Router();
@@ -20,6 +21,7 @@ router.use("/invitations/v1", invitationRoutes);
 router.use("/agreements/v1", agreementRoutes);
 router.use("/notifications/v1", notificationRoutes);
 router.use("/moderation/v1", moderationRoutes);
+router.use("/stats/v1", statsRoutes);
 
 
 

@@ -10,6 +10,7 @@ import InvitationsInbox from '../pages/invitations/InvitationsInbox';
 import MyConnections from '../pages/connections/MyConnections';
 import Notifications from '../pages/notifications/Notifications';
 import Moderation from '../pages/admin/Moderation';
+import AdminDashboard from '../pages/admin/AdminDashboard';
 import NotFound from '../pages/NotFound';
 
 export const router = createBrowserRouter([
@@ -32,6 +33,8 @@ export const router = createBrowserRouter([
       { path: 'notifications', element: <Notifications /> },
       { path: 'admin/moderation', element: <Moderation /> },
       { path: 'moderation', element: <Moderation /> },
+      { path: 'admin/dashboard', element: <AdminDashboard /> },
+      { path: 'dashboard', element: <AdminDashboard /> },
     ],
   },
   { path: '*', element: <NotFound /> },
