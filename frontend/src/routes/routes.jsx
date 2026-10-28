@@ -7,6 +7,7 @@ import Payment from '../pages/payment/Payment';
 import Profile from '../pages/Profile';
 import ApplicationsReview from '../pages/applications/ApplicationsReview';
 import InvitationsInbox from '../pages/invitations/InvitationsInbox';
+import MyConnections from '../pages/connections/MyConnections';
 import NotFound from '../pages/NotFound';
 
 export const router = createBrowserRouter([
@@ -24,6 +25,8 @@ export const router = createBrowserRouter([
       { path: 'requests/:requestId/applications', element: <ApplicationsReview /> },
       { path: 'invitations', element: <InvitationsInbox /> },
       { path: 'tutor/invitations', element: <InvitationsInbox /> },
+      { path: 'connections', element: <MyConnections /> },
+      { path: 'contracts', element: <MyConnections /> },
     ],
   },
   { path: '*', element: <NotFound /> },
