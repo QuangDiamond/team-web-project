@@ -9,6 +9,7 @@ import ApplicationsReview from '../pages/applications/ApplicationsReview';
 import InvitationsInbox from '../pages/invitations/InvitationsInbox';
 import MyConnections from '../pages/connections/MyConnections';
 import Notifications from '../pages/notifications/Notifications';
+import Moderation from '../pages/admin/Moderation';
 import NotFound from '../pages/NotFound';
 
 export const router = createBrowserRouter([
@@ -29,6 +30,8 @@ export const router = createBrowserRouter([
       { path: 'connections', element: <MyConnections /> },
       { path: 'contracts', element: <MyConnections /> },
       { path: 'notifications', element: <Notifications /> },
+      { path: 'admin/moderation', element: <Moderation /> },
+      { path: 'moderation', element: <Moderation /> },
     ],
   },
   { path: '*', element: <NotFound /> },

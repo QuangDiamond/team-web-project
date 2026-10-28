@@ -20,6 +20,7 @@ export default function Layout() {
     { label: 'Lời mời dạy (SC29)', path: '/invitations' },
     { label: 'Kết nối (SC22)', path: '/connections' },
     { label: 'Thông báo (SC10)', path: '/notifications' },
+    { label: 'Kiểm duyệt (SC43)', path: '/admin/moderation' },
     { label: 'Lớp học', path: '/classes' },
     { label: 'Giới thiệu', path: '/about' },
   ];
