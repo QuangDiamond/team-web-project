@@ -6,6 +6,7 @@ import Register from '../pages/auth/Register';
 import Payment from '../pages/payment/Payment';
 import Profile from '../pages/Profile';
 import ApplicationsReview from '../pages/applications/ApplicationsReview';
+import InvitationsInbox from '../pages/invitations/InvitationsInbox';
 import NotFound from '../pages/NotFound';
 
 export const router = createBrowserRouter([
@@ -21,6 +22,8 @@ export const router = createBrowserRouter([
       { path: 'applications', element: <ApplicationsReview /> },
       { path: 'requests/applications', element: <ApplicationsReview /> },
       { path: 'requests/:requestId/applications', element: <ApplicationsReview /> },
+      { path: 'invitations', element: <InvitationsInbox /> },
+      { path: 'tutor/invitations', element: <InvitationsInbox /> },
     ],
   },
   { path: '*', element: <NotFound /> },

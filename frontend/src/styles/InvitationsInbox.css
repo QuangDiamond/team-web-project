@@ -1,0 +1,622 @@
+/* ==========================================================================
+   SC29 – Invitations Inbox (UC17: Gia sư phản hồi lời mời dạy)
+   Design System: TuConnector Sleek Slate & Brand Orange with Credit Purple
+   ========================================================================== */
+
+.inbox-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #1E293B;
+}
+
+/* Breadcrumb */
+.inbox-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #64748B;
+  margin-bottom: 1.5rem;
+}
+
+.inbox-breadcrumb a {
+  color: #64748B;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.inbox-breadcrumb a:hover {
+  color: #F4673A;
+}
+
+.inbox-breadcrumb span.separator {
+  color: #CBD5E1;
+}
+
+.inbox-breadcrumb span.current {
+  color: #0F172A;
+  font-weight: 600;
+}
+
+/* Page Header & Intro */
+.inbox-header-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.inbox-header-title {
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.25;
+}
+
+.inbox-header-subtitle {
+  font-size: 0.9375rem;
+  color: #64748B;
+  margin-top: 0.35rem;
+}
+
+/* Tutor Credit Wallet Banner */
+.wallet-summary-banner {
+  background: linear-gradient(135deg, #FAF5FF 0%, #FFFFFF 100%);
+  border: 1px solid #E9D5FF;
+  border-radius: 1.25rem;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  box-shadow: 0 4px 15px -3px rgba(124, 58, 237, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.wallet-summary-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  background: linear-gradient(180deg, #7C3AED 0%, #A855F7 100%);
+}
+
+.wallet-info-group {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.wallet-icon-box {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 1rem;
+  background-color: #F3E8FF;
+  color: #7C3AED;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.wallet-details h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1E1B4B;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wallet-credit-pill {
+  background-color: #7C3AED;
+  color: #FFFFFF;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.wallet-details p {
+  font-size: 0.875rem;
+  color: #6B21A8;
+  margin-top: 0.25rem;
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+.btn-buy-credit {
+  background: linear-gradient(135deg, #7C3AED 0%, #9333EA 100%);
+  color: #FFFFFF;
+  font-size: 0.875rem;
+  font-weight: 700;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-buy-credit:hover {
+  background: linear-gradient(135deg, #6D28D9 0%, #7E22CE 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
+}
+
+/* Filter Toolbar */
+.inbox-filter-bar {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 1rem;
+  padding: 0.875rem 1.25rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.inbox-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.inbox-tab-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  background-color: transparent;
+  color: #64748B;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.inbox-tab-btn:hover {
+  color: #0F172A;
+  background-color: #F8FAFC;
+}
+
+.inbox-tab-btn.active {
+  background-color: #0F172A;
+  color: #FFFFFF;
+}
+
+.inbox-tab-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.inbox-tab-btn.active .inbox-tab-badge {
+  background-color: #F4673A;
+  color: #FFFFFF;
+}
+
+.inbox-tab-btn:not(.active) .inbox-tab-badge {
+  background-color: #E2E8F0;
+  color: #475569;
+}
+
+.inbox-search-input {
+  padding: 0.5rem 1rem;
+  border: 1px solid #E2E8F0;
+  border-radius: 0.75rem;
+  background-color: #F8FAFC;
+  font-size: 0.875rem;
+  color: #1E293B;
+  width: 250px;
+  outline: none;
+}
+
+.inbox-search-input:focus {
+  border-color: #F4673A;
+  box-shadow: 0 0 0 3px rgba(244, 103, 58, 0.15);
+}
+
+/* Invitation Cards List */
+.invitations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.invitation-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 1.25rem;
+  padding: 1.75rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+}
+
+.invitation-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.08);
+  border-color: #CBD5E1;
+}
+
+.invitation-card.pending {
+  border-left: 5px solid #F59E0B;
+}
+
+.invitation-card.accepted {
+  border-left: 5px solid #10B981;
+  background-color: #FBFDFB;
+}
+
+.invitation-card.declined {
+  border-left: 5px solid #94A3B8;
+  opacity: 0.7;
+}
+
+.invitation-card.declined:hover {
+  opacity: 1;
+}
+
+/* Card Top Row: Sender Info & Time */
+.invitation-card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.sender-profile-info {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.sender-avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.sender-name-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.sender-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0F172A;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.sender-role-label {
+  font-size: 0.75rem;
+  color: #64748B;
+  margin-top: 0.125rem;
+}
+
+.invitation-time-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.time-stamp {
+  font-size: 0.8125rem;
+  color: #94A3B8;
+}
+
+.inv-status-chip {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.inv-status-chip.pending {
+  background-color: #FEF3C7;
+  color: #B45309;
+}
+
+.inv-status-chip.accepted {
+  background-color: #DCFCE7;
+  color: #15803D;
+}
+
+.inv-status-chip.declined {
+  background-color: #F1F5F9;
+  color: #64748B;
+}
+
+/* Parent Message Bubble */
+.parent-message-bubble {
+  background-color: #FEF0EC;
+  border-left: 3px solid #F4673A;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  font-size: 0.9375rem;
+  color: #9A3412;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.parent-message-bubble strong {
+  color: #7C2D12;
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.35rem;
+}
+
+/* Associated Tutoring Request Preview Box */
+.associated-request-box {
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 0.875rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.req-header-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.req-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.req-chips-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.req-chip {
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.req-chip.subject {
+  background-color: #EFF6FF;
+  color: #1D4ED8;
+}
+
+.req-chip.grade {
+  background-color: #F3E8FF;
+  color: #6B21A8;
+}
+
+.req-chip.mode {
+  background-color: #ECFDF5;
+  color: #047857;
+}
+
+.req-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.875rem;
+  font-size: 0.8125rem;
+  color: #475569;
+  padding-top: 0.875rem;
+  border-top: 1px dashed #CBD5E1;
+}
+
+.req-detail-col strong {
+  color: #0F172A;
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  margin-bottom: 0.125rem;
+}
+
+/* Actions Row */
+.invitation-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.btn-inv {
+  padding: 0.65rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  text-decoration: none;
+}
+
+.btn-inv.details {
+  background-color: #FFFFFF;
+  color: #334155;
+  border: 1px solid #CBD5E1;
+}
+
+.btn-inv.details:hover {
+  background-color: #F8FAFC;
+  color: #0F172A;
+}
+
+.btn-inv.decline {
+  background-color: #F1F5F9;
+  color: #64748B;
+}
+
+.btn-inv.decline:hover {
+  background-color: #FEE2E2;
+  color: #DC2626;
+}
+
+.btn-inv.accept {
+  background: linear-gradient(135deg, #F4673A 0%, #FF8B5E 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 10px rgba(244, 103, 58, 0.25);
+}
+
+.btn-inv.accept:hover {
+  background: linear-gradient(135deg, #EA580C 0%, #F97316 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(244, 103, 58, 0.35);
+}
+
+.btn-inv.accept:disabled {
+  background: #CBD5E1;
+  color: #94A3B8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-inv.chat {
+  background-color: #10B981;
+  color: #FFFFFF;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+}
+
+.btn-inv.chat:hover {
+  background-color: #059669;
+}
+
+/* Modals */
+.inbox-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1.5rem;
+}
+
+.inbox-modal-content {
+  background-color: #FFFFFF;
+  border-radius: 1.5rem;
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.inbox-modal-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.inbox-modal-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.inbox-modal-body {
+  padding: 2rem;
+}
+
+/* Empty State */
+.inbox-empty-box {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: #FFFFFF;
+  border: 1px dashed #CBD5E1;
+  border-radius: 1.5rem;
+}
+
+.inbox-empty-icon {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background-color: #F8FAFC;
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .inbox-page {
+    padding: 1rem;
+  }
+
+  .wallet-summary-banner {
+    padding: 1.25rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .inbox-card-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .invitation-actions-row {
+    justify-content: stretch;
+  }
+
+  .btn-inv {
+    flex: 1;
+  }
+
+  .inbox-search-input {
+    width: 100%;
+  }
+}
