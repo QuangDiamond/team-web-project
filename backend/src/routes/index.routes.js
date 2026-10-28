@@ -4,6 +4,7 @@ import { healthRoutes } from './health.routes.js';
 import { paymentRoutes } from "./payment.routes.js";
 import { applicationRoutes } from "./application.routes.js";
 import { invitationRoutes } from "./invitation.routes.js";
+import { agreementRoutes } from "./agreement.routes.js";
 import { Router } from 'express';
 
 export const router = Router();
@@ -14,4 +15,6 @@ router.use("/health", healthRoutes);
 router.use("/payment/v1", paymentRoutes);
 router.use("/applications/v1", applicationRoutes);
 router.use("/invitations/v1", invitationRoutes);
+router.use("/agreements/v1", agreementRoutes);
+
 
