@@ -21,6 +21,7 @@ export default function Layout() {
     { label: 'Kết nối (SC22)', path: '/connections' },
     { label: 'Thông báo (SC10)', path: '/notifications' },
     { label: 'Kiểm duyệt (SC43)', path: '/admin/moderation' },
+    { label: 'Thống kê (SC40)', path: '/admin/dashboard' },
     { label: 'Lớp học', path: '/classes' },
     { label: 'Giới thiệu', path: '/about' },
   ];
