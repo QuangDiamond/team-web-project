@@ -149,15 +149,15 @@ export default function InvitationsInbox() {
       <nav className="inbox-breadcrumb">
         <Link to="/">Trang chủ</Link>
         <span className="separator">/</span>
-        <span className="current">Hộp thư lời mời dạy (SC29)</span>
+        <span className="current">Lời mời dạy kèm</span>
       </nav>
 
       {/* Header */}
       <div className="inbox-header-row">
         <div>
-          <h1 className="inbox-header-title">Hộp thư lời mời dạy (Invitations Inbox)</h1>
+          <h1 className="inbox-header-title">Lời mời dạy kèm từ phụ huynh</h1>
           <p className="inbox-header-subtitle">
-            Tiếp nhận và phản hồi các đề nghị dạy kèm trực tiếp từ phụ huynh học sinh (UC17)
+            Tiếp nhận và phản hồi các đề nghị dạy kèm trực tiếp từ phụ huynh học sinh
           </p>
         </div>
       </div>
@@ -189,7 +189,7 @@ export default function InvitationsInbox() {
             <line x1="12" y1="8" x2="12" y2="16" />
             <line x1="8" y1="12" x2="16" y2="12" />
           </svg>
-          Nạp thêm Credit (UC19)
+          Nạp thêm Credit
         </Link>
       </div>
 

@@ -84,10 +84,10 @@ export default function AdminDashboard() {
           <div className="dash-title-wrap">
             <div className="dash-icon-badge">📈</div>
             <div className="dash-title-box">
-              <h1>Bảng điều khiển hệ thống & Thống kê KPI (SC40)</h1>
+              <h1>Bảng điều khiển hệ thống & Thống kê KPI</h1>
               <p>
                 Theo dõi hiệu suất vận hành người dùng, doanh thu, kết nối gia sư
-                và hoạt động lớp học (UC42)
+                và hoạt động lớp học
               </p>
             </div>
           </div>
