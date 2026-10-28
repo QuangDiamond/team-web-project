@@ -19,6 +19,7 @@ export default function Layout() {
     { label: 'Ứng tuyển (SC17)', path: '/applications' },
     { label: 'Lời mời dạy (SC29)', path: '/invitations' },
     { label: 'Kết nối (SC22)', path: '/connections' },
+    { label: 'Thông báo (SC10)', path: '/notifications' },
     { label: 'Lớp học', path: '/classes' },
     { label: 'Giới thiệu', path: '/about' },
   ];

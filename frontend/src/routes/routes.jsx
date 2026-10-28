@@ -8,6 +8,7 @@ import Profile from '../pages/Profile';
 import ApplicationsReview from '../pages/applications/ApplicationsReview';
 import InvitationsInbox from '../pages/invitations/InvitationsInbox';
 import MyConnections from '../pages/connections/MyConnections';
+import Notifications from '../pages/notifications/Notifications';
 import NotFound from '../pages/NotFound';
 
 export const router = createBrowserRouter([
@@ -27,6 +28,7 @@ export const router = createBrowserRouter([
       { path: 'tutor/invitations', element: <InvitationsInbox /> },
       { path: 'connections', element: <MyConnections /> },
       { path: 'contracts', element: <MyConnections /> },
+      { path: 'notifications', element: <Notifications /> },
     ],
   },
   { path: '*', element: <NotFound /> },
