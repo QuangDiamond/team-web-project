@@ -9,6 +9,10 @@ import RegisterComplete from '../pages/auth/RegisterComplete';
 import Payment from '../pages/payment/Payment';
 import Profile from '../pages/Profile';
 import NotFound from '../pages/NotFound';
+import RoleRoute from './RoleRoute';
+import DashboardLayout from '../layouts/DashboardLayout';
+import StudentDashboard from '../pages/student/StudentDashboard';
+import { STUDENT_MENU } from '../constants/dashboardMenus';
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +32,19 @@ export const router = createBrowserRouter([
       { path: 'register', element: <Register /> },
       { path: 'register/success', element: <RegisterSuccess /> },
       { path: 'register/complete', element: <RegisterComplete /> },
+    ],
+  },
+  // Student dashboard (UC36): dùng khung DashboardLayout chung, xem docs/architecture/dashboard-frame.md
+  {
+    element: <RoleRoute roles={['STUDENT']} />,
+    children: [
+      {
+        path: 'student',
+        element: <DashboardLayout menu={STUDENT_MENU} />,
+        children: [
+          { path: 'dashboard', element: <StudentDashboard />, handle: { title: 'Overview' } },
+        ],
+      },
     ],
   },
   { path: '*', element: <NotFound /> },

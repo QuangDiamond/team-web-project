@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { getGoogleLoginUrl } from '../../services/authService';
 import AuthLayout from '../../components/layout/AuthLayout';
@@ -29,7 +29,6 @@ const getRedirectNotice = (searchParams) => {
 
 export default function Login() {
   const { login } = useAuth();
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const [values, setValues] = useState({ email: '', password: '' });
@@ -74,8 +73,8 @@ export default function Login() {
     const result = await login({ email: values.email.trim(), password: values.password });
     setSubmitting(false);
 
+    // login() đã lưu user vào AuthContext, GuestRoute sẽ tự chuyển tới trang theo role
     if (result.success) {
-      navigate('/');
       return;
     }
 
