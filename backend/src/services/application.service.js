@@ -20,7 +20,7 @@ const { ApplyRequestsStatus } = ENUMS;
  * @param {Object|null} request - ParentRequest (lean) hoặc null nếu không còn
  * @returns {Object}
  */
-export const toApplicationDto = (application, request) => {
+export const toApplicationDto = (application, request, conversationId = null) => {
   let requestDto = null;
   if (request) {
     requestDto = {
@@ -37,6 +37,7 @@ export const toApplicationDto = (application, request) => {
     note: application.note,
     match_score: application.match_score,
     created_at: application.created_at,
+    conversation_id: conversationId,
     request: requestDto,
   };
 };
@@ -122,8 +123,18 @@ export const listMyApplications = async (user, { status, page, limit }) => {
     .lean();
   const requestById = new Map(requests.map((request) => [String(request._id), request]));
 
+  // Đơn đã được phụ huynh Continue có hội thoại 1-1: trả conversation_id để gia sư mở chat
+  const conversationIds = await mapConversationIds(
+    { tutor_profile_id: profile._id },
+    applications.map((application) => application.request_id)
+  );
+
   const items = applications.map((application) => {
-    return toApplicationDto(application, requestById.get(String(application.request_id)) || null);
+    let conversationId = null;
+    if (application.status === ApplyRequestsStatus.CONTINUED) {
+      conversationId = conversationIds.get(`${profile._id}|${application.request_id}`) || null;
+    }
+    return toApplicationDto(application, requestById.get(String(application.request_id)) || null, conversationId);
   });
   return { items: items, pagination: buildPagination(page, limit, total) };
 };

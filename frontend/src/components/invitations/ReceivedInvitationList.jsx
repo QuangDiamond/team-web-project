@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import OpenChatLink from '../common/OpenChatLink';
 import { INVITATION_STATUS, formatBudget, getModeLabel, getStatusBadge } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 
@@ -40,9 +41,14 @@ function ReceivedInvitationRow({ invitation, onAccept, onDecline }) {
           <p className="received-invitation-warning">This request is no longer open, so the invitation cannot be accepted.</p>
         )}
         {invitation.status === 'ACCEPTED' && (
-          <p className="received-invitation-chat">Conversation opened. Messaging is coming soon.</p>
+          <p className="received-invitation-chat">Conversation opened.</p>
         )}
       </div>
+      {invitation.status === 'ACCEPTED' && invitation.conversation_id && (
+        <div className="item-actions">
+          <OpenChatLink to={`/tutor/messages/${invitation.conversation_id}`} />
+        </div>
+      )}
       {invitation.status === 'PENDING' && (
         <div className="item-actions">
           <button type="button" className="btn btn-outline btn-sm" disabled={isBusy} onClick={() => runAction('decline', onDecline)}>

@@ -14,6 +14,7 @@ import {
   Settings,
   Sparkles,
   TrendingUp,
+  User,
   Users,
   Video,
 } from 'lucide-react';
@@ -82,6 +83,7 @@ export const PARENT_MENU = {
         { label: 'Applications', to: '/parent/applications', icon: ClipboardList },
         { label: 'AI Suggestions', to: '/parent/ai-suggestions', icon: Sparkles },
         { label: 'Invitations', to: '/parent/invitations', icon: Mail },
+        { label: 'Messages', to: '/parent/messages', icon: MessageSquare },
         { label: 'Contracts', icon: BookOpen },
         { label: 'Children & Progress', icon: Users },
       ],
@@ -106,6 +108,14 @@ export const TUTOR_MENU = {
         { label: 'Saved Requests', to: '/tutor/requests/saved', icon: Bookmark },
         { label: 'My Applications', to: '/tutor/applications', icon: Send },
         { label: 'Invitations', to: '/tutor/invitations', icon: Mail },
+      ],
+    },
+    {
+      label: 'MY WORK',
+      items: [
+        { label: 'Messages', to: '/tutor/messages', icon: MessageSquare },
+        { label: 'My Profile', to: '/tutor/profile', icon: User },
+        { label: 'My Posts', to: '/tutor/posts', icon: FileText },
       ],
     },
   ],

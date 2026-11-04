@@ -29,8 +29,10 @@ Lời mời đã gửi, mới nhất trước. Query: `status` (`PENDING|ACCEPTE
 ## PATCH `/:id/cancel`
 Hủy lời mời `PENDING` → `CANCELLED`. **Không hoàn credit.** Không có body.
 
+## Chat
+`GET /mine` (phụ huynh) trả thêm `conversation_id` cho lời mời `ACCEPTED` có hội thoại đang mở; nhắn tin qua `/api/chat/v1` (xem [chat.md](chat.md)).
+
 ## Chưa làm
-- Nhắn tin trong hội thoại (UC chat của thành viên khác).
 - Mời từ trang tìm kiếm / hồ sơ gia sư (chưa có UC); hiện chỉ mời từ màn gợi ý UC09.
 - Màn Figma `hire-request` dẫn tới Checkout (thanh toán) mâu thuẫn với UC14 (trừ credit) nên làm theo tài liệu UC.
 

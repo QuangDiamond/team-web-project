@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ClipboardList, Mail, Plus } from 'lucide-react';
+import { ClipboardList, Mail, MessageSquare, Plus } from 'lucide-react';
 import SectionCard from '../common/SectionCard';
 
 // Các lối tắt vào luồng chính của phụ huynh (Figma: Quick actions)
@@ -20,6 +20,10 @@ export default function ParentQuickActions() {
         <button type="button" className="btn btn-outline btn-block" onClick={() => navigate('/parent/invitations')}>
           <Mail size={16} aria-hidden="true" />
           <span>View my invitations</span>
+        </button>
+        <button type="button" className="btn btn-outline btn-block" onClick={() => navigate('/parent/messages')}>
+          <MessageSquare size={16} aria-hidden="true" />
+          <span>Open messages</span>
         </button>
       </div>
     </SectionCard>

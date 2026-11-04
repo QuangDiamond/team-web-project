@@ -30,7 +30,8 @@ export const openDirectConversation = async ({ parentUserId, tutorProfileId, req
 };
 
 /**
- * Tìm hội thoại 1-1 theo request, trả về map "tutor_profile_id|request_id" -> conversation id
+ * Tìm hội thoại 1-1 ĐANG MỞ theo request, trả về map "tutor_profile_id|request_id" -> conversation id
+ * (hội thoại đã đóng không có chat nên không trả về)
  * @param {Object} filter - điều kiện lọc thêm, ví dụ { parent_user_id } hoặc { tutor_profile_id }
  * @param {Array} requestIds
  * @returns {Promise<Map<string, string>>}
@@ -39,6 +40,7 @@ export const mapConversationIds = async (filter, requestIds) => {
   const conversations = await Conversation.find({
     ...filter,
     type: ENUMS.ConversationsType.DIRECT,
+    is_active: true,
     request_id: { $in: requestIds },
   })
     .select('tutor_profile_id request_id')

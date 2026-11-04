@@ -11,6 +11,9 @@ import { applicationRoutes } from "./application.routes.js";
 import { invitationRoutes } from "./invitation.routes.js";
 import { creditRoutes } from "./credit.routes.js";
 import { dashboardRoutes } from "./dashboard.routes.js";
+import { tutorProfileRoutes } from "./tutorProfile.routes.js";
+import { tutorPostRoutes } from "./tutorPost.routes.js";
+import { chatRoutes } from "./chat.routes.js";
 export const router = Router();
 
 router.use('/user/v1', userRoutes)
@@ -25,3 +28,6 @@ router.use("/applications/v1", applicationRoutes)
 router.use("/invitations/v1", invitationRoutes)
 router.use("/credits/v1", creditRoutes)
 router.use("/dashboard/v1", dashboardRoutes)
+router.use("/tutor-profile/v1", tutorProfileRoutes)
+router.use("/tutor-posts/v1", tutorPostRoutes)
+router.use("/chat/v1", chatRoutes)

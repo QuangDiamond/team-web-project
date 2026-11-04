@@ -1,6 +1,8 @@
+import { Link } from 'react-router-dom';
 import { LoaderCircle } from 'lucide-react';
 import Alert from './Alert';
 import EmptyState from './EmptyState';
+import { PROFILE_REQUIRED_MESSAGE } from '../../constants/requestLabels';
 
 /*
  * Hiển thị trạng thái của một danh sách tải từ API: đang tải, lỗi (có nút thử lại), rỗng, hoặc nội dung (children).
@@ -13,6 +15,16 @@ export default function ListState({ list, empty, children }) {
         <LoaderCircle size={26} className="spin" aria-hidden="true" />
         <span className="visually-hidden">Loading...</span>
       </div>
+    );
+  }
+
+  // Gia sư chưa có hồ sơ không phải lỗi hệ thống: chỉ đường tới trang tạo hồ sơ, không cần "Try again"
+  if (list.error && list.error.message === PROFILE_REQUIRED_MESSAGE) {
+    return (
+      <Alert type="info">
+        <p>Set up your tutor profile first to use this page.</p>
+        <Link to="/tutor/profile" className="btn btn-primary btn-sm">Complete my profile</Link>
+      </Alert>
     );
   }
 

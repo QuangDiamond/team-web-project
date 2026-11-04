@@ -61,5 +61,8 @@ Không có body. Chỉ áp dụng cho đơn `PENDING` thuộc request của ph�
 - Credit của gia sư **không hoàn lại** ở cả hai trường hợp, và không trừ thêm.
 - Hai thao tác đồng thời trên cùng một đơn chỉ một thao tác thành công (điều kiện `status: PENDING` trong câu cập nhật); các thao tác còn lại nhận 409. Nếu mở hội thoại lỗi, đơn được trả về `PENDING`.
 
+## Chat
+`GET /mine` (gia sư) trả thêm `conversation_id` cho đơn `CONTINUED` có hội thoại đang mở; phụ huynh nhắn tin với gia sư qua `/api/chat/v1` (xem [chat.md](chat.md)).
+
 ## Chưa làm
-Nhắn tin trong hội thoại (UC chat của thành viên khác).
+Tin nhắn dạng ảnh / file.

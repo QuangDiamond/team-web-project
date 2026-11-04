@@ -15,6 +15,10 @@ import StudentDashboard from '../pages/student/StudentDashboard';
 import AiTutorSuggestions from '../pages/parent/AiTutorSuggestions';
 import ParentDashboard from '../pages/parent/ParentDashboard';
 import RequestPicker from '../pages/parent/RequestPicker';
+import ChatPage from '../pages/chat/ChatPage';
+import TutorProfile from '../pages/tutor/TutorProfile';
+import TutorPosts from '../pages/tutor/TutorPosts';
+import TutorPostForm from '../pages/tutor/TutorPostForm';
 import TutorDashboard from '../pages/tutor/TutorDashboard';
 import TutoringRequests from '../pages/parent/TutoringRequests';
 import TutoringRequestForm from '../pages/parent/TutoringRequestForm';
@@ -85,6 +89,8 @@ export const router = createBrowserRouter([
           { path: 'applications', element: <RequestPicker mode="applications" />, handle: { title: 'Applications' } },
           { path: 'ai-suggestions', element: <RequestPicker mode="suggestions" />, handle: { title: 'AI Tutor Suggestions' } },
           { path: 'invitations', element: <SentInvitations />, handle: { title: 'My Invitations' } },
+          { path: 'messages', element: <ChatPage basePath="/parent/messages" />, handle: { title: 'Messages' } },
+          { path: 'messages/:conversationId', element: <ChatPage basePath="/parent/messages" />, handle: { title: 'Messages' } },
         ],
       },
     ],
@@ -104,6 +110,12 @@ export const router = createBrowserRouter([
           { path: 'requests/:id', element: <TutorRequestDetail />, handle: { title: 'Request Details' } },
           { path: 'applications', element: <MyApplications />, handle: { title: 'My Applications' } },
           { path: 'invitations', element: <ReceivedInvitations />, handle: { title: 'Invitations' } },
+          { path: 'messages', element: <ChatPage basePath="/tutor/messages" />, handle: { title: 'Messages' } },
+          { path: 'messages/:conversationId', element: <ChatPage basePath="/tutor/messages" />, handle: { title: 'Messages' } },
+          { path: 'profile', element: <TutorProfile />, handle: { title: 'My Profile' } },
+          { path: 'posts', element: <TutorPosts />, handle: { title: 'My Posts' } },
+          { path: 'posts/new', element: <TutorPostForm />, handle: { title: 'New Post' } },
+          { path: 'posts/:id/edit', element: <TutorPostForm />, handle: { title: 'Edit Post' } },
         ],
       },
     ],
