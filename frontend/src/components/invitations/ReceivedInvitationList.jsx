@@ -1,0 +1,74 @@
+import { useState } from 'react';
+import { INVITATION_STATUS, formatBudget, getModeLabel, getStatusBadge } from '../../constants/requestLabels';
+import { formatDate } from '../../utils/dateFormat';
+
+function ReceivedInvitationRow({ invitation, onAccept, onDecline }) {
+  const [busyAction, setBusyAction] = useState('');
+  const badge = getStatusBadge(INVITATION_STATUS, invitation.status);
+  const request = invitation.request;
+
+  const runAction = async (actionName, action) => {
+    setBusyAction(actionName);
+    await action(invitation);
+    setBusyAction('');
+  };
+  const isBusy = busyAction !== '';
+
+  let title = 'Request no longer available';
+  let metaParts = [];
+  let canAccept = false;
+  if (request) {
+    title = request.title;
+    metaParts = [request.subject_name, request.grade_level, getModeLabel(request.teaching_mode), formatBudget(request.budget)];
+    if (request.location_address) {
+      metaParts.push(request.location_address);
+    }
+    canAccept = request.is_available;
+  }
+
+  return (
+    <li className="item-row received-invitation-row">
+      <div className="item-row-body">
+        <div className="item-row-heading">
+          <p className="item-title">{title}</p>
+          <span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>
+        </div>
+        <p className="item-meta">{metaParts.join(' · ')}</p>
+        <p className="item-meta">A parent invited you · {formatDate(invitation.created_at)}</p>
+        {invitation.message && <p className="item-note">“{invitation.message}”</p>}
+        {invitation.status === 'PENDING' && !canAccept && (
+          <p className="received-invitation-warning">This request is no longer open, so the invitation cannot be accepted.</p>
+        )}
+        {invitation.status === 'ACCEPTED' && (
+          <p className="received-invitation-chat">Conversation opened. Messaging is coming soon.</p>
+        )}
+      </div>
+      {invitation.status === 'PENDING' && (
+        <div className="item-actions">
+          <button type="button" className="btn btn-outline btn-sm" disabled={isBusy} onClick={() => runAction('decline', onDecline)}>
+            {busyAction === 'decline' ? 'Declining...' : 'Decline'}
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            disabled={isBusy || !canAccept}
+            onClick={() => runAction('accept', onAccept)}
+          >
+            {busyAction === 'accept' ? 'Accepting...' : 'Accept'}
+          </button>
+        </div>
+      )}
+    </li>
+  );
+}
+
+// Lời mời gia sư nhận được; onAccept / onDecline(invitation) trả về Promise. Không hiện thông tin phụ huynh
+export default function ReceivedInvitationList({ invitations, onAccept, onDecline }) {
+  return (
+    <ul className="item-list">
+      {invitations.map((invitation) => (
+        <ReceivedInvitationRow key={invitation._id} invitation={invitation} onAccept={onAccept} onDecline={onDecline} />
+      ))}
+    </ul>
+  );
+}

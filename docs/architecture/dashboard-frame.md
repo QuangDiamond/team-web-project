@@ -110,3 +110,9 @@ import EmptyState from '../../components/common/EmptyState';
 | Role | URL | Menu | Page |
 |---|---|---|---|
 | STUDENT | `/student/dashboard` | `STUDENT_MENU` | `pages/student/StudentDashboard.jsx` (UC36) |
+| PARENT | `/parent/dashboard`, `/parent/applications` và `/parent/ai-suggestions` (trang chọn request `RequestPicker`, dẫn tới trang của từng request), `/parent/requests`, `/parent/requests/new`, `/parent/requests/:id`, `/parent/requests/:id/edit`, `/parent/requests/:requestId/ai-suggestions`, `/parent/requests/:id/applications`, `/parent/invitations` | `PARENT_MENU` | `pages/parent/*` (Overview `ParentDashboard.jsx`, UC10, UC09, UC14, duyệt đơn ứng tuyển) |
+| TUTOR | `/tutor/dashboard`, `/tutor/requests`, `/tutor/requests/suggested`, `/tutor/requests/saved`, `/tutor/requests/:id`, `/tutor/applications`, `/tutor/invitations` | `TUTOR_MENU` | `pages/tutor/*` (Overview `TutorDashboard.jsx`, UC11, UC12, phản hồi lời mời) |
+
+Parent và Tutor Dashboard dùng chung các thành phần `WelcomeBanner`, `StatCard`, `SectionCard`, `CompactList`, `EmptyState` và các lớp `.stat-grid`, `.dashboard-columns` trong `index.css`; số liệu lấy từ `docs/api/dashboards.md`, danh sách lấy từ các API có phân trang sẵn có. Trang đích sau đăng nhập khai báo trong `utils/getHomePathByRole.js`.
+
+Các mục menu không có `to` hiển thị mờ ("Coming soon"). Thêm trang của UC mới: khai báo `to` cho mục tương ứng trong `dashboardMenus.js` và thêm route vào đúng nhóm trong `routes.jsx`.
