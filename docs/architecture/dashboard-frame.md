@@ -110,8 +110,10 @@ import EmptyState from '../../components/common/EmptyState';
 | Role | URL | Menu | Page |
 |---|---|---|---|
 | STUDENT | `/student/dashboard` | `STUDENT_MENU` | `pages/student/StudentDashboard.jsx` (UC36) |
-| PARENT | `/parent/dashboard`, `/parent/applications` và `/parent/ai-suggestions` (trang chọn request `RequestPicker`, dẫn tới trang của từng request), `/parent/requests`, `/parent/requests/new`, `/parent/requests/:id`, `/parent/requests/:id/edit`, `/parent/requests/:requestId/ai-suggestions`, `/parent/requests/:id/applications`, `/parent/invitations` | `PARENT_MENU` | `pages/parent/*` (Overview `ParentDashboard.jsx`, UC10, UC09, UC14, duyệt đơn ứng tuyển) |
-| TUTOR | `/tutor/dashboard`, `/tutor/requests`, `/tutor/requests/suggested`, `/tutor/requests/saved`, `/tutor/requests/:id`, `/tutor/applications`, `/tutor/invitations` | `TUTOR_MENU` | `pages/tutor/*` (Overview `TutorDashboard.jsx`, UC11, UC12, phản hồi lời mời) |
+| PARENT | `/parent/dashboard`, `/parent/applications` và `/parent/ai-suggestions` (trang chọn request `RequestPicker`, dẫn tới trang của từng request), `/parent/requests`, `/parent/requests/new`, `/parent/requests/:id`, `/parent/requests/:id/edit`, `/parent/requests/:requestId/ai-suggestions`, `/parent/requests/:id/applications`, `/parent/invitations`, `/parent/messages`, `/parent/messages/:conversationId` | `PARENT_MENU` | `pages/parent/*` (Overview `ParentDashboard.jsx`, UC10, UC09, UC14, duyệt đơn ứng tuyển) |
+| TUTOR | `/tutor/dashboard`, `/tutor/requests`, `/tutor/requests/suggested`, `/tutor/requests/saved`, `/tutor/requests/:id`, `/tutor/applications`, `/tutor/invitations`, `/tutor/profile`, `/tutor/posts`, `/tutor/posts/new`, `/tutor/posts/:id/edit`, `/tutor/messages`, `/tutor/messages/:conversationId` | `TUTOR_MENU` | `pages/tutor/*` (Overview `TutorDashboard.jsx`, UC11, UC12, phản hồi lời mời, hồ sơ, bài đăng) |
+
+Màn Messages của Parent và Tutor là **cùng một trang** `pages/chat/ChatPage.jsx`, chỉ khác prop `basePath` (`/parent/messages` hoặc `/tutor/messages`).
 
 Parent và Tutor Dashboard dùng chung các thành phần `WelcomeBanner`, `StatCard`, `SectionCard`, `CompactList`, `EmptyState` và các lớp `.stat-grid`, `.dashboard-columns` trong `index.css`; số liệu lấy từ `docs/api/dashboards.md`, danh sách lấy từ các API có phân trang sẵn có. Trang đích sau đăng nhập khai báo trong `utils/getHomePathByRole.js`.
 

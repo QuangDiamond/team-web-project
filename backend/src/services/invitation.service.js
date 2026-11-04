@@ -21,7 +21,7 @@ const { TutorInvitationsStatus } = ENUMS;
  * @param {Object|null} tutor - { profile, fullName }
  * @returns {Object}
  */
-export const toInvitationDto = (invitation, request, tutor) => {
+export const toInvitationDto = (invitation, request, tutor, conversationId = null) => {
   let requestDto = null;
   if (request) {
     requestDto = { _id: String(request._id), title: request.title, subject_name: request.subject_name };
@@ -39,6 +39,7 @@ export const toInvitationDto = (invitation, request, tutor) => {
     status: invitation.status,
     message: invitation.message,
     created_at: invitation.created_at,
+    conversation_id: conversationId,
     request: requestDto,
     tutor: tutorDto,
   };
@@ -151,13 +152,24 @@ export const listMyInvitations = async (user, { status, page, limit }) => {
   const requestById = new Map(requests.map((request) => [String(request._id), request]));
   const tutors = await loadTutors(invitations.map((invitation) => invitation.tutor_profile_id));
 
-  const items = invitations.map((invitation) =>
-    toInvitationDto(
+  // Lời mời đã được gia sư Accept có hội thoại 1-1: trả conversation_id để phụ huynh mở chat
+  const conversationIds = await mapConversationIds(
+    { parent_user_id: user.id },
+    invitations.map((invitation) => invitation.request_id)
+  );
+
+  const items = invitations.map((invitation) => {
+    let conversationId = null;
+    if (invitation.status === TutorInvitationsStatus.ACCEPTED) {
+      conversationId = conversationIds.get(`${invitation.tutor_profile_id}|${invitation.request_id}`) || null;
+    }
+    return toInvitationDto(
       invitation,
       requestById.get(String(invitation.request_id)) || null,
-      tutors.get(String(invitation.tutor_profile_id)) || null
-    )
-  );
+      tutors.get(String(invitation.tutor_profile_id)) || null,
+      conversationId
+    );
+  });
   return { items: items, pagination: buildPagination(page, limit, total) };
 };
 

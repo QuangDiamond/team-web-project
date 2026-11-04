@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import OpenChatLink from '../common/OpenChatLink';
 import { APPLICATION_STATUS, getStatusBadge } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 import { getInitials } from '../../utils/getInitials';
@@ -82,7 +83,10 @@ export default function ReceivedApplicationCard({ application, onContinue, onSki
       )}
 
       {application.status === 'CONTINUED' && (
-        <p className="review-card-chat">Conversation opened. Messaging is coming soon.</p>
+        <div className="review-card-chat">
+          <span>Conversation opened.</span>
+          {application.conversation_id && <OpenChatLink to={`/parent/messages/${application.conversation_id}`} />}
+        </div>
       )}
     </li>
   );

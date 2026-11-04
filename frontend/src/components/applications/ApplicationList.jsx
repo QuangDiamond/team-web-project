@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import OpenChatLink from '../common/OpenChatLink';
 import { APPLICATION_STATUS, getStatusBadge } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 
@@ -38,7 +39,7 @@ function ApplicationRow({ application, onWithdraw }) {
         <p className="item-meta">{metaParts.join(' · ')}</p>
         {application.note && <p className="item-note">“{application.note}”</p>}
         {application.status === 'CONTINUED' && (
-          <p className="item-meta">The parent continued with you. A conversation has been opened; messaging is coming soon.</p>
+          <p className="item-meta">The parent continued with you. A conversation has been opened.</p>
         )}
       </div>
       {application.status === 'PENDING' && (
@@ -46,6 +47,11 @@ function ApplicationRow({ application, onWithdraw }) {
           <button type="button" className="btn btn-outline btn-sm" disabled={withdrawing} onClick={handleWithdraw}>
             {withdrawing ? 'Withdrawing...' : 'Withdraw'}
           </button>
+        </div>
+      )}
+      {application.status === 'CONTINUED' && application.conversation_id && (
+        <div className="item-actions">
+          <OpenChatLink to={`/tutor/messages/${application.conversation_id}`} />
         </div>
       )}
     </li>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import OpenChatLink from '../common/OpenChatLink';
 import { INVITATION_STATUS, getStatusBadge } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 
@@ -31,7 +32,7 @@ function InvitationRow({ invitation, onCancel }) {
         <p className="item-meta">For {requestTitle} · Sent {formatDate(invitation.created_at)}</p>
         {invitation.message && <p className="item-note">“{invitation.message}”</p>}
         {invitation.status === 'ACCEPTED' && (
-          <p className="item-meta">The tutor accepted. A conversation has been opened; messaging is coming soon.</p>
+          <p className="item-meta">The tutor accepted. A conversation has been opened.</p>
         )}
       </div>
       {invitation.status === 'PENDING' && (
@@ -39,6 +40,11 @@ function InvitationRow({ invitation, onCancel }) {
           <button type="button" className="btn btn-outline btn-sm" disabled={cancelling} onClick={handleCancel}>
             {cancelling ? 'Cancelling...' : 'Cancel invitation'}
           </button>
+        </div>
+      )}
+      {invitation.status === 'ACCEPTED' && invitation.conversation_id && (
+        <div className="item-actions">
+          <OpenChatLink to={`/parent/messages/${invitation.conversation_id}`} />
         </div>
       )}
     </li>

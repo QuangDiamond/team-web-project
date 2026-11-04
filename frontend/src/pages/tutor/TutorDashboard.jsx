@@ -52,7 +52,8 @@ export default function TutorDashboard() {
 
       {summary.data && !summary.data.has_profile && (
         <Alert type="info">
-          Complete your tutor profile to browse requests, apply and receive invitations. Your profile is not set up yet.
+          <p>Complete your tutor profile to browse requests, apply and receive invitations. Your profile is not set up yet.</p>
+          <Link to="/tutor/profile" className="btn btn-primary btn-sm">Create my profile</Link>
         </Alert>
       )}
 
@@ -64,6 +65,10 @@ export default function TutorDashboard() {
             <Link to="/tutor/requests" className="link">Browse all requests</Link>
             {' · '}
             <Link to="/tutor/requests/saved" className="link">{`Saved requests (${summary.data.saved_requests})`}</Link>
+            {' · '}
+            <Link to="/tutor/posts" className="link">{`My posts (${summary.data.published_posts} published)`}</Link>
+            {' · '}
+            <Link to="/tutor/messages" className="link">{`Messages (${summary.data.active_conversations})`}</Link>
           </p>
         </>
       )}

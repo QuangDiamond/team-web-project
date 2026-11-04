@@ -53,3 +53,19 @@ export const formatBudget = (value) => {
   }
   return `${Number(value).toLocaleString('vi-VN')} ₫/session`;
 };
+
+export const POST_STATUS = {
+  DRAFT: { label: 'Draft', tone: 'warning' },
+  PUBLISHED: { label: 'Published', tone: 'success' },
+  PENDING_MODERATION: { label: 'Under review', tone: 'warning' },
+  HIDDEN: { label: 'Hidden', tone: 'info' },
+  DELETED: { label: 'Deleted', tone: 'error' },
+};
+
+export const AVAILABILITY_OPTIONS = [
+  { value: 'AVAILABLE', label: 'Available for new students' },
+  { value: 'NOT_AVAILABLE', label: 'Not available right now' },
+];
+
+// Thông báo backend trả về (409) khi gia sư chưa tạo hồ sơ; các trang gia sư dùng để chỉ đường tới /tutor/profile
+export const PROFILE_REQUIRED_MESSAGE = 'Complete your tutor profile first';
