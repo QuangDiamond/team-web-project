@@ -6,6 +6,9 @@ import Register from '../pages/auth/Register';
 import Payment from '../pages/payment/Payment';
 import Profile from '../pages/Profile';
 import NotFound from '../pages/NotFound';
+import ClassroomsPage from '../pages/classroom/ClassroomsPage';
+import ClassroomDetail from '../pages/classroom/ClassroomDetail';
+import JoinClassPage from '../pages/classroom/JoinClassPage';
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +20,10 @@ export const router = createBrowserRouter([
       { path: 'register', element: <Register /> },
       { path: 'profile', element: <Profile /> },
       { path: 'payment', element: <Payment /> },
+      { path: 'classes', element: <ClassroomsPage /> },
+      { path: 'classes/:id', element: <ClassroomDetail /> },
+      { path: 'join-class', element: <JoinClassPage /> },
+      { path: 'join-class/:code', element: <JoinClassPage /> },
     ],
   },
   { path: '*', element: <NotFound /> },
