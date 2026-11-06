@@ -4,17 +4,26 @@ import * as authService from '../services/authService.js';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem('user');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [loading, setLoading] = useState(false);
 
   const login = useCallback(async (credentials) => {
     setLoading(true);
     try {
-      // TODO: Replace with actual API call
       const response = await authService.login(credentials);
-      setUser(response.data);
-      // setUser({ id: 1, name: 'Demo User', email: credentials.email });
-      return { success: true };
+      const userData = response.data;
+      setUser(userData);
+      try {
+        localStorage.setItem('user', JSON.stringify(userData));
+      } catch {}
+      return { success: true, user: userData };
     } catch (error) {
       return { success: false, error: error.message };
     } finally {
@@ -25,11 +34,13 @@ export function AuthProvider({ children }) {
   const register = useCallback(async (data) => {
     setLoading(true);
     try {
-      // TODO: Replace with actual API call
-      // const response = await api.post('/auth/register', data);
-      // setUser(response.data.user);
-      setUser({ id: 1, name: data.name, email: data.email });
-      return { success: true };
+      const response = await authService.register(data);
+      const userData = response.data?.user || response.data;
+      setUser(userData);
+      try {
+        localStorage.setItem('user', JSON.stringify(userData));
+      } catch {}
+      return { success: true, user: userData };
     } catch (error) {
       return { success: false, error: error.message };
     } finally {
@@ -39,6 +50,9 @@ export function AuthProvider({ children }) {
 
   const logout = useCallback(() => {
     setUser(null);
+    try {
+      localStorage.removeItem('user');
+    } catch {}
   }, []);
 
   return (

@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.18.0",
     "morgan": "^1.10.0",
+    "team-web-project": "file:..",
     "vnpay": "^2.5.0",
     "zod": "^4.6.5"
   },

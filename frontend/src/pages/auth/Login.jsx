@@ -20,7 +20,7 @@ export default function Login() {
 
     const result = await login(formData);
     if (result.success) {
-      navigate('/dashboard');
+      navigate('/classes');
     } else {
       setError(result.error || 'Login failed');
     }
@@ -51,9 +51,11 @@ export default function Login() {
               type="password"
               id="password"
               name="password"
+              placeholder="Tối thiểu 8 ký tự"
               value={formData.password}
               onChange={handleChange}
               required
+              minLength={8}
               disabled={loading}
             />
           </div>
