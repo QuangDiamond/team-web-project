@@ -12,4 +12,8 @@ export const env = {
   oauthClientId: process.env.OAUTH_CLIENT_ID || '',
   oauthClientSecret: process.env.OAUTH_CLIENT_SECRET || '',
   oauthRedirectUri: process.env.OAUTH_URI || '',
+  // Payment Gateway Service (PSP). PSP_BASE_URL rỗng + không phải production = dùng trang thanh toán giả
+  pspBaseUrl: process.env.PSP_BASE_URL || '',
+  pspClientId: process.env.PSP_CLIENT_ID || '',
+  pspClientSecret: process.env.PSP_CLIENT_SECRET || '',
 };

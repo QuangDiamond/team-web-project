@@ -83,9 +83,14 @@ export const googleCallback = async (req, res) =>{
             return res.redirect(`${env.corsOrigin}/register/complete?ticket=${result.registerTicket}`);
         }
         setAuthCookie(res, result.token);
-        return res.redirect(`${env.corsOrigin}/`);
+        // UC02: đăng nhập xong chuyển tới dashboard theo role (D2)
+        return res.redirect(`${env.corsOrigin}/dashboard`);
     } catch (error) {
         console.error('Google callback failed:', error);
+        // Tài khoản bị khóa (UC37): báo riêng để màn Login hiện đúng thông báo
+        if (error.status === 403) {
+            return res.redirect(`${env.corsOrigin}/login?oauth=locked`);
+        }
         return res.redirect(failedUrl);
     }
 }

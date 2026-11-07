@@ -8,6 +8,7 @@ import * as userService from "../services/user.service.js"
 import {AppError} from '../common/utils/AppError.js';
 import { sendVerificationEmail } from '../common/utils/mailer.js';
 import { env } from '../config/environment.js';
+import { ACCOUNT_LOCKED_MESSAGE } from '../common/middlewares/auth.middleware.js';
 
 
 const VERIFY_TOKEN_TTL_MS = 24 * 60 * 60 * 1000;
@@ -150,6 +151,10 @@ export const login = async (userLogin) =>{
     if(!isPasswordCorrect){
         throw new AppError("Invalid username or password", 401)
     }
+    // Kiểm tra sau khi đúng mật khẩu để không lộ trạng thái tài khoản (UC37, D18)
+    if(user.account_status !== 'ACTIVE'){
+        throw new AppError(ACCOUNT_LOCKED_MESSAGE, 403)
+    }
     if(!user.email_verify_status){
         throw new AppError("Account not verified", 403)
     }
@@ -220,6 +225,9 @@ export const handleGoogleCallback = async (code) => {
   }
 
   if (user) {
+    if (user.account_status !== 'ACTIVE') {
+      throw new AppError(ACCOUNT_LOCKED_MESSAGE, 403);
+    }
     const loggedInUser = await userService.updateUserLogin(user._id);
     return { user: removePasswordHash(loggedInUser), token: issueToken(loggedInUser) };
   }

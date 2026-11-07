@@ -1,0 +1,203 @@
+/* Màn User Management (UC37 – SC39): /admin/users */
+
+/* ---------- Bộ lọc (Figma: thẻ tìm kiếm phía trên bảng) ---------- */
+.user-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) repeat(4, minmax(0, 1fr));
+  align-items: end;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 16px;
+}
+
+.user-filter {
+  min-width: 0;
+}
+
+.user-search-icon {
+  flex-shrink: 0;
+  margin-left: 14px;
+  color: var(--color-text-muted);
+}
+
+.user-search .form-control input {
+  padding-left: 10px;
+}
+
+.user-date-error {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+/* ---------- Danh sách ---------- */
+.user-list {
+  overflow: hidden;
+}
+
+.user-list-count {
+  margin: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.user-list .pagination {
+  border-top: 1px solid var(--color-border);
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.user-cell-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.user-cell-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.user-cell-email {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.user-me-badge {
+  padding: 1px 8px;
+}
+
+.user-unverified {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Mật khẩu tạm (Create admin, D20) ---------- */
+.temp-password {
+  display: flex;
+  gap: 8px;
+}
+
+.temp-password-value {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  font-size: 16px;
+  color: var(--color-text);
+}
+
+.temp-password-value:focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
+}
+
+.temp-password-warning {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.temp-password-warning svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+@media (max-width: 1100px) {
+  .user-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .user-search {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Màn hình hẹp: mỗi dòng của bảng thành 1 thẻ (nhãn cột lấy từ data-label) */
+@media (max-width: 760px) {
+  .user-list .user-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .user-list .user-table,
+  .user-list .user-table tbody,
+  .user-list .user-table tr,
+  .user-list .user-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .user-list .user-table tr {
+    padding: 8px 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .user-list .user-table tbody tr:first-child {
+    border-top: none;
+  }
+
+  .user-list .user-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 16px;
+    border-top: none;
+    text-align: right;
+  }
+
+  .user-list .user-table td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  /* Ô "User" hiện đủ avatar + tên, không cần nhãn */
+  .user-list .user-table td[data-label='User']::before,
+  .user-list .user-table td[data-label='Action']::before {
+    content: none;
+  }
+
+  .user-list .user-table td[data-label='User'] {
+    text-align: left;
+  }
+
+  .user-list .user-table td[data-label='Action'] .btn {
+    width: 100%;
+  }
+
+  .user-list .user-table .user-unverified {
+    display: inline;
+    margin: 0 0 0 8px;
+  }
+}
