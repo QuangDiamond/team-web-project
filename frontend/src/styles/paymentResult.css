@@ -1,0 +1,126 @@
+/* Màn kết quả thanh toán (UC17 – SC21): /payment/result?order=<mã đơn> */
+
+.result-card {
+  max-width: 640px;
+  margin: 24px auto 0;
+  padding: 32px;
+  text-align: center;
+}
+
+.result-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+}
+
+.result-icon-success {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+.result-icon-error {
+  background: var(--color-error-soft);
+  color: var(--color-error);
+}
+
+.result-icon-pending {
+  background: var(--color-info-soft);
+  color: var(--color-info);
+}
+
+.result-icon-gray {
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+}
+
+/* Biểu tượng vòng tròn đang tải thì quay */
+.result-icon .lucide-loader-circle {
+  animation: spin 900ms linear infinite;
+}
+
+.result-title {
+  margin: 20px 0 0;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.result-description {
+  max-width: 480px;
+  margin: 8px auto 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.order-details {
+  margin: 24px 0 0;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: var(--color-surface);
+  text-align: left;
+}
+
+.order-details div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 7px 0;
+  font-size: 14px;
+}
+
+.order-details dt {
+  color: var(--color-text-muted);
+}
+
+.order-details dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.order-details .order-details-amount {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.order-details .order-details-code {
+  font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+}
+
+.result-receipt {
+  margin: 16px 0 0;
+  font-size: 14px;
+}
+
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+@media (max-width: 560px) {
+  .result-card {
+    margin-top: 0;
+    padding: 24px 16px;
+  }
+
+  .result-actions {
+    flex-direction: column-reverse;
+  }
+
+  .result-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-icon .lucide-loader-circle {
+    animation: none;
+  }
+}

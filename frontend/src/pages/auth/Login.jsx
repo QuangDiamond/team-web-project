@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { getGoogleLoginUrl } from '../../services/authService';
 import AuthLayout from '../../components/layout/AuthLayout';
@@ -9,9 +9,11 @@ import GoogleButton from '../../components/common/GoogleButton';
 import Alert from '../../components/common/Alert';
 import ResendVerificationButton from '../../components/common/ResendVerificationButton';
 import { validateEmail, focusFirstInvalidField, toFieldErrors } from '../../utils/authValidators';
+import { getPathAfterLogin } from '../../routes/redirectAfterLogin';
 import '../../styles/login.css';
 
 const LOGIN_FIELDS = ['email', 'password'];
+const LOCKED_MESSAGE = 'Your account has been suspended or banned. Please contact support.';
 
 // Thông báo theo query backend gắn khi redirect về /login
 const getRedirectNotice = (searchParams) => {
@@ -21,6 +23,10 @@ const getRedirectNotice = (searchParams) => {
   if (searchParams.get('verify') === 'invalid') {
     return { type: 'error', message: 'This verification link is invalid or has expired.', canResend: true };
   }
+  // Đăng nhập Google bằng tài khoản bị khóa (UC37): backend chuyển về /login?oauth=locked
+  if (searchParams.get('oauth') === 'locked') {
+    return { type: 'error', message: LOCKED_MESSAGE };
+  }
   if (searchParams.get('oauth') === 'failed') {
     return { type: 'error', message: 'Google sign-in failed. Please try again.' };
   }
@@ -28,14 +34,22 @@ const getRedirectNotice = (searchParams) => {
 };
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, clearLoggedOutByUser, accountLockedOnStart } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
 
   const [values, setValues] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState('');
   const [notVerified, setNotVerified] = useState(false);
+  // Mở app khi tài khoản đã bị khóa (/me trả 403) thì hiện luôn thông báo khóa
+  const [accountLocked, setAccountLocked] = useState(accountLockedOnStart);
+
+  // Đã tới /login sau Log out: từ giờ bị PrivateRoute đưa về /login thì lại nhớ trang để quay lại (D2-B2)
+  useEffect(() => {
+    clearLoggedOutByUser();
+  }, [clearLoggedOutByUser]);
   const [submitting, setSubmitting] = useState(false);
 
   // Thông báo từ URL chỉ hiện cho đến khi user submit lần đầu
@@ -61,6 +75,7 @@ export default function Login() {
     event.preventDefault();
     setFormError('');
     setNotVerified(false);
+    setAccountLocked(false);
     setRedirectNotice(null);
 
     const newErrors = validate();
@@ -75,13 +90,18 @@ export default function Login() {
     setSubmitting(false);
 
     if (result.success) {
-      navigate('/');
+      navigate(getPathAfterLogin(location), { replace: true });
       return;
     }
 
     const error = result.error;
-    if (error.status === 403) {
+    // 403 có 2 trường hợp: chưa kích hoạt email, hoặc tài khoản bị khóa (Suspended / Banned, UC37)
+    if (error.status === 403 && error.message === 'Account not verified') {
       setNotVerified(true);
+      return;
+    }
+    if (error.status === 403) {
+      setAccountLocked(true);
       return;
     }
     if (error.status === 422 && error.errors) {
@@ -92,7 +112,11 @@ export default function Login() {
   };
 
   let alert = null;
-  if (notVerified) {
+  if (accountLocked) {
+    alert = (
+      <Alert type="error">{LOCKED_MESSAGE}</Alert>
+    );
+  } else if (notVerified) {
     alert = (
       <Alert type="error">
         Your account is not verified yet. Please check your email or resend the verification email below.

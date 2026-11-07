@@ -1,10 +1,12 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { LoaderCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { getPathAfterLogin } from './redirectAfterLogin';
 
-// Chỉ cho người chưa đăng nhập vào các màn auth; đã đăng nhập thì về trang chủ
+// Chỉ cho người chưa đăng nhập vào các màn auth; đã đăng nhập thì về dashboard (hoặc trang đang mở dở)
 export default function GuestRoute() {
   const { user, initializing } = useAuth();
+  const location = useLocation();
 
   if (initializing) {
     return (
@@ -16,7 +18,7 @@ export default function GuestRoute() {
   }
 
   if (user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={getPathAfterLogin(location)} replace />;
   }
 
   return <Outlet />;

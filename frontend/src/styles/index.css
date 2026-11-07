@@ -1,3 +1,6 @@
+/* Khu vực dashboard (sidebar, card, modal, bảng...) dùng chung cho các màn đã đăng nhập */
+@import './dashboard.css';
+
 * {
   box-sizing: border-box;
 }
@@ -22,6 +25,9 @@
   --color-success-soft: #e8f6ee;
   --color-info: #1d5fa8;
   --color-info-soft: #e8f1fb;
+  /* Cảnh báo (badge Suspended, lưu ý): chữ #92400e trên nền #fef3c7 đạt contrast >= 4.5 */
+  --color-warning: #92400e;
+  --color-warning-soft: #fef3c7;
   --radius-sm: 8px;
   --radius-md: 12px;
   --focus-ring: 0 0 0 3px rgba(242, 107, 58, 0.35);

@@ -58,7 +58,7 @@ Mở bằng trình duyệt (không gọi bằng axios). Set cookie `oauth_state`
 
 ## GET `/oauth/redirect`
 Google redirect về đây (giá trị `OAUTH_URI` trong `.env` phải trỏ tới endpoint này). Kết quả đều là redirect:
-- Đã có tài khoản (theo `google_id`, hoặc theo email → tự liên kết Google và kích hoạt) → set cookie `token`, redirect `{CORS_ORIGIN}/`
+- Đã có tài khoản (theo `google_id`, hoặc theo email → tự liên kết Google và kích hoạt) → set cookie `token`, redirect `{CORS_ORIGIN}/dashboard`
 - Chưa có tài khoản → redirect `{CORS_ORIGIN}/register/complete?ticket=<ticket>` (ticket hạn 15 phút)
 - Lỗi / sai state → redirect `{CORS_ORIGIN}/login?oauth=failed`
 

@@ -14,3 +14,13 @@ export const validator = (schema) => {
     next();
   };
 };
+
+// shortcut: validate query trong controller, thay bằng validator(schema, 'query') khi làm xong mục "Planned" trong AGENTS.md
+export const validateQuery = (schema, query) => {
+  const result = schema.safeParse(query);
+  if (!result.success) {
+    const {issues} = result.error;
+    throw new AppError(issues[0].message, 422, result.error.flatten().fieldErrors);
+  }
+  return result.data;
+};
