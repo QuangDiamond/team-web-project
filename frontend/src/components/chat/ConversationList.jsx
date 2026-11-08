@@ -72,15 +72,17 @@ export default function ConversationList({ conversations, selectedId, basePath }
   return (
     <div className="chat-sidebar-inner">
       <div className="chat-search-bar">
-        <Search size={15} className="chat-search-icon" aria-hidden="true" />
-        <input
-          type="text"
-          className="chat-search-input"
-          placeholder="Tìm liên hệ hoặc bài đăng..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          aria-label="Tìm kiếm cuộc trò chuyện"
-        />
+        <div className="chat-search-wrap">
+          <Search size={15} className="chat-search-icon" aria-hidden="true" />
+          <input
+            type="text"
+            className="chat-search-input"
+            placeholder="Tìm kiếm người liên hệ..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label="Tìm kiếm cuộc trò chuyện"
+          />
+        </div>
       </div>
 
       {filtered.length === 0 ? (

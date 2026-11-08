@@ -8,9 +8,7 @@ import {
   Send,
   Search,
   Maximize2,
-  LoaderCircle,
-  Sparkles,
-  CheckCheck
+  LoaderCircle
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import {
@@ -288,10 +286,7 @@ export default function FloatingChatWidget() {
               </div>
             ) : (
               <div className="header-title-box">
-                <div className="header-brand-pill">
-                  <MessageSquare size={16} />
-                  <span>Tin nhắn</span>
-                </div>
+                <span className="header-title-text">Tin nhắn</span>
                 {unreadCount > 0 && (
                   <span className="header-badge">{unreadCount} mới</span>
                 )}
@@ -332,20 +327,22 @@ export default function FloatingChatWidget() {
             <div className="floating-conv-list-container">
               {/* Search */}
               <div className="floating-search-bar">
-                <Search size={14} className="search-icon" />
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm người liên hệ..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+                <div className="floating-search-wrap">
+                  <Search size={14} className="floating-search-icon" aria-hidden="true" />
+                  <input
+                    type="text"
+                    className="floating-search-input"
+                    placeholder="Tìm kiếm người liên hệ..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
               </div>
 
               {/* List */}
               <div className="floating-conv-scroll">
                 {filteredConversations.length === 0 ? (
                   <div className="floating-empty">
-                    <Sparkles size={32} color="#94a3b8" />
                     <p>Chưa có cuộc trò chuyện nào</p>
                   </div>
                 ) : (
@@ -417,7 +414,6 @@ export default function FloatingChatWidget() {
 
                 {!loadingMessages && messages.length === 0 && (
                   <div className="floating-empty">
-                    <Sparkles size={32} color="#0284c7" />
                     <p>Hãy gửi lời chào đầu tiên 👋</p>
                   </div>
                 )}
@@ -433,7 +429,6 @@ export default function FloatingChatWidget() {
                         <p className="floating-msg-text">{m.content}</p>
                         <div className="floating-msg-meta">
                           <span className="floating-msg-time">{formatTime(m.created_at)}</span>
-                          {isMine && <CheckCheck size={11} className="floating-msg-check" />}
                         </div>
                       </div>
                     </div>
