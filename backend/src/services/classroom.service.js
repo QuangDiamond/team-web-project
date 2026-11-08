@@ -1552,14 +1552,6 @@ export const sendClassChatMessage = async ({ classroomId, user, content, attachm
   return populated;
 };
 
-  const populated = await Message.findById(message._id).populate({
-    path: 'sender_user_id',
-    select: 'full_name avatar_url role',
-  });
-
-  return populated;
-};
-
 /**
  * ===================================================
  * UC26 & UC27: ASSIGNMENTS & GRADING (Bài tập & Chấm điểm)
