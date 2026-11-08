@@ -42,7 +42,7 @@ export default function HistoryFilters({
       </div>
 
       <div className="history-filter">
-        <label htmlFor={fromId} className="form-label">From</label>
+        <label htmlFor={fromId} className="form-label">Từ ngày</label>
         <div className={dateError ? 'form-control has-error' : 'form-control'}>
           <input
             id={fromId}
@@ -56,7 +56,7 @@ export default function HistoryFilters({
       </div>
 
       <div className="history-filter">
-        <label htmlFor={toId} className="form-label">To</label>
+        <label htmlFor={toId} className="form-label">Đến ngày</label>
         <div className={dateError ? 'form-control has-error' : 'form-control'}>
           <input
             id={toId}
@@ -73,13 +73,13 @@ export default function HistoryFilters({
       {dateError && (
         <button type="button" className="btn btn-outline btn-sm history-export" disabled>
           <Download size={16} aria-hidden="true" />
-          <span>Export CSV</span>
+          <span>Xuất CSV</span>
         </button>
       )}
       {!dateError && (
         <a href={exportUrl} className="btn btn-outline btn-sm history-export" download>
           <Download size={16} aria-hidden="true" />
-          <span>Export CSV</span>
+          <span>Xuất CSV</span>
         </a>
       )}
 

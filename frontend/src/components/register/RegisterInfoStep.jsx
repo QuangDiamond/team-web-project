@@ -22,21 +22,21 @@ export default function RegisterInfoStep({ values, errors, onChange, onBlur, onN
 
   return (
     <form onSubmit={handleSubmit} noValidate>
-      <h1 className="auth-title">Create your account <span aria-hidden="true">🚀</span></h1>
-      <p className="auth-subtitle">Free — no credit card required.</p>
+      <h1 className="auth-title">Tạo tài khoản <span aria-hidden="true">🚀</span></h1>
+      <p className="auth-subtitle">Miễn phí — không cần thẻ tín dụng.</p>
 
       <GoogleButton href={googleHref} label="Google" />
 
-      <p className="auth-divider"><span>or fill in your details</span></p>
+      <p className="auth-divider"><span>hoặc điền thông tin của bạn</span></p>
 
       <FormInput
         id="full_name"
-        label="Full Name"
+        label="Họ và tên"
         value={values.full_name}
         onChange={handleChange}
         onBlur={handleBlur}
         error={errors.full_name}
-        placeholder="John Smith"
+        placeholder="Nguyễn Văn An"
         autoComplete="name"
       />
       <FormInput
@@ -47,38 +47,38 @@ export default function RegisterInfoStep({ values, errors, onChange, onBlur, onN
         onChange={handleChange}
         onBlur={handleBlur}
         error={errors.email}
-        placeholder="you@example.com"
+        placeholder="ban@example.com"
         autoComplete="email"
       />
       <PasswordInput
         id="password"
-        label="Password"
+        label="Mật khẩu"
         value={values.password}
         onChange={handleChange}
         onBlur={handleBlur}
         error={errors.password}
-        placeholder="At least 8 characters"
+        placeholder="Ít nhất 8 ký tự"
         autoComplete="new-password"
         belowControl={<PasswordStrengthMeter password={values.password} />}
       />
       <PasswordInput
         id="confirm_password"
-        label="Confirm Password"
+        label="Xác nhận mật khẩu"
         value={values.confirm_password}
         onChange={handleChange}
         onBlur={handleBlur}
         error={errors.confirm_password}
-        placeholder="Re-enter your password"
+        placeholder="Nhập lại mật khẩu"
         autoComplete="new-password"
       />
 
       <button type="submit" className="btn btn-primary btn-block">
-        <span>Next</span>
+        <span>Tiếp tục</span>
         <ArrowRight size={18} aria-hidden="true" />
       </button>
 
       <p className="auth-footer-text">
-        Already have an account? <Link to="/login" className="link">Sign in</Link>
+        Bạn đã có tài khoản? <Link to="/login" className="link">Đăng nhập</Link>
       </p>
     </form>
   );

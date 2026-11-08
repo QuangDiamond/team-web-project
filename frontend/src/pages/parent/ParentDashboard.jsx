@@ -30,16 +30,16 @@ export default function ParentDashboard() {
   const summary = useSummary(getParentSummary);
   const recentRequests = usePagedList(getMyRequests, RECENT_REQUEST_PARAMS);
 
-  let fullName = 'Parent';
+  let fullName = "Phụ huynh";
   if (user && user.full_name) {
     fullName = user.full_name;
   }
 
-  let bannerSummary = 'Here is an overview of your tutoring requests.';
+  let bannerSummary = "Tổng quan các yêu cầu tìm gia sư của bạn.";
   if (summary.data) {
-    const requestText = pluralize(summary.data.open_requests, 'open request', 'open requests');
+    const requestText = pluralize(summary.data.open_requests, "yêu cầu đang mở", "yêu cầu đang mở");
     const applicationText = pluralize(summary.data.pending_applications, 'application', 'applications');
-    bannerSummary = `You have ${requestText} and ${applicationText} waiting for your review.`;
+    bannerSummary = `Bạn có ${requestText} và ${applicationText} đang chờ bạn xem xét.`;
   }
 
   return (
@@ -49,26 +49,26 @@ export default function ParentDashboard() {
       {summary.loading && (
         <div className="page-loading-inline" role="status">
           <LoaderCircle size={26} className="spin" aria-hidden="true" />
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">Đang tải...</span>
         </div>
       )}
       {summary.error && (
         <Alert type="error">
           <p>{summary.error.message}</p>
-          <button type="button" className="btn btn-outline btn-sm" onClick={summary.reload}>Try again</button>
+          <button type="button" className="btn btn-outline btn-sm" onClick={summary.reload}>Thử lại</button>
         </Alert>
       )}
       {summary.data && <ParentStats summary={summary.data} />}
 
       <div className="dashboard-columns">
         <div className="dashboard-column">
-          <SectionCard title="Your requests" action={<Link to="/parent/requests" className="link">View all</Link>}>
+          <SectionCard title="Yêu cầu của bạn" action={<Link to="/parent/requests" className="link">Xem tất cả</Link>}>
             <ListState
               list={recentRequests}
               empty={{
                 icon: FileText,
-                title: 'No tutoring requests yet',
-                description: 'Create your first request and qualified tutors will start applying.',
+                title: "Chưa có yêu cầu tìm gia sư",
+                description: "Tạo yêu cầu đầu tiên để các gia sư phù hợp ứng tuyển.",
               }}
             >
               {recentRequests.data && (

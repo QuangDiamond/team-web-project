@@ -41,7 +41,7 @@ export default function DashboardHeader({ title, actions = [], isSidebarOpen, on
         <button
           type="button"
           className="dashboard-icon-button dashboard-menu-button"
-          aria-label="Open navigation"
+          aria-label="Mở menu điều hướng"
           aria-controls="dashboard-sidebar"
           aria-expanded={isSidebarOpen}
           onClick={onOpenSidebar}
@@ -55,8 +55,8 @@ export default function DashboardHeader({ title, actions = [], isSidebarOpen, on
         <Link
           to={notificationsPath}
           className="dashboard-icon-button"
-          aria-label="Notifications"
-          title="Notifications"
+          aria-label="Thông báo"
+          title="Thông báo"
           style={{ position: 'relative' }}
         >
           <Bell size={20} aria-hidden="true" />

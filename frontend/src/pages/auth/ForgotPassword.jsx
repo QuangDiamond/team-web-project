@@ -45,25 +45,25 @@ export default function ForgotPassword() {
     }
   };
 
-  let submitLabel = sent ? 'Resend reset link' : 'Send reset link';
-  if (submitting) submitLabel = 'Sending...';
-  else if (secondsLeft > 0) submitLabel = `Resend in ${secondsLeft}s`;
+  let submitLabel = sent ? 'Gửi lại liên kết đặt lại mật khẩu' : 'Gửi liên kết đặt lại mật khẩu';
+  if (submitting) submitLabel = 'Đang gửi...';
+  else if (secondsLeft > 0) submitLabel = `Gửi lại sau ${secondsLeft} giây`;
 
   return (
     <AuthLayout>
       <div className="password-recovery">
         <span className="password-recovery-icon" aria-hidden="true"><Mail size={26} /></span>
-        <h1 className="auth-title">Forgot your password?</h1>
-        <p className="auth-subtitle">Enter your account email. We will send a secure link to reset your password.</p>
-        {sent && <Alert type="success">If the email exists and is eligible, a reset link will be sent. Check your inbox and spam folder. The link expires in 15 minutes.</Alert>}
+        <h1 className="auth-title">Bạn quên mật khẩu?</h1>
+        <p className="auth-subtitle">Nhập email của tài khoản để nhận liên kết đặt lại mật khẩu an toàn.</p>
+        {sent && <Alert type="success">Nếu email đã được đăng ký và tài khoản đủ điều kiện, bạn sẽ nhận được liên kết đặt lại mật khẩu. Vui lòng kiểm tra hộp thư đến và thư rác. Liên kết có hiệu lực trong 15 phút.</Alert>}
         {formError && <Alert type="error">{formError}</Alert>}
         <form onSubmit={handleSubmit} noValidate>
-          <FormInput id="email" label="Email address" type="email" autoComplete="email" required
+          <FormInput id="email" label="Địa chỉ email" type="email" autoComplete="email" required
             value={email} onChange={(event) => { setEmail(event.target.value); setEmailError(''); }}
             error={emailError} disabled={submitting} />
           <button type="submit" className="btn btn-primary btn-block" disabled={submitting || secondsLeft > 0}>{submitLabel}</button>
         </form>
-        <Link to="/login" className="link">Back to sign in</Link>
+        <Link to="/login" className="link">Quay lại đăng nhập</Link>
       </div>
     </AuthLayout>
   );

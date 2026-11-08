@@ -11,18 +11,18 @@ const ACTION_ICONS = {
 export default function UserStatusActions({ user, isOwnAccount, onAction }) {
   return (
     <section className="card user-actions" aria-labelledby="user-actions-title">
-      <h2 id="user-actions-title" className="user-side-title" tabIndex={-1}>Account status</h2>
+      <h2 id="user-actions-title" className="user-side-title" tabIndex={-1}>Trạng thái tài khoản</h2>
 
       {isOwnAccount && (
         <p className="own-account-note">
           <Info size={16} aria-hidden="true" />
-          <span>This is your own account. You cannot change its status. Ask another admin if needed.</span>
+          <span>Đây là tài khoản của bạn nên bạn không thể tự đổi trạng thái. Hãy nhờ quản trị viên khác nếu cần.</span>
         </p>
       )}
 
       {!isOwnAccount && (
         <>
-          <p className="user-side-text">Every change needs a reason and is recorded in the audit log.</p>
+          <p className="user-side-text">Mỗi thay đổi đều cần có lý do và được ghi vào nhật ký quản trị.</p>
           <div className="user-action-buttons">
             {getAvailableStatusActions(user.account_status).map((actionKey) => {
               const action = STATUS_ACTIONS[actionKey];

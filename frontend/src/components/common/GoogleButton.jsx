@@ -11,7 +11,7 @@ function GoogleLogo() {
 }
 
 // Nút "Continue with Google": là link vì trình duyệt phải chuyển hẳn sang backend rồi sang Google
-export default function GoogleButton({ href, label = 'Continue with Google' }) {
+export default function GoogleButton({ href, label = 'Tiếp tục với Google' }) {
   return (
     <a href={href} className="btn btn-outline btn-block">
       <GoogleLogo />

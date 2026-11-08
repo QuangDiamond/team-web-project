@@ -52,16 +52,16 @@ export default function ResetPassword() {
     <AuthLayout>
       <div className="password-recovery">
         <span className="password-recovery-icon" aria-hidden="true"><LockKeyhole size={26} /></span>
-        <h1 className="auth-title">Create a new password</h1>
-        <p className="auth-subtitle">Choose a new password. You will need to sign in again after resetting it.</p>
+        <h1 className="auth-title">Tạo mật khẩu mới</h1>
+        <p className="auth-subtitle">Chọn mật khẩu mới. Bạn cần đăng nhập lại sau khi đặt lại mật khẩu.</p>
         {formError && <Alert type="error">{formError}</Alert>}
-        {invalidLink ? <Alert type="error">This reset link is invalid or expired. <Link to="/forgot-password" className="link">Request a new reset link</Link>.</Alert> : (
+        {invalidLink ? <Alert type="error">Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn. <Link to="/forgot-password" className="link">Yêu cầu liên kết mới</Link>.</Alert> : (
           <form onSubmit={handleSubmit} noValidate>
             <NewPasswordFields values={values} errors={errors} onChange={handleChange} disabled={submitting} />
-            <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>{submitting ? 'Resetting...' : 'Reset password'}</button>
+            <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>{submitting ? 'Đang đặt lại...' : 'Đặt lại mật khẩu'}</button>
           </form>
         )}
-        <Link to="/forgot-password" className="link">Request another reset link</Link>
+        <Link to="/forgot-password" className="link">Yêu cầu liên kết đặt lại mật khẩu khác</Link>
       </div>
     </AuthLayout>
   );

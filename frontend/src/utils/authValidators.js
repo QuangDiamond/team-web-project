@@ -7,20 +7,20 @@ export const REGISTER_ROLES = ['STUDENT', 'TUTOR', 'PARENT'];
 export const validateFullName = (fullName) => {
   const trimmed = fullName.trim();
   if (trimmed.length === 0) {
-    return 'Full name is required';
+    return 'Vui lòng nhập họ và tên';
   }
   if (trimmed.length > 100) {
-    return 'Full name must be at most 100 characters';
+    return 'Họ và tên không được quá 100 ký tự';
   }
   return '';
 };
 
 export const validateEmail = (email) => {
   if (email.trim().length === 0) {
-    return 'Email is required';
+    return 'Vui lòng nhập email';
   }
   if (!EMAIL_PATTERN.test(email.trim())) {
-    return 'Please enter a valid email address';
+    return 'Vui lòng nhập địa chỉ email hợp lệ';
   }
   return '';
 };
@@ -28,24 +28,24 @@ export const validateEmail = (email) => {
 // BR-01: 8–64 ký tự, ít nhất 1 chữ hoa, 1 chữ thường, 1 chữ số
 export const validatePassword = (password) => {
   if (password.length < 8) {
-    return 'Password must be at least 8 characters';
+    return 'Mật khẩu phải có ít nhất 8 ký tự';
   }
   if (password.length > 64) {
-    return 'Password must be at most 64 characters';
+    return 'Mật khẩu không được quá 64 ký tự';
   }
   if (!/[A-Z]/.test(password)) {
-    return 'Password must contain at least one uppercase letter';
+    return 'Mật khẩu phải có ít nhất một chữ hoa';
   }
   if (!/[a-z]/.test(password)) {
-    return 'Password must contain at least one lowercase letter';
+    return 'Mật khẩu phải có ít nhất một chữ thường';
   }
   if (!/[0-9]/.test(password)) {
-    return 'Password must contain at least one digit';
+    return 'Mật khẩu phải có ít nhất một chữ số';
   }
   return '';
 };
 
-const STRENGTH_LABELS = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+const STRENGTH_LABELS = ['', 'Yếu', 'Trung bình', 'Khá', 'Mạnh'];
 
 // Độ mạnh mật khẩu 0–4, mỗi tiêu chí đạt được 1 điểm:
 // (1) >= 8 ký tự, (2) có cả chữ hoa và chữ thường, (3) có chữ số, (4) có ký tự đặc biệt hoặc >= 12 ký tự
@@ -68,24 +68,24 @@ export const getPasswordStrength = (password) => {
 
 export const validateConfirmPassword =(password, confirmPassword) => {
   if (confirmPassword.length === 0) {
-    return 'Please confirm your password';
+    return 'Vui lòng xác nhận mật khẩu';
   }
   if (password !== confirmPassword) {
-    return 'Confirm password does not match';
+    return 'Mật khẩu xác nhận không khớp';
   }
   return '';
 };
 
 export const validateRole = (role) => {
   if (!REGISTER_ROLES.includes(role)) {
-    return 'Please choose your role';
+    return 'Vui lòng chọn vai trò của bạn';
   }
   return '';
 };
 
 export const validateAgreeTerms = (agreeTerms) => {
   if (agreeTerms !== true) {
-    return 'You must agree to the Terms of Service';
+    return 'Bạn cần đồng ý với Điều khoản sử dụng';
   }
   return '';
 };

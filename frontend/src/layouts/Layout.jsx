@@ -19,6 +19,7 @@ import { getHomePathByRole } from '../utils/getHomePathByRole';
 import { getUnreadCount, notificationService } from '../services/notificationService';
 import { getMyProfile } from '../services/tutorProfileService';
 import { getInitials } from '../utils/getInitials';
+import { getRoleLabel } from '../constants/dashboardNav';
 import FloatingChatWidget from '../components/chat/FloatingChatWidget';
 
 const AVATAR_PALETTE = ['#0284C7', '#6366F1', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#0D9488'];
@@ -335,7 +336,7 @@ export default function Layout() {
                 </div>
 
                 <Link to={dashboardPath} className="btn btn-primary">
-                  Dashboard
+                  Bảng điều khiển
                 </Link>
                 <Link to={profilePath} className="btn btn-outline">
                   {user.full_name || user.email || 'Tài khoản'}
@@ -364,7 +365,7 @@ export default function Layout() {
               type="button"
               className="mobile-menu-btn"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle Navigation"
+              aria-label="Mở/đóng menu"
             >
               <svg
                 width="24"
@@ -448,7 +449,7 @@ export default function Layout() {
                     className="btn btn-primary"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Vào Dashboard ({user.role})
+                    Vào bảng điều khiển ({getRoleLabel(user.role)})
                   </Link>
                   <Link
                     to={messagesPath}
@@ -528,9 +529,9 @@ export default function Layout() {
             <div className="footer-column">
               <h4>Dành cho gia sư</h4>
               <ul>
-                <li><Link to="/register">Đăng ký làm gia sư</Link></li>
-                <li><Link to="/#how-it-works">Quy trình nhận lớp</Link></li>
-                <li><Link to="/register">Bảng giá gói Pro</Link></li>
+                <li><Link to={user ? dashboardPath : '/login'}>Bảng điều khiển</Link></li>
+                <li><Link to="/register">Đăng ký Phụ huynh / Gia sư</Link></li>
+                <li><Link to="/payment">Gói dịch vụ &amp; tín dụng</Link></li>
               </ul>
             </div>
 
@@ -545,7 +546,12 @@ export default function Layout() {
           </div>
 
           <div className="footer-bottom">
-            <p>&copy; 2026 TuConnector. Tất cả các quyền được bảo lưu.</p>
+            <p>&copy; {new Date().getFullYear()} TuConnector. Bảo lưu mọi quyền.</p>
+            <div className="footer-bottom-links">
+              <Link to="/">Trang chủ</Link>
+              <Link to="/login">Đăng nhập</Link>
+              <Link to="/register">Đăng ký</Link>
+            </div>
           </div>
         </div>
       </footer>

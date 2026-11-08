@@ -45,7 +45,7 @@ export default function ChatPage({ basePath }) {
           <div className="chat-placeholder-container">
             <EmptyState
               icon={MessageSquare}
-              title="Chọn một cuộc trò chuyện"
+              title="Chọn cuộc trò chuyện"
               description="Chọn một người liên hệ ở danh sách bên trái để đọc tin nhắn, trao đổi việc học và chuẩn bị tiến tới Thỏa thuận dạy kèm."
             />
           </div>

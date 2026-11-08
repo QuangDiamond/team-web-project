@@ -9,8 +9,8 @@ import PaymentHistoryPanel from '../../components/credits/PaymentHistoryPanel';
 import '../../styles/credits.css';
 
 const TABS = [
-  { key: 'credits', label: 'Credit activity' },
-  { key: 'payments', label: 'Payments' },
+  { key: 'credits', label: 'Biến động tín dụng' },
+  { key: 'payments', label: 'Thanh toán' },
 ];
 
 // Tab đang mở lưu trong query ?tab= để F5 / chia sẻ link vẫn giữ đúng tab
@@ -50,28 +50,28 @@ export default function CreditsTransactions() {
   return (
     <>
       <PageHeader
-        eyebrow="BILLING"
-        title="Credits & Transactions"
-        description="Your plan, credit balance, credit activity and payment history."
+        eyebrow="THANH TOÁN"
+        title="Tín dụng và giao dịch"
+        description="Theo dõi gói dịch vụ, số dư, biến động tín dụng và lịch sử thanh toán của bạn."
         actions={(
           <Link to="/checkout" className="btn btn-primary btn-sm">
             <Sparkles size={16} aria-hidden="true" />
-            <span>Upgrade / Buy credits</span>
+            <span>Nâng cấp / Mua tín dụng</span>
           </Link>
         )}
       />
 
-      {loadError && <Alert type="error">Could not load your plan: {loadError}</Alert>}
+      {loadError && <Alert type="error">Không thể tải gói dịch vụ của bạn: {loadError}</Alert>}
       {!billing && !loadError && (
         <div className="card credits-loading" role="status">
           <LoaderCircle size={22} className="spin" aria-hidden="true" />
-          <span>Loading your plan...</span>
+          <span>Đang tải gói dịch vụ của bạn...</span>
         </div>
       )}
       {billing && <CreditStats billing={billing} />}
 
       <section className="card history-card">
-        <div className="tab-list" role="tablist" aria-label="History">
+        <div className="tab-list" role="tablist" aria-label="Lịch sử">
           {TABS.map((tab) => {
             const isActive = tab.key === activeTab;
             let tabIndex = -1;

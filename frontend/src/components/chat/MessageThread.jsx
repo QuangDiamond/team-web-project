@@ -114,7 +114,7 @@ export default function MessageThread({ thread, basePath }) {
         <div className="chat-thread-state">
           <Alert type="error">{thread.error.message}</Alert>
           <Link to={basePath} className="link">
-            Quay lại danh sách hội thoại
+            Quay lại danh sách trò chuyện
           </Link>
         </div>
       </div>
@@ -147,7 +147,7 @@ export default function MessageThread({ thread, basePath }) {
         <Link
           to={basePath}
           className="chat-back dashboard-icon-button"
-          aria-label="Quay lại danh sách"
+          aria-label="Quay lại danh sách trò chuyện"
           title="Quay lại"
         >
           <ChevronLeft size={18} aria-hidden="true" />
@@ -232,7 +232,6 @@ export default function MessageThread({ thread, basePath }) {
             </p>
           </div>
         )}
-
         {items}
       </div>
 

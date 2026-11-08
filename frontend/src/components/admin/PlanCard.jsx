@@ -13,38 +13,38 @@ export default function PlanCard({ plan, onEdit }) {
     cardClass = 'card plan-card is-pro';
   }
 
-  let smsLabel = 'Off';
+  let smsLabel = 'Tắt';
   if (plan.sms_reminders_enabled) {
-    smsLabel = 'On';
+    smsLabel = 'Bật';
   }
 
   return (
-    <article className={cardClass} aria-label={`${roleLabel} ${planTitle} plan`}>
+    <article className={cardClass} aria-label={`Gói ${planTitle} dành cho ${roleLabel}`}>
       <div className="plan-card-header">
         <h3 className="plan-card-title">{planTitle}</h3>
-        {plan.is_active === false && <span className="badge badge-gray">Inactive</span>}
+        {plan.is_active === false && <span className="badge badge-gray">Ngừng hoạt động</span>}
       </div>
 
       <p className="plan-card-price">
         <span className="plan-card-amount">{formatVnd(plan.monthly_price)}</span>
-        <span className="plan-card-period"> / month</span>
+        <span className="plan-card-period"> / tháng</span>
       </p>
 
       <dl className="plan-card-features">
         <div>
-          <dt>Credits per month</dt>
-          <dd>{plan.monthly_credits}</dd>
+          <dt>Tín dụng mỗi tháng</dt>
+          <dd>{plan.monthly_credits.toLocaleString('vi-VN')}</dd>
         </div>
         <div>
-          <dt>AI quota</dt>
-          <dd>{plan.ai_quota}</dd>
+          <dt>Lượt dùng AI</dt>
+          <dd>{plan.ai_quota.toLocaleString('vi-VN')}</dd>
         </div>
         <div>
-          <dt>Class limit</dt>
+          <dt>Giới hạn số lớp</dt>
           <dd>{getClassLimitLabel(plan.max_classrooms)}</dd>
         </div>
         <div>
-          <dt>SMS reminders</dt>
+          <dt>Nhắc lịch qua SMS</dt>
           <dd>{smsLabel}</dd>
         </div>
       </dl>
@@ -53,10 +53,10 @@ export default function PlanCard({ plan, onEdit }) {
         type="button"
         className="btn btn-outline btn-sm"
         onClick={() => onEdit(plan)}
-        aria-label={`Edit ${roleLabel} ${planTitle} plan`}
+        aria-label={`Sửa gói ${planTitle} dành cho ${roleLabel}`}
       >
         <Pencil size={16} aria-hidden="true" />
-        <span>Edit plan</span>
+        <span>Sửa gói dịch vụ</span>
       </button>
     </article>
   );

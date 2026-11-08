@@ -88,7 +88,7 @@ export default function Notifications() {
       setNotifications(res.notifications || []);
       setUnreadCount(res.unreadCount || 0);
     } catch (err) {
-      console.error('Failed to load notifications:', err);
+      console.error("Không thể tải thông báo:", err);
     } finally {
       setLoading(false);
     }
@@ -341,7 +341,7 @@ export default function Notifications() {
                           >
                             {log.channel === 'IN_APP' && (
                               <>
-                                <Bell size={11} /> Web in-app
+                                <Bell size={11} /> Trong ứng dụng
                               </>
                             )}
                             {log.channel === 'EMAIL' && (
@@ -351,7 +351,7 @@ export default function Notifications() {
                             )}
                             {log.channel === 'SMS' && (
                               <>
-                                <PhoneCall size={11} /> SMS Gateway
+                                <PhoneCall size={11} /> Cổng SMS
                               </>
                             )}
                             {log.status === 'DELIVERED' ? ' ✓' : ''}
@@ -532,9 +532,9 @@ export default function Notifications() {
 
                 <div className="pref-row">
                   <div className="pref-label">
-                    <span className="pref-title">Ví credit & Nạp tiền</span>
+                    <span className="pref-title">Ví tín dụng & Nạp tiền</span>
                     <span className="pref-subtitle">
-                      Giao dịch nạp credit và gia hạn gói thành công
+                      Giao dịch nạp tín dụng và gia hạn gói thành công
                     </span>
                   </div>
                   <div className="pref-toggles">

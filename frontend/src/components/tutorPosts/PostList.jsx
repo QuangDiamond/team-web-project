@@ -10,9 +10,9 @@ function PostRow({ post, onChangeStatus, onDelete }) {
   let toggleAction = null;
   if (!post.is_locked) {
     if (post.status === 'PUBLISHED') {
-      toggleAction = { label: 'Hide', icon: EyeOff, nextStatus: 'HIDDEN' };
+      toggleAction = { label: "Ẩn", icon: EyeOff, nextStatus: 'HIDDEN' };
     } else {
-      toggleAction = { label: 'Publish', icon: Eye, nextStatus: 'PUBLISHED' };
+      toggleAction = { label: "Đăng bài", icon: Eye, nextStatus: 'PUBLISHED' };
     }
   }
 
@@ -27,7 +27,7 @@ function PostRow({ post, onChangeStatus, onDelete }) {
           {post.subject_name} · {post.grade_level} · {getModeLabel(post.teaching_mode)} · {formatBudget(post.price)}
         </p>
         <p className="item-meta">{post.schedule}</p>
-        {post.is_locked && <p className="item-meta">This post is under moderation and cannot be changed.</p>}
+        {post.is_locked && <p className="item-meta">Bài đăng đang được kiểm duyệt nên không thể thay đổi.</p>}
       </div>
       {!post.is_locked && (
         <div className="item-actions">
@@ -39,11 +39,11 @@ function PostRow({ post, onChangeStatus, onDelete }) {
           )}
           <button type="button" className="btn btn-outline btn-sm" onClick={() => navigate(`/tutor/posts/${post._id}/edit`)}>
             <Pencil size={14} aria-hidden="true" />
-            <span>Edit</span>
+            <span>Sửa</span>
           </button>
           <button type="button" className="btn btn-outline btn-sm post-delete-button" onClick={() => onDelete(post)}>
             <Trash2 size={14} aria-hidden="true" />
-            <span>Delete</span>
+            <span>Xóa</span>
           </button>
         </div>
       )}

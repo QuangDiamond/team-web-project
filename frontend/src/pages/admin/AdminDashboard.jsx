@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { statsService } from '../../services/statsService';
+import { getUserRoleLabel } from '../../utils/userDisplay';
 import '../../styles/AdminDashboard.css';
 
 export default function AdminDashboard() {
@@ -285,7 +286,7 @@ export default function AdminDashboard() {
                           display: 'inline-block'
                         }}
                       />
-                      {r.role}
+                      {getUserRoleLabel(r.role)}
                     </span>
                     <span className="role-dist-val">
                       {r.count} ({r.percent}%)
@@ -343,7 +344,7 @@ export default function AdminDashboard() {
                 <span className="funnel-step-val">{kpis.totalRequests ?? 0}</span>
               </div>
               <div className="funnel-step-box">
-                <span className="funnel-step-title">2. Ứng tuyển &amp; Lời mời ({kpis.conversationsOpened ?? 0} phòng chat mở)</span>
+                <span className="funnel-step-title">2. Ứng tuyển &amp; Lời mời ({kpis.conversationsOpened ?? 0} cuộc trò chuyện đang mở)</span>
                 <span className="funnel-step-val">
                   {(kpis.totalApplications || 0) + (kpis.totalInvitations || 0)} lượt
                 </span>
@@ -378,7 +379,7 @@ export default function AdminDashboard() {
                 </span>
               </div>
               <div className="quick-metric-item">
-                <span className="quick-metric-label">Gói nạp Credit</span>
+                <span className="quick-metric-label">Gói nạp tín dụng</span>
                 <span className="quick-metric-val">
                   {(kpis.creditPackRevenue || 0).toLocaleString('vi-VN')} đ (
                   {kpis.totalGmv > 0
@@ -409,11 +410,11 @@ export default function AdminDashboard() {
                 </span>
               </div>
               <div className="quick-metric-item">
-                <span className="quick-metric-label">Tổng nhật ký Audit Logs</span>
+                <span className="quick-metric-label">Tổng số bản ghi nhật ký quản trị (Audit Logs)</span>
                 <span className="quick-metric-val">{kpis.totalAuditLogs ?? 0} bản ghi</span>
               </div>
               <div className="quick-metric-item">
-                <span className="quick-metric-label">Audit Logs lưu trữ (BR-16)</span>
+                <span className="quick-metric-label">Nhật ký quản trị đã lưu</span>
                 <span className="quick-metric-val">100% đầy đủ</span>
               </div>
             </div>

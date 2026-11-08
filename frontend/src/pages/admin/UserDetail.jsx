@@ -53,14 +53,14 @@ export default function UserDetail() {
   const backLink = (
     <Link to="/admin/users" className="link-back user-detail-back">
       <ChevronLeft size={16} aria-hidden="true" />
-      <span>Back to users</span>
+      <span>Quay lại danh sách người dùng</span>
     </Link>
   );
 
   if (loadError) {
-    let message = `Could not load this user: ${loadError.message}`;
+    let message = `Không thể tải thông tin người dùng: ${loadError.message}`;
     if (loadError.status === 404) {
-      message = 'This user does not exist or was deleted.';
+      message = 'Người dùng này không tồn tại hoặc đã bị xóa.';
     }
     return (
       <div className="user-detail">
@@ -76,7 +76,7 @@ export default function UserDetail() {
         {backLink}
         <div className="card user-detail-loading" role="status">
           <LoaderCircle size={22} className="spin" aria-hidden="true" />
-          <span>Loading user...</span>
+          <span>Đang tải thông tin người dùng...</span>
         </div>
       </div>
     );

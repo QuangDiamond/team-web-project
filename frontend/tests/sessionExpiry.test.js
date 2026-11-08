@@ -26,6 +26,18 @@ test('401 from protected APIs clears the session; public auth errors keep their 
         await assert.rejects(reject({ config: { url: '/auth/v1/me' }, response: { status: 403, data: { message: 'Your account has been suspended or banned' } } }));
         assert.equal(locked, 1);
         assert.equal(expired, 3);
+        await assert.rejects(reject({ config: { url: '/auth/v1/login' }, response: { status: 403, data: {
+          message: 'Account not verified', errors: { email: ['Email is required'] },
+        } } }), (error) => {
+          assert.equal(error.rawMessage, 'Account not verified');
+          assert.equal(error.message, 'Tài khoản chưa xác thực email.');
+          assert.deepEqual(error.errors, { email: ['Vui lòng nhập email.'] });
+          return true;
+        });
+        const payload = { message: 'Get users successfully!', data: { full_name: 'English Name', role: 'TUTOR' } };
+        const localized = api.interceptors.response.handlers[0].fulfilled({ data: payload });
+        assert.equal(localized.message, 'Thao tác thành công.');
+        assert.deepEqual(localized.data, { full_name: 'English Name', role: 'TUTOR' });
         setSessionExpiredHandler(null);
         setAccountLockedHandler(null);
       };
