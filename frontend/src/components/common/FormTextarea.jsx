@@ -17,7 +17,10 @@ export default function FormTextarea({ id, label, value, onChange, error, hint, 
 
   return (
     <div className="form-field">
-      <label htmlFor={id} className="form-label">{label}</label>
+      <label htmlFor={id} className="form-label">
+        {label}
+        {optional && <span className="form-optional"> (optional)</span>}
+      </label>
       <div className={error ? 'form-control has-error' : 'form-control'}>
         <textarea
           id={id}
@@ -26,15 +29,11 @@ export default function FormTextarea({ id, label, value, onChange, error, hint, 
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          maxLength={maxLength}
           disabled={disabled}
+          maxLength={maxLength}
           aria-invalid={error ? 'true' : 'false'}
           aria-describedby={describedBy}
         />
-      </div>
-      <div className="form-textarea-meta">
-        {hint && <p id={hintId} className="form-field-hint">{hint}</p>}
-        {maxLength && <span className="form-counter" aria-hidden="true">{value.length}/{maxLength}</span>}
       </div>
       {error && <p id={errorId} className="form-error">{error}</p>}
     </div>
