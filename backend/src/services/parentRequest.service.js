@@ -2,6 +2,11 @@ import mongoose from 'mongoose';
 import { ParentRequest } from '../models/ParentRequest.js';
 import { ParentChildLink } from '../models/ParentChildLink.js';
 import { ApplyRequest } from '../models/ApplyRequest.js';
+import { TutorInvitation } from '../models/TutorInvitation.js';
+import { BookmarkedRequest } from '../models/BookmarkedRequest.js';
+import { AiSuggestion } from '../models/AiSuggestion.js';
+import { AiPostSuggestion } from '../models/AiPostSuggestion.js';
+import { Conversation } from '../models/Conversation.js';
 import { User } from '../models/User.js';
 import { ENUMS } from '../models/enums.js';
 import { AppError } from '../common/utils/AppError.js';
@@ -223,4 +228,37 @@ export const updateRequest = async (user, requestId, data) => {
   request.set(data);
   await request.save();
   return getMyRequest(user, requestId);
+};
+
+/**
+ * Xóa hẳn request của chính phụ huynh cùng đơn ứng tuyển, lời mời, bookmark và gợi ý liên quan.
+ * Không xóa được nếu request đã có hội thoại với gia sư (đã Continue / Accept). Credit đã dùng không hoàn lại.
+ * DB local là standalone (không có transaction): xóa dữ liệu liên quan trước, request sau cùng; lỗi giữa chừng thì
+ * request vẫn còn và bấm xóa lại được.
+ * @param {Object} user - req.user { id, role }
+ * @param {string} requestId
+ * @returns {Promise<{ _id: string }>}
+ */
+export const deleteRequest = async (user, requestId) => {
+  assertRole(user, ENUMS.UserRole.PARENT);
+  assertValidId(requestId);
+
+  const request = await ParentRequest.findOne({ _id: requestId, parent_user_id: user.id }).lean();
+  if (!request) {
+    throw new AppError('Tutoring request not found', 404);
+  }
+
+  const hasConversation = await Conversation.exists({ request_id: request._id });
+  if (hasConversation) {
+    throw new AppError('This request already has a conversation with a tutor and cannot be deleted', 409);
+  }
+
+  await ApplyRequest.deleteMany({ request_id: request._id });
+  await TutorInvitation.deleteMany({ request_id: request._id });
+  await BookmarkedRequest.deleteMany({ request_id: request._id });
+  await AiSuggestion.deleteMany({ request_id: request._id });
+  await AiPostSuggestion.deleteMany({ request_id: request._id });
+  await ParentRequest.deleteOne({ _id: request._id });
+
+  return { _id: String(request._id) };
 };

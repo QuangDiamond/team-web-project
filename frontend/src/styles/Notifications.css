@@ -1,0 +1,232 @@
+/* Shared notification center, including /admin/notifications. */
+.noti-page {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+
+.noti-page .page-header {
+  margin-bottom: 0;
+}
+
+.noti-filters {
+  padding: 18px;
+  display: grid;
+  gap: 16px;
+}
+
+.noti-categories, .noti-read-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.noti-read-filters {
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.noti-filter-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.noti-filter-button[aria-pressed="true"] {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+  border-color: var(--color-primary-strong);
+}
+
+.noti-filter-button:hover {
+  background: var(--color-surface);
+}
+
+.noti-filter-button:focus-visible, .noti-preference input:focus-visible {
+  outline: 2px solid var(--color-primary-strong);
+  outline-offset: 3px;
+}
+
+.noti-list {
+  display: grid;
+  gap: 14px;
+}
+
+.noti-item {
+  display: flex;
+  gap: 16px;
+  padding: 22px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.noti-item-unread {
+  border-left: 4px solid var(--color-primary-strong);
+}
+
+.noti-category-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  color: var(--color-info);
+  background: var(--color-info-soft);
+}
+
+.noti-category-SESSION, .noti-category-ASSIGNMENT {
+  color: var(--color-success);
+  background: var(--color-success-soft);
+}
+
+.noti-category-SYSTEM {
+  color: var(--color-warning);
+  background: var(--color-warning-soft);
+}
+
+.noti-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.noti-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.noti-item-meta time {
+  margin-left: auto;
+}
+
+.noti-unread-label {
+  color: var(--color-primary-strong);
+  font-weight: 700;
+}
+
+.noti-item-title {
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 10px 0 6px;
+  overflow-wrap: anywhere;
+}
+
+.noti-item-body {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.noti-delivery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.noti-delivery span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.noti-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+  align-items: center;
+}
+
+.noti-item-actions .noti-delete {
+  margin-left: auto;
+  color: var(--color-error);
+}
+
+.noti-muted {
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.noti-preferences {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.noti-preference {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+}
+
+.noti-preference small {
+  display: block;
+  margin-top: 5px;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.noti-preference input {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  accent-color: var(--color-primary-strong);
+}
+
+@media (max-width: 640px) {
+  .noti-item {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .noti-category-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .noti-item-meta time {
+    margin-left: 0;
+  }
+
+  .noti-item-actions .btn {
+    flex: 1 1 100%;
+  }
+
+  .noti-categories {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .noti-filter-button {
+    padding: 8px;
+  }
+
+}

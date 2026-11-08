@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BookOpen } from 'lucide-react';
 import { usePagedList } from '../../hooks/usePagedList';
-import { getMyClassrooms } from '../../services/classroomService';
+import { getMyClassroomsPage } from '../../services/classroomService';
 import ListState from '../../components/common/ListState';
 import Pagination from '../../components/common/Pagination';
 import TutorClassroomList from '../../components/tutorClassroom/TutorClassroomList';
@@ -11,7 +11,7 @@ const PAGE_SIZE = 10;
 
 export default function MyClasses() {
   const [page, setPage] = useState(1);
-  const classrooms = usePagedList(getMyClassrooms, { page: page, limit: PAGE_SIZE });
+  const classrooms = usePagedList(getMyClassroomsPage, { page: page, limit: PAGE_SIZE });
 
   return (
     <div className="page-stack my-classes-page">

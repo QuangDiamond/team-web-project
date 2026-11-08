@@ -1,16 +1,16 @@
 import { GraduationCap, BookOpen, Users } from 'lucide-react';
 
 const ROLE_OPTIONS = [
-  { value: 'STUDENT', title: 'Student', description: 'I want to find a tutor', Icon: GraduationCap },
-  { value: 'TUTOR', title: 'Tutor', description: 'I want to teach', Icon: BookOpen },
-  { value: 'PARENT', title: 'Parent', description: 'I want a tutor for my child', Icon: Users },
+  { value: 'STUDENT', title: 'Học sinh', description: 'Tôi muốn tìm gia sư', Icon: GraduationCap },
+  { value: 'TUTOR', title: 'Gia sư', description: 'Tôi muốn giảng dạy', Icon: BookOpen },
+  { value: 'PARENT', title: 'Phụ huynh', description: 'Tôi muốn tìm gia sư cho con', Icon: Users },
 ];
 
 // Chọn role bằng thẻ, bên dưới là radio thật để dùng được bàn phím và screen reader
 export default function RoleSelector({ value, onChange, error }) {
   return (
     <fieldset className="role-selector" aria-describedby={error ? 'role-error' : undefined}>
-      <legend className="visually-hidden">Choose your role</legend>
+      <legend className="visually-hidden">Chọn vai trò của bạn</legend>
       <div className="role-options">
         {ROLE_OPTIONS.map((option) => {
           const checked = value === option.value;

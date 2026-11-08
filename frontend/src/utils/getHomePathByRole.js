@@ -4,9 +4,9 @@ const DASHBOARD_PATH_BY_ROLE = {
   STUDENT: '/student/dashboard',
   PARENT: '/parent/dashboard',
   TUTOR: '/tutor/dashboard',
+  ADMIN: '/admin/dashboard',
 };
 
-// Role chưa có trang riêng (ví dụ ADMIN) thì giữ điều hướng cũ: về trang chủ
 const DEFAULT_HOME_PATH = '/';
 
 export const getHomePathByRole = (role) => {

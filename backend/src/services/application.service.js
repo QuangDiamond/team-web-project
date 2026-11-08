@@ -1,16 +1,16 @@
 import mongoose from 'mongoose';
 import { ApplyRequest } from '../models/ApplyRequest.js';
 import { ParentRequest } from '../models/ParentRequest.js';
-import { TutorPost } from '../models/TutorPost.js';
+import { TutorProfile } from '../models/TutorProfile.js';
+import { Notification } from '../models/Notification.js';
 import { ENUMS } from '../models/enums.js';
 import { AppError } from '../common/utils/AppError.js';
 import { assertRole } from '../common/utils/assertRole.js';
 import { buildPagination } from '../common/utils/pagination.js';
 import { isRequestAvailable } from '../common/utils/requestRules.js';
-import { CREDIT_USAGE_TYPES, spendOneCredit } from './credit.service.js';
+import { CREDIT_USAGE_TYPES, spendCredits } from './credit.service.js';
 import { getTutorProfileOrThrow, loadTutorSummaries } from './tutorContext.service.js';
 import { mapConversationIds, openDirectConversation } from './conversation.service.js';
-import { scoreRequestForTutor } from './tutorRequest.service.js';
 
 const { ApplyRequestsStatus } = ENUMS;
 
@@ -35,7 +35,7 @@ export const toApplicationDto = (application, request, conversationId = null) =>
     _id: String(application._id),
     status: application.status,
     note: application.note,
-    match_score: application.match_score,
+    credits_spent: application.credits_spent ?? 1,
     created_at: application.created_at,
     conversation_id: conversationId,
     request: requestDto,
@@ -43,12 +43,14 @@ export const toApplicationDto = (application, request, conversationId = null) =>
 };
 
 /**
- * Gia sư ứng tuyển vào request đang mở: trừ 1 credit, không hoàn lại dù phụ huynh bỏ qua đơn
+ * Gia sư ứng tuyển vào request đang mở: trừ `credits` credit (1-10), không hoàn lại dù phụ huynh bỏ qua đơn.
+ * Đã rút đơn thì được ứng tuyển lại request đó (đơn cũ được kích hoạt lại và trừ credit lần nữa).
+ * Dùng nhiều credit hơn thì đơn được xếp lên đầu danh sách của phụ huynh
  * @param {Object} user - req.user { id, role }
- * @param {Object} data - { request_id, note }
+ * @param {Object} data - { request_id, note, credits }
  * @returns {Promise<{ application: Object, remaining_credits: number }>}
  */
-export const createApplication = async (user, { request_id, note }) => {
+export const createApplication = async (user, { request_id, note, credits }) => {
   const profile = await getTutorProfileOrThrow(user);
 
   const request = await ParentRequest.findById(request_id).lean();
@@ -57,23 +59,41 @@ export const createApplication = async (user, { request_id, note }) => {
   }
 
   const existing = await ApplyRequest.findOne({ request_id: request._id, tutor_profile_id: profile._id }).lean();
-  if (existing) {
+  if (existing && existing.status !== ApplyRequestsStatus.WITHDRAWN) {
     throw new AppError('You have already applied to this request', 409);
   }
 
-  const posts = await TutorPost.find({ profile_id: profile._id, status: ENUMS.TutorPostsStatus.PUBLISHED }).lean();
-  const matchScore = scoreRequestForTutor(request, posts, profile.address);
-
-  // Tạo đơn trước: unique index {request_id, tutor_profile_id} chặn ứng tuyển trùng kể cả khi bấm đồng thời
+  // Tạo đơn trước (hoặc kích hoạt lại đơn đã rút): unique index {request_id, tutor_profile_id} chặn ứng tuyển trùng
+  // kể cả khi bấm đồng thời. rollback đưa dữ liệu về như cũ nếu việc trừ credit thất bại
   let application;
+  let rollback;
   try {
-    application = await ApplyRequest.create({
-      request_id: request._id,
-      tutor_profile_id: profile._id,
-      note: note,
-      match_score: matchScore,
-      status: ApplyRequestsStatus.PENDING,
-    });
+    if (existing) {
+      // Điều kiện status trong filter để hai lần ứng tuyển lại đồng thời không ghi đè nhau
+      application = await ApplyRequest.findOneAndUpdate(
+        { _id: existing._id, status: ApplyRequestsStatus.WITHDRAWN },
+        { $set: { status: ApplyRequestsStatus.PENDING, note: note, credits_spent: credits, created_at: new Date() } },
+        { new: true, overwriteImmutable: true }
+      );
+      if (!application) {
+        throw new AppError('You have already applied to this request', 409);
+      }
+      rollback = () =>
+        ApplyRequest.updateOne(
+          { _id: existing._id },
+          { $set: { status: ApplyRequestsStatus.WITHDRAWN, note: existing.note, credits_spent: existing.credits_spent ?? 1, created_at: existing.created_at } },
+          { overwriteImmutable: true }
+        );
+    } else {
+      application = await ApplyRequest.create({
+        request_id: request._id,
+        tutor_profile_id: profile._id,
+        note: note,
+        credits_spent: credits,
+        status: ApplyRequestsStatus.PENDING,
+      });
+      rollback = () => ApplyRequest.deleteOne({ _id: application._id });
+    }
   } catch (error) {
     if (error.code === 11000) {
       throw new AppError('You have already applied to this request', 409);
@@ -83,13 +103,13 @@ export const createApplication = async (user, { request_id, note }) => {
 
   let remainingCredits;
   try {
-    remainingCredits = await spendOneCredit(user.id, {
+    remainingCredits = await spendCredits(user.id, credits, {
       type: CREDIT_USAGE_TYPES.APPLY,
       relatedApplyId: application._id,
     });
   } catch (error) {
-    // Không đủ credit hoặc lỗi ghi lịch sử: bỏ đơn vừa tạo để không có đơn "miễn phí"
-    await ApplyRequest.deleteOne({ _id: application._id });
+    // Không đủ credit hoặc lỗi ghi lịch sử: bỏ đơn vừa tạo (hoặc trả đơn đã rút về như cũ) để không có đơn "miễn phí"
+    await rollback();
     throw error;
   }
 
@@ -185,7 +205,7 @@ export const toReceivedApplicationDto = (application, tutor, conversationId) => 
     _id: String(application._id),
     status: application.status,
     note: application.note,
-    match_score: application.match_score,
+    credits_spent: application.credits_spent ?? 1,
     created_at: application.created_at,
     conversation_id: conversationId,
     tutor: tutor,
@@ -238,11 +258,13 @@ export const listApplicationsForRequest = async (user, requestId, { page, limit 
 
   const filter = { request_id: request._id, status: { $ne: ApplyRequestsStatus.WITHDRAWN } };
   const [applications, total] = await Promise.all([
-    ApplyRequest.find(filter)
-      .sort({ match_score: -1, created_at: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean(),
+    ApplyRequest.aggregate([
+      { $match: filter },
+      { $addFields: { priority_credits: { $ifNull: ['$credits_spent', 1] } } },
+      { $sort: { priority_credits: -1, created_at: -1 } },
+      { $skip: (page - 1) * limit },
+      { $limit: limit },
+    ]),
     ApplyRequest.countDocuments(filter),
   ]);
 
@@ -309,6 +331,29 @@ export const continueApplication = async (user, applicationId) => {
     await ApplyRequest.updateOne({ _id: application._id }, { $set: { status: ApplyRequestsStatus.PENDING } });
     throw error;
   }
+
+  // UC13 POST-1: Thông báo cho gia sư khi phụ huynh chọn Continue và mở hội thoại 1-1
+  const tutorProfile = await TutorProfile.findById(application.tutor_profile_id).select('user_id').lean();
+  if (tutorProfile && tutorProfile.user_id) {
+    await Notification.create({
+      recipient_user_id: tutorProfile.user_id,
+      category: ENUMS.NotificationsCategory.APPLICATION,
+      title: 'Phụ huynh đã chấp nhận trao đổi (Continue) đơn ứng tuyển của bạn!',
+      body: `Đơn ứng tuyển cho yêu cầu "${request.title || request.subject_name}" đã được phụ huynh duyệt mở phòng trò chuyện 1-1.`,
+      target_type: ENUMS.NotificationsTargetType.CONVERSATION,
+      target_id: conversation._id,
+      is_read: false,
+      delivery_logs: [
+        {
+          recipient_user_id: tutorProfile.user_id,
+          channel: ENUMS.NotificationDeliveryLogsChannel.IN_APP,
+          status: ENUMS.NotificationDeliveryLogsStatus.SENT,
+          dispatched_at: new Date(),
+        },
+      ],
+    });
+  }
+
   return toReceivedApplicationDto(updated, tutor, String(conversation._id));
 };
 
@@ -319,7 +364,7 @@ export const continueApplication = async (user, applicationId) => {
  * @returns {Promise<Object>} đơn sau khi Skip
  */
 export const skipApplication = async (user, applicationId) => {
-  const { application } = await getApplicationOfParent(user, applicationId);
+  const { application, request } = await getApplicationOfParent(user, applicationId);
 
   if (application.status !== ApplyRequestsStatus.PENDING) {
     throw new AppError(`Only pending applications can be skipped (status: ${application.status})`, 409);
@@ -331,6 +376,28 @@ export const skipApplication = async (user, applicationId) => {
   ).lean();
   if (!updated) {
     throw new AppError('Only pending applications can be skipped', 409);
+  }
+
+  // UC13 POST-2 (A1): Thông báo cho gia sư khi đơn ứng tuyển bị bỏ qua (Skip)
+  const tutorProfile = await TutorProfile.findById(updated.tutor_profile_id).select('user_id').lean();
+  if (tutorProfile && tutorProfile.user_id) {
+    await Notification.create({
+      recipient_user_id: tutorProfile.user_id,
+      category: ENUMS.NotificationsCategory.APPLICATION,
+      title: 'Cập nhật trạng thái đơn ứng tuyển',
+      body: `Phụ huynh đã bỏ qua (Skip) đơn ứng tuyển của bạn cho yêu cầu "${request.title || request.subject_name}".`,
+      target_type: null,
+      target_id: null,
+      is_read: false,
+      delivery_logs: [
+        {
+          recipient_user_id: tutorProfile.user_id,
+          channel: ENUMS.NotificationDeliveryLogsChannel.IN_APP,
+          status: ENUMS.NotificationDeliveryLogsStatus.SENT,
+          dispatched_at: new Date(),
+        },
+      ],
+    });
   }
 
   const tutors = await loadTutorSummaries([updated.tutor_profile_id]);

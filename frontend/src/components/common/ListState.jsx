@@ -8,22 +8,45 @@ import { PROFILE_REQUIRED_MESSAGE } from '../../constants/requestLabels';
  * Hiển thị trạng thái của một danh sách tải từ API: đang tải, lỗi (có nút thử lại), rỗng, hoặc nội dung (children).
  * list: kết quả của usePagedList. empty: { icon, title, description }
  */
-export default function ListState({ list, empty, children }) {
+export default function ListState({
+  list, empty, children, loading, loadError, onRetry, isEmpty,
+  filtersActive, onClearFilters, emptyTitle, emptyText, emptyAction,
+}) {
+  // History/admin screens render their tables separately and pass flat state.
+  if (!list) {
+    if (loading && isEmpty) {
+      return <div className="page-loading-inline" role="status"><LoaderCircle size={26} className="spin" aria-hidden="true" /><span>Đang tải...</span></div>;
+    }
+    if (loadError) {
+      return <Alert type="error"><p>{loadError}</p><button type="button" className="btn btn-outline btn-sm" onClick={onRetry}>Thử lại</button></Alert>;
+    }
+    if (isEmpty) {
+      return (
+        <div className="history-state">
+          <EmptyState title={emptyTitle} description={emptyText} />
+          {filtersActive && onClearFilters ? (
+            <button type="button" className="btn btn-outline btn-sm" onClick={onClearFilters}>Xóa bộ lọc</button>
+          ) : emptyAction}
+        </div>
+      );
+    }
+    return null;
+  }
   if (list.loading && !list.data) {
     return (
       <div className="page-loading-inline" role="status">
         <LoaderCircle size={26} className="spin" aria-hidden="true" />
-        <span className="visually-hidden">Loading...</span>
+        <span className="visually-hidden">Đang tải...</span>
       </div>
     );
   }
 
   // Gia sư chưa có hồ sơ không phải lỗi hệ thống: chỉ đường tới trang tạo hồ sơ, không cần "Try again"
-  if (list.error && list.error.message === PROFILE_REQUIRED_MESSAGE) {
+  if (list.error && (list.error.rawMessage || list.error.message) === PROFILE_REQUIRED_MESSAGE) {
     return (
       <Alert type="info">
-        <p>Set up your tutor profile first to use this page.</p>
-        <Link to="/tutor/profile" className="btn btn-primary btn-sm">Complete my profile</Link>
+        <p>Vui lòng tạo hồ sơ gia sư trước khi sử dụng trang này.</p>
+        <Link to="/tutor/profile" className="btn btn-primary btn-sm">Hoàn thiện hồ sơ</Link>
       </Alert>
     );
   }
@@ -32,7 +55,7 @@ export default function ListState({ list, empty, children }) {
     return (
       <Alert type="error">
         <p>{list.error.message}</p>
-        <button type="button" className="btn btn-outline btn-sm" onClick={list.reload}>Try again</button>
+        <button type="button" className="btn btn-outline btn-sm" onClick={list.reload}>Thử lại</button>
       </Alert>
     );
   }

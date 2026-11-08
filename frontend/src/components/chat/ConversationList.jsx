@@ -19,11 +19,11 @@ const formatListTime = (value) => {
 
 const getPreview = (lastMessage) => {
   if (!lastMessage) {
-    return 'No messages yet';
+    return "Chưa có tin nhắn";
   }
   let content = lastMessage.content || '';
   if (lastMessage.sender_is_me) {
-    content = `You: ${content}`;
+    content = `Bạn: ${content}`;
   }
   return content;
 };
@@ -36,8 +36,8 @@ export default function ConversationList({ conversations, selectedId, basePath }
     return (
       <EmptyState
         icon={MessageSquare}
-        title="No conversations yet"
-        description="A conversation opens after a parent continues with a tutor's application or a tutor accepts an invitation."
+        title="Chưa có cuộc trò chuyện"
+        description="Cuộc trò chuyện được mở khi phụ huynh đồng ý trao đổi với gia sư ứng tuyển hoặc gia sư chấp nhận lời mời."
       />
     );
   }
@@ -67,7 +67,7 @@ export default function ConversationList({ conversations, selectedId, basePath }
                 <span className="chat-list-preview">{getPreview(conversation.last_message)}</span>
               </span>
               {conversation.unread_count > 0 && (
-                <span className="chat-unread-badge" aria-label={`${conversation.unread_count} unread`}>{conversation.unread_count}</span>
+                <span className="chat-unread-badge" aria-label={`${conversation.unread_count} tin nhắn chưa đọc`}>{conversation.unread_count}</span>
               )}
             </button>
           </li>

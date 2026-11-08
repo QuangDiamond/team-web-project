@@ -6,9 +6,9 @@ import { formatDate } from '../../utils/dateFormat';
 
 // Nhãn và màu theo status từ API (Figma: pending / in-progress / overdue)
 const STATUS_BADGES = {
-  PENDING: { label: 'Pending', tone: 'info' },
-  IN_PROGRESS: { label: 'In progress', tone: 'warning' },
-  OVERDUE: { label: 'Overdue', tone: 'error' },
+  PENDING: { label: "Đang chờ", tone: 'info' },
+  IN_PROGRESS: { label: "Đang thực hiện", tone: 'warning' },
+  OVERDUE: { label: "Quá hạn", tone: 'error' },
 };
 
 function AssignmentRow({ assignment }) {
@@ -25,18 +25,18 @@ function AssignmentRow({ assignment }) {
     }
   }
   if (assignment.due_date) {
-    metaParts.push(`Due ${formatDate(assignment.due_date)}`);
+    metaParts.push(`Hạn nộp ${formatDate(assignment.due_date)}`);
   } else {
-    metaParts.push('No due date');
+    metaParts.push("Không có hạn nộp");
   }
 
   // Quá hạn: còn được nộp hay không tùy allow_late_submission (backend trả về can_submit)
   let overdueNote = null;
   if (assignment.status === 'OVERDUE') {
     if (assignment.can_submit) {
-      overdueNote = <p className="student-row-note">Late submission allowed</p>;
+      overdueNote = <p className="student-row-note">Cho phép nộp muộn</p>;
     } else {
-      overdueNote = <p className="student-row-note is-closed">Submission closed</p>;
+      overdueNote = <p className="student-row-note is-closed">Đã đóng nộp bài</p>;
     }
   }
 
@@ -65,13 +65,13 @@ function AssignmentRow({ assignment }) {
 // Khối "Pending Assignments" (Figma: SectionAssignments)
 export default function PendingAssignmentList({ section, onRetry }) {
   return (
-    <SectionCard title="Pending Assignments" action={<SectionCount section={section} label="To do" />}>
+    <SectionCard title="Bài tập chưa hoàn thành" action={<SectionCount section={section} label="Cần làm" />}>
       <SectionContent
         section={section}
         onRetry={onRetry}
         emptyIcon={ClipboardCheck}
-        emptyTitle="You're all caught up"
-        emptyDescription="Published assignments you have not submitted will appear here."
+        emptyTitle="Bạn đã hoàn thành tất cả"
+        emptyDescription="Bài tập đã giao mà bạn chưa nộp sẽ hiển thị ở đây."
       >
         <ul className="student-list">
           {section.items.map((assignment) => (

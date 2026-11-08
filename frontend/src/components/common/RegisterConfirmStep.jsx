@@ -26,22 +26,22 @@ export default function RegisterConfirmStep({
       {onBack && (
         <button type="button" className="link-back" onClick={onBack}>
           <ChevronLeft size={16} aria-hidden="true" />
-          <span>Go back</span>
+          <span>Quay lại</span>
         </button>
       )}
 
-      <h1 className="auth-title">Who are you? <span aria-hidden="true">🤔</span></h1>
-      <p className="auth-subtitle">Choose the role that fits you best.</p>
+      <h1 className="auth-title">Bạn là ai? <span aria-hidden="true">🤔</span></h1>
+      <p className="auth-subtitle">Chọn vai trò phù hợp nhất với bạn.</p>
 
       {alert}
 
       <RoleSelector value={role} onChange={onRoleChange} error={errors.role} />
 
       <section className="account-summary" aria-labelledby="account-summary-title">
-        <h2 id="account-summary-title" className="account-summary-title">Account summary</h2>
+        <h2 id="account-summary-title" className="account-summary-title">Thông tin tài khoản</h2>
         <dl>
           <div className="account-summary-row">
-            <dt>Full name</dt>
+            <dt>Họ và tên</dt>
             <dd>{fullName}</dd>
           </div>
           <div className="account-summary-row">
@@ -49,7 +49,7 @@ export default function RegisterConfirmStep({
             <dd>{email}</dd>
           </div>
           <div className="account-summary-row">
-            <dt>Role</dt>
+            <dt>Vai trò</dt>
             <dd className="account-summary-role">{getRoleTitle(role)}</dd>
           </div>
         </dl>
@@ -67,8 +67,8 @@ export default function RegisterConfirmStep({
           />
           <span>
             {/* TODO: thay "#" bằng trang Terms / Privacy khi có */}
-            I agree to TuConnector's <a href="#" className="link">Terms of Service</a> and{' '}
-            <a href="#" className="link">Privacy Policy</a>.
+            Tôi đồng ý với <a href="#" className="link">Điều khoản sử dụng</a> và{' '}
+            <a href="#" className="link">Chính sách bảo mật</a> của TuConnector.
           </span>
         </label>
         {errors.agree_terms && <p id="agree_terms-error" className="form-error">{errors.agree_terms}</p>}
@@ -76,7 +76,7 @@ export default function RegisterConfirmStep({
 
       <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
         <Sparkles size={18} aria-hidden="true" />
-        <span>{submitting ? 'Creating your account...' : 'Complete Registration'}</span>
+        <span>{submitting ? 'Đang tạo tài khoản...' : 'Hoàn tất đăng ký'}</span>
       </button>
     </form>
   );

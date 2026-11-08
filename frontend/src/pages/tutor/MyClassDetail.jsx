@@ -648,10 +648,17 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
   );
 }
 
-export default function MyClassDetail() {
-  const { classId } = useParams();
+export default function MyClassDetail({
+  embedded = false,
+  classId: providedClassId,
+  classroom: providedClassroom,
+  activeTab: providedActiveTab,
+}) {
+  const routeParams = useParams();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState('materials');
+  const classId = providedClassId || routeParams.classId;
+  const [localActiveTab, setLocalActiveTab] = useState('materials');
+  const activeTab = embedded ? providedActiveTab : localActiveTab;
   const [toast, setToast] = useState(null);
   const [topics, setTopics] = useState([]);
   const [topicsLoading, setTopicsLoading] = useState(true);
@@ -665,7 +672,7 @@ export default function MyClassDetail() {
   const [sessions, setSessions] = useState([]);
   const [sessionsLoading, setSessionsLoading] = useState(true);
   const [sessionsError, setSessionsError] = useState('');
-  const classroom = location.state && location.state.classroom;
+  const classroom = embedded ? providedClassroom : location.state && location.state.classroom;
   const canLoadClassroom = classroom && String(classroom._id) === classId;
 
   const showToast = (type, message) => {
@@ -744,6 +751,9 @@ export default function MyClassDetail() {
   }, [classId, canLoadClassroom]);
 
   if (!canLoadClassroom) {
+    if (embedded) {
+      return null;
+    }
     return (
       <div className="class-detail-page">
         <Alert type="info">
@@ -922,6 +932,45 @@ export default function MyClassDetail() {
     classMeta.push(classroom.grade);
   }
 
+  if (embedded) {
+    return (
+      <>
+        <Toast toast={toast} onClose={closeToast} />
+        {activeTab === 'materials' && (
+          <ClassroomTopicsAndMaterials
+            topics={topics}
+            materials={materials}
+            topicsLoading={topicsLoading}
+            topicsError={topicsError}
+            createTopicError={createTopicError}
+            topicActionError={topicActionError}
+            onRetryTopics={handleRetryLoadingTopics}
+            onCreateTopic={handleCreateTopic}
+            onUpdateTopic={handleUpdateTopic}
+            onDeleteTopic={handleDeleteTopic}
+            onCreateMaterial={handleCreateMaterial}
+            createMaterialError={createMaterialError}
+            materialsLoading={materialsLoading}
+            materialsError={materialsError}
+            onRetryMaterials={handleRetryLoadingMaterials}
+            onUpdateMaterial={handleUpdateMaterial}
+            onDeleteMaterial={handleDeleteMaterial}
+          />
+        )}
+        {activeTab === 'schedule' && (
+          <ClassSchedule
+            sessions={sessions}
+            isLoading={sessionsLoading}
+            error={sessionsError}
+            onRetry={handleRetryLoadingSessions}
+            onSaveSession={handleSaveSession}
+            onDeleteSession={handleDeleteSession}
+          />
+        )}
+      </>
+    );
+  }
+
   return (
     <div className="class-detail-page">
       <Toast toast={toast} onClose={closeToast} />
@@ -953,7 +1002,7 @@ export default function MyClassDetail() {
             role="tab"
             aria-selected={activeTab === id}
             aria-controls={`panel-${id}`}
-            onClick={() => setActiveTab(id)}
+            onClick={() => setLocalActiveTab(id)}
           >
             <Icon size={16} aria-hidden="true" />
             <span>{label}</span>

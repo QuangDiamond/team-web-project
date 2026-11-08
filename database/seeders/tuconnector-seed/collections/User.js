@@ -1,8 +1,8 @@
 const ids = require('../ids');
 const { d } = require('../helpers');
 
-// Mật khẩu mẫu của mọi tài khoản có password: Tuconnector@123 (hash bcrypt giả lập, backend cần hash lại thật)
-const PW = '$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC';
+// Mật khẩu mẫu của mọi tài khoản có password: Tuconnector@123 (hash bcrypt thật để login được)
+const PW = '$2b$10$V7/lf4PrbpDbL.gaE5rM1OrXl3BgAb/RSqmkxfJ1Z.BDmSuLcRWb6';
 
 const prefs = (sms = false) => ({
   enable_in_app: true, enable_email: true, enable_sms: sms,

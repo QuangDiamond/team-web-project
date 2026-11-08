@@ -1,25 +1,16 @@
 import { responseCode } from '../common/constants/constants.js';
 import { responseCommon } from '../common/response.js';
 import { asyncHandler } from '../common/utils/asyncHandler.js';
-import { AppError } from '../common/utils/AppError.js';
+import { parseQuery } from '../common/utils/pagination.js';
 import { paginationQuerySchema } from '../common/validator/studentDashboardSchema.js';
 import * as aiSuggestionService from '../services/aiSuggestion.service.js';
 
-// validator() hiện chỉ đọc req.body nên query page/limit được validate tại đây
-const parsePagination = (query) => {
-  const result = paginationQuerySchema.safeParse(query);
-  if (!result.success) {
-    throw new AppError(result.error.issues[0].message, 422, result.error.flatten().fieldErrors);
-  }
-  return result.data;
-};
-
 export const getSuggestions = asyncHandler(async (req, res) => {
-  const data = await aiSuggestionService.getSuggestions(req.user, req.params.requestId, parsePagination(req.query));
+  const data = await aiSuggestionService.getSuggestions(req.user, req.params.requestId, parseQuery(paginationQuerySchema, req.query));
   return responseCommon(res, data, 'Get tutor suggestions successfully!', 200, responseCode.SUCCESSED);
 });
 
 export const refreshSuggestions = asyncHandler(async (req, res) => {
-  const data = await aiSuggestionService.refreshSuggestions(req.user, req.params.requestId, req.body.weights);
+  const data = await aiSuggestionService.refreshSuggestions(req.user, req.params.requestId);
   return responseCommon(res, data, 'Tutor suggestions refreshed successfully!', 200, responseCode.SUCCESSED);
 });

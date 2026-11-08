@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import OpenChatLink from '../common/OpenChatLink';
 import { INVITATION_STATUS, getStatusBadge } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
@@ -7,11 +8,11 @@ function InvitationRow({ invitation, onCancel }) {
   const [cancelling, setCancelling] = useState(false);
   const badge = getStatusBadge(INVITATION_STATUS, invitation.status);
 
-  let tutorName = 'Tutor';
+  let tutorName = "Gia sư";
   if (invitation.tutor && invitation.tutor.full_name) {
     tutorName = invitation.tutor.full_name;
   }
-  let requestTitle = 'Request no longer available';
+  let requestTitle = "Yêu cầu không còn khả dụng";
   if (invitation.request) {
     requestTitle = invitation.request.title;
   }
@@ -29,19 +30,24 @@ function InvitationRow({ invitation, onCancel }) {
           <p className="item-title">{tutorName}</p>
           <span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>
         </div>
-        <p className="item-meta">For {requestTitle} · Sent {formatDate(invitation.created_at)}</p>
+        <p className="item-meta">
+          Cho yêu cầu {requestTitle} · Đã gửi {formatDate(invitation.created_at)} · đã dùng {invitation.credits_spent} tín dụng
+        </p>
         {invitation.message && <p className="item-note">“{invitation.message}”</p>}
         {invitation.status === 'ACCEPTED' && (
-          <p className="item-meta">The tutor accepted. A conversation has been opened.</p>
+          <p className="item-meta">Gia sư đã chấp nhận. Cuộc trò chuyện đã được mở.</p>
         )}
       </div>
-      {invitation.status === 'PENDING' && (
-        <div className="item-actions">
+      <div className="item-actions">
+        {invitation.tutor && (
+          <Link to={`/tutors/${invitation.tutor.profile_id}`} className="btn btn-outline btn-sm">Xem chi tiết</Link>
+        )}
+        {invitation.status === 'PENDING' && (
           <button type="button" className="btn btn-outline btn-sm" disabled={cancelling} onClick={handleCancel}>
-            {cancelling ? 'Cancelling...' : 'Cancel invitation'}
+            {cancelling ? "Đang hủy..." : "Hủy lời mời"}
           </button>
-        </div>
-      )}
+        )}
+      </div>
       {invitation.status === 'ACCEPTED' && invitation.conversation_id && (
         <div className="item-actions">
           <OpenChatLink to={`/parent/messages/${invitation.conversation_id}`} />
