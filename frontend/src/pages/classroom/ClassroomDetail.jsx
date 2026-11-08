@@ -30,6 +30,13 @@ export default function ClassroomDetail() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  const backUrl =
+    user?.role === 'TUTOR'
+      ? '/tutor/classes'
+      : user?.role === 'PARENT'
+      ? '/parent/classes'
+      : '/student/classes';
+
   // Classroom State
   const [classroom, setClassroom] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -225,7 +232,7 @@ export default function ClassroomDetail() {
     try {
       await deleteClassroom(classroom._id);
       alert('Đã xóa lớp học thành công!');
-      navigate('/classes');
+      navigate(backUrl);
     } catch (err) {
       alert(err?.response?.data?.message || err.message || 'Không thể xóa lớp học');
     }
@@ -358,7 +365,7 @@ export default function ClassroomDetail() {
           <span>⚠️</span>
           <div>{error || 'Không tìm thấy lớp học'}</div>
         </div>
-        <Link to="/classes" className="btn-primary-orange" style={{ textDecoration: 'none' }}>
+        <Link to={backUrl} className="btn-primary-orange" style={{ textDecoration: 'none' }}>
           ← Quay lại danh sách lớp học
         </Link>
       </div>
@@ -377,7 +384,7 @@ export default function ClassroomDetail() {
 
       {/* Breadcrumb Navigation */}
       <div style={{ marginBottom: '16px', fontSize: '14px', color: '#64748b' }}>
-        <Link to="/classes" style={{ color: '#e85a2c', textDecoration: 'none', fontWeight: 600 }}>
+        <Link to={backUrl} style={{ color: '#e85a2c', textDecoration: 'none', fontWeight: 600 }}>
           Lớp học của tôi
         </Link>{' '}
         / <span>{classroom.name}</span>
@@ -984,38 +991,82 @@ export default function ClassroomDetail() {
                   ) : (
                     /* Actions for Student / Parent (UC27) */
                     <div style={{ marginTop: '12px' }}>
-                      {asg.my_submission ? (
-                        <div style={{ marginBottom: '8px', padding: '8px 10px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
-                            <span style={{ fontWeight: 600 }}>
-                              {asg.my_submission.status === 'GRADED'
-                                ? `⭐ Điểm: ${asg.my_submission.final_score}/${asg.total_points || 10}đ`
-                                : `⏳ Điểm tạm tính: ${asg.my_submission.provisional_score || 0}đ`}
-                            </span>
-                            <span style={{ fontSize: '11px', color: asg.my_submission.timeliness === 'LATE' ? '#dc2626' : '#16a34a' }}>
-                              {asg.my_submission.timeliness === 'LATE' ? 'Nộp muộn' : 'Đúng hạn'}
-                            </span>
-                          </div>
-                          {asg.my_submission.overall_feedback && (
-                            <div style={{ fontSize: '12px', color: '#0369a1', marginTop: '4px' }}>
-                              💬 Nhận xét: "{asg.my_submission.overall_feedback}"
+                      {user?.role === 'PARENT' ? (
+                        /* Chế độ giám sát bài tập dành cho Phụ huynh */
+                        <div>
+                          {asg.my_submission ? (
+                            <div style={{ marginBottom: '8px', padding: '10px 12px', background: '#f0fdf4', borderRadius: '8px', border: '1px solid #bbf7d0' }}>
+                              <div style={{ fontSize: '12px', color: '#166534', fontWeight: 600, marginBottom: '4px' }}>
+                                👶 Bài làm của con: {asg.my_submission.student_user_id?.full_name || 'Học sinh'}
+                              </div>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                                <span style={{ fontWeight: 700, color: '#15803d' }}>
+                                  {asg.my_submission.status === 'GRADED'
+                                    ? `⭐ Điểm chính thức: ${asg.my_submission.final_score}/${asg.total_points || 10}đ`
+                                    : `⏳ Điểm tạm tính: ${asg.my_submission.provisional_score || 0}đ`}
+                                </span>
+                                <span style={{ fontSize: '11px', color: asg.my_submission.timeliness === 'LATE' ? '#dc2626' : '#16a34a' }}>
+                                  {asg.my_submission.timeliness === 'LATE' ? 'Nộp muộn' : 'Đúng hạn'}
+                                </span>
+                              </div>
+                              {asg.my_submission.overall_feedback && (
+                                <div style={{ fontSize: '12px', color: '#0369a1', marginTop: '6px' }}>
+                                  💬 Gia sư nhận xét: "{asg.my_submission.overall_feedback}"
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <div style={{ marginBottom: '8px', padding: '8px 12px', background: '#fffbeb', borderRadius: '8px', border: '1px solid #fef3c7', fontSize: '12px', color: '#b45309' }}>
+                              ⏳ Con chưa nộp bài tập này
                             </div>
                           )}
-                        </div>
-                      ) : null}
 
-                      <button
-                        type="button"
-                        className="btn-primary-orange"
-                        style={{ width: '100%', fontSize: '13px', padding: '8px' }}
-                        onClick={() => setDoAssignmentTarget(asg)}
-                      >
-                        {asg.my_submission
-                          ? asg.results_published_at || asg.my_submission.status === 'GRADED' || asg.allow_resubmission === false
-                            ? '👁️ Xem bài đã nộp & Điểm'
-                            : '🔄 Nộp lại bài'
-                          : '✍️ Làm bài tập (UC27)'}
-                      </button>
+                          <button
+                            type="button"
+                            className="btn-outline-gray"
+                            style={{ width: '100%', fontSize: '13px', padding: '8px', background: '#ffffff' }}
+                            onClick={() => setDoAssignmentTarget(asg)}
+                          >
+                            👁️ {asg.my_submission ? 'Xem bài làm của con & Điểm' : 'Xem đề bài tập'}
+                          </button>
+                        </div>
+                      ) : (
+                        /* Chế độ làm bài dành cho Học sinh */
+                        <div>
+                          {asg.my_submission ? (
+                            <div style={{ marginBottom: '8px', padding: '8px 10px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
+                                <span style={{ fontWeight: 600 }}>
+                                  {asg.my_submission.status === 'GRADED'
+                                    ? `⭐ Điểm: ${asg.my_submission.final_score}/${asg.total_points || 10}đ`
+                                    : `⏳ Điểm tạm tính: ${asg.my_submission.provisional_score || 0}đ`}
+                                </span>
+                                <span style={{ fontSize: '11px', color: asg.my_submission.timeliness === 'LATE' ? '#dc2626' : '#16a34a' }}>
+                                  {asg.my_submission.timeliness === 'LATE' ? 'Nộp muộn' : 'Đúng hạn'}
+                                </span>
+                              </div>
+                              {asg.my_submission.overall_feedback && (
+                                <div style={{ fontSize: '12px', color: '#0369a1', marginTop: '4px' }}>
+                                  💬 Nhận xét: "{asg.my_submission.overall_feedback}"
+                                </div>
+                              )}
+                            </div>
+                          ) : null}
+
+                          <button
+                            type="button"
+                            className="btn-primary-orange"
+                            style={{ width: '100%', fontSize: '13px', padding: '8px' }}
+                            onClick={() => setDoAssignmentTarget(asg)}
+                          >
+                            {asg.my_submission
+                              ? asg.results_published_at || asg.my_submission.status === 'GRADED' || asg.allow_resubmission === false
+                                ? '👁️ Xem bài đã nộp & Điểm'
+                                : '🔄 Nộp lại bài'
+                              : '✍️ Làm bài tập (UC27)'}
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

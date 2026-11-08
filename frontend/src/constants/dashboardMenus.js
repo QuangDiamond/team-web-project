@@ -46,7 +46,7 @@ export const STUDENT_MENU = {
       label: 'MAIN MENU',
       items: [
         { label: 'Overview', to: '/student/dashboard', icon: LayoutDashboard, end: true },
-        { label: 'Classes', icon: BookOpen },
+        { label: 'Classes', to: '/student/classes', icon: BookOpen },
         { label: 'My Sessions', icon: Video },
         { label: 'Messages', icon: MessageSquare },
         { label: 'Notifications', to: '/student/notifications', icon: Bell },
@@ -82,6 +82,7 @@ export const PARENT_MENU = {
       label: 'PARENT',
       items: [
         { label: 'Overview', to: '/parent/dashboard', icon: LayoutDashboard, end: true },
+        { label: 'Classes', to: '/parent/classes', icon: BookOpen },
         { label: 'Tutoring Requests', to: '/parent/requests', icon: FileText },
         { label: 'Applications', to: '/parent/applications', icon: ClipboardList },
         { label: 'AI Suggestions', to: '/parent/ai-suggestions', icon: Sparkles },
@@ -117,6 +118,7 @@ export const TUTOR_MENU = {
     {
       label: 'MY WORK',
       items: [
+        { label: 'Classes', to: '/tutor/classes', icon: BookOpen },
         { label: 'Messages', to: '/tutor/messages', icon: MessageSquare },
         { label: 'Contracts', to: '/tutor/contracts', icon: BookOpen },
         { label: 'Notifications', to: '/tutor/notifications', icon: Bell },

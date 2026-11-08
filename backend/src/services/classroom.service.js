@@ -226,8 +226,23 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
         filter = {};
       }
     }
+  } else if (user?.role === 'PARENT' && user?._id) {
+    // Với Parent: Lấy danh sách các lớp mà con của phụ huynh đang theo học (hoặc phụ huynh trực tiếp tham gia)
+    const childLinks = await ParentChildLink.find({
+      parent_user_id: user._id,
+      status: ENUMS.ParentChildLinksStatus.ACCEPTED,
+    }).select('student_user_id').lean();
+    const studentUserIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
+
+    const targetUserIds = [user._id, ...studentUserIds];
+    const memberships = await ClassMember.find({
+      user_id: { $in: targetUserIds },
+      status: ENUMS.ClassMembersStatus.ACTIVE,
+    }).select('class_id').lean();
+    const classIds = memberships.map((m) => m.class_id);
+    filter._id = { $in: classIds };
   } else if (user) {
-    // Với Student / Parent: Lấy danh sách lớp đã tham gia thành công (ACTIVE)
+    // Với Student: Lấy danh sách lớp đã tham gia thành công (ACTIVE)
     const memberships = await ClassMember.find({
       user_id: user._id,
       status: ENUMS.ClassMembersStatus.ACTIVE,
@@ -350,12 +365,34 @@ export const getClassroomDetail = async ({ classroomId, tutorProfile, user }) =>
 
   // 3. Nếu không phải gia sư chủ lớp, kiểm tra xem có phải là học viên/phụ huynh của lớp không
   if (!isOwner) {
+    let hasAccess = false;
     const isMember = await ClassMember.findOne({
       class_id: classroomId,
       user_id: user?._id,
       status: ENUMS.ClassMembersStatus.ACTIVE,
     });
-    if (!isMember && env.nodeEnv === 'production') {
+    if (isMember) {
+      hasAccess = true;
+    } else if (user?.role === 'PARENT' && user?._id) {
+      // Phụ huynh có quyền truy cập nếu con của mình là thành viên đang học trong lớp
+      const childLinks = await ParentChildLink.find({
+        parent_user_id: user._id,
+        status: ENUMS.ParentChildLinksStatus.ACCEPTED,
+      }).select('student_user_id').lean();
+      const studentIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
+      if (studentIds.length > 0) {
+        const isChildMember = await ClassMember.findOne({
+          class_id: classroomId,
+          user_id: { $in: studentIds },
+          status: ENUMS.ClassMembersStatus.ACTIVE,
+        });
+        if (isChildMember) {
+          hasAccess = true;
+        }
+      }
+    }
+
+    if (!hasAccess && env.nodeEnv === 'production') {
       throw new AppError('Bạn không có quyền truy cập lớp học này', 403);
     }
   }
@@ -1321,7 +1358,33 @@ export const getClassAssignments = async ({ classroomId, user }) => {
     .sort({ created_at: -1 })
     .lean();
 
-  // Đính kèm thống kê số bài nộp và bài nộp của chính user (nếu là học sinh)
+  // Xác định đối tượng học sinh cần lấy bài nộp:
+  // - Nếu là Học sinh: Lấy bài nộp của chính mình
+  // - Nếu là Phụ huynh: Lấy bài nộp của con học trong lớp này
+  let targetStudentUserIds = [];
+  if (user?.role === 'STUDENT' && user?._id) {
+    targetStudentUserIds = [user._id];
+  } else if (user?.role === 'PARENT' && user?._id) {
+    const childLinks = await ParentChildLink.find({
+      parent_user_id: user._id,
+      status: ENUMS.ParentChildLinksStatus.ACCEPTED,
+    }).select('student_user_id').lean();
+    const allChildIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
+
+    // Lọc các con thực sự đang là thành viên của lớp học này
+    const enrolledChildren = await ClassMember.find({
+      class_id: classroomId,
+      user_id: { $in: allChildIds },
+      status: ENUMS.ClassMembersStatus.ACTIVE,
+    }).select('user_id').lean();
+
+    targetStudentUserIds = enrolledChildren.map((c) => c.user_id);
+    if (targetStudentUserIds.length === 0 && allChildIds.length > 0) {
+      targetStudentUserIds = allChildIds;
+    }
+  }
+
+  // Đính kèm thống kê số bài nộp và bài nộp của học sinh (hoặc con của phụ huynh)
   const populated = await Promise.all(
     assignments.map(async (asg) => {
       const submissionCount = await AssignmentSubmission.countDocuments({
@@ -1330,12 +1393,13 @@ export const getClassAssignments = async ({ classroomId, user }) => {
       });
 
       let mySubmission = null;
-      if (user?._id) {
+      if (targetStudentUserIds.length > 0) {
         mySubmission = await AssignmentSubmission.findOne({
           assignment_id: asg._id,
-          student_user_id: user._id,
+          student_user_id: { $in: targetStudentUserIds },
         })
           .sort({ attempt_number: -1 })
+          .populate('student_user_id', 'full_name email')
           .lean();
       }
 
@@ -1441,13 +1505,29 @@ export const getAssignmentDetail = async ({ assignmentId, user }) => {
   }
 
   let mySubmission = null;
-  if (user?._id) {
+  if (user?.role === 'STUDENT' && user?._id) {
     mySubmission = await AssignmentSubmission.findOne({
       assignment_id: assignment._id,
       student_user_id: user._id,
     })
       .sort({ attempt_number: -1 })
       .lean();
+  } else if (user?.role === 'PARENT' && user?._id) {
+    const childLinks = await ParentChildLink.find({
+      parent_user_id: user._id,
+      status: ENUMS.ParentChildLinksStatus.ACCEPTED,
+    }).select('student_user_id').lean();
+    const childIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
+
+    if (childIds.length > 0) {
+      mySubmission = await AssignmentSubmission.findOne({
+        assignment_id: assignment._id,
+        student_user_id: { $in: childIds },
+      })
+        .sort({ attempt_number: -1 })
+        .populate('student_user_id', 'full_name email')
+        .lean();
+    }
   }
 
   return {
@@ -1461,6 +1541,11 @@ export const getAssignmentDetail = async ({ assignmentId, user }) => {
  * Tự động tính điểm provisional_score cho các câu MULTIPLE_CHOICE
  */
 export const submitAssignment = async ({ assignmentId, user, answers = [] }) => {
+  // UC27: Ràng buộc vai trò - Chỉ tài khoản Học sinh mới có quyền làm và nộp bài tập
+  if (user?.role !== 'STUDENT') {
+    throw new AppError('Chỉ học sinh mới có quyền làm và nộp bài tập. Phụ huynh chỉ có quyền theo dõi tiến độ của con.', 403);
+  }
+
   const assignment = await Assignment.findById(assignmentId);
   if (!assignment) {
     throw new AppError('Không tìm thấy bài tập', 404);

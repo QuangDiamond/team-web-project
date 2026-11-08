@@ -37,46 +37,6 @@ export default function Layout() {
     navigate('/login');
   };
 
-  const getRoleBadge = (role) => {
-    switch (role) {
-      case 'TUTOR':
-        return {
-          label: '👨‍🏫 Gia sư (Tutor)',
-          bg: '#fff7ed',
-          color: '#c2410c',
-          border: '#fed7aa',
-        };
-      case 'STUDENT':
-        return {
-          label: '🎒 Học sinh (Student)',
-          bg: '#f0fdf4',
-          color: '#15803d',
-          border: '#bbf7d0',
-        };
-      case 'PARENT':
-        return {
-          label: '👨‍👩‍👧 Phụ huynh (Parent)',
-          bg: '#faf5ff',
-          color: '#7e22ce',
-          border: '#e9d5ff',
-        };
-      case 'ADMIN':
-        return {
-          label: '🛡️ Quản trị viên (Admin)',
-          bg: '#fef2f2',
-          color: '#b91c1c',
-          border: '#fecaca',
-        };
-      default:
-        return {
-          label: role || 'Thành viên',
-          bg: '#f8fafc',
-          color: '#475569',
-          border: '#cbd5e1',
-        };
-    }
-  };
-
   return (
     <div className="app-layout">
       <nav className="site-navbar">
@@ -92,13 +52,6 @@ export default function Layout() {
               className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
             >
               Trang chủ
-            </Link>
-            <Link
-              to="/classes"
-              className={`nav-link ${location.pathname.startsWith('/classes') ? 'active' : ''}`}
-              style={{ fontWeight: 600, color: '#e85a2c' }}
-            >
-              🏫 Lớp học
             </Link>
             <a href="/#features" className="nav-link">
               Tính năng
@@ -138,27 +91,6 @@ export default function Layout() {
                     </span>
                   )}
                 </Link>
-                {(() => {
-                  const badge = getRoleBadge(user.role);
-                  return (
-                    <span
-                      style={{
-                        fontSize: '12px',
-                        fontWeight: 600,
-                        padding: '3px 9px',
-                        borderRadius: '16px',
-                        background: badge.bg,
-                        color: badge.color,
-                        border: `1px solid ${badge.border}`,
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                      }}
-                      title={`Tài khoản hiện tại có vai trò: ${user.role}`}
-                    >
-                      {badge.label}
-                    </span>
-                  );
-                })()}
                 <Link to={dashboardPath} className="btn btn-primary">
                   Dashboard
                 </Link>
@@ -229,13 +161,6 @@ export default function Layout() {
                 >
                   <span>Trang chủ</span>
                 </Link>
-                <Link
-                  to="/classes"
-                  className={`mobile-nav-item ${location.pathname.startsWith('/classes') ? 'active' : ''}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <span>🏫 Lớp học</span>
-                </Link>
                 <a
                   href="/#features"
                   className="mobile-nav-item"
@@ -279,13 +204,6 @@ export default function Layout() {
                     Vào Dashboard ({user.role})
                   </Link>
                   <Link
-                    to="/classes"
-                    className="btn btn-outline"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    🏫 Lớp học của tôi
-                  </Link>
-                  <Link
                     to={notificationsPath}
                     className="btn btn-outline"
                     onClick={() => setMobileMenuOpen(false)}
@@ -326,6 +244,7 @@ export default function Layout() {
           </div>
         )}
       </nav>
+
       <main className="main-content">
         <Outlet />
       </main>

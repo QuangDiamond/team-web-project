@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { submitAssignment } from '../../services/classroomService';
+import { useAuth } from '../../hooks/useAuth.jsx';
 
 export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmitted, showToast }) {
+  const { user } = useAuth();
+  const isParent = user?.role === 'PARENT';
   const [answers, setAnswers] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState(null);
@@ -12,7 +15,7 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
   const isBlockedByLate = isPastDue && !assignment?.allow_late_submission;
   const isBlockedByGraded = Boolean(assignment?.results_published_at || mySubmission?.status === 'GRADED');
   const isBlockedByResubmit = mySubmission && !assignment?.allow_resubmission;
-  const canSubmit = !isBlockedByLate && !isBlockedByGraded && !isBlockedByResubmit;
+  const canSubmit = !isParent && !isBlockedByLate && !isBlockedByGraded && !isBlockedByResubmit;
 
   const resetForm = () => {
     setResult(null);
@@ -82,7 +85,15 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
       <div className="modal-content" style={{ maxWidth: '720px' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>
-            <span>✍️</span> Làm bài tập: {assignment.title} (UC27)
+            {isParent ? (
+              <>
+                <span>👁️</span> Xem đề bài tập: {assignment.title}
+              </>
+            ) : (
+              <>
+                <span>✍️</span> Làm bài tập: {assignment.title} (UC27)
+              </>
+            )}
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
             ×
@@ -138,20 +149,45 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                 </div>
               )}
 
+              {/* Thông báo chế độ xem của Phụ huynh */}
+              {isParent && (
+                <div
+                  style={{
+                    marginBottom: '16px',
+                    padding: '12px 16px',
+                    background: '#eff6ff',
+                    border: '1px solid #bfdbfe',
+                    borderRadius: '10px',
+                    color: '#1d4ed8',
+                    fontSize: '13px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                  }}
+                >
+                  <span style={{ fontSize: '22px' }}>👨‍👩‍👧</span>
+                  <div>
+                    <strong>Chế độ giám sát của Phụ huynh:</strong> Bạn đang xem đề bài
+                    {mySubmission ? ` và bài làm của con (${mySubmission.student_user_id?.full_name || 'Học sinh'})` : ''}.
+                    Chỉ học sinh mới có quyền thực hiện và nộp bài tập.
+                  </div>
+                </div>
+              )}
+
               {/* Deadline & Warning Notices */}
-              {isBlockedByGraded && (
+              {isBlockedByGraded && !isParent && (
                 <div style={{ background: '#fef3c7', border: '1px solid #fde68a', color: '#92400e', padding: '12px', borderRadius: '8px', marginBottom: '14px', fontSize: '13px' }}>
                   🔒 <strong>Quy tắc UC27:</strong> Bài tập này đã được gia sư công bố điểm cho cả lớp. Không được nộp lại sau khi đã công bố điểm.
                 </div>
               )}
 
-              {isBlockedByLate && !isBlockedByGraded && (
+              {isBlockedByLate && !isBlockedByGraded && !isParent && (
                 <div style={{ background: '#fee2e2', border: '1px solid #fca5a5', color: '#991b1b', padding: '12px', borderRadius: '8px', marginBottom: '14px', fontSize: '13px' }}>
                   ⛔ Bài tập này đã hết hạn nộp lúc {new Date(assignment.due_date).toLocaleString('vi-VN')} và không cho phép nộp trễ.
                 </div>
               )}
 
-              {isBlockedByResubmit && (
+              {isBlockedByResubmit && !isParent && (
                 <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', color: '#1e40af', padding: '12px', borderRadius: '8px', marginBottom: '14px', fontSize: '13px' }}>
                   ℹ️ Bạn đã nộp bài tập này (Lần #{mySubmission.attempt_number}). Gia sư không kích hoạt chính sách cho phép nộp lại.
                 </div>
@@ -170,7 +206,10 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontWeight: 600, color: '#334155' }}>
-                      📋 Lịch sử nộp trước: Lần #{mySubmission.attempt_number} (Nộp lúc {new Date(mySubmission.submitted_at).toLocaleString('vi-VN')})
+                      {isParent
+                        ? `📋 Bài nộp của con (${mySubmission.student_user_id?.full_name || 'Học sinh'}): Lần #${mySubmission.attempt_number}`
+                        : `📋 Lịch sử nộp trước: Lần #${mySubmission.attempt_number}`}{' '}
+                      (Nộp lúc {new Date(mySubmission.submitted_at).toLocaleString('vi-VN')})
                     </span>
                     <span style={{ color: mySubmission.status === 'GRADED' ? '#16a34a' : '#e85a2c', fontWeight: 600 }}>
                       {mySubmission.status === 'GRADED'

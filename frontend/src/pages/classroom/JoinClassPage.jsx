@@ -17,6 +17,18 @@ export default function JoinClassPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
+  const getClassDetailUrl = (classId) => {
+    if (user?.role === 'TUTOR') return `/tutor/classes/${classId}`;
+    if (user?.role === 'PARENT') return `/parent/classes/${classId}`;
+    return `/student/classes/${classId}`;
+  };
+
+  const getClassesUrl = () => {
+    if (user?.role === 'TUTOR') return '/tutor/classes';
+    if (user?.role === 'PARENT') return '/parent/classes';
+    return '/student/classes';
+  };
+
   const fetchPreview = useCallback(async (c) => {
     if (!c || c.length < 4) return;
     try {
@@ -49,9 +61,9 @@ export default function JoinClassPage() {
       setSuccess(true);
       setTimeout(() => {
         if (res?.data?.class_id) {
-          navigate(`/classes/${res.data.class_id}`);
+          navigate(getClassDetailUrl(res.data.class_id));
         } else {
-          navigate('/classes');
+          navigate(getClassesUrl());
         }
       }, 1500);
     } catch (err) {
@@ -236,7 +248,7 @@ export default function JoinClassPage() {
                       Bạn là Gia sư phụ trách/quản lý lớp học này. Liên kết mời và mã tham gia này dành cho Học sinh & Phụ huynh của bạn.
                     </p>
                     <Link
-                      to={`/classes/${preview._id}`}
+                      to={getClassDetailUrl(preview._id)}
                       className="btn-primary-orange"
                       style={{ textDecoration: 'none', display: 'inline-flex', padding: '10px 24px', justifyContent: 'center' }}
                     >
@@ -258,7 +270,7 @@ export default function JoinClassPage() {
             )}
 
             <div style={{ marginTop: '20px', fontSize: '14px' }}>
-              <Link to="/classes" style={{ color: '#64748b', textDecoration: 'none' }}>
+              <Link to={getClassesUrl()} style={{ color: '#64748b', textDecoration: 'none' }}>
                 ← Quay lại danh sách lớp học của tôi
               </Link>
             </div>
