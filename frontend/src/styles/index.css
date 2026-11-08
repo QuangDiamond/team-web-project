@@ -24,6 +24,9 @@
   --color-info-soft: #e8f1fb;
   --radius-sm: 8px;
   --radius-md: 12px;
+  --radius-lg: 16px;
+  --color-warning: #a15c07;
+  --color-warning-soft: #fef3c7;
   --focus-ring: 0 0 0 3px rgba(242, 107, 58, 0.35);
   --transition: 150ms ease;
 }
@@ -565,4 +568,898 @@ body {
   .form-control {
     transition: none;
   }
+}
+
+/* ---------- Nút nhỏ (dùng trong danh sách, card) ---------- */
+.btn-sm {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ---------- Badge trạng thái ---------- */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-badge.tone-primary {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+}
+
+.status-badge.tone-info {
+  background: var(--color-info-soft);
+  color: var(--color-info);
+}
+
+.status-badge.tone-warning {
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
+}
+
+.status-badge.tone-success {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+.status-badge.tone-error {
+  background: var(--color-error-soft);
+  color: var(--color-error);
+}
+
+/* ---------- DashboardLayout (khung dashboard dùng chung cho mọi role) ---------- */
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.dashboard-sidebar {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 240px;
+  height: 100%;
+  background: var(--color-white);
+  border-right: 1px solid var(--color-border);
+}
+
+.dashboard-sidebar-brand {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-sidebar-brand .brand-logo {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.dashboard-user-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.dashboard-user-info {
+  min-width: 0;
+}
+
+.dashboard-user-name {
+  margin: 0 0 2px;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-role-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.dashboard-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 12px;
+}
+
+.dashboard-nav-group + .dashboard-nav-group {
+  margin-top: 20px;
+}
+
+.dashboard-nav-group-label {
+  margin: 0 0 6px;
+  padding: 0 12px;
+  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.dashboard-nav-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dashboard-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.dashboard-nav-link:hover {
+  background: var(--color-surface);
+}
+
+.dashboard-nav-link:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.dashboard-nav-link.is-active {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+}
+
+.dashboard-nav-link.is-disabled {
+  color: var(--color-text-muted);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dashboard-nav-link.is-disabled:hover {
+  background: transparent;
+}
+
+.dashboard-nav-link.is-danger {
+  color: var(--color-error);
+}
+
+.dashboard-nav-link.is-danger:hover {
+  background: var(--color-error-soft);
+}
+
+.dashboard-sidebar-footer {
+  padding: 0 12px 16px;
+}
+
+.dashboard-sidebar-footer-link {
+  display: block;
+  padding: 10px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+}
+
+.dashboard-sidebar-footer-link:hover {
+  background: var(--color-surface);
+}
+
+.dashboard-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 24px;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-header-start {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.dashboard-header-title {
+  margin: 0;
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dashboard-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.dashboard-icon-button:hover:not(:disabled) {
+  background: var(--color-surface);
+}
+
+.dashboard-icon-button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.dashboard-icon-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.dashboard-menu-button {
+  display: none;
+}
+
+.dashboard-header-link {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.dashboard-header-link:hover {
+  background: var(--color-surface);
+}
+
+.dashboard-header-link:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.dashboard-main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.dashboard-overlay {
+  display: none;
+}
+
+/* Màn hình < 1024px: sidebar trượt ra từ bên trái, có lớp phủ */
+@media (max-width: 1023px) {
+  .dashboard-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 30;
+    transform: translateX(-100%);
+    transition: transform 200ms ease;
+  }
+
+  .dashboard-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .dashboard-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .dashboard-menu-button {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-header {
+    padding: 12px 16px;
+  }
+
+  .dashboard-main {
+    padding: 16px;
+  }
+
+  .dashboard-header-link {
+    display: none;
+  }
+}
+
+/* ---------- Card dùng chung trong dashboard (SectionCard, StatCard, EmptyState) ---------- */
+.section-card {
+  padding: 20px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.section-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.section-card-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.stat-card {
+  padding: 16px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.stat-card-label {
+  margin: 0 0 4px;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.stat-card-value {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.stat-card-value.tone-primary {
+  color: var(--color-primary-strong);
+}
+
+.stat-card-value.tone-info {
+  color: var(--color-info);
+}
+
+.stat-card-value.tone-warning {
+  color: var(--color-warning);
+}
+
+.stat-card-value.tone-success {
+  color: var(--color-success);
+}
+
+.stat-card-detail {
+  margin: 2px 0 0;
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.empty-state {
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.empty-state-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 10px;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+}
+
+.empty-state-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.empty-state-description {
+  margin: 4px 0 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-sidebar,
+  .dashboard-nav-link {
+    transition: none;
+  }
+}
+
+/* ---------- Form: textarea, select, nhãn tùy chọn (dùng cùng .form-control) ---------- */
+.form-control textarea,
+.form-control select {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 16px;
+  color: var(--color-text);
+  outline: none;
+}
+
+.form-control textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.form-control select {
+  height: 46px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.form-control textarea::placeholder {
+  color: #9ca3af;
+}
+
+.form-optional {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.form-hint-left {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 16px;
+}
+
+.mode-toggle {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mode-toggle-option {
+  min-height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mode-toggle-option:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.mode-toggle-option.is-selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.modal {
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  outline: none;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.modal-summary {
+  margin: 0 0 16px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.modal-cost {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* ---------- Phân trang ---------- */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.pagination-info {
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.pagination-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* ---------- Trang trong workspace: khung, thanh công cụ, danh sách ---------- */
+.page-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.page-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.page-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page-loading-inline {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+  color: var(--color-primary-strong);
+}
+
+.item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+}
+
+.item-row-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-row-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.item-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.item-title-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.item-title-link:hover {
+  color: var(--color-primary-strong);
+}
+
+.item-meta {
+  margin: 4px 0 0;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.item-note {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.item-count {
+  color: var(--color-primary-strong);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .item-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+}
+
+/* Danh sách đang tải lại: mờ đi và không bấm được */
+.list-refreshing {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ---------- Thành phần dashboard dùng chung: banner, lưới số liệu, hai cột, danh sách gọn ---------- */
+.welcome-banner {
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(90deg, var(--color-primary-strong), #e0663c);
+  color: var(--color-white);
+}
+
+.welcome-banner-eyebrow {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.welcome-banner-name {
+  margin: 0 0 4px;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.welcome-banner-summary {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dashboard-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.dashboard-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.compact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.compact-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: inherit;
+  text-decoration: none;
+}
+
+.compact-row:hover {
+  background: var(--color-primary-soft);
+}
+
+.compact-row:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.compact-row-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.compact-row-title {
+  font-size: 14px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.compact-row-meta {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .welcome-banner {
+    padding: 20px;
+  }
+
+  .welcome-banner-name {
+    font-size: 20px;
+  }
+}
+
+/* ---------- Màn "đã lưu / đã đăng" sau khi gửi form (dùng chung cho request, bài đăng...) ---------- */
+.request-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 480px;
+  margin: 24px auto;
+  padding: 32px 24px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  text-align: center;
+}
+
+.request-success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+.request-success-title {
+  margin: 8px 0 0;
+  font-size: 20px;
+  font-weight: 800;
 }

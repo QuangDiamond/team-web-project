@@ -1,8 +1,10 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { LoaderCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { getHomePathByRole } from '../utils/getHomePathByRole';
 
-// Chỉ cho người chưa đăng nhập vào các màn auth; đã đăng nhập thì về trang chủ
+// Chỉ cho người chưa đăng nhập vào các màn auth.
+// Đã đăng nhập (kể cả ngay sau khi login thành công) thì chuyển tới trang theo role
 export default function GuestRoute() {
   const { user, initializing } = useAuth();
 
@@ -16,7 +18,7 @@ export default function GuestRoute() {
   }
 
   if (user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={getHomePathByRole(user.role)} replace />;
   }
 
   return <Outlet />;
