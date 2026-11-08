@@ -1209,7 +1209,7 @@ export const getClassGroupChat = async ({ classroomId, user }) => {
     throw new AppError('Không tìm thấy lớp học', 404);
   }
 
-  // Kiểm tra quyền: Gia sư chủ lớp hoặc thành viên ACTIVE
+  // Kiểm tra quyền: Gia sư chủ lớp, thành viên ACTIVE, hoặc Phụ huynh có con đang học trong lớp (BR-14)
   let isAuthorized = false;
   const tutorProfile = await TutorProfile.findOne({ user_id: user._id });
   if (tutorProfile && classroom.tutor_profile_id?.toString() === tutorProfile._id.toString()) {
@@ -1220,7 +1220,23 @@ export const getClassGroupChat = async ({ classroomId, user }) => {
       user_id: user._id,
       status: ENUMS.ClassMembersStatus.ACTIVE,
     });
-    if (member) isAuthorized = true;
+    if (member) {
+      isAuthorized = true;
+    } else if (user?.role === 'PARENT' && user?._id) {
+      const childLinks = await ParentChildLink.find({
+        parent_user_id: user._id,
+        status: ENUMS.ParentChildLinksStatus.ACCEPTED,
+      }).select('student_user_id').lean();
+      const studentIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
+      if (studentIds.length > 0) {
+        const isChildMember = await ClassMember.findOne({
+          class_id: classroom._id,
+          user_id: { $in: studentIds },
+          status: ENUMS.ClassMembersStatus.ACTIVE,
+        });
+        if (isChildMember) isAuthorized = true;
+      }
+    }
   }
 
   if (!isAuthorized) {
@@ -1302,7 +1318,12 @@ export const sendClassChatMessage = async ({ classroomId, user, content }) => {
     throw new AppError('Không tìm thấy lớp học', 404);
   }
 
-  // Kiểm tra quyền: Gia sư chủ lớp hoặc thành viên ACTIVE
+  // Quy tắc SDS E1: Lớp học lưu trữ (ARCHIVED) thì nhóm chat chuyển sang chỉ đọc
+  if (classroom.status === ENUMS.ClassroomsStatus.ARCHIVED) {
+    throw new AppError('Lớp học đã lưu trữ, nhóm chat đang ở chế độ chỉ đọc', 400);
+  }
+
+  // Kiểm tra quyền: Gia sư chủ lớp, thành viên ACTIVE, hoặc Phụ huynh có con đang học trong lớp (BR-14)
   let isAuthorized = false;
   const tutorProfile = await TutorProfile.findOne({ user_id: user._id });
   if (tutorProfile && classroom.tutor_profile_id?.toString() === tutorProfile._id.toString()) {
@@ -1313,7 +1334,23 @@ export const sendClassChatMessage = async ({ classroomId, user, content }) => {
       user_id: user._id,
       status: ENUMS.ClassMembersStatus.ACTIVE,
     });
-    if (member) isAuthorized = true;
+    if (member) {
+      isAuthorized = true;
+    } else if (user?.role === 'PARENT' && user?._id) {
+      const childLinks = await ParentChildLink.find({
+        parent_user_id: user._id,
+        status: ENUMS.ParentChildLinksStatus.ACCEPTED,
+      }).select('student_user_id').lean();
+      const studentIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
+      if (studentIds.length > 0) {
+        const isChildMember = await ClassMember.findOne({
+          class_id: classroom._id,
+          user_id: { $in: studentIds },
+          status: ENUMS.ClassMembersStatus.ACTIVE,
+        });
+        if (isChildMember) isAuthorized = true;
+      }
+    }
   }
 
   if (!isAuthorized) {
