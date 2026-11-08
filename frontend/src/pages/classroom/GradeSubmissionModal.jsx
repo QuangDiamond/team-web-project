@@ -1,4 +1,15 @@
 import { useState, useEffect } from 'react';
+import {
+  BarChart3,
+  X,
+  AlertTriangle,
+  Loader2,
+  FileText,
+  CheckCircle2,
+  ExternalLink,
+  Award,
+  Send,
+} from 'lucide-react';
 import { getSubmissionsForAssignment, gradeSubmission } from '../../services/classroomService';
 
 export default function GradeSubmissionModal({ isOpen, onClose, assignment, showToast }) {
@@ -88,29 +99,32 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, show
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-content" style={{ maxWidth: '840px' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>
-            <span>📊</span> Chấm điểm bài tập: {assignment.title}
+          <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <BarChart3 size={20} color="#e85a2c" />
+            <span>Chấm điểm bài tập: {assignment.title}</span>
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
-            ×
+            <X size={18} />
           </button>
         </div>
 
         <div className="modal-body" style={{ maxHeight: '72vh', overflowY: 'auto' }}>
           {error && (
             <div className="error-alert">
-              <span>⚠️</span>
+              <AlertTriangle size={16} />
               <div>{error}</div>
             </div>
           )}
 
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
-              ⏳ Đang tải bài làm của học sinh...
+            <div style={{ textAlign: 'center', padding: '40px', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <Loader2 size={18} className="spin" />
+              <span>Đang tải bài làm của học sinh...</span>
             </div>
           ) : submissions.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
-              📝 Chưa có học sinh nào nộp bài tập này.
+            <div style={{ textAlign: 'center', padding: '40px', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <FileText size={18} />
+              <span>Chưa có học sinh nào nộp bài tập này.</span>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '20px' }}>
@@ -140,7 +154,15 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, show
                       >
                         <div style={{ fontWeight: 600, fontSize: '14px', color: '#0f172a' }}>{studentName}</div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#64748b', marginTop: '4px' }}>
-                          <span>{isGraded ? `⭐ ${sub.final_score}đ` : `Tạm: ${sub.provisional_score || 0}đ`}</span>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                            {isGraded ? (
+                              <>
+                                <Award size={13} color="#16a34a" /> {sub.final_score}đ
+                              </>
+                            ) : (
+                              `Tạm: ${sub.provisional_score || 0}đ`
+                            )}
+                          </span>
                           <span style={{ color: isGraded ? '#16a34a' : '#e85a2c', fontWeight: isGraded ? 600 : 400 }}>
                             {isGraded ? 'Đã công bố' : 'Chờ chấm'}
                           </span>
@@ -167,9 +189,20 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, show
                           background: selectedSub.timeliness === 'LATE' ? '#fee2e2' : '#dcfce7',
                           color: selectedSub.timeliness === 'LATE' ? '#991b1b' : '#166534',
                           fontWeight: 600,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
                         }}
                       >
-                        {selectedSub.timeliness === 'LATE' ? '⚠️ Nộp muộn' : '✅ Đúng hạn'}
+                        {selectedSub.timeliness === 'LATE' ? (
+                          <>
+                            <AlertTriangle size={13} /> Nộp muộn
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle2 size={13} /> Đúng hạn
+                          </>
+                        )}
                       </span>
                     </div>
                     <div style={{ fontSize: '13px', color: '#64748b' }}>
@@ -227,9 +260,13 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, show
                                   textDecoration: 'underline',
                                   fontWeight: 600,
                                   wordBreak: 'break-all',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
                                 }}
                               >
-                                🔗 {ans.text_response}
+                                <ExternalLink size={13} />
+                                <span>{ans.text_response}</span>
                               </a>
                             ) : (
                               <span style={{ fontWeight: 600, color: '#0f172a', whiteSpace: 'pre-wrap' }}>
@@ -250,8 +287,9 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, show
 
                   {/* Form chấm điểm */}
                   <form onSubmit={handleGrade} style={{ background: '#fff5f0', padding: '16px', borderRadius: '10px', border: '1px solid #fed7aa' }}>
-                    <h4 style={{ margin: '0 0 12px 0', color: '#c2410c', fontSize: '15px' }}>
-                      ⭐ Nhập điểm & Nhận xét của gia sư:
+                    <h4 style={{ margin: '0 0 12px 0', color: '#c2410c', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Award size={16} />
+                      <span>Nhập điểm & Nhận xét của gia sư:</span>
                     </h4>
 
                     <div className="form-group" style={{ marginBottom: '12px' }}>
@@ -283,8 +321,23 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, show
                       />
                     </div>
 
-                    <button type="submit" className="btn-primary-orange" disabled={submitting}>
-                      {submitting ? 'Đang lưu & công bố...' : '📢 Công bố điểm cho Học sinh & Phụ huynh'}
+                    <button
+                      type="submit"
+                      className="btn-primary-orange"
+                      disabled={submitting}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                    >
+                      {submitting ? (
+                        <>
+                          <Loader2 size={15} className="spin" />
+                          <span>Đang lưu & công bố...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send size={15} />
+                          <span>Công bố điểm cho Học sinh & Phụ huynh</span>
+                        </>
+                      )}
                     </button>
                   </form>
                 </div>

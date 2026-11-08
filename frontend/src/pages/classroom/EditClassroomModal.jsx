@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Settings, AlertTriangle, X } from 'lucide-react';
 import { updateClassroom } from '../../services/classroomService';
 
 export default function EditClassroomModal({ isOpen, onClose, classroom, onUpdated, showToast }) {
@@ -96,11 +97,12 @@ export default function EditClassroomModal({ isOpen, onClose, classroom, onUpdat
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>
-            <span>⚙️</span> Chỉnh sửa thông tin lớp học
+          <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Settings size={20} style={{ color: '#e85a2c' }} />
+            <span>Chỉnh sửa thông tin lớp học</span>
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
-            ×
+            <X size={18} />
           </button>
         </div>
 
@@ -108,7 +110,7 @@ export default function EditClassroomModal({ isOpen, onClose, classroom, onUpdat
           <div className="modal-body">
             {error && (
               <div className="error-alert">
-                <span>⚠️</span>
+                <AlertTriangle size={18} style={{ flexShrink: 0 }} />
                 <div>{error}</div>
               </div>
             )}
