@@ -19,12 +19,19 @@ test('navbar highlights only the selected section and links to the parent public
       }
       const page = render('/');
       assert.match(page, /href="\\/parents\\/parent1"[^>]*>Test parent<\\/a>/);
+      globalThis.__navbarUser = { _id: 'tutor1', role: 'TUTOR', full_name: 'Test tutor' };
+      const tutor = render('/');
+      assert.match(tutor, /href="\\/tutor\\/profile"/);
+      assert.doesNotMatch(tutor, /tutors\\/undefined/);
+      globalThis.__navbarUser = { _id: 'parent2', role: 'PARENT', full_name: 'Second parent' };
+      assert.match(render('/'), /href="\\/parents\\/parent2"/);
+      delete globalThis.__navbarUser;
     ` },
     plugins: [{ name: 'navbar-services', setup(build) {
       build.onResolve({ filter: /\/hooks\/useAuth$|\/services\/(notificationService|tutorProfileService)$/ },
         (args) => ({ path: args.path, namespace: 'navbar-mock' }));
       build.onLoad({ filter: /.*/, namespace: 'navbar-mock' }, () => ({ contents: `
-        export const useAuth = () => ({ user: { id: 'parent1', role: 'PARENT', full_name: 'Test parent' }, logout: async () => {} });
+        export const useAuth = () => ({ user: globalThis.__navbarUser || { id: 'parent1', role: 'PARENT', full_name: 'Test parent' }, logout: async () => {} });
         export const getUnreadCount = async () => ({ data: { unreadCount: 0 } });
         export const getMyProfile = async () => ({ data: { profile: null } });
       ` }));
