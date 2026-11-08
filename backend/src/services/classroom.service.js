@@ -1771,7 +1771,7 @@ export const submitAssignment = async ({ assignmentId, user, answers = [] }) => 
 /**
  * Lấy danh sách bài nộp của học sinh cho gia sư chấm điểm (UC26)
  */
-export const getSubmissionsForAssignment = async ({ assignmentId, tutorProfile }) => {
+export const getSubmissionsForAssignment = async ({ assignmentId }) => {
   const assignment = await Assignment.findById(assignmentId);
   if (!assignment) {
     throw new AppError('Không tìm thấy bài tập', 404);
