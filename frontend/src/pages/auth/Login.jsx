@@ -89,6 +89,7 @@ export default function Login() {
     const result = await login({ email: values.email.trim(), password: values.password });
     setSubmitting(false);
 
+    // login() đã lưu user vào AuthContext, GuestRoute sẽ tự chuyển tới trang theo role
     if (result.success) {
       navigate(getPathAfterLogin(location), { replace: true });
       return;

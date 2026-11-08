@@ -1,54 +1,50 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-const PAGE_SIZE = 10;
+/*
+ * Tải một danh sách có phân trang từ API (data = { items, pagination, ... }).
+ * fetchPage: hàm trong services (ví dụ getMyRequests), params: object query (page, limit, bộ lọc).
+ * Khi params đổi thì tự tải lại; kết quả của lần gọi cũ về muộn sẽ bị bỏ qua.
+ */
+export function usePagedList(fetchPage, params) {
+  const [state, setState] = useState({ loading: true, error: null, data: null });
+  const latestCall = useRef(0);
+  const paramsKey = JSON.stringify(params);
 
-// Tải 1 trang danh sách mỗi khi bộ lọc hoặc số trang đổi.
-// fetchPage(params) phải trả về response { data: { items, pagination } }; enabled = false thì không gọi (vd: bộ lọc sai)
-export function usePagedList(fetchPage, filterParams, page, enabled) {
-  const [items, setItems] = useState([]);
-  const [pagination, setPagination] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState('');
-  const [reloadKey, setReloadKey] = useState(0);
-
-  // Chuỗi hóa bộ lọc để effect chỉ chạy lại khi giá trị thật sự đổi
-  const filterKey = JSON.stringify(filterParams);
+  const load = useCallback(async () => {
+    latestCall.current += 1;
+    const callNumber = latestCall.current;
+    setState((previous) => ({ ...previous, loading: true, error: null }));
+    try {
+      const response = await fetchPage(JSON.parse(paramsKey));
+      if (callNumber === latestCall.current) {
+        setState({ loading: false, error: null, data: response.data });
+      }
+    } catch (error) {
+      if (callNumber === latestCall.current) {
+        setState({ loading: false, error: error, data: null });
+      }
+    }
+  }, [fetchPage, paramsKey]);
 
   useEffect(() => {
-    if (!enabled) {
-      return undefined;
-    }
-    // Bỏ kết quả của request cũ nếu người dùng đổi bộ lọc trước khi nó trả về
-    let ignore = false;
-    setLoading(true);
-    setLoadError('');
-    fetchPage({ ...JSON.parse(filterKey), page: page, limit: PAGE_SIZE })
-      .then((response) => {
-        if (ignore) {
-          return;
+    load();
+  }, [load]);
+
+  // Cập nhật một item tại chỗ (ví dụ đổi trạng thái đã lưu) mà không phải tải lại cả danh sách
+  const patchItem = useCallback((itemId, changes) => {
+    setState((previous) => {
+      if (!previous.data) {
+        return previous;
+      }
+      const items = previous.data.items.map((item) => {
+        if (item._id === itemId) {
+          return { ...item, ...changes };
         }
-        setItems(response.data.items);
-        setPagination(response.data.pagination);
-      })
-      .catch((error) => {
-        if (ignore) {
-          return;
-        }
-        setLoadError(error.message);
-      })
-      .finally(() => {
-        if (!ignore) {
-          setLoading(false);
-        }
+        return item;
       });
-    return () => {
-      ignore = true;
-    };
-  }, [fetchPage, filterKey, page, enabled, reloadKey]);
+      return { ...previous, data: { ...previous.data, items: items } };
+    });
+  }, []);
 
-  const reload = () => {
-    setReloadKey(reloadKey + 1);
-  };
-
-  return { items, pagination, loading, loadError, reload };
+  return { ...state, reload: load, patchItem };
 }

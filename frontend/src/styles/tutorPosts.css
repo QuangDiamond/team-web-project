@@ -1,0 +1,35 @@
+/* Bài đăng của gia sư: /tutor/posts, /tutor/posts/new, /tutor/posts/:id/edit */
+
+.post-form-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.post-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.post-back-link:hover {
+  color: var(--color-primary-strong);
+}
+
+.post-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.post-delete-button {
+  color: var(--color-error);
+}

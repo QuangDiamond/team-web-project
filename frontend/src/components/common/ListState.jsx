@@ -1,53 +1,58 @@
-import { LoaderCircle, ReceiptText, RotateCw, SearchX } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { LoaderCircle } from 'lucide-react';
 import Alert from './Alert';
+import EmptyState from './EmptyState';
+import { PROFILE_REQUIRED_MESSAGE } from '../../constants/requestLabels';
 
-// Trạng thái chung của 1 danh sách có bộ lọc: đang tải / lỗi / rỗng (UC18, UC37).
-// Trả về null khi đã có dữ liệu để component cha vẽ bảng. emptyAction: nút / link khi chưa có dữ liệu nào
-export default function ListState({ loading, loadError, onRetry, isEmpty, filtersActive, onClearFilters, emptyTitle, emptyText, emptyAction }) {
-  if (loading && isEmpty) {
+/*
+ * Hiển thị trạng thái của một danh sách tải từ API: đang tải, lỗi (có nút thử lại), rỗng, hoặc nội dung (children).
+ * list: kết quả của usePagedList. empty: { icon, title, description }
+ */
+export default function ListState({ list, empty, children }) {
+  if (list.loading && !list.data) {
     return (
-      <div className="history-state" role="status">
-        <LoaderCircle size={22} className="spin" aria-hidden="true" />
-        <span>Loading...</span>
+      <div className="page-loading-inline" role="status">
+        <LoaderCircle size={26} className="spin" aria-hidden="true" />
+        <span className="visually-hidden">Loading...</span>
       </div>
     );
   }
 
-  if (loadError) {
+  // Gia sư chưa có hồ sơ không phải lỗi hệ thống: chỉ đường tới trang tạo hồ sơ, không cần "Try again"
+  if (list.error && list.error.message === PROFILE_REQUIRED_MESSAGE) {
     return (
-      <div className="history-state history-state-error">
-        <Alert type="error">Could not load this list: {loadError}</Alert>
-        <button type="button" className="btn btn-outline btn-sm" onClick={onRetry}>
-          <RotateCw size={16} aria-hidden="true" />
-          <span>Try again</span>
-        </button>
+      <Alert type="info">
+        <p>Set up your tutor profile first to use this page.</p>
+        <Link to="/tutor/profile" className="btn btn-primary btn-sm">Complete my profile</Link>
+      </Alert>
+    );
+  }
+
+  if (list.error) {
+    return (
+      <Alert type="error">
+        <p>{list.error.message}</p>
+        <button type="button" className="btn btn-outline btn-sm" onClick={list.reload}>Try again</button>
+      </Alert>
+    );
+  }
+
+  if (list.data && list.data.items.length === 0) {
+    let description = empty.description;
+    if (list.data.hint) {
+      description = list.data.hint;
+    }
+    return <EmptyState icon={empty.icon} title={empty.title} description={description} />;
+  }
+
+  // Đang tải lại (đổi trang / bộ lọc): giữ danh sách cũ nhưng khóa thao tác để kết quả mới không ghi đè thay đổi vừa làm
+  if (list.loading) {
+    return (
+      <div className="list-refreshing" aria-busy="true">
+        {children}
       </div>
     );
   }
 
-  if (!isEmpty) {
-    return null;
-  }
-
-  // Có bộ lọc mà không ra kết quả: gợi ý xóa bộ lọc
-  if (filtersActive) {
-    return (
-      <div className="empty-state">
-        <SearchX size={32} className="empty-state-icon" aria-hidden="true" />
-        <p className="empty-state-title">No results for these filters</p>
-        <p className="empty-state-text">Try another type, status or date range.</p>
-        <button type="button" className="btn btn-outline btn-sm" onClick={onClearFilters}>Clear filters</button>
-      </div>
-    );
-  }
-
-  // Chưa có dữ liệu nào (vd UC18 E1: link sang UC17)
-  return (
-    <div className="empty-state">
-      <ReceiptText size={32} className="empty-state-icon" aria-hidden="true" />
-      <p className="empty-state-title">{emptyTitle}</p>
-      {emptyText && <p className="empty-state-text">{emptyText}</p>}
-      {emptyAction}
-    </div>
-  );
+  return children;
 }

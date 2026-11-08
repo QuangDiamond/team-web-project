@@ -31,7 +31,7 @@ export const authentication = async (req, res, next) =>{
     try {
         payload = jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
-        return next(new AppError('Invalid or expired token', 401));
+        return next(new AppError(error.message, 401));
     }
     if(!payload || typeof payload.sub !== "string" || !mongoose.isValidObjectId(payload.sub)){
         return next(new AppError('Invalid or expired token', 401));
