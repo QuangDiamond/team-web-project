@@ -239,20 +239,23 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
       }
     }
   } else if (user?.role === 'PARENT' && user?._id) {
-    // Với Parent: Lấy danh sách các lớp mà con của phụ huynh đang theo học (hoặc phụ huynh trực tiếp tham gia)
+    // Với Parent: CHỈ lấy danh sách các lớp mà con của phụ huynh đang thực tế theo học (status: ACTIVE)
     const childLinks = await ParentChildLink.find({
       parent_user_id: user._id,
       status: ENUMS.ParentChildLinksStatus.ACCEPTED,
     }).select('student_user_id').lean();
     const studentUserIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
 
-    const targetUserIds = [user._id, ...studentUserIds];
-    const memberships = await ClassMember.find({
-      user_id: { $in: targetUserIds },
-      status: ENUMS.ClassMembersStatus.ACTIVE,
-    }).select('class_id').lean();
-    const classIds = memberships.map((m) => m.class_id);
-    filter._id = { $in: classIds };
+    if (studentUserIds.length === 0) {
+      filter._id = { $in: [] };
+    } else {
+      const memberships = await ClassMember.find({
+        user_id: { $in: studentUserIds },
+        status: ENUMS.ClassMembersStatus.ACTIVE,
+      }).select('class_id').lean();
+      const classIds = memberships.map((m) => m.class_id);
+      filter._id = { $in: classIds };
+    }
   } else if (user) {
     // Với Student: Lấy danh sách lớp đã tham gia thành công (ACTIVE)
     const memberships = await ClassMember.find({
@@ -380,15 +383,16 @@ export const getClassroomDetail = async ({ classroomId, tutorProfile, user }) =>
   // 3. Nếu không phải gia sư chủ lớp, kiểm tra xem có phải là học viên/phụ huynh của lớp không
   if (!isOwner) {
     let hasAccess = false;
-    const isMember = await ClassMember.findOne({
-      class_id: classroomId,
-      user_id: user?._id,
-      status: ENUMS.ClassMembersStatus.ACTIVE,
-    });
-    if (isMember) {
-      hasAccess = true;
+
+    if (user?.role === 'STUDENT') {
+      const isMember = await ClassMember.findOne({
+        class_id: classroomId,
+        user_id: user?._id,
+        status: ENUMS.ClassMembersStatus.ACTIVE,
+      });
+      if (isMember) hasAccess = true;
     } else if (user?.role === 'PARENT' && user?._id) {
-      // Phụ huynh có quyền truy cập nếu con của mình là thành viên đang học trong lớp
+      // Phụ huynh CHỈ có quyền truy cập nếu con của mình là học viên đang học trong lớp
       const childLinks = await ParentChildLink.find({
         parent_user_id: user._id,
         status: ENUMS.ParentChildLinksStatus.ACCEPTED,
@@ -404,10 +408,17 @@ export const getClassroomDetail = async ({ classroomId, tutorProfile, user }) =>
           hasAccess = true;
         }
       }
+    } else if (user?._id) {
+      const isMember = await ClassMember.findOne({
+        class_id: classroomId,
+        user_id: user?._id,
+        status: ENUMS.ClassMembersStatus.ACTIVE,
+      });
+      if (isMember) hasAccess = true;
     }
 
-    if (!hasAccess && env.nodeEnv === 'production') {
-      throw new AppError('Bạn không có quyền truy cập lớp học này', 403);
+    if (!hasAccess) {
+      throw new AppError('Bạn không có quyền truy cập lớp học này (lớp này không có con của bạn đang theo học)', 403);
     }
   }
 
