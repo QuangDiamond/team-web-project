@@ -21,6 +21,19 @@ test('public tutor DTO excludes private fields and masks contact text', () => {
   assert.equal(result.headline.includes('0912345678'), false);
   assert.equal(result.subjects[0].includes('private@example.com'), false);
   for (const field of ['email', 'password_hash', 'address', 'bio', 'user_id']) assert.equal(field in result, false);
+  assert.deepEqual(result.teaching_categories, []);
+});
+
+test('tutor cards expose only public teaching-category fields with contact masking', () => {
+  const result = toInvitableTutorDto({
+    _id: 'p1', teaching_categories: [
+      { type: 'subjects', category_id: 's1', name: 'Toán', private_note: 'private' },
+      { type: 'grades', category_id: 'g1', name: 'Liên hệ private@example.com' },
+    ],
+  }, { full_name: 'Tutor' }, { subjects: [], minPrice: null });
+  assert.deepEqual(result.teaching_categories[0], { type: 'subjects', category_id: 's1', name: 'Toán' });
+  assert.equal(result.teaching_categories[1].name.includes('private@example.com'), false);
+  assert.deepEqual(Object.keys(result.teaching_categories[1]), ['type', 'category_id', 'name']);
 });
 
 test('public search filters active complete tutors before paging and keeps post filters together', async (t) => {

@@ -3,6 +3,15 @@
 Base URL: `/api/discovery/v1`. Responses use the existing envelope
 `{ success: 1, message: string, data: object }`.
 
+## GET /tutors
+
+Public tutor directory. Each item includes `teaching_categories: [{ type, category_id, name }]`
+from the tutor profile, alongside the existing `subjects` and other card fields.
+Category IDs are strings and names use contact masking; old profiles return `[]`.
+The `/tutors` frontend requests 12 tutors per page and displays up to 4 category tags.
+When profile categories are empty, cards fall back to subjects from published posts.
+Profiles with fewer than 4 categories show only their available categories.
+
 ## GET /tutors/:profileId
 
 Public; no authentication required. `profileId` is a TutorProfile ID, not a User ID.

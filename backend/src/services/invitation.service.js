@@ -197,6 +197,11 @@ export const toInvitableTutorDto = (profile, tutorUser, postSummary) => {
     average_rating: profile.average_rating ?? null,
     availability_status: profile.availability_status ?? null,
     subjects: postSummary.subjects.map((subject) => maskContact(subject)),
+    teaching_categories: (profile.teaching_categories || []).map((item) => ({
+      type: item.type,
+      category_id: String(item.category_id),
+      name: maskContact(item.name),
+    })),
     min_price: postSummary.minPrice,
   };
 };

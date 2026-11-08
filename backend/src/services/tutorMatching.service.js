@@ -68,6 +68,25 @@ export const matchesSubjectAndGrade = (request, post) => {
 };
 
 /**
+ * Match at least one active subject or education level selected in a tutor profile.
+ * @param {Object} request - Request subject and education level.
+ * @param {Object[]} selections - Tutor profile category references.
+ * @param {Map} catalog - Active names keyed by category type and ID.
+ * @returns {boolean} Whether any category matches.
+ */
+export const matchesAnyTeachingCategory = (request, selections, catalog) => {
+  return selections.some((item) => {
+    let requestedName;
+    if (item.type === 'subjects') requestedName = request.subject_name;
+    else if (item.type === 'grades') requestedName = request.grade_level;
+    else return false;
+    const offeredName = catalog.get(item.type + ':' + item.category_id);
+    const requested = normalizeText(requestedName);
+    return Boolean(requested && offeredName) && requested === normalizeText(offeredName);
+  });
+};
+
+/**
  * Match both catalog types using their authoritative active names and IDs.
  * @param {Object} request - Request subject and education level.
  * @param {Object[]} selections - Tutor profile category references.

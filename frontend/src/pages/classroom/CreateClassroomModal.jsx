@@ -1,8 +1,23 @@
 import { useState, useEffect } from 'react';
 import { GraduationCap, AlertTriangle, Check, X, Plus } from 'lucide-react';
 import { createClassroom, getConfirmedAgreements } from '../../services/classroomService';
+import { useSubjectNames } from '../../hooks/useSubjectNames';
+import { formatVnd } from '../../utils/formatCurrency';
 
-export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreated, showToast }) {
+function applyAgreementToForm(form, agreement) {
+  return {
+    ...form,
+    agreement_id: agreement._id,
+    name: form.name || `Lớp kèm môn ${agreement.agreed_subject || 'học'}`,
+    subject: agreement.agreed_subject || form.subject,
+    description: agreement.agreed_schedule
+      ? `Lịch học đã chốt: ${agreement.agreed_schedule}`
+      : form.description,
+  };
+}
+
+export default function CreateClassroomModal({ isOpen, initialAgreementId = '', onClose, onClassroomCreated, showToast }) {
+  const { subjectNames, gradeNames, loading: loadingCategories, error: categoryError } = useSubjectNames();
   const [formData, setFormData] = useState({
     name: '',
     subject: '',
@@ -42,6 +57,15 @@ export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreat
         .then((res) => {
           if (res?.data && Array.isArray(res.data)) {
             setAgreements(res.data);
+            if (initialAgreementId) {
+              const agreement = res.data.find((item) => item._id === initialAgreementId);
+              if (agreement) {
+                setUseAgreement(true);
+                setFormData((form) => applyAgreementToForm(form, agreement));
+              } else {
+                setError('Thỏa thuận không còn khả dụng. Vui lòng chọn thỏa thuận khác.');
+              }
+            }
           }
         })
         .catch((err) => {
@@ -51,7 +75,7 @@ export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreat
           setLoadingAgreements(false);
         });
     }
-  }, [isOpen]);
+  }, [isOpen, initialAgreementId]);
 
   if (!isOpen) return null;
 
@@ -71,15 +95,7 @@ export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreat
     const agreement = agreements.find((a) => a._id === selectedId);
 
     if (agreement) {
-      setFormData((prev) => ({
-        ...prev,
-        agreement_id: agreement._id,
-        name: prev.name || `Lớp kèm môn ${agreement.agreed_subject || 'học'}`,
-        subject: agreement.agreed_subject || prev.subject,
-        description: agreement.agreed_schedule
-          ? `Lịch học đã chốt: ${agreement.agreed_schedule}`
-          : prev.description,
-      }));
+      setFormData((form) => applyAgreementToForm(form, agreement));
     } else {
       setFormData((prev) => ({ ...prev, agreement_id: '' }));
     }
@@ -252,7 +268,7 @@ export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreat
                       <option value="">-- Chọn thỏa thuận đã chốt với phụ huynh --</option>
                       {agreements.map((item) => (
                         <option key={item._id} value={item._id}>
-                          {item.agreed_subject || 'Môn học'} - Học phí: {item.agreed_price ? `${item.agreed_price}đ` : 'Thỏa thuận'} ({item.agreed_schedule || 'Chưa có lịch'})
+                          {item.agreed_subject || 'Môn học'} - Học phí: {item.agreed_price != null ? formatVnd(item.agreed_price) : 'Thỏa thuận'} ({item.agreed_schedule || 'Chưa có lịch'})
                         </option>
                       ))}
                     </select>
@@ -278,6 +294,9 @@ export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreat
                 <div className="form-help-text">Đặt tên rõ ràng để học sinh và phụ huynh dễ nhận biết.</div>
               </div>
 
+              {loadingCategories && <p role="status">Đang tải danh mục môn học và trình độ...</p>}
+              {categoryError && <p role="alert">Không thể tải danh mục: {categoryError}</p>}
+
               {/* Môn học & Khối lớp */}
               <div className="form-row">
                 <div className="form-group">
@@ -295,13 +314,7 @@ export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreat
                     required
                   />
                   <datalist id="subject-suggestions">
-                    <option value="Toán học" />
-                    <option value="Tiếng Anh" />
-                    <option value="Vật lý" />
-                    <option value="Hóa học" />
-                    <option value="Ngữ văn" />
-                    <option value="Sinh học" />
-                    <option value="Tin học / Lập trình" />
+                    {subjectNames.map((name) => <option key={name} value={name} />)}
                   </datalist>
                 </div>
 
@@ -314,29 +327,12 @@ export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreat
                     id="grade"
                     name="grade"
                     list="grade-suggestions"
-                    placeholder="VD: Lớp 10, Lớp 12 (mặc định: Chung)"
+                    placeholder="Tìm lớp, IELTS, TOEIC... (mặc định: Chung)"
                     value={formData.grade}
                     onChange={handleChange}
                   />
                   <datalist id="grade-suggestions">
-                    <option value="Mầm non / Tiền tiểu học" />
-                    <option value="Lớp 1" />
-                    <option value="Lớp 2" />
-                    <option value="Lớp 3" />
-                    <option value="Lớp 4" />
-                    <option value="Lớp 5" />
-                    <option value="Lớp 6" />
-                    <option value="Lớp 7" />
-                    <option value="Lớp 8" />
-                    <option value="Lớp 9" />
-                    <option value="Lớp 10" />
-                    <option value="Lớp 11" />
-                    <option value="Lớp 12" />
-                    <option value="Ôn thi Đại học" />
-                    <option value="Đại học / Cao đẳng" />
-                    <option value="Luyện thi chứng chỉ (IELTS, TOEIC...)" />
-                    <option value="Người đi làm" />
-                    <option value="Chung" />
+                    {gradeNames.map((name) => <option key={name} value={name} />)}
                   </datalist>
                 </div>
               </div>

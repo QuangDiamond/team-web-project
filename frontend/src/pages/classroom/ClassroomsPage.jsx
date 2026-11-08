@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   GraduationCap,
   KeyRound,
@@ -25,6 +25,8 @@ import './classroom.css';
 export default function ClassroomsPage() {
   const { user } = useAuth();
   const isTutor = user?.role === 'TUTOR';
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialAgreementId = isTutor ? searchParams.get('agreement') || '' : '';
   const [classrooms, setClassrooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -74,6 +76,16 @@ export default function ClassroomsPage() {
 
   const handleClassroomCreated = () => {
     fetchClassrooms();
+  };
+
+  const handleCloseCreateModal = () => {
+    setIsModalOpen(false);
+    if (initialAgreementId) {
+      setSearchParams((params) => {
+        params.delete('agreement');
+        return params;
+      }, { replace: true });
+    }
   };
 
   const getClassroomDetailUrl = (id) => {
@@ -360,8 +372,9 @@ export default function ClassroomsPage() {
 
       {/* Modal Tạo Lớp Học (UC21) */}
       <CreateClassroomModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isModalOpen || Boolean(initialAgreementId)}
+        initialAgreementId={initialAgreementId}
+        onClose={handleCloseCreateModal}
         onClassroomCreated={handleClassroomCreated}
         showToast={showToast}
       />
