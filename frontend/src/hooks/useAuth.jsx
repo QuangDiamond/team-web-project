@@ -1,8 +1,7 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { useContext, useState, useCallback, useEffect } from 'react';
+import { AuthContext } from '../context/AuthContext.js';
 import * as authService from '../services/authService.js';
 import { setAccountLockedHandler, setSessionExpiredHandler } from '../services/api.js';
-
-const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
