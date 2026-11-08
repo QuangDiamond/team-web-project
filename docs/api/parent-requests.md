@@ -43,6 +43,17 @@ Body dùng `strictObject`: gửi thêm field lạ bị từ chối. `parent_user
 ## PUT `/:id`
 Sửa nội dung (cùng body như POST) khi request đang `DRAFT` hoặc `OPEN`.
 
+## DELETE `/:id`
+Xóa **hẳn** request của chính phụ huynh cùng đơn ứng tuyển, lời mời, bookmark và cache gợi ý liên quan. Không có body.
+
+| Status | Khi nào |
+|---|---|
+| 200 | Đã xóa, trả `{ _id }` |
+| 404 | Id sai, không tồn tại hoặc request của phụ huynh khác |
+| 409 | Request đã có hội thoại với gia sư (đã Continue / Accept) nên không xóa được |
+
+Credit đã dùng cho đơn ứng tuyển / lời mời **không hoàn lại**. DB local là standalone (không có transaction): dữ liệu liên quan được xóa trước, request xóa sau cùng; lỗi giữa chừng thì request còn nguyên và xóa lại được.
+
 ## Item trả về
 `_id, title, subject_name, grade_level, teaching_mode, budget` (number), `schedule, description, location_address, tutor_requirements, status, student_id, student` (`{_id, full_name, email, avatar_url}` hoặc null), `application_count` (không tính đơn đã rút), `is_expired` (OPEN quá 30 ngày, BR-05), `can_edit, created_at, updated_at`.
 

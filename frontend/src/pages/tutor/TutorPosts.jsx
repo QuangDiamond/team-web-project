@@ -7,7 +7,7 @@ import Alert from '../../components/common/Alert';
 import ListState from '../../components/common/ListState';
 import Modal from '../../components/common/Modal';
 import Pagination from '../../components/common/Pagination';
-import PostList from '../../components/tutorPosts/PostList';
+import PostList from '../../components/tutor/PostList';
 import '../../styles/tutorPosts.css';
 
 const PAGE_SIZE = 10;

@@ -63,7 +63,7 @@ Không khai báo **Log Out**: frame tự thêm và gọi `useAuth().logout()` r�
 ## Thêm dashboard cho role mới (ví dụ Tutor)
 
 1. Thêm `TUTOR_MENU` vào `constants/dashboardMenus.js` (chỉ sửa export của role mình).
-2. Tạo page `pages/tutor/TutorDashboard.jsx`, component trong `components/tutorDashboard/`, CSS trong `styles/tutorDashboard.css`. Gọi API qua `services/tutorDashboardService.js` dùng `api` từ `services/api.js`.
+2. Tạo page `pages/tutor/TutorDashboard.jsx`, component trong `components/tutor/`, CSS trong `styles/tutorDashboard.css`. Gọi API qua `services/tutorDashboardService.js` dùng `api` từ `services/api.js`.
 3. Thêm route vào `frontend/src/routes/routes.jsx`:
 
 ```jsx
@@ -110,7 +110,7 @@ import EmptyState from '../../components/common/EmptyState';
 | Role | URL | Menu | Page |
 |---|---|---|---|
 | STUDENT | `/student/dashboard` | `STUDENT_MENU` | `pages/student/StudentDashboard.jsx` (UC36) |
-| PARENT | `/parent/dashboard`, `/parent/applications` và `/parent/ai-suggestions` (trang chọn request `RequestPicker`, dẫn tới trang của từng request), `/parent/requests`, `/parent/requests/new`, `/parent/requests/:id`, `/parent/requests/:id/edit`, `/parent/requests/:requestId/ai-suggestions`, `/parent/requests/:id/applications`, `/parent/invitations`, `/parent/messages`, `/parent/messages/:conversationId` | `PARENT_MENU` | `pages/parent/*` (Overview `ParentDashboard.jsx`, UC10, UC09, UC14, duyệt đơn ứng tuyển) |
+| PARENT | `/parent/dashboard`, `/parent/applications` (chuyển về `/parent/requests`; đơn ứng tuyển nay nằm trong trang chi tiết `/parent/requests/:id`) và `/parent/ai-suggestions` (một trang, chọn request bằng dropdown), `/parent/requests`, `/parent/requests/new`, `/parent/requests/:id`, `/parent/requests/:id/edit`, `/parent/requests/:requestId/ai-suggestions`, `/parent/requests/:id/applications`, `/parent/invitations`, `/parent/messages`, `/parent/messages/:conversationId` | `PARENT_MENU` | `pages/parent/*` (Overview `ParentDashboard.jsx`, UC10, UC09, UC14, duyệt đơn ứng tuyển) |
 | TUTOR | `/tutor/dashboard`, `/tutor/requests`, `/tutor/requests/suggested`, `/tutor/requests/saved`, `/tutor/requests/:id`, `/tutor/applications`, `/tutor/invitations`, `/tutor/profile`, `/tutor/posts`, `/tutor/posts/new`, `/tutor/posts/:id/edit`, `/tutor/messages`, `/tutor/messages/:conversationId` | `TUTOR_MENU` | `pages/tutor/*` (Overview `TutorDashboard.jsx`, UC11, UC12, phản hồi lời mời, hồ sơ, bài đăng) |
 
 Màn Messages của Parent và Tutor là **cùng một trang** `pages/chat/ChatPage.jsx`, chỉ khác prop `basePath` (`/parent/messages` hoặc `/tutor/messages`).

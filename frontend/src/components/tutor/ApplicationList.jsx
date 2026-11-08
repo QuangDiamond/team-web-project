@@ -19,9 +19,7 @@ function ApplicationRow({ application, onWithdraw }) {
     metaParts.push(subject);
   }
   metaParts.push(`Applied ${formatDate(application.created_at)}`);
-  if (application.match_score !== null && application.match_score !== undefined) {
-    metaParts.push(`${application.match_score}% match`);
-  }
+  metaParts.push(`${application.credits_spent} ${application.credits_spent === 1 ? 'credit' : 'credits'} used`);
 
   const handleWithdraw = async () => {
     setWithdrawing(true);

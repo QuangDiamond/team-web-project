@@ -3,6 +3,10 @@ import Alert from '../common/Alert';
 import FormInput from '../common/FormInput';
 import FormSelect from '../common/FormSelect';
 import FormTextarea from '../common/FormTextarea';
+import SchedulePicker from '../common/SchedulePicker';
+import { GRADE_LEVELS } from '../../constants/gradeLevels';
+import { useSubjectNames } from '../../hooks/useSubjectNames';
+import { toSelectOptions } from '../../utils/selectOptions';
 import { TEACHING_MODES, formatBudget } from '../../constants/requestLabels';
 import { focusFirstInvalidField, toFieldErrors } from '../../utils/authValidators';
 
@@ -25,6 +29,8 @@ const REQUIRED_FIELDS = [
   { name: 'description', label: 'Learning goal' },
   { name: 'schedule', label: 'Preferred schedule' },
 ];
+
+const SCHEDULE_REQUIRED_MESSAGE = 'Choose at least one day and a valid start and end time';
 
 const MAX_LENGTHS = {
   title: 150,
@@ -57,6 +63,9 @@ const validate = (values) => {
       errors[field.name] = `${field.label} is required`;
     }
   });
+  if (!values.schedule.trim()) {
+    errors.schedule = SCHEDULE_REQUIRED_MESSAGE;
+  }
   Object.keys(MAX_LENGTHS).forEach((name) => {
     if (values[name].trim().length > MAX_LENGTHS[name]) {
       errors[name] = `Must be at most ${MAX_LENGTHS[name]} characters`;
@@ -116,12 +125,22 @@ export default function RequestForm({ initialValues, students, submitLabel, subm
   const [submitting, setSubmitting] = useState(false);
 
   const isOnline = values.teaching_mode === 'ONLINE';
+  const subjects = useSubjectNames();
+  const subjectOptions = toSelectOptions(subjects.subjectNames, values.subject_name);
+  const gradeOptions = toSelectOptions(GRADE_LEVELS, values.grade_level);
 
   const handleChange = (event) => {
     const field = event.target.name;
     setValues({ ...values, [field]: event.target.value });
     if (errors[field]) {
       setErrors({ ...errors, [field]: '' });
+    }
+  };
+
+  const handleScheduleChange = (schedule) => {
+    setValues((previousValues) => ({ ...previousValues, schedule: schedule }));
+    if (errors.schedule) {
+      setErrors({ ...errors, schedule: '' });
     }
   };
 
@@ -193,13 +212,15 @@ export default function RequestForm({ initialValues, students, submitLabel, subm
           disabled={submitting}
           hint={students.length === 0 ? 'No linked students yet. You can still publish this request.' : undefined}
         />
-        <FormInput
+        <FormSelect
           id="subject_name"
           label="Subject"
           value={values.subject_name}
           onChange={handleChange}
+          options={subjectOptions}
+          placeholder={subjects.loading ? 'Loading subjects...' : 'Select subject'}
           error={errors.subject_name}
-          placeholder="e.g. Python"
+          hint={subjects.error ? 'Could not load subjects. Reload the page to try again.' : undefined}
           disabled={submitting}
         />
       </div>
@@ -215,13 +236,12 @@ export default function RequestForm({ initialValues, students, submitLabel, subm
       />
 
       <div className="form-grid">
-        <FormInput
+        <SchedulePicker
           id="schedule"
           label="Preferred schedule"
           value={values.schedule}
-          onChange={handleChange}
+          onChange={handleScheduleChange}
           error={errors.schedule}
-          placeholder="Weekdays after 4 PM"
           disabled={submitting}
         />
         <FormInput
@@ -238,13 +258,14 @@ export default function RequestForm({ initialValues, students, submitLabel, subm
       </div>
 
       <div className="form-grid">
-        <FormInput
+        <FormSelect
           id="grade_level"
           label="Grade level"
           value={values.grade_level}
           onChange={handleChange}
+          options={gradeOptions}
+          placeholder="Select grade"
           error={errors.grade_level}
-          placeholder="e.g. Lớp 9"
           disabled={submitting}
         />
         <FormInput

@@ -4,7 +4,6 @@ import StatCard from '../common/StatCard';
 export default function TutorStats({ summary }) {
   return (
     <div className="stat-grid">
-      <StatCard label="Open requests" value={summary.available_requests} detail="Available to apply" tone="primary" />
       <StatCard
         label="Pending applications"
         value={summary.pending_applications}

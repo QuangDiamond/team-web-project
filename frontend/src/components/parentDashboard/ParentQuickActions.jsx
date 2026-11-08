@@ -15,7 +15,7 @@ export default function ParentQuickActions() {
         </button>
         <button type="button" className="btn btn-outline btn-block" onClick={() => navigate('/parent/requests')}>
           <ClipboardList size={16} aria-hidden="true" />
-          <span>Review applications</span>
+          <span>Review my requests</span>
         </button>
         <button type="button" className="btn btn-outline btn-block" onClick={() => navigate('/parent/invitations')}>
           <Mail size={16} aria-hidden="true" />

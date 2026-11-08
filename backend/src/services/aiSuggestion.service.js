@@ -6,15 +6,10 @@ import { TutorProfile } from '../models/TutorProfile.js';
 import { User } from '../models/User.js';
 import { ENUMS } from '../models/enums.js';
 import { AppError } from '../common/utils/AppError.js';
-import {
-  DEFAULT_WEIGHTS,
-  isGradeMatch,
-  isModeCompatible,
-  isSubjectMatch,
-  scoreCandidate,
-} from './tutorMatching.service.js';
+import { matchesSubjectAndGrade } from './tutorMatching.service.js';
 
-// UC09 – chỉ dùng luật để xếp hạng. Chưa gọi AI provider nào nên ai_reason luôn null (luồng E1)
+// UC09 – gợi ý gia sư chỉ dựa trên môn học và khối lớp của request, không chấm điểm / trọng số.
+// Chưa gọi AI provider nào nên ai_reason luôn null (luồng E1)
 const SUGGESTION_LIMIT = 10;
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -67,7 +62,7 @@ const getOwnedOpenRequest = async (user, requestId) => {
  * Gắn thông tin bài đăng, hồ sơ và tên gia sư vào các bản ghi gợi ý để trả về cho client.
  * Bỏ qua bản ghi mà bài đăng không còn PUBLISHED hoặc tài khoản gia sư không còn ACTIVE.
  * @param {Object[]} rows - bản ghi AI_SUGGESTIONS (lean)
- * @returns {Promise<Object[]>} danh sách đã sắp xếp theo điểm giảm dần
+ * @returns {Promise<Object[]>} danh sách đã sắp xếp theo rating giảm dần
  */
 const hydrateSuggestions = async (rows) => {
   const posts = await TutorPost.find({
@@ -98,21 +93,16 @@ const hydrateSuggestions = async (rows) => {
       continue;
     }
 
-    let breakdown = null;
-    if (row.weights_json && row.weights_json.breakdown) {
-      breakdown = row.weights_json.breakdown;
-    }
     items.push({
       _id: String(row._id),
-      match_score: row.match_score,
       ai_reason: row.ai_reason,
-      breakdown: breakdown,
       tutor: {
         profile_id: String(profile._id),
         full_name: tutorUser.full_name,
         avatar_url: profile.avatar_url || tutorUser.avatar_url || null,
         headline: profile.headline,
         average_rating: profile.average_rating,
+        availability_status: profile.availability_status || null,
       },
       post: {
         _id: String(post._id),
@@ -126,33 +116,31 @@ const hydrateSuggestions = async (rows) => {
     });
   }
 
-  items.sort((first, second) => second.match_score - first.match_score);
+  items.sort((first, second) => {
+    const secondRating = second.tutor.average_rating || 0;
+    const firstRating = first.tutor.average_rating || 0;
+    if (secondRating !== firstRating) {
+      return secondRating - firstRating;
+    }
+    return first.tutor.full_name.localeCompare(second.tutor.full_name);
+  });
   return items;
 };
 
 /**
- * Bước 2-3 của UC09: lọc ràng buộc cứng (môn, khối, hình thức), chấm điểm, lấy top 10 (mỗi gia sư 1 bài tốt nhất)
+ * Chọn gia sư có bài đăng PUBLISHED cùng môn học và khối lớp với request (mỗi gia sư 1 bài mới nhất), rating cao trước, lấy top 10
  * @param {Object} request - ParentRequest (lean)
- * @param {Object} weights - trọng số 0..100 đã gộp với mặc định
- * @returns {Promise<Object[]>} danh sách { post, profile, match_score, breakdown } đã sắp xếp
+ * @returns {Promise<Object[]>} danh sách { post, profile } đã sắp xếp
  */
-const rankCandidates = async (request, weights) => {
-  const posts = await TutorPost.find({ status: ENUMS.TutorPostsStatus.PUBLISHED }).lean();
-  const matchedPosts = posts.filter((post) => {
-    return (
-      isSubjectMatch(request.subject_name, post.subject_name) &&
-      isGradeMatch(request.grade_level, post.grade_level) &&
-      isModeCompatible(request.teaching_mode, post.teaching_mode)
-    );
-  });
+const rankCandidates = async (request) => {
+  const posts = await TutorPost.find({ status: ENUMS.TutorPostsStatus.PUBLISHED }).sort({ created_at: -1, _id: -1 }).lean();
+  const matchedPosts = posts.filter((post) => matchesSubjectAndGrade(request, post));
   if (matchedPosts.length === 0) {
     return [];
   }
 
-  const profiles = await TutorProfile.find({
-    _id: { $in: matchedPosts.map((post) => post.profile_id) },
-    availability_status: { $ne: ENUMS.TutorProfilesAvailabilityStatus.NOT_AVAILABLE },
-  }).lean();
+  // Gia sư đặt "Not available" vẫn được gợi ý (UI có nhãn) để khớp với phía gia sư, nơi họ vẫn nhận gợi ý request
+  const profiles = await TutorProfile.find({ _id: { $in: matchedPosts.map((post) => post.profile_id) } }).lean();
   const activeUsers = await User.find({
     _id: { $in: profiles.map((profile) => profile.user_id) },
     account_status: ENUMS.UserAccountStatus.ACTIVE,
@@ -167,54 +155,27 @@ const rankCandidates = async (request, weights) => {
     }
   }
 
-  const requestForScoring = {
-    teaching_mode: request.teaching_mode,
-    budget: decimalToNumber(request.budget),
-    schedule: request.schedule,
-    location_address: request.location_address,
-  };
-
-  // Mỗi gia sư chỉ giữ bài đăng có điểm cao nhất
+  // Bài đăng đã sắp mới nhất trước nên bài đầu tiên gặp của mỗi gia sư là bài mới nhất
   const bestByProfile = new Map();
   for (const post of matchedPosts) {
-    const profile = profileById.get(String(post.profile_id));
-    if (!profile) {
-      continue;
-    }
-    const scored = scoreCandidate(
-      requestForScoring,
-      {
-        price: decimalToNumber(post.price),
-        schedule: post.schedule,
-        address: profile.address,
-        average_rating: profile.average_rating,
-      },
-      weights
-    );
-    const current = bestByProfile.get(String(profile._id));
-    if (!current || scored.match_score > current.match_score) {
-      bestByProfile.set(String(profile._id), { post, profile, ...scored });
+    const key = String(post.profile_id);
+    if (profileById.has(key) && !bestByProfile.has(key)) {
+      bestByProfile.set(key, { post, profile: profileById.get(key) });
     }
   }
 
   const ranked = Array.from(bestByProfile.values());
-  ranked.sort((first, second) => {
-    if (second.match_score !== first.match_score) {
-      return second.match_score - first.match_score;
-    }
-    return (second.profile.average_rating || 0) - (first.profile.average_rating || 0);
-  });
+  ranked.sort((first, second) => (second.profile.average_rating || 0) - (first.profile.average_rating || 0));
   return ranked.slice(0, SUGGESTION_LIMIT);
 };
 
 /**
  * Tính lại gợi ý và thay cache cũ của request bằng cache mới (24 giờ)
  * @param {Object} request - ParentRequest (lean)
- * @param {Object} weights - trọng số 0..100
  * @returns {Promise<Object[]>} bản ghi AI_SUGGESTIONS vừa lưu (lean)
  */
-const regenerateSuggestions = async (request, weights) => {
-  const ranked = await rankCandidates(request, weights);
+const regenerateSuggestions = async (request) => {
+  const ranked = await rankCandidates(request);
 
   // Chỉ xóa cache gợi ý của đúng request này
   await AiSuggestion.deleteMany({ request_id: request._id });
@@ -229,9 +190,9 @@ const regenerateSuggestions = async (request, weights) => {
         request_id: request._id,
         tutor_post_id: entry.post._id,
         tutor_profile_id: entry.profile._id,
-        match_score: entry.match_score,
+        match_score: null,
         ai_reason: null,
-        weights_json: { weights: weights, breakdown: entry.breakdown },
+        weights_json: null,
         cached_until: cachedUntil,
       };
     })
@@ -243,13 +204,9 @@ const buildResponse = async (request, rows, page, limit) => {
   const items = await hydrateSuggestions(rows);
   const pageItems = items.slice((page - 1) * limit, page * limit);
 
-  let weights = { ...DEFAULT_WEIGHTS };
   let cachedUntil = null;
   if (rows.length > 0) {
     cachedUntil = rows[0].cached_until;
-    if (rows[0].weights_json && rows[0].weights_json.weights) {
-      weights = rows[0].weights_json.weights;
-    }
   }
 
   // Chưa có AI provider nên không có lời giải thích: báo FALLBACK để UI hiển thị đúng (UC09 E1)
@@ -260,7 +217,7 @@ const buildResponse = async (request, rows, page, limit) => {
 
   let hint = null;
   if (items.length === 0) {
-    hint = 'No matching tutor yet. Try widening the subject, grade, mode or budget of your request.';
+    hint = 'No tutor teaches this subject and grade level yet. Check back when more tutors publish posts.';
   }
 
   return {
@@ -275,38 +232,43 @@ const buildResponse = async (request, rows, page, limit) => {
     items: pageItems,
     pagination: { page: page, limit: limit, total: items.length, totalPages: Math.ceil(items.length / limit) },
     ai_status: aiStatus,
-    weights: weights,
     cached_until: cachedUntil,
     hint: hint,
   };
 };
 
 /**
- * Xem gợi ý gia sư cho một request: dùng cache còn hạn, hết hạn / chưa có thì tính mới
+ * Xem gợi ý gia sư cho một request: dùng cache còn hạn, hết hạn / chưa có / không còn dùng được thì tính mới
  * @param {Object} user - req.user { id, role }
  * @param {string} requestId
  * @param {Object} query - { page, limit }
- * @returns {Promise<Object>} { request, items, pagination, ai_status, weights, cached_until, hint }
+ * @returns {Promise<Object>} { request, items, pagination, ai_status, cached_until, hint }
  */
 export const getSuggestions = async (user, requestId, { page, limit }) => {
   const request = await getOwnedOpenRequest(user, requestId);
 
   let rows = await AiSuggestion.find({ request_id: request._id, cached_until: { $gt: new Date() } }).lean();
+  if (rows.length > 0) {
+    // Cache còn hạn nhưng bài đăng / gia sư trong đó không còn dùng được (bài bị ẩn, tài khoản bị khóa...): tính lại thay vì hiện rỗng
+    const usableItems = await hydrateSuggestions(rows);
+    if (usableItems.length === 0) {
+      rows = [];
+    }
+  }
   if (rows.length === 0) {
-    rows = await regenerateSuggestions(request, { ...DEFAULT_WEIGHTS });
+    rows = await regenerateSuggestions(request);
   }
   return buildResponse(request, rows, page, limit);
 };
 
 /**
- * Tính lại gợi ý với trọng số mới (UC09 A1 Refine), bỏ qua cache
+ * Tính lại gợi ý ngay, bỏ qua cache
  * @param {Object} user - req.user { id, role }
  * @param {string} requestId
- * @param {Object} [weights] - { budget, rating, schedule, area } mỗi giá trị 0..100; thiếu thì dùng mặc định
  * @returns {Promise<Object>} cùng dạng với getSuggestions (trang 1)
  */
-export const refreshSuggestions = async (user, requestId, weights) => {
+export const refreshSuggestions = async (user, requestId) => {
   const request = await getOwnedOpenRequest(user, requestId);
-  const rows = await regenerateSuggestions(request, { ...DEFAULT_WEIGHTS, ...weights });
+  const rows = await regenerateSuggestions(request);
   return buildResponse(request, rows, 1, SUGGESTION_LIMIT);
 };

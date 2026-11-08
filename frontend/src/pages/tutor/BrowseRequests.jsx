@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { SearchX } from 'lucide-react';
 import { usePagedList } from '../../hooks/usePagedList';
 import { useRequestActions } from '../../hooks/useRequestActions';
-import { browseRequests, getRequestFilters } from '../../services/tutorRequestService';
+import { browseRequests } from '../../services/tutorRequestService';
 import ListState from '../../components/common/ListState';
 import Pagination from '../../components/common/Pagination';
-import RequestFilters from '../../components/tutorRequests/RequestFilters';
-import RequestGrid from '../../components/tutorRequests/RequestGrid';
+import RequestFilters from '../../components/tutor/RequestFilters';
+import RequestGrid from '../../components/tutor/RequestGrid';
 import '../../styles/tutorRequests.css';
 
 const PAGE_SIZE = 9;
@@ -26,17 +26,10 @@ const toQueryParams = (filters) => {
 export default function BrowseRequests() {
   const [filters, setFilters] = useState({});
   const [page, setPage] = useState(1);
-  const [filterOptions, setFilterOptions] = useState({ subjects: [], grades: [] });
 
   const params = useMemo(() => ({ ...toQueryParams(filters), page: page, limit: PAGE_SIZE }), [filters, page]);
   const list = usePagedList(browseRequests, params);
   const actions = useRequestActions({ patchItem: list.patchItem });
-
-  useEffect(() => {
-    getRequestFilters()
-      .then((response) => setFilterOptions(response.data))
-      .catch(() => setFilterOptions({ subjects: [], grades: [] }));
-  }, []);
 
   const handleApplyFilters = (values) => {
     setFilters(values);
@@ -50,7 +43,7 @@ export default function BrowseRequests() {
 
   return (
     <div className="page-stack">
-      <RequestFilters options={filterOptions} onApply={handleApplyFilters} />
+      <RequestFilters onApply={handleApplyFilters} />
 
       {list.data && <p className="item-meta" aria-live="polite">{total} open requests found</p>}
 

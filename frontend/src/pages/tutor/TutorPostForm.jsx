@@ -4,7 +4,7 @@ import { ChevronLeft, CircleCheck, LoaderCircle } from 'lucide-react';
 import { createPost, getMyPost, updatePost } from '../../services/tutorPostService';
 import Alert from '../../components/common/Alert';
 import SectionCard from '../../components/common/SectionCard';
-import PostForm, { EMPTY_POST_VALUES, toPostFormValues } from '../../components/tutorPosts/PostForm';
+import PostForm, { EMPTY_POST_VALUES, toPostFormValues } from '../../components/tutor/PostForm';
 import { PROFILE_REQUIRED_MESSAGE } from '../../constants/requestLabels';
 import '../../styles/tutorPosts.css';
 

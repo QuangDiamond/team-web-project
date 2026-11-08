@@ -5,7 +5,7 @@ import { getMyApplications, withdrawApplication } from '../../services/applicati
 import Alert from '../../components/common/Alert';
 import ListState from '../../components/common/ListState';
 import Pagination from '../../components/common/Pagination';
-import ApplicationList from '../../components/applications/ApplicationList';
+import ApplicationList from '../../components/tutor/ApplicationList';
 
 const PAGE_SIZE = 10;
 

@@ -6,7 +6,7 @@ import { getSuggestedRequests, refreshSuggestedRequests } from '../../services/t
 import Alert from '../../components/common/Alert';
 import ListState from '../../components/common/ListState';
 import Pagination from '../../components/common/Pagination';
-import RequestGrid from '../../components/tutorRequests/RequestGrid';
+import RequestGrid from '../../components/tutor/RequestGrid';
 import '../../styles/tutorRequests.css';
 
 const PAGE_SIZE = 9;
@@ -36,15 +36,10 @@ export default function SuggestedRequests() {
     }
   };
 
-  let showFallbackNotice = false;
-  if (list.data && list.data.items.length > 0 && list.data.ai_status === 'FALLBACK') {
-    showFallbackNotice = true;
-  }
-
   return (
     <div className="page-stack">
       <div className="page-toolbar">
-        <p className="item-meta">Requests that fit your published tutoring posts, best match first.</p>
+        <p className="item-meta">Open requests with the same subject and grade level as your published posts, newest first.</p>
         <button type="button" className="btn btn-outline btn-sm" disabled={refreshing} onClick={handleRefresh}>
           <RefreshCw size={14} className={refreshing ? 'spin' : ''} aria-hidden="true" />
           <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
@@ -52,9 +47,6 @@ export default function SuggestedRequests() {
       </div>
 
       {refreshError && <Alert type="error">{refreshError}</Alert>}
-      {showFallbackNotice && (
-        <Alert type="info">AI explanations are not available right now. Requests are ranked by price, schedule and area.</Alert>
-      )}
 
       <ListState
         list={list}
