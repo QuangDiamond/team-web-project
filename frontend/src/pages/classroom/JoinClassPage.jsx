@@ -1,5 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import {
+  KeyRound,
+  AlertTriangle,
+  CheckCircle2,
+  Search,
+  Users,
+  Lock,
+  GraduationCap,
+  ArrowRight,
+  Send,
+  ArrowLeft,
+  Loader2,
+} from 'lucide-react';
 import { previewClassroom, joinClassroom } from '../../services/classroomService';
 import { useAuth } from '../../hooks/useAuth.jsx';
 import './classroom.css';
@@ -85,7 +98,9 @@ export default function JoinClassPage() {
           textAlign: 'center',
         }}
       >
-        <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔑</div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+          <KeyRound size={48} color="#e85a2c" />
+        </div>
         <h2 style={{ fontSize: '24px', fontWeight: 700, margin: '0 0 8px 0', color: '#0f172a' }}>
           Tham gia lớp học
         </h2>
@@ -95,14 +110,16 @@ export default function JoinClassPage() {
 
         {error && (
           <div className="error-alert" style={{ textAlign: 'left' }}>
-            <span>⚠️</span>
+            <AlertTriangle size={16} />
             <div>{error}</div>
           </div>
         )}
 
         {success ? (
           <div style={{ padding: '24px 0' }}>
-            <div style={{ fontSize: '42px', color: '#16a34a', marginBottom: '12px' }}>🎉</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+              <CheckCircle2 size={48} color="#16a34a" />
+            </div>
             <h3 style={{ color: '#0f172a', margin: '0 0 6px 0' }}>Tham gia lớp học thành công!</h3>
             <p style={{ color: '#64748b', fontSize: '14px' }}>Đang chuyển hướng tới trang lớp học...</p>
           </div>
@@ -131,8 +148,19 @@ export default function JoinClassPage() {
                 className="btn-outline-gray"
                 onClick={() => fetchPreview(joinCode)}
                 disabled={loading}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               >
-                {loading ? 'Đang kiểm tra...' : '🔍 Xem trước'}
+                {loading ? (
+                  <>
+                    <Loader2 size={14} className="spin" />
+                    <span>Đang kiểm tra...</span>
+                  </>
+                ) : (
+                  <>
+                    <Search size={14} />
+                    <span>Xem trước</span>
+                  </>
+                )}
               </button>
             </div>
 
@@ -166,15 +194,19 @@ export default function JoinClassPage() {
                   </p>
                 )}
 
-                <div style={{ fontSize: '14px', color: '#475569', marginBottom: '8px' }}>
-                  👥 Sĩ số hiện tại: <strong>{preview.member_count}</strong> / {preview.capacity} học viên
+                <div style={{ fontSize: '14px', color: '#475569', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Users size={15} />
+                  <span>
+                    Sĩ số hiện tại: <strong>{preview.member_count}</strong> / {preview.capacity} học viên
+                  </span>
                 </div>
 
                 {/* Luồng UC24: Nếu là Phụ huynh, cho phép chọn và liên kết con đang ở trong lớp */}
                 {user?.role === 'PARENT' && (
                   <div style={{ marginTop: '12px', marginBottom: '12px', padding: '12px', background: '#ffffff', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                    <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>
-                      👨‍👩‍👧 Bạn đang tham gia với vai trò Phụ huynh. Chọn con đang học trong lớp:
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>
+                      <Users size={15} />
+                      <span>Bạn đang tham gia với vai trò Phụ huynh. Chọn con đang học trong lớp:</span>
                     </label>
                     {preview.students && preview.students.length > 0 ? (
                       <select
@@ -205,8 +237,9 @@ export default function JoinClassPage() {
                 )}
 
                 {preview.is_full ? (
-                  <div style={{ color: '#dc2626', fontSize: '14px', fontWeight: 600, marginTop: '8px' }}>
-                    ⚠️ Lớp học đã đạt sĩ số tối đa.
+                  <div style={{ color: '#dc2626', fontSize: '14px', fontWeight: 600, marginTop: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <AlertTriangle size={15} />
+                    <span>Lớp học đã đạt sĩ số tối đa.</span>
                   </div>
                 ) : !user ? (
                   <div
@@ -219,15 +252,22 @@ export default function JoinClassPage() {
                       fontSize: '14px',
                       color: '#b45309',
                       textAlign: 'center',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
                     }}
                   >
-                    🔒 Bạn cần đăng nhập để tham gia lớp học.{' '}
-                    <Link
-                      to={`/login?redirect=/join-class/${(joinCode || code || '').trim().toUpperCase()}`}
-                      style={{ color: '#e85a2c', fontWeight: 600, textDecoration: 'underline' }}
-                    >
-                      Đăng nhập ngay
-                    </Link>
+                    <Lock size={15} />
+                    <span>
+                      Bạn cần đăng nhập để tham gia lớp học.{' '}
+                      <Link
+                        to={`/login?redirect=/join-class/${(joinCode || code || '').trim().toUpperCase()}`}
+                        style={{ color: '#e85a2c', fontWeight: 600, textDecoration: 'underline' }}
+                      >
+                        Đăng nhập ngay
+                      </Link>
+                    </span>
                   </div>
                 ) : user?.role === 'TUTOR' ? (
                   <div
@@ -240,7 +280,9 @@ export default function JoinClassPage() {
                       textAlign: 'center',
                     }}
                   >
-                    <div style={{ fontSize: '32px', marginBottom: '8px' }}>👨‍🏫</div>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
+                      <GraduationCap size={36} color="#c2410c" />
+                    </div>
                     <h4 style={{ color: '#c2410c', margin: '0 0 6px 0', fontSize: '16px', fontWeight: 700 }}>
                       Bạn đang đăng nhập với vai trò Gia sư
                     </h4>
@@ -250,28 +292,40 @@ export default function JoinClassPage() {
                     <Link
                       to={getClassDetailUrl(preview._id)}
                       className="btn-primary-orange"
-                      style={{ textDecoration: 'none', display: 'inline-flex', padding: '10px 24px', justifyContent: 'center' }}
+                      style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '10px 24px', justifyContent: 'center' }}
                     >
-                      👉 Vào không gian quản lý lớp học
+                      <ArrowRight size={15} />
+                      <span>Vào không gian quản lý lớp học</span>
                     </Link>
                   </div>
                 ) : (
                   <button
                     type="button"
                     className="btn-primary-orange"
-                    style={{ width: '100%', marginTop: '16px', padding: '12px', justifyContent: 'center' }}
+                    style={{ width: '100%', marginTop: '16px', padding: '12px', justifyContent: 'center', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                     onClick={handleJoin}
                     disabled={joining}
                   >
-                    {joining ? 'Đang tham gia...' : '🚀 Xác nhận tham gia lớp học'}
+                    {joining ? (
+                      <>
+                        <Loader2 size={16} className="spin" />
+                        <span>Đang tham gia...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send size={16} />
+                        <span>Xác nhận tham gia lớp học</span>
+                      </>
+                    )}
                   </button>
                 )}
               </div>
             )}
 
             <div style={{ marginTop: '20px', fontSize: '14px' }}>
-              <Link to={getClassesUrl()} style={{ color: '#64748b', textDecoration: 'none' }}>
-                ← Quay lại danh sách lớp học của tôi
+              <Link to={getClassesUrl()} style={{ color: '#64748b', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                <ArrowLeft size={14} />
+                <span>Quay lại danh sách lớp học của tôi</span>
               </Link>
             </div>
           </div>

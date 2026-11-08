@@ -1,4 +1,12 @@
 import { useState } from 'react';
+import {
+  Copy,
+  Link as LinkIcon,
+  Plus,
+  Loader2,
+  Users,
+  GraduationCap,
+} from 'lucide-react';
 
 export default function ClassroomMembersTab({
   classroom,
@@ -42,16 +50,17 @@ export default function ClassroomMembersTab({
           <button
             type="button"
             className="btn-outline-gray"
-            style={{ fontSize: '13px', padding: '8px 12px' }}
+            style={{ fontSize: '13px', padding: '8px 12px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             onClick={() => onCopy(classroom.join_code, 'mã lớp')}
             title="Sao chép mã tham gia lớp"
           >
-            📋 Mã: <strong>{classroom.join_code}</strong>
+            <Copy size={13} />
+            <span>Mã: <strong>{classroom.join_code}</strong></span>
           </button>
           <button
             type="button"
             className="btn-outline-gray"
-            style={{ fontSize: '13px', padding: '8px 12px' }}
+            style={{ fontSize: '13px', padding: '8px 12px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             onClick={() =>
               onCopy(
                 classroom.invite_link || `${window.location.origin}/join-class/${classroom.join_code}`,
@@ -60,29 +69,34 @@ export default function ClassroomMembersTab({
             }
             title="Sao chép liên kết mời tham gia"
           >
-            🔗 Liên kết mời
+            <LinkIcon size={13} />
+            <span>Liên kết mời</span>
           </button>
 
           {isOwner && (
             <button
               type="button"
               className="btn-primary-orange"
-              style={{ fontSize: '14px', padding: '9px 16px' }}
+              style={{ fontSize: '14px', padding: '9px 16px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               onClick={onOpenAddMember}
             >
-              <span>➕</span> Thêm học viên vào lớp
+              <Plus size={15} />
+              <span>Thêm học viên vào lớp</span>
             </button>
           )}
         </div>
       </div>
 
       {loadingMembers ? (
-        <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
-          ⏳ Đang tải danh sách thành viên...
+        <div style={{ textAlign: 'center', padding: '40px', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          <Loader2 size={18} className="spin" />
+          <span>Đang tải danh sách thành viên...</span>
         </div>
       ) : members.length === 0 ? (
         <div className="classroom-empty-state" style={{ padding: '40px 20px' }}>
-          <div className="empty-icon">👥</div>
+          <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+            <Users size={44} color="#94a3b8" />
+          </div>
           <h3>Chưa có học viên nào tham gia lớp</h3>
           <p>
             Chia sẻ mã <code>{classroom.join_code}</code> hoặc liên kết mời để học sinh tham gia!
@@ -91,9 +105,11 @@ export default function ClassroomMembersTab({
             <button
               type="button"
               className="btn-primary-orange"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               onClick={onOpenAddMember}
             >
-              <span>➕</span> Thêm học viên ngay
+              <Plus size={15} />
+              <span>Thêm học viên ngay</span>
             </button>
           )}
         </div>
@@ -130,7 +146,10 @@ export default function ClassroomMembersTab({
               }}
               onClick={() => setMemberFilter('STUDENT')}
             >
-              🎒 Học sinh ({studentMembers.length})
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <GraduationCap size={13} />
+                <span>Học sinh ({studentMembers.length})</span>
+              </span>
             </button>
             <button
               type="button"
@@ -146,7 +165,10 @@ export default function ClassroomMembersTab({
               }}
               onClick={() => setMemberFilter('PARENT')}
             >
-              👨‍👩‍👧 Phụ huynh ({parentMembers.length})
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <Users size={13} />
+                <span>Phụ huynh ({parentMembers.length})</span>
+              </span>
             </button>
           </div>
 
@@ -186,13 +208,15 @@ export default function ClassroomMembersTab({
                             </div>
                             {/* Xem liên kết phụ huynh - học viên */}
                             {u.role === 'PARENT' && mem.linked_children && mem.linked_children.length > 0 && (
-                              <div style={{ fontSize: '11px', color: '#e85a2c', marginTop: '2px' }}>
-                                👶 Con: {mem.linked_children.map((c) => c.full_name || c.email).join(', ')}
+                              <div style={{ fontSize: '11px', color: '#e85a2c', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                <GraduationCap size={12} />
+                                <span>Con: {mem.linked_children.map((c) => c.full_name || c.email).join(', ')}</span>
                               </div>
                             )}
                             {u.role === 'STUDENT' && mem.linked_parent && (
-                              <div style={{ fontSize: '11px', color: '#0284c7', marginTop: '2px' }}>
-                                👨‍👩‍👧 Phụ huynh: {mem.linked_parent.full_name || mem.linked_parent.email}
+                              <div style={{ fontSize: '11px', color: '#0284c7', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                <Users size={12} />
+                                <span>Phụ huynh: {mem.linked_parent.full_name || mem.linked_parent.email}</span>
                               </div>
                             )}
                           </div>

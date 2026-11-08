@@ -1,3 +1,20 @@
+import {
+  Plus,
+  Loader2,
+  FileText,
+  Sparkles,
+  Clock,
+  BarChart3,
+  Pencil,
+  Trash2,
+  GraduationCap,
+  Award,
+  MessageSquare,
+  Eye,
+  RotateCcw,
+  PenTool,
+} from 'lucide-react';
+
 export default function ClassroomAssignmentsTab({
   assignments,
   loadingAssignments,
@@ -34,22 +51,26 @@ export default function ClassroomAssignmentsTab({
           <button
             type="button"
             className="btn-primary-orange"
-            style={{ fontSize: '14px', padding: '9px 16px' }}
+            style={{ fontSize: '14px', padding: '9px 16px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             onClick={handleCreateClick}
             title={studentCount === 0 ? 'Lớp cần có ít nhất 1 học sinh để tạo bài tập' : 'Tạo bài tập mới'}
           >
-            <span>➕</span> Tạo bài tập mới
+            <Plus size={15} />
+            <span>Tạo bài tập mới</span>
           </button>
         )}
       </div>
 
       {loadingAssignments ? (
-        <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
-          ⏳ Đang tải bài tập...
+        <div style={{ textAlign: 'center', padding: '40px', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          <Loader2 size={18} className="spin" />
+          <span>Đang tải bài tập...</span>
         </div>
       ) : assignments.length === 0 ? (
         <div className="classroom-empty-state" style={{ padding: '40px 20px' }}>
-          <div className="empty-icon">📝</div>
+          <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+            <FileText size={44} color="#94a3b8" />
+          </div>
           <h3>Chưa có bài tập nào</h3>
           <p>
             {studentCount === 0
@@ -62,9 +83,15 @@ export default function ClassroomAssignmentsTab({
               className="btn-primary-orange"
               onClick={handleCreateClick}
               disabled={studentCount === 0}
-              style={studentCount === 0 ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                ...(studentCount === 0 ? { opacity: 0.6, cursor: 'not-allowed' } : {}),
+              }}
             >
-              <span>➕</span> Tạo bài tập đầu tiên
+              <Plus size={15} />
+              <span>Tạo bài tập đầu tiên</span>
             </button>
           )}
         </div>
@@ -83,9 +110,17 @@ export default function ClassroomAssignmentsTab({
                   {asg.is_ai_generated && (
                     <span
                       className="badge"
-                      style={{ background: '#ecfdf5', color: '#059669', border: '1px solid #a7f3d0' }}
+                      style={{
+                        background: '#ecfdf5',
+                        color: '#059669',
+                        border: '1px solid #a7f3d0',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}
                     >
-                      ✨ AI sinh đề
+                      <Sparkles size={12} />
+                      <span>AI sinh đề</span>
                     </span>
                   )}
                   <span className="badge badge-grade">{asg.total_points || 10} Điểm</span>
@@ -99,9 +134,11 @@ export default function ClassroomAssignmentsTab({
                   </p>
                 )}
 
-                <div className="assignment-due">
-                  <span>⏰</span> Hạn nộp:{' '}
-                  {asg.due_date ? new Date(asg.due_date).toLocaleString('vi-VN') : 'Không giới hạn'}
+                <div className="assignment-due" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <Clock size={13} color="#64748b" />
+                  <span>
+                    Hạn nộp: {asg.due_date ? new Date(asg.due_date).toLocaleString('vi-VN') : 'Không giới hạn'}
+                  </span>
                 </div>
 
                 <div className="assignment-meta-row">
@@ -116,29 +153,31 @@ export default function ClassroomAssignmentsTab({
                   <button
                     type="button"
                     className="btn-primary-orange"
-                    style={{ flex: 2, fontSize: '13px', padding: '8px' }}
+                    style={{ flex: 2, fontSize: '13px', padding: '8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
                     onClick={() => onSelectGrading(asg)}
                     title="Chấm điểm bài nộp (Gia sư)"
                   >
-                    📊 Chấm bài ({asg.submission_count || 0})
+                    <BarChart3 size={14} />
+                    <span>Chấm bài ({asg.submission_count || 0})</span>
                   </button>
                   <button
                     type="button"
                     className="btn-outline-gray"
-                    style={{ flex: 1, fontSize: '13px', padding: '8px' }}
+                    style={{ flex: 1, fontSize: '13px', padding: '8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}
                     onClick={() => onOpenEditAssignment(asg)}
                     title={asg.results_published_at ? 'Bài đã công bố điểm, chỉ xem/sửa thông tin chung' : 'Sửa đề bài'}
                   >
-                    ✏️ Sửa
+                    <Pencil size={13} />
+                    <span>Sửa</span>
                   </button>
                   <button
                     type="button"
                     className="btn-outline-gray"
-                    style={{ color: '#ef4444', fontSize: '13px', padding: '8px 10px' }}
+                    style={{ color: '#ef4444', fontSize: '13px', padding: '8px 10px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                     onClick={() => onDeleteAssignment(asg._id, asg.title)}
                     title="Xóa bài tập"
                   >
-                    🗑️
+                    <Trash2 size={14} />
                   </button>
                 </div>
               ) : (
@@ -157,8 +196,9 @@ export default function ClassroomAssignmentsTab({
                             border: '1px solid #bbf7d0',
                           }}
                         >
-                          <div style={{ fontSize: '12px', color: '#166534', fontWeight: 600, marginBottom: '4px' }}>
-                            👶 Bài làm của con: {asg.my_submission.student_user_id?.full_name || 'Học sinh'}
+                          <div style={{ fontSize: '12px', color: '#166534', fontWeight: 600, marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <GraduationCap size={13} />
+                            <span>Bài làm của con: {asg.my_submission.student_user_id?.full_name || 'Học sinh'}</span>
                           </div>
                           <div
                             style={{
@@ -168,10 +208,18 @@ export default function ClassroomAssignmentsTab({
                               fontSize: '13px',
                             }}
                           >
-                            <span style={{ fontWeight: 700, color: '#15803d' }}>
-                              {asg.my_submission.status === 'GRADED'
-                                ? `⭐ Điểm chính thức: ${asg.my_submission.final_score}/${asg.total_points || 10}đ`
-                                : `⏳ Điểm tạm tính: ${asg.my_submission.provisional_score || 0}đ`}
+                            <span style={{ fontWeight: 700, color: '#15803d', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                              {asg.my_submission.status === 'GRADED' ? (
+                                <>
+                                  <Award size={13} />
+                                  <span>Điểm chính thức: {asg.my_submission.final_score}/{asg.total_points || 10}đ</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Clock size={13} />
+                                  <span>Điểm tạm tính: {asg.my_submission.provisional_score || 0}đ</span>
+                                </>
+                              )}
                             </span>
                             <span
                               style={{
@@ -183,8 +231,9 @@ export default function ClassroomAssignmentsTab({
                             </span>
                           </div>
                           {asg.my_submission.overall_feedback && (
-                            <div style={{ fontSize: '12px', color: '#0369a1', marginTop: '6px' }}>
-                              💬 Gia sư nhận xét: "{asg.my_submission.overall_feedback}"
+                            <div style={{ fontSize: '12px', color: '#0369a1', marginTop: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <MessageSquare size={13} />
+                              <span>Gia sư nhận xét: "{asg.my_submission.overall_feedback}"</span>
                             </div>
                           )}
                         </div>
@@ -198,19 +247,24 @@ export default function ClassroomAssignmentsTab({
                             border: '1px solid #fef3c7',
                             fontSize: '12px',
                             color: '#b45309',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
                           }}
                         >
-                          ⏳ Con chưa nộp bài tập này
+                          <Clock size={13} />
+                          <span>Con chưa nộp bài tập này</span>
                         </div>
                       )}
 
                       <button
                         type="button"
                         className="btn-outline-gray"
-                        style={{ width: '100%', fontSize: '13px', padding: '8px', background: '#ffffff' }}
+                        style={{ width: '100%', fontSize: '13px', padding: '8px', background: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
                         onClick={() => onSelectDoAssignment(asg)}
                       >
-                        👁️ {asg.my_submission ? 'Xem bài làm của con & Điểm' : 'Xem đề bài tập'}
+                        <Eye size={14} />
+                        <span>{asg.my_submission ? 'Xem bài làm của con & Điểm' : 'Xem đề bài tập'}</span>
                       </button>
                     </div>
                   ) : (
@@ -234,10 +288,18 @@ export default function ClassroomAssignmentsTab({
                               fontSize: '13px',
                             }}
                           >
-                            <span style={{ fontWeight: 600 }}>
-                              {asg.my_submission.status === 'GRADED'
-                                ? `⭐ Điểm: ${asg.my_submission.final_score}/${asg.total_points || 10}đ`
-                                : `⏳ Điểm tạm tính: ${asg.my_submission.provisional_score || 0}đ`}
+                            <span style={{ fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                              {asg.my_submission.status === 'GRADED' ? (
+                                <>
+                                  <Award size={13} color="#16a34a" />
+                                  <span>Điểm: {asg.my_submission.final_score}/{asg.total_points || 10}đ</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Clock size={13} />
+                                  <span>Điểm tạm tính: {asg.my_submission.provisional_score || 0}đ</span>
+                                </>
+                              )}
                             </span>
                             <span
                               style={{
@@ -249,8 +311,9 @@ export default function ClassroomAssignmentsTab({
                             </span>
                           </div>
                           {asg.my_submission.overall_feedback && (
-                            <div style={{ fontSize: '12px', color: '#0369a1', marginTop: '4px' }}>
-                              💬 Nhận xét: "{asg.my_submission.overall_feedback}"
+                            <div style={{ fontSize: '12px', color: '#0369a1', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <MessageSquare size={13} />
+                              <span>Nhận xét: "{asg.my_submission.overall_feedback}"</span>
                             </div>
                           )}
                         </div>
@@ -259,16 +322,29 @@ export default function ClassroomAssignmentsTab({
                       <button
                         type="button"
                         className="btn-primary-orange"
-                        style={{ width: '100%', fontSize: '13px', padding: '8px' }}
+                        style={{ width: '100%', fontSize: '13px', padding: '8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
                         onClick={() => onSelectDoAssignment(asg)}
                       >
-                        {asg.my_submission
-                          ? asg.results_published_at ||
-                            asg.my_submission.status === 'GRADED' ||
-                            asg.allow_resubmission === false
-                            ? '👁️ Xem bài đã nộp & Điểm'
-                            : '🔄 Nộp lại bài'
-                          : '✍️ Làm bài tập'}
+                        {asg.my_submission ? (
+                          asg.results_published_at ||
+                          asg.my_submission.status === 'GRADED' ||
+                          asg.allow_resubmission === false ? (
+                            <>
+                              <Eye size={14} />
+                              <span>Xem bài đã nộp & Điểm</span>
+                            </>
+                          ) : (
+                            <>
+                              <RotateCcw size={14} />
+                              <span>Nộp lại bài</span>
+                            </>
+                          )
+                        ) : (
+                          <>
+                            <PenTool size={14} />
+                            <span>Làm bài tập</span>
+                          </>
+                        )}
                       </button>
                     </div>
                   )}
