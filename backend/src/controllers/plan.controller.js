@@ -31,6 +31,11 @@ export const updatePlan = asyncHandler(async (req, res) => {
   return responseCommon(res, plan, 'Update plan successfully!', 200, responseCode.SUCCESSED);
 });
 
+export const createPlan = asyncHandler(async (req, res) => {
+  const plan = await planService.createPlan(req.body, getAdminContext(req));
+  return responseCommon(res, plan, 'Create plan successfully!', 201, responseCode.SUCCESSED);
+});
+
 export const getCreditPacks = asyncHandler(async (req, res) => {
   const { page, limit, skip } = getPagination(req.query);
   const creditPacks = await CreditPack.find().sort({ target_role: 1, price: 1, _id: 1 }).skip(skip).limit(limit);

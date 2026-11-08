@@ -62,7 +62,17 @@ export const updatePlanSchema = z.object({
     .max(MAX_CLASSROOMS, 'Class limit is too large')
     .nullable(),
   sms_reminders_enabled: z.boolean({ error: 'SMS reminders must be true or false' }),
+  is_active: z.boolean({ error: 'Availability must be true or false' }).optional(),
   reason: reasonRule,
+});
+
+export const createPlanSchema = updatePlanSchema.extend({
+  target_role: z.enum(PACK_TARGET_ROLES, 'Target role must be TUTOR or PARENT'),
+  name: packNameRule,
+  is_active: z.boolean({ error: 'Availability must be true or false' }).default(true),
+}).refine((data) => data.name !== 'FREE_DEFAULT' || data.monthly_price === 0, {
+  path: ['monthly_price'],
+  message: 'Free plan price must be 0',
 });
 
 export const createCreditPackSchema = z.object({

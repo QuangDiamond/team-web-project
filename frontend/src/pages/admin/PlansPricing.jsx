@@ -77,7 +77,13 @@ export default function PlansPricing() {
     return (
       <>
         <section className="pricing-section" aria-labelledby="plans-heading">
-          <h2 id="plans-heading" className="section-title">Subscription plans</h2>
+          <div className="section-header">
+            <h2 id="plans-heading" className="section-title">Subscription plans</h2>
+            <button type="button" className="btn btn-primary btn-sm" onClick={() => openDialog('plan', null)}>
+              <Plus size={18} aria-hidden="true" />
+              <span>Add plan</span>
+            </button>
+          </div>
           <div className="plan-groups">
             {PLAN_GROUPS.map((group) => {
               const rolePlans = getPlansForRole(plans, group.role);
@@ -123,7 +129,7 @@ export default function PlansPricing() {
       <PageHeader
         eyebrow="ADMIN · BILLING"
         title="Plans & Pricing"
-        description="Configure Free and Pro plans for tutors and parents, and the credit packs users can buy."
+        description="Configure subscription plans for tutors and parents, and the credit packs users can buy."
       />
 
       {successMessage && <Alert type="success">{successMessage}</Alert>}

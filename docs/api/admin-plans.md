@@ -42,7 +42,7 @@ Query `page` (mặc định 1), `limit` (mặc định 10, tối đa 100). Giá 
 }
 ```
 - `target_role`: `TUTOR` | `PARENT`
-- `name`: `FREE_DEFAULT` (gói Free) | `PRO`
+- `name`: chuỗi 1–100 ký tự; `FREE_DEFAULT` là tên dành riêng cho gói Free, `PRO` là tên Pro hiện có.
 - `max_classrooms`: `null` = không giới hạn
 - `sms_reminders_enabled`: có thể `null` với dữ liệu cũ (gói PARENT), coi như `false`
 
@@ -55,6 +55,18 @@ Query `page` (mặc định 1), `limit` (mặc định 10, tối đa 100). Giá 
 
 ## GET `/plans?page=1&limit=10`
 Danh sách gói, sắp theo `target_role` rồi `monthly_price`. `data: { items: Plan[], pagination }`.
+
+## POST `/plans`
+
+Create a subscription plan (ADMIN only). Send all PUT fields below plus `name` (trimmed,
+1–100 characters) and `target_role` (`TUTOR` or `PARENT`). `is_active` is optional and
+defaults to `true`; send `false` to create an unavailable plan. Returns 201 with the
+created Plan. A `FREE_DEFAULT` plan must have price 0. The admin reason is required;
+the audit operation is `CREATE`, with `before: null` and the created plan as `after`.
+
+Schema compatibility: existing Mongoose `Plan` and database `PLANS` validator already
+support arbitrary string names, role, Decimal128 price, Int32 limits, and boolean
+`is_active`. No schema change or migration is required.
 
 ## PUT `/plans/:id`
 Sửa gói (UC39 bước 2–4). Phải gửi đủ các field.
@@ -76,7 +88,10 @@ Body:
 - `max_classrooms`: số nguyên 1–1000 **hoặc `null` (không giới hạn)**
 - `sms_reminders_enabled`: boolean
 - `reason`: chuỗi, trim, 1–500 ký tự
-- `target_role`, `name`, `is_active` không sửa qua API này (field lạ bị bỏ qua)
+- `is_active`: optional boolean; `false` hides the plan from the user catalog and blocks
+  new checkout orders, `true` makes it available again. Omit to preserve the current
+  value for older callers. Existing subscriptions and orders are not modified.
+- `target_role`, `name` không sửa qua API này (field lạ bị bỏ qua)
 
 | Status | Khi nào |
 |---|---|

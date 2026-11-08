@@ -1,5 +1,5 @@
 // Ô nhập nhiều dòng có label, gợi ý, bộ đếm ký tự và dòng lỗi bên dưới
-export default function FormTextarea({ id, label, value, onChange, error, hint, placeholder, maxLength, rows = 3, disabled }) {
+export default function FormTextarea({ id, label, value, onChange, error, hint, placeholder, maxLength, rows = 3, disabled, optional = false }) {
   const errorId = `${id}-error`;
   const hintId = `${id}-hint`;
 

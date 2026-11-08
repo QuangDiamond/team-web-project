@@ -107,7 +107,7 @@ const findCreditPackOrThrow = async (creditPackId) => {
  * Admin sửa cấu hình gói (UC39): giá, credit/tháng, AI quota, số lớp tối đa, SMS. Gói Free phải giữ giá 0.
  * Ghi audit log UPDATE_PLAN kèm giá trị trước / sau
  * @param {string} planId - id của Plan
- * @param {Object} data - { monthly_price, monthly_credits, ai_quota, max_classrooms, sms_reminders_enabled, reason }
+ * @param {Object} data - { monthly_price, monthly_credits, ai_quota, max_classrooms, sms_reminders_enabled, is_active?, reason }
  * @param {Object} admin - { adminUserId, ipAddress }
  * @returns {Promise<Object>} plan sau khi sửa (dạng toPlanResponse)
  */
@@ -127,6 +127,9 @@ export const updatePlan = async (planId, data, admin) => {
   plan.ai_quota = data.ai_quota;
   plan.max_classrooms = data.max_classrooms;
   plan.sms_reminders_enabled = data.sms_reminders_enabled;
+  if (data.is_active !== undefined) {
+    plan.is_active = data.is_active;
+  }
   await plan.save();
 
   const after = toPlanResponse(plan);
@@ -138,6 +141,26 @@ export const updatePlan = async (planId, data, admin) => {
     after: after,
   });
 
+  return after;
+};
+
+/**
+ * Create a subscription plan and record the admin's reason and configuration.
+ * @param {Object} data - Validated plan fields and reason.
+ * @param {Object} admin - Admin user ID and IP address.
+ * @returns {Promise<Object>} Created plan response.
+ */
+export const createPlan = async (data, admin) => {
+  const { reason, ...fields } = data;
+  const plan = await Plan.create({ ...fields, monthly_price: String(fields.monthly_price) });
+  const after = toPlanResponse(plan);
+  await writeAuditLog(admin, reason, {
+    entity: 'PLAN',
+    operation: 'CREATE',
+    target_id: plan._id,
+    before: null,
+    after: after,
+  });
   return after;
 };
 

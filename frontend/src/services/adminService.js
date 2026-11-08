@@ -4,6 +4,7 @@ import api from './api.js';
 // Admin cần thấy toàn bộ gói nên lấy 1 trang lớn (limit tối đa 100)
 export const getPlans = () => api.get('/admin/v1/plans', { params: { page: 1, limit: 100 } });
 export const updatePlan = (planId, data) => api.put(`/admin/v1/plans/${planId}`, data);
+export const createPlan = (data) => api.post('/admin/v1/plans', data);
 
 export const getCreditPacks = () => api.get('/admin/v1/credit-packs', { params: { page: 1, limit: 100 } });
 export const createCreditPack = (data) => api.post('/admin/v1/credit-packs', data);

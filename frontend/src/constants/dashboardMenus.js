@@ -92,6 +92,13 @@ export const PARENT_MENU = {
         { label: 'Children & Progress', icon: Users },
       ],
     },
+    {
+      label: 'PAYMENTS',
+      items: [
+        { label: 'Credits & Transactions', to: '/parent/credits', icon: History },
+        { label: 'Upgrade / Buy Credits', to: '/parent/checkout', icon: CreditCard },
+      ],
+    },
   ],
   headerActions: [{ label: 'Public Site', to: '/' }],
 };
@@ -124,6 +131,13 @@ export const TUTOR_MENU = {
         { label: 'My Posts', to: '/tutor/posts', icon: FileText },
       ],
     },
+    {
+      label: 'PAYMENTS',
+      items: [
+        { label: 'Credits & Transactions', to: '/tutor/credits', icon: History },
+        { label: 'Upgrade / Buy Credits', to: '/tutor/checkout', icon: CreditCard },
+      ],
+    },
   ],
   headerActions: [{ label: 'Public Site', to: '/' }],
 };
@@ -136,6 +150,8 @@ export const ADMIN_MENU = {
       label: 'ADMINISTRATION',
       items: [
         { label: 'System Statistics', to: '/admin/dashboard', icon: LayoutDashboard, end: true },
+        { label: 'Users', to: '/admin/users', icon: Users },
+        { label: 'Plans & Pricing', to: '/admin/plans', icon: CreditCard },
         { label: 'Content Moderation', to: '/admin/moderation', icon: ShieldAlert },
         { label: 'Notifications', to: '/admin/notifications', icon: Bell },
       ],
