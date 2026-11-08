@@ -69,7 +69,11 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
       setError('');
       const res = await joinClassroom(joinCode.trim(), selectedChildId || null);
       if (showToast) {
-        showToast('Tham gia lớp học thành công!');
+        if (user?.role === 'PARENT' && selectedChildId) {
+          showToast('Đã tham gia lớp và gửi yêu cầu liên kết đến học sinh!');
+        } else {
+          showToast('Tham gia lớp học thành công!');
+        }
       }
       handleClose();
       if (res?.data?.class_id) {

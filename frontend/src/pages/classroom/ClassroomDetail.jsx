@@ -546,6 +546,7 @@ export default function ClassroomDetail() {
           assignments={assignments}
           loadingAssignments={loadingAssignments}
           isOwner={isOwner}
+          studentCount={studentCount}
           user={user}
           onOpenCreateAssignment={handleOpenCreateAssignment}
           onOpenEditAssignment={handleOpenEditAssignment}

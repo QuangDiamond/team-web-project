@@ -94,6 +94,14 @@ export const joinClassroom = async (join_code, child_user_id = null) => {
   return await api.post('/classroom/v1/join', { join_code, child_user_id });
 };
 
+export const getPendingParentLinks = async () => {
+  return await api.get('/classroom/v1/parent-links/pending');
+};
+
+export const respondParentChildLink = async (linkId, action) => {
+  return await api.post(`/classroom/v1/parent-links/${linkId}/respond`, { action });
+};
+
 /**
  * ===================================================
  * UC33: Nhóm Chat lớp học

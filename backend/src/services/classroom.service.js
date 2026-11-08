@@ -1085,11 +1085,11 @@ export const joinClassroomByCode = async ({ joinCode, user, child_user_id }) => 
   const classroom = await Classroom.findOne({ join_code: code });
 
   if (!classroom) {
-    throw new AppError('Mã tham gia không chính xác hoặc không tồn tại', 404);
+    throw new AppError('Mã lớp học không hợp lệ (Class code is invalid)', 404);
   }
 
   if (classroom.status !== ENUMS.ClassroomsStatus.ACTIVE) {
-    throw new AppError('Lớp học này hiện đã lưu trữ hoặc ngưng nhận học viên mới', 400);
+    throw new AppError('Mã lớp học không hợp lệ hoặc lớp đã đóng (Class code is invalid)', 400);
   }
 
   // Kiểm tra không cho gia sư tự tham gia lớp do chính mình quản lý
@@ -1149,7 +1149,7 @@ export const joinClassroomByCode = async ({ joinCode, user, child_user_id }) => 
     status: ENUMS.ClassMembersStatus.ACTIVE,
   });
 
-  // Luồng UC24: Nếu là Parent, cho phép liên kết con đang ở trong lớp
+  // Luồng UC24: Nếu là Parent, gửi yêu cầu liên kết con. Student phải Accept thì mới active.
   if (user.role === 'PARENT' && child_user_id) {
     const isChildInClass = await ClassMember.findOne({
       class_id: classroom._id,
@@ -1159,15 +1159,31 @@ export const joinClassroomByCode = async ({ joinCode, user, child_user_id }) => 
 
     if (isChildInClass) {
       try {
-        await ParentChildLink.findOneAndUpdate(
-          { parent_user_id: user._id, student_user_id: child_user_id },
-          {
+        const existingLink = await ParentChildLink.findOne({
+          parent_user_id: user._id,
+          student_user_id: child_user_id,
+        });
+
+        if (!existingLink) {
+          // Tạo yêu cầu liên kết mới ở trạng thái PENDING chờ học sinh chấp thuận (BR-13)
+          await ParentChildLink.create({
             parent_user_id: user._id,
             student_user_id: child_user_id,
-            status: ENUMS.ParentChildLinksStatus.ACCEPTED,
-          },
-          { upsert: true, new: true }
-        );
+            status: ENUMS.ParentChildLinksStatus.PENDING,
+          });
+
+          // Gửi thông báo cho học sinh
+          await Notification.create({
+            user_id: child_user_id,
+            type: 'SYSTEM',
+            title: 'Yêu cầu liên kết từ Phụ huynh',
+            message: `Phụ huynh ${user.full_name || user.email} đã tham gia lớp "${classroom.name}" và gửi yêu cầu liên kết. Vui lòng xác nhận để phụ huynh có thể theo dõi tiến độ học tập.`,
+            metadata: {
+              classroom_id: classroom._id,
+              parent_user_id: user._id,
+            },
+          });
+        }
       } catch (linkErr) {
         console.warn('[UC24] Lỗi tạo liên kết phụ huynh - học sinh:', linkErr.message);
       }
@@ -1537,7 +1553,18 @@ export const createAssignment = async ({ classroomId, tutorProfile, data }) => {
   });
 
   if (!classroom) {
-    throw new AppError('Không tìm thấy lớp học', 404);
+    throw new AppError('Không tìm thấy lớp học hoặc bạn không phải chủ lớp', 404);
+  }
+
+  // Ràng buộc UC26: Chỉ chủ lớp, và lớp phải có ít nhất một student
+  const activeMembers = await ClassMember.find({
+    class_id: classroom._id,
+    status: ENUMS.ClassMembersStatus.ACTIVE,
+  }).populate('user_id', 'role');
+
+  const hasStudent = activeMembers.some((m) => m.user_id?.role === 'STUDENT');
+  if (!hasStudent) {
+    throw new AppError('Lớp học phải có ít nhất một học sinh tham gia để có thể tạo và giao bài tập.', 400);
   }
 
   // Chuẩn hóa câu hỏi
@@ -1928,5 +1955,63 @@ export const gradeSubmission = async ({ submissionId, tutorProfile, data }) => {
 
   return submission;
 };
+
+/**
+ * Lấy danh sách yêu cầu liên kết phụ huynh đang chờ học sinh xác nhận (UC24)
+ */
+export const getPendingParentLinks = async ({ studentUserId }) => {
+  const pendingLinks = await ParentChildLink.find({
+    student_user_id: studentUserId,
+    status: ENUMS.ParentChildLinksStatus.PENDING,
+  })
+    .populate('parent_user_id', 'full_name email phone_number avatar_url')
+    .sort({ created_at: -1 });
+
+  return pendingLinks;
+};
+
+/**
+ * Học sinh phản hồi yêu cầu liên kết của phụ huynh (ACCEPT / DECLINE) (UC24)
+ */
+export const respondParentChildLink = async ({ studentUserId, linkId, action }) => {
+  const link = await ParentChildLink.findOne({
+    _id: linkId,
+    student_user_id: studentUserId,
+  }).populate('parent_user_id', 'full_name email');
+
+  if (!link) {
+    throw new AppError('Không tìm thấy yêu cầu liên kết hoặc bạn không có quyền xử lý', 404);
+  }
+
+  const newStatus =
+    action === 'ACCEPT'
+      ? ENUMS.ParentChildLinksStatus.ACCEPTED
+      : ENUMS.ParentChildLinksStatus.DECLINED;
+
+  link.status = newStatus;
+  await link.save();
+
+  // Thông báo phản hồi cho Phụ huynh
+  try {
+    const student = await User.findById(studentUserId);
+    await Notification.create({
+      user_id: link.parent_user_id?._id || link.parent_user_id,
+      type: 'SYSTEM',
+      title: action === 'ACCEPT' ? 'Yêu cầu liên kết con đã được chấp nhận' : 'Yêu cầu liên kết con bị từ chối',
+      message: `Học sinh ${student?.full_name || student?.email} đã ${
+        action === 'ACCEPT' ? 'chấp nhận' : 'từ chối'
+      } yêu cầu liên kết tài khoản.`,
+      metadata: {
+        student_user_id: studentUserId,
+        status: newStatus,
+      },
+    });
+  } catch (notifErr) {
+    console.warn('[UC24] Lỗi tạo thông báo phản hồi liên kết:', notifErr.message);
+  }
+
+  return link;
+};
+
 
 

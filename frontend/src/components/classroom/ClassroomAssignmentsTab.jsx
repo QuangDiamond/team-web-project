@@ -2,6 +2,7 @@ export default function ClassroomAssignmentsTab({
   assignments,
   loadingAssignments,
   isOwner,
+  studentCount = 0,
   user,
   onOpenCreateAssignment,
   onOpenEditAssignment,
@@ -9,6 +10,14 @@ export default function ClassroomAssignmentsTab({
   onSelectGrading,
   onSelectDoAssignment,
 }) {
+  const handleCreateClick = () => {
+    if (studentCount === 0) {
+      alert('Lớp học phải có ít nhất một học sinh tham gia để có thể tạo và giao bài tập.');
+      return;
+    }
+    onOpenCreateAssignment();
+  };
+
   return (
     <div>
       <div className="members-toolbar">
@@ -26,7 +35,8 @@ export default function ClassroomAssignmentsTab({
             type="button"
             className="btn-primary-orange"
             style={{ fontSize: '14px', padding: '9px 16px' }}
-            onClick={onOpenCreateAssignment}
+            onClick={handleCreateClick}
+            title={studentCount === 0 ? 'Lớp cần có ít nhất 1 học sinh để tạo bài tập' : 'Tạo bài tập mới'}
           >
             <span>➕</span> Tạo bài tập mới
           </button>
@@ -41,12 +51,18 @@ export default function ClassroomAssignmentsTab({
         <div className="classroom-empty-state" style={{ padding: '40px 20px' }}>
           <div className="empty-icon">📝</div>
           <h3>Chưa có bài tập nào</h3>
-          <p>Hãy tạo bài tập đầu tiên để củng cố kiến thức cho học sinh sau mỗi buổi học!</p>
+          <p>
+            {studentCount === 0
+              ? 'Lớp học hiện chưa có học sinh. Hãy mời học sinh tham gia trước khi giao bài tập!'
+              : 'Hãy tạo bài tập đầu tiên để củng cố kiến thức cho học sinh sau mỗi buổi học!'}
+          </p>
           {isOwner && (
             <button
               type="button"
               className="btn-primary-orange"
-              onClick={onOpenCreateAssignment}
+              onClick={handleCreateClick}
+              disabled={studentCount === 0}
+              style={studentCount === 0 ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
             >
               <span>➕</span> Tạo bài tập đầu tiên
             </button>
