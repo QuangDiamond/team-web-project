@@ -364,3 +364,21 @@ export const gradeSubmission = asyncHandler(async (req, res) => {
   return responseCommon(res, submission, 'Chấm điểm bài nộp thành công', 200, responseCode.SUCCESSED);
 });
 
+export const getPendingParentLinks = asyncHandler(async (req, res) => {
+  const links = await classroomService.getPendingParentLinks({
+    studentUserId: req.user._id,
+  });
+
+  return responseCommon(res, links, 'Lấy danh sách yêu cầu liên kết thành công', 200, responseCode.SUCCESSED);
+});
+
+export const respondParentChildLink = asyncHandler(async (req, res) => {
+  const link = await classroomService.respondParentChildLink({
+    studentUserId: req.user._id,
+    linkId: req.params.linkId,
+    action: req.body.action,
+  });
+
+  return responseCommon(res, link, 'Xử lý yêu cầu liên kết thành công', 200, responseCode.SUCCESSED);
+});
+

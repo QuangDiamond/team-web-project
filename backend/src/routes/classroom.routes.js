@@ -22,6 +22,10 @@ classroomRoutes.post('/', requireTutorAuth, classroomController.createClassroom)
 // UC24: Tham gia lớp học bằng mã (Học sinh / Phụ huynh)
 classroomRoutes.post('/join', requireUserAuth, classroomController.joinClassroom);
 
+// UC24: Quản lý liên kết Phụ huynh - Con học sinh (Chờ học sinh xác nhận)
+classroomRoutes.get('/parent-links/pending', requireUserAuth, classroomController.getPendingParentLinks);
+classroomRoutes.post('/parent-links/:linkId/respond', requireUserAuth, classroomController.respondParentChildLink);
+
 // Thỏa thuận kết nối đã xác nhận để tạo lớp (Gia sư)
 classroomRoutes.get('/agreements', requireTutorAuth, classroomController.getConfirmedAgreements);
 
