@@ -61,8 +61,8 @@ export const createClassroom = async ({ tutorProfile, user, data, origin = '' })
   // Khối lớp: mặc định 'Chung' nếu gia sư không chỉ định
   const formattedGrade = grade && grade.trim() ? grade.trim() : 'Chung';
 
-  // Sĩ số tối đa: mặc định 20 học sinh nếu không nhập
-  let parsedCapacity = 20;
+  // Sĩ số tối đa: mặc định 50 học sinh theo quy tắc nghiệp vụ BR-08 nếu không nhập
+  let parsedCapacity = 50;
   if (capacity !== undefined && capacity !== null && capacity !== '') {
     parsedCapacity = parseInt(capacity, 10);
     if (isNaN(parsedCapacity) || parsedCapacity < 1 || parsedCapacity > 200) {
@@ -1667,6 +1667,8 @@ export const submitAssignment = async ({ assignmentId, user, answers = [] }) => 
     return {
       question_id: ans.question_id,
       text_response: ans.text_response || '',
+      file_url: ans.file_url || null,
+      file_size: ans.file_size ? parseInt(ans.file_size, 10) : null,
       score,
       is_auto_graded: isAutoGraded,
     };
@@ -1796,8 +1798,12 @@ export const gradeSubmission = async ({ submissionId, tutorProfile, data }) => {
     throw new AppError('Không tìm thấy bài tập liên kết', 404);
   }
 
-  // Quy tắc UC26: Chỉ chủ lớp (người tạo bài) mới được chấm
-  if (assignment.creator_profile_id.toString() !== tutorProfile._id.toString()) {
+  // Quy tắc UC26: Chỉ chủ lớp hoặc người tạo bài mới được chấm
+  const classroom = await Classroom.findById(assignment.class_id);
+  const isCreator = assignment.creator_profile_id?.toString() === tutorProfile._id.toString();
+  const isClassOwner = classroom && classroom.tutor_profile_id?.toString() === tutorProfile._id.toString();
+
+  if (!isCreator && !isClassOwner) {
     throw new AppError('Chỉ gia sư phụ trách bài tập này mới có quyền chấm điểm', 403);
   }
 
