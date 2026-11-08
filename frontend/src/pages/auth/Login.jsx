@@ -66,12 +66,6 @@ export default function Login() {
     }
   };
 
-  const handleFillAccount = (email) => {
-    setValues({ email, password: 'password123' });
-    setErrors({});
-    setFormError('');
-  };
-
   const validate = () => {
     const newErrors = { email: validateEmail(values.email), password: '' };
     if (values.password.length === 0) {
@@ -188,81 +182,7 @@ export default function Login() {
           Don't have an account? <Link to="/register" className="link">Sign up</Link>
         </p>
 
-        {/* Nút điền nhanh tài khoản test phục vụ kiểm thử */}
-        <div style={{ marginTop: '16px', padding: '12px', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0', textAlign: 'left' }}>
-          <div style={{ fontSize: '12px', fontWeight: 700, color: '#475569', marginBottom: '8px' }}>
-            ⚡ Tài khoản kiểm thử nhanh (Bấm để điền):
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <button
-              type="button"
-              onClick={() => handleFillAccount('minh.tutor@gmail.com')}
-              style={{
-                textAlign: 'left',
-                background: '#fff',
-                border: '1px solid #fed7aa',
-                borderRadius: '6px',
-                padding: '6px 10px',
-                fontSize: '12px',
-                cursor: 'pointer',
-                color: '#c2410c',
-              }}
-            >
-              👨‍🏫 <strong>Gia sư:</strong> minh.tutor@gmail.com (Nguyễn Văn Minh)
-            </button>
-            <button
-              type="button"
-              onClick={() => handleFillAccount('binh.student@gmail.com')}
-              style={{
-                textAlign: 'left',
-                background: '#fff',
-                border: '1px solid #bbf7d0',
-                borderRadius: '6px',
-                padding: '6px 10px',
-                fontSize: '12px',
-                cursor: 'pointer',
-                color: '#15803d',
-              }}
-            >
-              🎒 <strong>Học sinh 1:</strong> binh.student@gmail.com (Đỗ Gia Bình)
-            </button>
-            <button
-              type="button"
-              onClick={() => handleFillAccount('an.student@gmail.com')}
-              style={{
-                textAlign: 'left',
-                background: '#fff',
-                border: '1px solid #bbf7d0',
-                borderRadius: '6px',
-                padding: '6px 10px',
-                fontSize: '12px',
-                cursor: 'pointer',
-                color: '#15803d',
-              }}
-            >
-              🎒 <strong>Học sinh 2:</strong> an.student@gmail.com (Trần Văn An)
-            </button>
-            <button
-              type="button"
-              onClick={() => handleFillAccount('ha.parent@gmail.com')}
-              style={{
-                textAlign: 'left',
-                background: '#fff',
-                border: '1px solid #bfdbfe',
-                borderRadius: '6px',
-                padding: '6px 10px',
-                fontSize: '12px',
-                cursor: 'pointer',
-                color: '#1d4ed8',
-              }}
-            >
-              👨‍👩‍👧 <strong>Phụ huynh:</strong> ha.parent@gmail.com (Phạm Thu Hà)
-            </button>
-          </div>
-          <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '6px' }}>
-            * Mật khẩu kiểm thử: <code>12345678</code> hoặc <code>password123</code>
-          </div>
-        </div>
+
       </form>
     </AuthLayout>
   );
