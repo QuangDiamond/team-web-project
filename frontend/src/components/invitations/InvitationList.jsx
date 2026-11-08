@@ -30,7 +30,9 @@ function InvitationRow({ invitation, onCancel }) {
           {invitation.tutor ? <Link to={`/tutors/${invitation.tutor.profile_id}`} className="item-title">{tutorName}</Link> : <p className="item-title">{tutorName}</p>}
           <span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>
         </div>
-        <p className="item-meta">For {requestTitle} · Sent {formatDate(invitation.created_at)}</p>
+        <p className="item-meta">
+          For {requestTitle} · Sent {formatDate(invitation.created_at)} · {invitation.credits_spent} {invitation.credits_spent === 1 ? 'credit' : 'credits'} used
+        </p>
         {invitation.message && <p className="item-note">“{invitation.message}”</p>}
         {invitation.status === 'ACCEPTED' && (
           <p className="item-meta">The tutor accepted. A conversation has been opened.</p>

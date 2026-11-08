@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import OpenChatLink from '../common/OpenChatLink';
+import PriorityBadge from '../common/PriorityBadge';
 import { APPLICATION_STATUS, getStatusBadge } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 import { getInitials } from '../../utils/getInitials';
@@ -15,8 +16,9 @@ function RatingText({ rating }) {
 /*
  * Một đơn ứng tuyển phụ huynh nhận được (Figma: Applications review).
  * onContinue / onSkip(application) trả về Promise; chỉ hiện nút khi đơn đang PENDING.
+ * onViewDetails(application) mở chi tiết đơn.
  */
-export default function ReceivedApplicationCard({ application, onContinue, onSkip }) {
+export default function ReceivedApplicationCard({ application, onContinue, onSkip, onViewDetails }) {
   const [busyAction, setBusyAction] = useState('');
   const badge = getStatusBadge(APPLICATION_STATUS, application.status);
   const tutor = application.tutor;
@@ -48,9 +50,7 @@ export default function ReceivedApplicationCard({ application, onContinue, onSki
           <p className="review-card-rating">{tutor ? <RatingText rating={tutor.average_rating} /> : null}</p>
         </div>
         <div className="review-card-badges">
-          {application.match_score !== null && application.match_score !== undefined && (
-            <span className="status-badge tone-primary">{application.match_score}% match</span>
-          )}
+          <PriorityBadge credits={application.credits_spent} />
           <span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>
         </div>
       </div>
@@ -62,26 +62,31 @@ export default function ReceivedApplicationCard({ application, onContinue, onSki
       )}
       <p className="item-meta">Applied {formatDate(application.created_at)}</p>
 
-      {application.status === 'PENDING' && (
-        <div className="review-card-actions">
-          <button
-            type="button"
-            className="btn btn-outline btn-sm"
-            disabled={isBusy}
-            onClick={() => runAction('skip', onSkip)}
-          >
-            {busyAction === 'skip' ? 'Skipping...' : 'Skip'}
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary btn-sm"
-            disabled={isBusy}
-            onClick={() => runAction('continue', onContinue)}
-          >
-            {busyAction === 'continue' ? 'Opening...' : 'Continue'}
-          </button>
-        </div>
-      )}
+      <div className="review-card-actions">
+        <button type="button" className="btn btn-outline btn-sm" disabled={isBusy} onClick={() => onViewDetails(application)}>
+          View details
+        </button>
+        {application.status === 'PENDING' && (
+          <>
+            <button
+              type="button"
+              className="btn btn-outline btn-sm"
+              disabled={isBusy}
+              onClick={() => runAction('skip', onSkip)}
+            >
+              {busyAction === 'skip' ? 'Skipping...' : 'Skip'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary btn-sm"
+              disabled={isBusy}
+              onClick={() => runAction('continue', onContinue)}
+            >
+              {busyAction === 'continue' ? 'Opening...' : 'Continue'}
+            </button>
+          </>
+        )}
+      </div>
 
       {application.status === 'CONTINUED' && (
         <div className="review-card-chat">

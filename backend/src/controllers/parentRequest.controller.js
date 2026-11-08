@@ -30,3 +30,8 @@ export const updateRequest = asyncHandler(async (req, res) => {
   const data = await parentRequestService.updateRequest(req.user, req.params.id, req.body);
   return responseCommon(res, data, 'Tutoring request updated successfully!', 200, responseCode.SUCCESSED);
 });
+
+export const deleteRequest = asyncHandler(async (req, res) => {
+  const data = await parentRequestService.deleteRequest(req.user, req.params.id);
+  return responseCommon(res, data, 'Tutoring request deleted successfully!', 200, responseCode.SUCCESSED);
+});

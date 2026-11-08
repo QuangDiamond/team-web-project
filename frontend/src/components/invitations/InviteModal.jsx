@@ -3,30 +3,35 @@ import { LoaderCircle } from 'lucide-react';
 import { useCreditBalance } from '../../hooks/useCreditBalance';
 import { inviteTutor } from '../../services/invitationService';
 import Alert from '../common/Alert';
+import CreditAmountField from '../common/CreditAmountField';
 import FormTextarea from '../common/FormTextarea';
 import Modal from '../common/Modal';
 
 const MESSAGE_MAX_LENGTH = 500;
 
 /*
- * Hộp thoại mời gia sư vào một request (UC14). Trừ 1 credit của phụ huynh, không hoàn lại.
+ * Hộp thoại mời gia sư vào một request (UC14). Trừ số credit đã chọn (1-10) của phụ huynh, không hoàn lại.
+ * Dùng nhiều credit hơn thì lời mời được xếp lên đầu danh sách của gia sư.
  * onInvited(result) được gọi sau khi mời thành công với { invitation, remaining_credits }.
  */
 export default function InviteModal({ requestId, requestTitle, tutorProfileId, tutorName, onClose, onInvited }) {
   const credits = useCreditBalance();
   const [message, setMessage] = useState('');
+  const [creditsToSpend, setCreditsToSpend] = useState('1');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
   const hasNoCredit = !credits.loading && credits.balance === 0;
-  const canSubmit = !submitting && !credits.loading && !credits.error && !hasNoCredit;
+  const amount = Number(creditsToSpend);
+  const exceedsBalance = !credits.loading && credits.balance !== null && amount > credits.balance;
+  const canSubmit = !submitting && !credits.loading && !credits.error && !hasNoCredit && !exceedsBalance;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
     setSubmitting(true);
     try {
-      const payload = { request_id: requestId, tutor_profile_id: tutorProfileId };
+      const payload = { request_id: requestId, tutor_profile_id: tutorProfileId, credits: amount };
       if (message.trim()) {
         payload.message = message.trim();
       }
@@ -53,10 +58,19 @@ export default function InviteModal({ requestId, requestTitle, tutorProfileId, t
         </p>
 
         <p className="modal-cost">
-          <span>Cost: 1 credit</span>
+          <span>Cost: {amount} {amount === 1 ? 'credit' : 'credits'}</span>
           <span>{creditText}</span>
         </p>
         <p className="item-meta modal-note">The credit is not refunded if the tutor declines or you cancel the invitation.</p>
+
+        <CreditAmountField
+          id="invite-credits"
+          value={creditsToSpend}
+          onChange={(event) => setCreditsToSpend(event.target.value)}
+          balance={credits.balance}
+          disabled={submitting || hasNoCredit}
+          audience="the tutor's"
+        />
 
         {hasNoCredit && <Alert type="error">You need at least 1 credit to invite a tutor.</Alert>}
         {error && <Alert type="error">{error}</Alert>}

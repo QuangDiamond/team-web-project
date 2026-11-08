@@ -5,7 +5,7 @@ import { acceptInvitation, declineInvitation, getReceivedInvitations } from '../
 import Alert from '../../components/common/Alert';
 import ListState from '../../components/common/ListState';
 import Pagination from '../../components/common/Pagination';
-import ReceivedInvitationList from '../../components/invitations/ReceivedInvitationList';
+import ReceivedInvitationList from '../../components/tutor/ReceivedInvitationList';
 import '../../styles/tutorRequests.css';
 
 const PAGE_SIZE = 10;

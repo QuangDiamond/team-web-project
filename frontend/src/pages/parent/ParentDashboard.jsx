@@ -37,9 +37,8 @@ export default function ParentDashboard() {
 
   let bannerSummary = 'Here is an overview of your tutoring requests.';
   if (summary.data) {
-    const requestText = pluralize(summary.data.open_requests, 'open request', 'open requests');
     const applicationText = pluralize(summary.data.pending_applications, 'application', 'applications');
-    bannerSummary = `You have ${requestText} and ${applicationText} waiting for your review.`;
+    bannerSummary = `You have ${applicationText} waiting for your review.`;
   }
 
   return (

@@ -5,8 +5,8 @@ import { useSummary } from '../../hooks/useSummary';
 import { getTutorSummary } from '../../services/dashboardService';
 import Alert from '../../components/common/Alert';
 import WelcomeBanner from '../../components/common/WelcomeBanner';
-import TutorQuickLists from '../../components/tutorDashboard/TutorQuickLists';
-import TutorStats from '../../components/tutorDashboard/TutorStats';
+import TutorQuickLists from '../../components/tutor/TutorQuickLists';
+import TutorStats from '../../components/tutor/TutorStats';
 import '../../styles/tutorDashboard.css';
 
 const pluralize = (count, singular, plural) => {
@@ -28,9 +28,8 @@ export default function TutorDashboard() {
 
   let bannerSummary = 'Here is an overview of your tutoring work.';
   if (summary.data && summary.data.has_profile) {
-    const requestText = pluralize(summary.data.available_requests, 'open request', 'open requests');
     const invitationText = pluralize(summary.data.pending_invitations, 'invitation', 'invitations');
-    bannerSummary = `There are ${requestText} to explore and ${invitationText} waiting for your answer.`;
+    bannerSummary = `You have ${invitationText} waiting for your answer.`;
   }
 
   return (

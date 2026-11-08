@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import OpenChatLink from '../common/OpenChatLink';
+import PriorityBadge from '../common/PriorityBadge';
 import { INVITATION_STATUS, formatBudget, getModeLabel, getStatusBadge } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 
@@ -34,6 +35,7 @@ function ReceivedInvitationRow({ invitation, onAccept, onDecline }) {
         <div className="item-row-heading">
           <p className="item-title">{title}</p>
           <span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>
+          <PriorityBadge credits={invitation.credits_spent} />
         </div>
         <p className="item-meta">{metaParts.join(' · ')}</p>
         <p className="item-meta">A parent invited you · {formatDate(invitation.created_at)}</p>

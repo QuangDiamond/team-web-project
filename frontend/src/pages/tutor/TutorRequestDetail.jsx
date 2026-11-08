@@ -4,7 +4,7 @@ import { Bookmark, BookmarkCheck, ChevronLeft, LoaderCircle } from 'lucide-react
 import { getTutorRequest, saveRequest, unsaveRequest } from '../../services/tutorRequestService';
 import Alert from '../../components/common/Alert';
 import SectionCard from '../../components/common/SectionCard';
-import ApplyModal from '../../components/tutorRequests/ApplyModal';
+import ApplyModal from '../../components/tutor/ApplyModal';
 import { formatBudget, getModeLabel } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 import '../../styles/tutorRequests.css';

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getTutorSuggestions, refreshTutorSuggestions } from '../services/aiSuggestionService.js';
 
-// Dữ liệu gợi ý gia sư của một request (UC09): lần đầu đọc (có cache), "Refresh" tính lại theo trọng số
+// Dữ liệu gợi ý gia sư của một request (UC09): lần đầu đọc (có cache), "Refresh" tính lại ngay
 export function useAiSuggestions(requestId) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,11 +27,11 @@ export function useAiSuggestions(requestId) {
   }, [load]);
 
   const refresh = useCallback(
-    async (weights) => {
+    async () => {
       setRefreshing(true);
       setRefreshError(null);
       try {
-        const response = await refreshTutorSuggestions(requestId, weights);
+        const response = await refreshTutorSuggestions(requestId);
         setData(response.data);
       } catch (refreshFailure) {
         setRefreshError(refreshFailure);

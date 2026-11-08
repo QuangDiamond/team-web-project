@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft, LoaderCircle, Sparkles } from 'lucide-react';
+import { ChevronLeft, LoaderCircle, Sparkles, Trash2 } from 'lucide-react';
 import { getMyRequest } from '../../services/parentRequestService';
 import Alert from '../../components/common/Alert';
 import SectionCard from '../../components/common/SectionCard';
+import ApplicationsSection from '../../components/applicationReview/ApplicationsSection';
+import DeleteRequestModal from '../../components/tutoringRequests/DeleteRequestModal';
 import { REQUEST_STATUS, formatBudget, getModeLabel, getStatusBadge } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 import '../../styles/tutoringRequests.css';
@@ -13,6 +15,7 @@ export default function TutoringRequestDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [state, setState] = useState({ loading: true, error: null, request: null });
+  const [deleting, setDeleting] = useState(false);
 
   const load = useCallback(async () => {
     setState({ loading: true, error: null, request: null });
@@ -98,15 +101,8 @@ export default function TutoringRequestDetail() {
           <p className="request-detail-count">{request.application_count}</p>
           <p className="item-meta">{request.application_count === 1 ? 'application' : 'applications'} received</p>
           <div className="request-detail-actions">
-            <button
-              type="button"
-              className="btn btn-primary btn-block"
-              onClick={() => navigate(`/parent/requests/${request._id}/applications`)}
-            >
-              Review applications
-            </button>
             {request.can_edit && (
-              <button type="button" className="btn btn-outline btn-block" onClick={() => navigate(`/parent/requests/${request._id}/edit`)}>
+              <button type="button" className="btn btn-primary btn-block" onClick={() => navigate(`/parent/requests/${request._id}/edit`)}>
                 Edit request
               </button>
             )}
@@ -120,12 +116,22 @@ export default function TutoringRequestDetail() {
                 <span>AI tutor suggestions</span>
               </button>
             )}
+            <button type="button" className="btn btn-outline btn-block" onClick={() => setDeleting(true)}>
+              <Trash2 size={16} aria-hidden="true" />
+              <span>Delete request</span>
+            </button>
             {!request.can_edit && (
               <p className="item-meta">This request is {badge.label.toLowerCase()} and can no longer be edited.</p>
             )}
           </div>
         </SectionCard>
       </div>
+
+      <ApplicationsSection requestId={request._id} />
+
+      {deleting && (
+        <DeleteRequestModal request={request} onClose={() => setDeleting(false)} onDeleted={() => navigate('/parent/requests')} />
+      )}
     </div>
   );
 }

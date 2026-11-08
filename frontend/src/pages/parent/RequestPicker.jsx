@@ -9,19 +9,8 @@ import { REQUEST_STATUS, formatBudget, getModeLabel, getStatusBadge } from '../.
 
 const PAGE_SIZE = 10;
 
-// Cấu hình theo chế độ: mục menu nào đang mở trang này và bấm vào một request thì đi đâu
+// Cấu hình theo chế độ: bấm vào một request thì đi đâu
 const PICKER_MODES = {
-  suggestions: {
-    intro: 'Choose an open request to see the tutors that fit it best.',
-    actionLabel: 'View suggestions',
-    status: 'OPEN',
-    emptyTitle: 'No open requests',
-    emptyDescription: 'Create a request first, then come back to see matching tutors.',
-    buildPath: (requestId) => `/parent/requests/${requestId}/ai-suggestions`,
-    // Gợi ý chỉ có với request đang mở và chưa quá 30 ngày
-    isAvailable: (request) => request.status === 'OPEN' && !request.is_expired,
-    unavailableNote: 'Expired',
-  },
   applications: {
     intro: 'Choose a request to review the tutors who applied to it.',
     actionLabel: 'Review applications',
@@ -76,8 +65,8 @@ function PickerRow({ request, mode }) {
 }
 
 /*
- * Trang chọn request cho các mục menu cần một request cụ thể của phụ huynh.
- * mode = 'suggestions' (AI Suggestions) hoặc 'applications' (Applications)
+ * Trang chọn request cho mục menu Applications (cần một request cụ thể của phụ huynh).
+ * mode = 'applications'
  */
 export default function RequestPicker({ mode: modeName }) {
   const navigate = useNavigate();

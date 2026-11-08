@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import Alert from '../common/Alert';
 import FormInput from '../common/FormInput';
+import FormSelect from '../common/FormSelect';
 import FormTextarea from '../common/FormTextarea';
+import SchedulePicker from '../common/SchedulePicker';
+import { GRADE_LEVELS } from '../../constants/gradeLevels';
+import { useSubjectNames } from '../../hooks/useSubjectNames';
+import { toSelectOptions } from '../../utils/selectOptions';
 import { TEACHING_MODES, formatBudget } from '../../constants/requestLabels';
 import { focusFirstInvalidField, toFieldErrors } from '../../utils/authValidators';
 
@@ -13,6 +18,7 @@ const REQUIRED_FIELDS = [
   { name: 'schedule', label: 'Available schedule' },
   { name: 'description', label: 'Description' },
 ];
+const SCHEDULE_REQUIRED_MESSAGE = 'Choose at least one day and a valid start and end time';
 const MAX_LENGTHS = { title: 150, subject_name: 100, grade_level: 50, schedule: 300, description: 2000 };
 
 export const EMPTY_POST_VALUES = {
@@ -33,6 +39,9 @@ const validate = (values) => {
       errors[field.name] = `${field.label} is required`;
     }
   });
+  if (!values.schedule.trim()) {
+    errors.schedule = SCHEDULE_REQUIRED_MESSAGE;
+  }
   Object.keys(MAX_LENGTHS).forEach((name) => {
     if (values[name].trim().length > MAX_LENGTHS[name]) {
       errors[name] = `Must be at most ${MAX_LENGTHS[name]} characters`;
@@ -79,6 +88,16 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const subjects = useSubjectNames();
+  const subjectOptions = toSelectOptions(subjects.subjectNames, values.subject_name);
+  const gradeOptions = toSelectOptions(GRADE_LEVELS, values.grade_level);
+
+  const handleScheduleChange = (schedule) => {
+    setValues((previousValues) => ({ ...previousValues, schedule: schedule }));
+    if (errors.schedule) {
+      setErrors({ ...errors, schedule: '' });
+    }
+  };
 
   const handleChange = (event) => {
     const field = event.target.name;
@@ -138,8 +157,27 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
         disabled={submitting}
       />
       <div className="form-grid">
-        <FormInput id="subject_name" label="Subject" value={values.subject_name} onChange={handleChange} error={errors.subject_name} placeholder="e.g. Toán" disabled={submitting} />
-        <FormInput id="grade_level" label="Grade level" value={values.grade_level} onChange={handleChange} error={errors.grade_level} placeholder="e.g. Lớp 9" disabled={submitting} />
+        <FormSelect
+          id="subject_name"
+          label="Subject"
+          value={values.subject_name}
+          onChange={handleChange}
+          options={subjectOptions}
+          placeholder={subjects.loading ? 'Loading subjects...' : 'Select subject'}
+          error={errors.subject_name}
+          hint={subjects.error ? 'Could not load subjects. Reload the page to try again.' : undefined}
+          disabled={submitting}
+        />
+        <FormSelect
+          id="grade_level"
+          label="Grade level"
+          value={values.grade_level}
+          onChange={handleChange}
+          options={gradeOptions}
+          placeholder="Select grade"
+          error={errors.grade_level}
+          disabled={submitting}
+        />
       </div>
       <div className="form-grid">
         <FormInput
@@ -153,8 +191,15 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
           disabled={submitting}
           belowControl={priceHint ? <p className="form-hint-left">{priceHint}</p> : null}
         />
-        <FormInput id="schedule" label="Available schedule" value={values.schedule} onChange={handleChange} error={errors.schedule} placeholder="e.g. Tối thứ 3, thứ 5" disabled={submitting} />
       </div>
+      <SchedulePicker
+        id="schedule"
+        label="Available schedule"
+        value={values.schedule}
+        onChange={handleScheduleChange}
+        error={errors.schedule}
+        disabled={submitting}
+      />
 
       <div className="form-field">
         <p className="form-label" id="post-mode-label">Session mode</p>

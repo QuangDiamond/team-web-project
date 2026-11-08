@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, useLocation } from 'react-router-dom';
+import { createBrowserRouter, Navigate, useLocation, useParams } from 'react-router-dom';
 import Layout from '../layouts/Layout';
 import GuestRoute from './GuestRoute';
 import PrivateRoute from './PrivateRoute';
@@ -24,7 +24,6 @@ import RoleRoute from './RoleRoute';
 import StudentDashboard from '../pages/student/StudentDashboard';
 import AiTutorSuggestions from '../pages/parent/AiTutorSuggestions';
 import ParentDashboard from '../pages/parent/ParentDashboard';
-import RequestPicker from '../pages/parent/RequestPicker';
 import ChatPage from '../pages/chat/ChatPage';
 import TutorProfile from '../pages/tutor/TutorProfile';
 import TutorPosts from '../pages/tutor/TutorPosts';
@@ -33,8 +32,7 @@ import TutorDashboard from '../pages/tutor/TutorDashboard';
 import TutoringRequests from '../pages/parent/TutoringRequests';
 import TutoringRequestForm from '../pages/parent/TutoringRequestForm';
 import TutoringRequestDetail from '../pages/parent/TutoringRequestDetail';
-import SentInvitations from '../pages/parent/SentInvitations';
-import ApplicationsReview from '../pages/parent/ApplicationsReview';
+import Invitations from '../pages/parent/Invitations';
 import ReceivedInvitations from '../pages/tutor/ReceivedInvitations';
 import BrowseRequests from '../pages/tutor/BrowseRequests';
 import SuggestedRequests from '../pages/tutor/SuggestedRequests';
@@ -56,6 +54,12 @@ function WorkspaceRedirect() {
   const prefix = prefixes[user.role];
   if (!prefix) return <Navigate to="/" replace />;
   return <Navigate to={`${prefix}${location.pathname}${location.search}${location.hash}`} replace />;
+}
+
+// Đường dẫn cũ /parent/requests/:id/applications: đơn ứng tuyển nay nằm trong trang chi tiết request
+function ApplicationsRedirect() {
+  const { id } = useParams();
+  return <Navigate to={`/parent/requests/${id}`} replace />;
 }
 
 export const router = createBrowserRouter([
@@ -135,10 +139,11 @@ export const router = createBrowserRouter([
             element: <AiTutorSuggestions />,
             handle: { title: 'AI Tutor Suggestions' },
           },
-          { path: 'requests/:id/applications', element: <ApplicationsReview />, handle: { title: 'Applications' } },
-          { path: 'applications', element: <RequestPicker mode="applications" />, handle: { title: 'Applications' } },
-          { path: 'ai-suggestions', element: <RequestPicker mode="suggestions" />, handle: { title: 'AI Tutor Suggestions' } },
-          { path: 'invitations', element: <SentInvitations />, handle: { title: 'My Invitations' } },
+          // Đơn ứng tuyển nay nằm trong trang chi tiết request; giữ đường dẫn cũ để link cũ vẫn dùng được
+          { path: 'requests/:id/applications', element: <ApplicationsRedirect /> },
+          { path: 'applications', element: <Navigate to="/parent/requests" replace /> },
+          { path: 'ai-suggestions', element: <AiTutorSuggestions />, handle: { title: 'AI Tutor Suggestions' } },
+          { path: 'invitations', element: <Invitations />, handle: { title: 'Invitations' } },
           { path: 'messages', element: <ChatPage basePath="/parent/messages" />, handle: { title: 'Messages' } },
           { path: 'messages/:conversationId', element: <ChatPage basePath="/parent/messages" />, handle: { title: 'Messages' } },
           { path: 'contracts', element: <MyConnections />, handle: { title: 'Contracts & Connections' } },
