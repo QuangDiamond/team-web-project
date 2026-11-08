@@ -6,23 +6,13 @@ import { TutorProfile } from '../models/TutorProfile.js';
 import { User } from '../models/User.js';
 import { ENUMS } from '../models/enums.js';
 import { AppError } from '../common/utils/AppError.js';
+import { decimalToNumber } from '../common/utils/requestRules.js';
 import { matchesSubjectAndGrade } from './tutorMatching.service.js';
 
 // UC09 – gợi ý gia sư chỉ dựa trên môn học và khối lớp của request, không chấm điểm / trọng số.
 // Chưa gọi AI provider nào nên ai_reason luôn null (luồng E1)
 const SUGGESTION_LIMIT = 10;
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
-
-const decimalToNumber = (value) => {
-  if (value === null || value === undefined) {
-    return null;
-  }
-  const parsed = Number(value.toString());
-  if (Number.isFinite(parsed)) {
-    return parsed;
-  }
-  return null;
-};
 
 /**
  * Chỉ tài khoản PARENT được xem gợi ý gia sư

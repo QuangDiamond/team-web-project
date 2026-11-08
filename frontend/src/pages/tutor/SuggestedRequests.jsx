@@ -39,10 +39,10 @@ export default function SuggestedRequests() {
   return (
     <div className="page-stack">
       <div className="page-toolbar">
-        <p className="item-meta">Open requests with the same subject and grade level as your published posts, newest first.</p>
+        <p className="item-meta">Yêu cầu đang mở cùng môn học và khối lớp với bài đăng đã xuất bản của bạn, mới nhất trước.</p>
         <button type="button" className="btn btn-outline btn-sm" disabled={refreshing} onClick={handleRefresh}>
           <RefreshCw size={14} className={refreshing ? 'spin' : ''} aria-hidden="true" />
-          <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
+          <span>{refreshing ? "Đang cập nhật..." : "Cập nhật"}</span>
         </button>
       </div>
 
@@ -50,7 +50,7 @@ export default function SuggestedRequests() {
 
       <ListState
         list={list}
-        empty={{ icon: Sparkles, title: 'No suggestions yet', description: 'Check back when new requests are posted.' }}
+        empty={{ icon: Sparkles, title: "Chưa có gợi ý", description: "Hãy quay lại khi có yêu cầu mới." }}
       >
         {list.data && <RequestGrid items={list.data.items} actions={actions} />}
       </ListState>

@@ -13,22 +13,25 @@ import { getPathAfterLogin } from '../../routes/redirectAfterLogin';
 import '../../styles/login.css';
 
 const LOGIN_FIELDS = ['email', 'password'];
-const LOCKED_MESSAGE = 'Your account has been suspended or banned. Please contact support.';
+const LOCKED_MESSAGE = 'Tài khoản của bạn đã bị tạm ngưng hoặc bị cấm. Vui lòng liên hệ bộ phận hỗ trợ.';
 
 // Thông báo theo query backend gắn khi redirect về /login
 const getRedirectNotice = (searchParams) => {
+  if (searchParams.get('password') === 'reset') {
+    return { type: 'success', message: 'Đặt lại mật khẩu thành công. Vui lòng đăng nhập bằng mật khẩu mới.' };
+  }
   if (searchParams.get('verify') === 'success') {
-    return { type: 'success', message: 'Your account has been verified. Please sign in.' };
+    return { type: 'success', message: 'Tài khoản đã được xác minh. Vui lòng đăng nhập.' };
   }
   if (searchParams.get('verify') === 'invalid') {
-    return { type: 'error', message: 'This verification link is invalid or has expired.', canResend: true };
+    return { type: 'error', message: 'Liên kết xác minh không hợp lệ hoặc đã hết hạn.', canResend: true };
   }
   // Đăng nhập Google bằng tài khoản bị khóa (UC37): backend chuyển về /login?oauth=locked
   if (searchParams.get('oauth') === 'locked') {
     return { type: 'error', message: LOCKED_MESSAGE };
   }
   if (searchParams.get('oauth') === 'failed') {
-    return { type: 'error', message: 'Google sign-in failed. Please try again.' };
+    return { type: 'error', message: 'Đăng nhập bằng Google không thành công. Vui lòng thử lại.' };
   }
   return null;
 };
@@ -66,7 +69,7 @@ export default function Login() {
   const validate = () => {
     const newErrors = { email: validateEmail(values.email), password: '' };
     if (values.password.length === 0) {
-      newErrors.password = 'Password is required';
+      newErrors.password = 'Vui lòng nhập mật khẩu';
     }
     return newErrors;
   };
@@ -97,19 +100,19 @@ export default function Login() {
 
     const error = result.error;
     // 403 có 2 trường hợp: chưa kích hoạt email, hoặc tài khoản bị khóa (Suspended / Banned, UC37)
-    if (error.status === 403 && error.message === 'Account not verified') {
+    if (error?.status === 403 && (error.rawMessage || error.message) === 'Account not verified') {
       setNotVerified(true);
       return;
     }
-    if (error.status === 403) {
+    if (error?.status === 403) {
       setAccountLocked(true);
       return;
     }
-    if (error.status === 422 && error.errors) {
+    if (error?.status === 422 && error?.errors) {
       setErrors(toFieldErrors(error.errors));
       return;
     }
-    setFormError(error.message);
+    setFormError(error?.message || 'Đăng nhập không thành công');
   };
 
   let alert = null;
@@ -120,7 +123,7 @@ export default function Login() {
   } else if (notVerified) {
     alert = (
       <Alert type="error">
-        Your account is not verified yet. Please check your email or resend the verification email below.
+        Tài khoản của bạn chưa được xác minh. Vui lòng kiểm tra email hoặc gửi lại email xác minh bên dưới.
       </Alert>
     );
   } else if (formError) {
@@ -134,14 +137,14 @@ export default function Login() {
   return (
     <AuthLayout>
       <form onSubmit={handleSubmit} noValidate className="login-form">
-        <h1 className="auth-title">Welcome back <span aria-hidden="true">👋</span></h1>
-        <p className="auth-subtitle">Sign in to continue to TuConnector.</p>
+        <h1 className="auth-title">Chào mừng bạn trở lại <span aria-hidden="true">👋</span></h1>
+        <p className="auth-subtitle">Đăng nhập để tiếp tục sử dụng TuConnector.</p>
 
         {alert}
 
         <GoogleButton href={getGoogleLoginUrl()} />
 
-        <p className="auth-divider"><span>or sign in with email</span></p>
+        <p className="auth-divider"><span>hoặc đăng nhập bằng email</span></p>
 
         <FormInput
           id="email"
@@ -150,35 +153,36 @@ export default function Login() {
           value={values.email}
           onChange={handleChange}
           error={errors.email}
-          placeholder="you@example.com"
+          placeholder="ban@example.com"
           autoComplete="email"
           disabled={submitting}
         />
         <PasswordInput
           id="password"
-          label="Password"
+          label="Mật khẩu"
           value={values.password}
           onChange={handleChange}
           error={errors.password}
-          placeholder="Enter your password"
+          placeholder="Nhập mật khẩu của bạn"
           autoComplete="current-password"
           disabled={submitting}
         />
 
         <div className="login-options">
-          {/* TODO: đổi "#" thành trang Forgot password khi có */}
-          <a href="#" className="link">Forgot password?</a>
+          <Link to="/forgot-password" className="link">Quên mật khẩu?</Link>
         </div>
 
         <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
-          {submitting ? 'Signing in...' : 'Sign in'}
+          {submitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
         </button>
 
         {showResend && <ResendVerificationButton email={values.email} />}
 
         <p className="auth-footer-text">
-          Don't have an account? <Link to="/register" className="link">Sign up</Link>
+          Bạn chưa có tài khoản? <Link to="/register" className="link">Đăng ký</Link>
         </p>
+
+
       </form>
     </AuthLayout>
   );

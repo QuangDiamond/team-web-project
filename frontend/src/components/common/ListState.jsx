@@ -25,7 +25,7 @@ export default function ListState({
         <div className="history-state">
           <EmptyState title={emptyTitle} description={emptyText} />
           {filtersActive && onClearFilters ? (
-            <button type="button" className="btn btn-outline btn-sm" onClick={onClearFilters}>Clear filters</button>
+            <button type="button" className="btn btn-outline btn-sm" onClick={onClearFilters}>Xóa bộ lọc</button>
           ) : emptyAction}
         </div>
       );
@@ -42,11 +42,11 @@ export default function ListState({
   }
 
   // Gia sư chưa có hồ sơ không phải lỗi hệ thống: chỉ đường tới trang tạo hồ sơ, không cần "Try again"
-  if (list.error && list.error.message === PROFILE_REQUIRED_MESSAGE) {
+  if (list.error && (list.error.rawMessage || list.error.message) === PROFILE_REQUIRED_MESSAGE) {
     return (
       <Alert type="info">
-        <p>Set up your tutor profile first to use this page.</p>
-        <Link to="/tutor/profile" className="btn btn-primary btn-sm">Complete my profile</Link>
+        <p>Vui lòng tạo hồ sơ gia sư trước khi sử dụng trang này.</p>
+        <Link to="/tutor/profile" className="btn btn-primary btn-sm">Hoàn thiện hồ sơ</Link>
       </Alert>
     );
   }

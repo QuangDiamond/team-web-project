@@ -3,21 +3,10 @@ import { Plan } from '../models/Plan.js';
 import { CreditPack } from '../models/CreditPack.js';
 import { AdminAuditLog } from '../models/AdminAuditLog.js';
 import { AppError } from '../common/utils/AppError.js';
+import { decimalToNumber } from '../common/utils/requestRules.js';
 
 // Gói Free (theo seed PLANS.json) luôn giữ giá 0
 export const FREE_PLAN_NAME = 'FREE_DEFAULT';
-
-/**
- * Đổi Decimal128 (hoặc chuỗi từ getter) sang number để frontend nhận tiền VND dạng số
- * @param {Object|string|null} value - giá trị tiền trong DB
- * @returns {number|null} số tiền, null nếu không có giá trị
- */
-const decimalToNumber = (value) => {
-  if (value === null || value === undefined) {
-    return null;
-  }
-  return Number(value.toString());
-};
 
 /**
  * Đổi Plan document sang dạng trả về cho API (monthly_price là number)

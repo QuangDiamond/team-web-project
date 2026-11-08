@@ -9,17 +9,17 @@ const pluralize = (count, singular, plural) => {
 export default function WelcomeBanner({ fullName, sessions, assignments }) {
   const isReady = !sessions.loading && !assignments.loading && !sessions.error && !assignments.error;
 
-  let summary = 'Here is an overview of your learning.';
+  let summary = "Tổng quan tình hình học tập của bạn.";
   if (isReady) {
-    const sessionText = pluralize(sessions.total, 'upcoming session', 'upcoming sessions');
-    const assignmentText = pluralize(assignments.total, 'pending assignment', 'pending assignments');
-    summary = `You have ${sessionText} in the next 7 days and ${assignmentText}.`;
+    const sessionText = pluralize(sessions.total, "buổi học sắp tới", "buổi học sắp tới");
+    const assignmentText = pluralize(assignments.total, "bài tập chưa hoàn thành", "bài tập chưa hoàn thành");
+    summary = `Bạn có ${sessionText} trong 7 ngày tới và ${assignmentText}.`;
   }
 
   return (
     <div className="student-welcome-banner">
-      <p className="student-welcome-eyebrow">Welcome back 👋</p>
-      <h2 className="student-welcome-name">{fullName || 'Student'}</h2>
+      <p className="student-welcome-eyebrow">Chào mừng bạn trở lại</p>
+      <h2 className="student-welcome-name">{fullName || "Học sinh"}</h2>
       <p className="student-welcome-summary">{summary}</p>
     </div>
   );

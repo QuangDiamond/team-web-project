@@ -20,9 +20,9 @@ export default function DashboardHome() {
   return (
     <>
       <PageHeader
-        eyebrow="OVERVIEW"
-        title={`Welcome back, ${user.full_name}`}
-        description="Jump straight to the tools you use most."
+        eyebrow="TỔNG QUAN"
+        title={`Chào mừng trở lại, ${user.full_name}`}
+        description="Truy cập nhanh các chức năng thường dùng."
       />
       <ul className="shortcut-grid">
         {shortcuts.map((item) => {

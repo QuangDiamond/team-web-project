@@ -5,8 +5,8 @@ import { AppError } from '../common/utils/AppError.js';
 import * as pspClient from '../common/utils/pspClient.js';
 import * as paymentService from '../services/payment.service.js';
 import * as transactionService from '../services/transaction.service.js';
-import { getPagination, buildPagination } from '../common/utils/pagination.js';
-import { validateQuery } from '../common/validator/validator.js';
+import { getPagination, buildPagination, parseQuery } from '../common/utils/pagination.js';
+import { escapeHtml } from '../common/utils/html.js';
 import { creditTransactionQuerySchema, orderQuerySchema } from '../common/validator/paymentSchema.js';
 import { buildCsv } from '../common/utils/csv.js';
 import { env } from '../config/environment.js';
@@ -45,25 +45,25 @@ const EXPORT_MAX_ROWS = 5000;
 
 // D17: CSV dùng nhãn dễ đọc giống giao diện; giá trị lạ giữ nguyên
 const CSV_LABELS = {
-  MONTHLY_GRANT: 'Monthly grant',
-  PURCHASE: 'Purchase',
-  USED_APPLY: 'Used for application',
-  USED_INVITATION: 'Used for invitation',
-  EXPIRED_GRANT: 'Expired credits',
-  APPLY: 'Application',
-  INVITATION: 'Invitation',
-  SUCCESS: 'Paid',
-  PENDING: 'Pending',
-  FAILED: 'Failed',
-  CANCELLED: 'Cancelled',
-  EXPIRED: 'Expired',
+  MONTHLY_GRANT: 'Cấp hàng tháng',
+  PURCHASE: 'Mua tín dụng',
+  USED_APPLY: 'Dùng để ứng tuyển',
+  USED_INVITATION: 'Dùng để mời gia sư',
+  EXPIRED_GRANT: 'Tín dụng hết hạn',
+  APPLY: 'Đơn ứng tuyển',
+  INVITATION: 'Lời mời',
+  SUCCESS: 'Đã thanh toán',
+  PENDING: 'Đang chờ',
+  FAILED: 'Thất bại',
+  CANCELLED: 'Đã hủy',
+  EXPIRED: 'Đã hết hạn',
   VIETQR: 'VietQR',
-  ATM_CARD: 'ATM card',
-  CREDIT_CARD: 'Credit card',
-  PLAN_UPGRADE: 'Plan upgrade',
-  CREDIT_PACK: 'Credit pack',
+  ATM_CARD: 'Thẻ ATM',
+  CREDIT_CARD: 'Thẻ tín dụng',
+  PLAN_UPGRADE: 'Nâng cấp gói',
+  CREDIT_PACK: 'Gói tín dụng',
 };
-const PLAN_LABELS = { PRO: 'Pro plan', FREE_DEFAULT: 'Free plan' };
+const PLAN_LABELS = { PRO: 'Gói Pro', FREE_DEFAULT: 'Gói miễn phí' };
 
 const toLabel = (value, labels) => {
   if (value === null || value === undefined) {
@@ -82,7 +82,7 @@ const sendCsv = (res, filePrefix, content) => {
 };
 
 export const getCreditTransactions = asyncHandler(async (req, res) => {
-  const filters = validateQuery(creditTransactionQuerySchema, req.query);
+  const filters = parseQuery(creditTransactionQuerySchema, req.query);
   const { page, limit, skip } = getPagination(req.query);
   const result = await transactionService.findCreditTransactions(req.user.id, filters, skip, limit);
   const data = { items: result.items, pagination: buildPagination(page, limit, result.total) };
@@ -90,7 +90,7 @@ export const getCreditTransactions = asyncHandler(async (req, res) => {
 });
 
 export const exportCreditTransactions = asyncHandler(async (req, res) => {
-  const filters = validateQuery(creditTransactionQuerySchema, req.query);
+  const filters = parseQuery(creditTransactionQuerySchema, req.query);
   const result = await transactionService.findCreditTransactions(req.user.id, filters, 0, EXPORT_MAX_ROWS);
   const rows = result.items.map((item) => {
     let relatedKind = null;
@@ -101,12 +101,12 @@ export const exportCreditTransactions = asyncHandler(async (req, res) => {
     }
     return [item.created_at, toLabel(item.type, CSV_LABELS), item.amount, item.expires_at, toLabel(relatedKind, CSV_LABELS), relatedTitle];
   });
-  const csv = buildCsv(['Date', 'Type', 'Credits', 'Expires at', 'Related to', 'Request title'], rows);
+  const csv = buildCsv(['Ngày', 'Loại', 'Tín dụng', 'Hết hạn lúc', 'Liên quan đến', 'Tiêu đề yêu cầu'], rows);
   return sendCsv(res, 'credit-transactions', csv);
 });
 
 export const getOrders = asyncHandler(async (req, res) => {
-  const filters = validateQuery(orderQuerySchema, req.query);
+  const filters = parseQuery(orderQuerySchema, req.query);
   const { page, limit, skip } = getPagination(req.query);
   const result = await transactionService.findOrders(req.user.id, filters, skip, limit);
   const data = { items: result.items, pagination: buildPagination(page, limit, result.total) };
@@ -114,7 +114,7 @@ export const getOrders = asyncHandler(async (req, res) => {
 });
 
 export const exportOrders = asyncHandler(async (req, res) => {
-  const filters = validateQuery(orderQuerySchema, req.query);
+  const filters = parseQuery(orderQuerySchema, req.query);
   const result = await transactionService.findOrders(req.user.id, filters, 0, EXPORT_MAX_ROWS);
   const rows = result.items.map((item) => {
     let itemName = item.item_name;
@@ -132,7 +132,7 @@ export const exportOrders = asyncHandler(async (req, res) => {
       item.paid_at,
     ];
   });
-  const csv = buildCsv(['Order code', 'Created at', 'Item type', 'Item', 'Status', 'Amount (VND)', 'Payment method', 'Paid at'], rows);
+  const csv = buildCsv(['Mã đơn', 'Ngày tạo', 'Loại sản phẩm', 'Sản phẩm', 'Trạng thái', 'Số tiền (VND)', 'Phương thức thanh toán', 'Ngày thanh toán'], rows);
   return sendCsv(res, 'payment-history', csv);
 });
 
@@ -152,34 +152,25 @@ export const requireMockCheckout = (_req, _res, next) => {
   return next();
 };
 
-// Escape để mã đơn trong URL không chèn được HTML vào trang
-const escapeHtml = (text) => {
-  return String(text)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
-};
-
 const renderMockCheckoutPage = (order) => {
   const orderCode = escapeHtml(order.order_code);
   const amount = Number(order.amount).toLocaleString('vi-VN');
 
-  let buttons = `<p>This order is <b>${escapeHtml(order.status)}</b> and can no longer be paid.</p>`;
+  let buttons = `<p>Đơn này ở trạng thái <b>${escapeHtml(toLabel(order.status, CSV_LABELS))}</b> và không thể thanh toán.</p>`;
   if (order.status === 'PENDING') {
     buttons = `
       <form method="post">
-        <button name="result" value="SUCCESS" class="ok">Pay successfully</button>
-        <button name="result" value="FAILED" class="fail">Fail payment</button>
+        <button name="result" value="SUCCESS" class="ok">Thanh toán thành công</button>
+        <button name="result" value="FAILED" class="fail">Thanh toán thất bại</button>
       </form>`;
   }
 
   return `<!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mock checkout</title>
+  <title>Thanh toán mô phỏng</title>
   <style>
     body { font-family: system-ui, sans-serif; max-width: 420px; margin: 48px auto; padding: 0 16px; color: #1f2937; }
     .card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; }
@@ -191,10 +182,10 @@ const renderMockCheckoutPage = (order) => {
 </head>
 <body>
   <div class="card">
-    <h1>Mock payment gateway</h1>
-    <p class="note">Development only. No real payment is made.</p>
-    <p>Order: <b>${orderCode}</b></p>
-    <p>Amount: <b>${amount} ₫</b></p>
+    <h1>Cổng thanh toán mô phỏng</h1>
+    <p class="note">Chỉ dùng khi phát triển. Không phát sinh thanh toán thật.</p>
+    <p>Mã đơn: <b>${orderCode}</b></p>
+    <p>Số tiền: <b>${amount} ₫</b></p>
     ${buttons}
   </div>
 </body>

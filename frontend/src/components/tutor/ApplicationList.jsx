@@ -7,7 +7,7 @@ function ApplicationRow({ application, onWithdraw }) {
   const [withdrawing, setWithdrawing] = useState(false);
   const badge = getStatusBadge(APPLICATION_STATUS, application.status);
 
-  let requestTitle = 'Yêu cầu không còn khả dụng';
+  let requestTitle = "Yêu cầu không còn khả dụng";
   let subject = '';
   if (application.request) {
     requestTitle = application.request.title;
@@ -18,8 +18,8 @@ function ApplicationRow({ application, onWithdraw }) {
   if (subject) {
     metaParts.push(subject);
   }
-  metaParts.push(`Ứng tuyển ngày ${formatDate(application.created_at)}`);
-  metaParts.push(`đã dùng ${application.credits_spent} credit`);
+  metaParts.push(`Ứng tuyển lúc ${formatDate(application.created_at)}`);
+  metaParts.push(`đã dùng ${application.credits_spent} tín dụng`);
 
   const handleWithdraw = async () => {
     setWithdrawing(true);
@@ -37,13 +37,13 @@ function ApplicationRow({ application, onWithdraw }) {
         <p className="item-meta">{metaParts.join(' · ')}</p>
         {application.note && <p className="item-note">“{application.note}”</p>}
         {application.status === 'CONTINUED' && (
-          <p className="item-meta">Phụ huynh đã chọn trao đổi với bạn. Hội thoại đã được mở.</p>
+          <p className="item-meta">Phụ huynh đã đồng ý trao đổi với bạn. Cuộc trò chuyện đã được mở.</p>
         )}
       </div>
       {application.status === 'PENDING' && (
         <div className="item-actions">
           <button type="button" className="btn btn-outline btn-sm" disabled={withdrawing} onClick={handleWithdraw}>
-            {withdrawing ? 'Đang rút...' : 'Rút đơn'}
+            {withdrawing ? "Đang rút..." : "Rút đơn"}
           </button>
         </div>
       )}

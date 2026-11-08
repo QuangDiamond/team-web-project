@@ -5,13 +5,13 @@ export default function TutorStats({ summary }) {
   return (
     <div className="stat-grid">
       <StatCard
-        label="Pending applications"
+        label="Đơn ứng tuyển đang chờ"
         value={summary.pending_applications}
-        detail={`${summary.accepted_applications} accepted`}
+        detail={`${summary.accepted_applications} đã được chấp nhận`}
         tone="warning"
       />
-      <StatCard label="Invitations to answer" value={summary.pending_invitations} detail="From parents" tone="info" />
-      <StatCard label="Credits" value={summary.credit_balance} detail="1 per application" tone="success" />
+      <StatCard label="Lời mời cần phản hồi" value={summary.pending_invitations} detail="Từ phụ huynh" tone="info" />
+      <StatCard label="Tín dụng" value={summary.credit_balance} detail="Dùng khi ứng tuyển" tone="success" />
     </div>
   );
 }

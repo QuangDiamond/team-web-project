@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-const MODE_LABELS = { ONLINE: 'Học online', OFFLINE: 'Học trực tiếp', HYBRID: 'Kết hợp' };
+const MODE_LABELS = { ONLINE: "Trực tuyến", OFFLINE: "Trực tiếp", HYBRID: "Kết hợp" };
 
 const getInitials = (fullName) => {
   const words = (fullName || '').trim().split(/\s+/).filter(Boolean);
@@ -12,7 +12,7 @@ const getInitials = (fullName) => {
 
 const formatPrice = (price) => {
   if (price === null || price === undefined) {
-    return 'Chưa có học phí';
+    return "Chưa có học phí";
   }
   return `${Number(price).toLocaleString('vi-VN')} ₫/buổi`;
 };
@@ -36,7 +36,7 @@ export default function SuggestionCard({ suggestion, rank, isInvited, onInvite }
   return (
     <li className="ai-card">
       <div className="ai-card-top">
-        <span className="ai-card-rank" aria-label={`Hạng ${rank}`}>{rank}</span>
+        <span className="ai-card-rank" aria-label={`Thứ hạng ${rank}`}>{rank}</span>
         <span className="ai-card-avatar" aria-hidden="true">{getInitials(tutor.full_name)}</span>
         <div className="ai-card-identity">
           <p className="ai-card-name">{tutor.full_name}</p>
@@ -67,7 +67,7 @@ export default function SuggestionCard({ suggestion, rank, isInvited, onInvite }
           disabled={isInvited}
           onClick={() => onInvite(suggestion)}
         >
-          {isInvited ? 'Đã mời' : 'Mời'}
+          {isInvited ? "Đã mời" : "Mời"}
         </button>
       </div>
     </li>

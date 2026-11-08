@@ -21,15 +21,15 @@ export default function TutorDashboard() {
   const { user } = useAuth();
   const summary = useSummary(getTutorSummary);
 
-  let fullName = 'Tutor';
+  let fullName = "Gia sư";
   if (user && user.full_name) {
     fullName = user.full_name;
   }
 
-  let bannerSummary = 'Here is an overview of your tutoring work.';
+  let bannerSummary = "Tổng quan hoạt động giảng dạy của bạn.";
   if (summary.data && summary.data.has_profile) {
-    const invitationText = pluralize(summary.data.pending_invitations, 'invitation', 'invitations');
-    bannerSummary = `You have ${invitationText} waiting for your answer.`;
+    const invitationText = pluralize(summary.data.pending_invitations, "lời mời", "lời mời");
+    bannerSummary = `Bạn có ${invitationText} đang chờ bạn phản hồi.`;
   }
 
   return (
@@ -39,20 +39,20 @@ export default function TutorDashboard() {
       {summary.loading && (
         <div className="page-loading-inline" role="status">
           <LoaderCircle size={26} className="spin" aria-hidden="true" />
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">Đang tải...</span>
         </div>
       )}
       {summary.error && (
         <Alert type="error">
           <p>{summary.error.message}</p>
-          <button type="button" className="btn btn-outline btn-sm" onClick={summary.reload}>Try again</button>
+          <button type="button" className="btn btn-outline btn-sm" onClick={summary.reload}>Thử lại</button>
         </Alert>
       )}
 
       {summary.data && !summary.data.has_profile && (
         <Alert type="info">
-          <p>Complete your tutor profile to browse requests, apply and receive invitations. Your profile is not set up yet.</p>
-          <Link to="/tutor/profile" className="btn btn-primary btn-sm">Create my profile</Link>
+          <p>Hoàn thiện hồ sơ để xem yêu cầu, ứng tuyển và nhận lời mời. Bạn chưa tạo hồ sơ gia sư.</p>
+          <Link to="/tutor/profile" className="btn btn-primary btn-sm">Tạo hồ sơ của tôi</Link>
         </Alert>
       )}
 
@@ -61,13 +61,13 @@ export default function TutorDashboard() {
           <TutorStats summary={summary.data} />
           <TutorQuickLists />
           <p className="tutor-dashboard-links">
-            <Link to="/tutor/requests" className="link">Browse all requests</Link>
+            <Link to="/tutor/requests" className="link">Xem tất cả yêu cầu</Link>
             {' · '}
-            <Link to="/tutor/requests/saved" className="link">{`Saved requests (${summary.data.saved_requests})`}</Link>
+            <Link to="/tutor/requests/saved" className="link">{`Yêu cầu đã lưu (${summary.data.saved_requests})`}</Link>
             {' · '}
-            <Link to="/tutor/posts" className="link">{`My posts (${summary.data.published_posts} published)`}</Link>
+            <Link to="/tutor/posts" className="link">{`Bài đăng của tôi (${summary.data.published_posts} đã đăng)`}</Link>
             {' · '}
-            <Link to="/tutor/messages" className="link">{`Messages (${summary.data.active_conversations})`}</Link>
+            <Link to="/tutor/messages" className="link">{`Tin nhắn (${summary.data.active_conversations})`}</Link>
           </p>
         </>
       )}

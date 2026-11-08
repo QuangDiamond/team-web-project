@@ -26,20 +26,20 @@ const EMPTY_EDUCATION = { school: '', degree: '', graduation_year: '', descripti
 const EMPTY_ACHIEVEMENT = { title: '', description: '' };
 
 const EXPERIENCE_FIELDS = [
-  { name: 'title', label: 'Job title', type: 'text' },
-  { name: 'company', label: 'Company / school', type: 'text' },
-  { name: 'start_date', label: 'Start date', type: 'date' },
-  { name: 'end_date', label: 'End date', type: 'date', allowNow: true },
+  { name: 'title', label: "Vị trí công việc", type: 'text' },
+  { name: 'company', label: "Đơn vị / Trường học", type: 'text' },
+  { name: 'start_date', label: "Ngày bắt đầu", type: 'date' },
+  { name: 'end_date', label: "Ngày kết thúc", type: 'date', allowNow: true },
 ];
 const EDUCATION_FIELDS = [
-  { name: 'school', label: 'School', type: 'text' },
-  { name: 'degree', label: 'Degree / major', type: 'text' },
-  { name: 'graduation_year', label: 'Graduation year', type: 'number' },
-  { name: 'description', label: 'Details', type: 'textarea', optional: true },
+  { name: 'school', label: "Trường học", type: 'text' },
+  { name: 'degree', label: "Bằng cấp / Chuyên ngành", type: 'text' },
+  { name: 'graduation_year', label: "Năm tốt nghiệp", type: 'number' },
+  { name: 'description', label: "Chi tiết", type: 'textarea', optional: true },
 ];
 const ACHIEVEMENT_FIELDS = [
-  { name: 'title', label: 'Achievement', type: 'text' },
-  { name: 'description', label: 'Details', type: 'textarea', optional: true },
+  { name: 'title', label: "Thành tích", type: 'text' },
+  { name: 'description', label: "Chi tiết", type: 'textarea', optional: true },
 ];
 
 const TOP_LIMITS = { headline: 120, bio: 2000, address: 255 };
@@ -50,29 +50,29 @@ export const countProfileWords = (text) => text.trim() ? text.trim().split(/\s+/
 export const validateProfileForm = (values) => {
   const errors = { top: {}, experiences: [], educations: [], achievements: [] };
 
-  const requiredLabels = { headline: 'Headline', bio: 'Bio', address: 'Address' };
+  const requiredLabels = { headline: "Tiêu đề giới thiệu", bio: "Giới thiệu", address: "Địa chỉ" };
   TOP_LEVEL_FIELDS.forEach((name) => {
     const text = values[name].trim();
     if (!text) {
-      errors.top[name] = `${requiredLabels[name]} is required`;
+      errors.top[name] = `${requiredLabels[name]} là bắt buộc`;
     } else if (text.length > TOP_LIMITS[name]) {
-      errors.top[name] = `Must be at most ${TOP_LIMITS[name]} characters`;
+      errors.top[name] = `Tối đa ${TOP_LIMITS[name]} ký tự`;
     }
   });
   if (countProfileWords(values.bio) > MAX_BIO_WORDS) {
-    errors.top.bio = 'About you must be at most 50 words';
+    errors.top.bio = "Phần giới thiệu không được quá 50 từ";
   }
 
   values.experiences.forEach((item, index) => {
     const itemErrors = {};
     if (!item.title.trim()) {
-      itemErrors.title = 'Job title is required';
+      itemErrors.title = "Vui lòng nhập vị trí công việc";
     }
-    if (!item.company.trim()) itemErrors.company = 'Company / school is required';
-    if (!item.start_date) itemErrors.start_date = 'Start date is required';
-    if (!item.end_date) itemErrors.end_date = 'End date is required';
+    if (!item.company.trim()) itemErrors.company = "Vui lòng nhập đơn vị hoặc trường học";
+    if (!item.start_date) itemErrors.start_date = "Vui lòng chọn ngày bắt đầu";
+    if (!item.end_date) itemErrors.end_date = "Vui lòng chọn ngày kết thúc hoặc Hiện tại";
     if (item.start_date && item.end_date && item.end_date !== 'NOW' && item.end_date < item.start_date) {
-      itemErrors.end_date = 'End date must not be before start date';
+      itemErrors.end_date = "Ngày kết thúc không được trước ngày bắt đầu";
     }
     errors.experiences[index] = itemErrors;
   });
@@ -80,15 +80,15 @@ export const validateProfileForm = (values) => {
   values.educations.forEach((item, index) => {
     const itemErrors = {};
     if (!item.school.trim()) {
-      itemErrors.school = 'School is required';
+      itemErrors.school = "Vui lòng nhập trường học";
     }
-    if (!item.degree.trim()) itemErrors.degree = 'Degree / major is required';
+    if (!item.degree.trim()) itemErrors.degree = "Vui lòng nhập bằng cấp hoặc chuyên ngành";
     if (!String(item.graduation_year).trim()) {
-      itemErrors.graduation_year = 'Graduation year is required';
+      itemErrors.graduation_year = "Vui lòng nhập năm tốt nghiệp";
     } else {
       const year = Number(item.graduation_year);
       if (!Number.isInteger(year) || year < 1950 || year > 2100) {
-        itemErrors.graduation_year = 'Enter a year between 1950 and 2100';
+        itemErrors.graduation_year = "Nhập năm từ 1950 đến 2100";
       }
     }
     errors.educations[index] = itemErrors;
@@ -97,7 +97,7 @@ export const validateProfileForm = (values) => {
   values.achievements.forEach((item, index) => {
     const itemErrors = {};
     if (!item.title.trim()) {
-      itemErrors.title = 'Achievement is required';
+      itemErrors.title = "Vui lòng nhập thành tích";
     }
     errors.achievements[index] = itemErrors;
   });
@@ -240,40 +240,40 @@ export default function TutorProfileForm({ initialValues, submitLabel, onSubmit 
 
       <FormInput
         id="headline"
-        label="Headline"
+        label="Tiêu đề giới thiệu"
         required
         value={values.headline}
         onChange={handleChange}
         error={errors.top.headline}
-        placeholder="e.g. Gia sư Toán 5 năm kinh nghiệm"
+        placeholder="Ví dụ: Gia sư Toán 5 năm kinh nghiệm"
         disabled={submitting}
       />
       <FormTextarea
         id="bio"
-        label="About you"
+        label="Giới thiệu bản thân"
         required
-        hint={`${countProfileWords(values.bio)}/${MAX_BIO_WORDS} words`}
+        hint={`${countProfileWords(values.bio)}/${MAX_BIO_WORDS} từ`}
         rows={5}
         value={values.bio}
         onChange={handleChange}
-        error={countProfileWords(values.bio) > MAX_BIO_WORDS ? 'About you must be at most 50 words' : errors.top.bio}
-        placeholder="Your teaching experience, method and what students can expect"
+        error={countProfileWords(values.bio) > MAX_BIO_WORDS ? "Phần giới thiệu không được quá 50 từ" : errors.top.bio}
+        placeholder="Kinh nghiệm, phương pháp giảng dạy và những gì học sinh có thể đạt được"
         disabled={submitting}
       />
       <div className="form-grid">
         <FormInput
           id="address"
-          label="Address / area"
+          label="Địa chỉ / Khu vực"
           required
           value={values.address}
           onChange={handleChange}
           error={errors.top.address}
-          placeholder="e.g. Cầu Giấy, Hà Nội"
+          placeholder="Ví dụ: Cầu Giấy, Hà Nội"
           disabled={submitting}
         />
         <FormSelect
           id="availability_status"
-          label="Availability"
+          label="Trạng thái nhận lớp"
           required
           value={values.availability_status}
           onChange={handleChange}
@@ -288,48 +288,48 @@ export default function TutorProfileForm({ initialValues, submitLabel, onSubmit 
           disabled={submitting}
           onChange={(event) => setValues({ ...values, is_address_hidden: event.target.checked })}
         />
-        <span>Hide my address from other users</span>
+        <span>Ẩn địa chỉ của tôi với người dùng khác</span>
       </label>
 
       <ProfileListEditor
         sectionId="experiences"
-        title="Experience"
+        title="Kinh nghiệm"
         items={values.experiences}
         fields={EXPERIENCE_FIELDS}
         emptyItem={EMPTY_EXPERIENCE}
         maxItems={MAX_ITEMS}
-        addLabel="Add experience"
+        addLabel="Thêm kinh nghiệm"
         errors={errors.experiences}
         disabled={submitting}
         onChange={(items) => setSection('experiences', items)}
       />
       <ProfileListEditor
         sectionId="educations"
-        title="Education"
+        title="Học vấn"
         items={values.educations}
         fields={EDUCATION_FIELDS}
         emptyItem={EMPTY_EDUCATION}
         maxItems={MAX_ITEMS}
-        addLabel="Add education"
+        addLabel="Thêm học vấn"
         errors={errors.educations}
         disabled={submitting}
         onChange={(items) => setSection('educations', items)}
       />
       <ProfileListEditor
         sectionId="achievements"
-        title="Achievements"
+        title="Thành tích"
         items={values.achievements}
         fields={ACHIEVEMENT_FIELDS}
         emptyItem={EMPTY_ACHIEVEMENT}
         maxItems={MAX_ITEMS}
-        addLabel="Add achievement"
+        addLabel="Thêm thành tích"
         errors={errors.achievements}
         disabled={submitting}
         onChange={(items) => setSection('achievements', items)}
       />
 
       <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
-        {submitting ? 'Saving...' : submitLabel}
+        {submitting ? "Đang lưu..." : submitLabel}
       </button>
     </form>
   );

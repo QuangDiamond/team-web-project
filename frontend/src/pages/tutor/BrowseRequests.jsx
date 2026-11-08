@@ -45,11 +45,11 @@ export default function BrowseRequests() {
     <div className="page-stack">
       <RequestFilters onApply={handleApplyFilters} />
 
-      {list.data && <p className="item-meta" aria-live="polite">{total} open requests found</p>}
+      {list.data && <p className="item-meta" aria-live="polite">{total} yêu cầu đang mở được tìm thấy</p>}
 
       <ListState
         list={list}
-        empty={{ icon: SearchX, title: 'No requests found', description: 'Try adjusting your filters or search keyword.' }}
+        empty={{ icon: SearchX, title: "Không tìm thấy yêu cầu", description: "Hãy điều chỉnh bộ lọc hoặc từ khóa tìm kiếm." }}
       >
         {list.data && <RequestGrid items={list.data.items} actions={actions} />}
       </ListState>

@@ -44,11 +44,11 @@ export default function ApplyModal({ request, onClose, onApplied }) {
     }
   };
 
-  let creditText = 'Đang kiểm tra credit...';
+  let creditText = "Đang kiểm tra tín dụng...";
   if (credits.error) {
-    creditText = 'Không tải được số credit';
+    creditText = "Không thể tải số dư tín dụng";
   } else if (!credits.loading) {
-    creditText = `Số dư: ${credits.balance} credit`;
+    creditText = `Số dư: ${credits.balance}`;
   }
 
   return (
@@ -61,10 +61,10 @@ export default function ApplyModal({ request, onClose, onApplied }) {
         </p>
 
         <p className="modal-cost">
-          <span>Chi phí: {amount} credit</span>
+          <span>Chi phí: {amount} tín dụng</span>
           <span>{creditText}</span>
         </p>
-        <p className="item-meta modal-note">Credit không được hoàn lại nếu phụ huynh bỏ qua đơn của bạn.</p>
+        <p className="item-meta modal-note">Tín dụng không được hoàn lại nếu phụ huynh bỏ qua đơn ứng tuyển.</p>
 
         <CreditAmountField
           id="apply-credits"
@@ -75,17 +75,18 @@ export default function ApplyModal({ request, onClose, onApplied }) {
           audience="phụ huynh"
         />
 
-        {hasNoCredit && <Alert type="error">Bạn cần ít nhất 1 credit để ứng tuyển.</Alert>}
+        {hasNoCredit && <Alert type="error">Bạn cần ít nhất 1 tín dụng để ứng tuyển.</Alert>}
         {error && <Alert type="error">{error}</Alert>}
 
         <FormTextarea
           id="apply-note"
-          label="Lời nhắn gửi phụ huynh (không bắt buộc)"
+          label="Lời nhắn ngắn cho phụ huynh"
+          optional
           rows={4}
           maxLength={NOTE_MAX_LENGTH}
           value={note}
           onChange={(event) => setNote(event.target.value)}
-          placeholder="Giới thiệu kinh nghiệm và cách bạn sẽ giúp học sinh"
+          placeholder="Giới thiệu kinh nghiệm và cách bạn hỗ trợ học sinh"
           disabled={submitting}
         />
 
@@ -93,7 +94,7 @@ export default function ApplyModal({ request, onClose, onApplied }) {
           <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={submitting}>Hủy</button>
           <button type="submit" className="btn btn-primary btn-sm" disabled={!canSubmit}>
             {submitting ? <LoaderCircle size={14} className="spin" aria-hidden="true" /> : null}
-            <span>{submitting ? 'Đang gửi...' : 'Gửi đơn ứng tuyển'}</span>
+            <span>{submitting ? "Đang gửi..." : "Gửi đơn ứng tuyển"}</span>
           </button>
         </div>
       </form>

@@ -60,9 +60,9 @@ export default function TutorPostForm() {
   if (state.error) {
     return (
       <div className="page-stack">
-        {state.error.message === PROFILE_REQUIRED_MESSAGE ? (
+        {(state.error.rawMessage || state.error.message) === PROFILE_REQUIRED_MESSAGE ? (
           <Alert type="info">
-            <p>Hãy hoàn thiện hồ sơ gia sư trước để quản lý bài đăng.</p>
+            <p>Tạo hồ sơ gia sư trước khi quản lý bài đăng.</p>
             <Link to="/tutor/profile" className="btn btn-primary btn-sm">Hoàn thiện hồ sơ</Link>
           </Alert>
         ) : (
@@ -74,14 +74,14 @@ export default function TutorPostForm() {
   }
 
   if (savedPost) {
-    let title = 'Đã lưu bài đăng';
-    let description = 'Thay đổi của bạn đã được lưu.';
+    let title = "Đã lưu bài đăng";
+    let description = "Đã lưu thay đổi của bạn.";
     if (!isEdit && savedPost.status === 'PUBLISHED') {
-      title = 'Đã đăng bài';
-      description = 'Phụ huynh đã có thể thấy bạn trong gợi ý gia sư.';
+      title = "Đã xuất bản bài đăng";
+      description = "Phụ huynh có thể tìm thấy bạn trong danh sách gia sư gợi ý.";
     } else if (!isEdit) {
-      title = 'Đã lưu nháp';
-      description = 'Bạn có thể đăng bài từ danh sách bài đăng khi đã sẵn sàng.';
+      title = "Đã lưu bản nháp";
+      description = "Đăng bài từ danh sách bài đăng khi bạn đã sẵn sàng.";
     }
     return (
       <div className="request-success">
@@ -98,7 +98,7 @@ export default function TutorPostForm() {
   if (isEdit && state.post.is_locked) {
     return (
       <div className="page-stack">
-        <Alert type="info">Bài đăng này đang được kiểm duyệt nên không thể chỉnh sửa.</Alert>
+        <Alert type="info">Bài đăng đang được kiểm duyệt nên không thể chỉnh sửa.</Alert>
         <Link to="/tutor/posts" className="link">Quay lại bài đăng của tôi</Link>
       </div>
     );
@@ -115,7 +115,7 @@ export default function TutorPostForm() {
         <ChevronLeft size={16} aria-hidden="true" />
         <span>Quay lại bài đăng của tôi</span>
       </Link>
-      <SectionCard title={isEdit ? 'Chỉnh sửa bài đăng' : 'Bài đăng mới'}>
+      <SectionCard title={isEdit ? "Sửa bài đăng" : "Bài đăng mới"}>
         <PostForm initialValues={initialValues} isEdit={isEdit} onSubmit={handleSubmit} />
       </SectionCard>
     </div>

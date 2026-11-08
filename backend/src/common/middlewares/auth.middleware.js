@@ -2,6 +2,7 @@ import { AppError } from '../utils/AppError.js';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { User } from '../../models/User.js';
+import { passwordVersion } from '../utils/authSession.js';
 
 export const ACCOUNT_LOCKED_MESSAGE = 'Your account has been suspended or banned';
 
@@ -37,12 +38,15 @@ export const authentication = async (req, res, next) =>{
         return next(new AppError('Invalid or expired token', 401));
     }
 
-    const user = await User.findById(payload.sub).select('role account_status');
+    const user = await User.findById(payload.sub).select('role account_status password_hash');
     if(!user){
         return next(new AppError('Unauthorize', 401));
     }
     if(user.account_status !== 'ACTIVE'){
         return next(new AppError(ACCOUNT_LOCKED_MESSAGE, 403));
+    }
+    if (payload.password_version !== passwordVersion(user.password_hash)) {
+        return next(new AppError('Invalid or expired token', 401));
     }
 
     req.user = {

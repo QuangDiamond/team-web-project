@@ -8,25 +8,25 @@ export default function CurrentPlanBanner({ billing }) {
     planLabel = getPlanTitle(billing.plan.name);
   }
 
-  let expiryLabel = 'No expiry';
+  let expiryLabel = 'Không có ngày hết hạn';
   if (billing.subscription && billing.subscription.expires_at) {
-    expiryLabel = `Until ${formatDate(billing.subscription.expires_at)}`;
+    expiryLabel = `Đến ngày ${formatDate(billing.subscription.expires_at)}`;
   }
 
   return (
     <dl className="card current-plan">
       <div>
-        <dt>Current plan</dt>
+        <dt>Gói hiện tại</dt>
         <dd>{planLabel}</dd>
         <dd className="current-plan-note">{expiryLabel}</dd>
       </div>
       <div>
-        <dt>Credit balance</dt>
-        <dd>{billing.credit_balance}</dd>
+        <dt>Số dư tín dụng</dt>
+        <dd>{billing.credit_balance?.toLocaleString('vi-VN')}</dd>
       </div>
       <div>
-        <dt>AI quota left</dt>
-        <dd>{billing.ai_quota_left}</dd>
+        <dt>Lượt dùng AI còn lại</dt>
+        <dd>{billing.ai_quota_left?.toLocaleString('vi-VN')}</dd>
       </div>
     </dl>
   );

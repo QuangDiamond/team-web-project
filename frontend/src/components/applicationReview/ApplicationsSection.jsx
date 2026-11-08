@@ -41,21 +41,21 @@ export default function ApplicationsSection({ requestId }) {
     if (application.tutor) {
       name = application.tutor.full_name;
     }
-    return handleAction(continueApplication, application, `Đã mở hội thoại với ${name}.`);
+    return handleAction(continueApplication, application, `Đã mở cuộc trò chuyện với ${name}.`);
   };
 
   const handleSkip = (application) => handleAction(skipApplication, application, 'Đã bỏ qua đơn ứng tuyển.');
 
   return (
     <SectionCard title="Đơn ứng tuyển">
-      <p className="item-meta">Các gia sư đã ứng tuyển yêu cầu này. Chọn Trao đổi để mở hội thoại, hoặc Bỏ qua.</p>
+      <p className="item-meta">Các gia sư đã ứng tuyển yêu cầu này. Chọn Tiếp tục để mở cuộc trò chuyện hoặc Bỏ qua để từ chối.</p>
 
       {notice && <Alert type="success">{notice}</Alert>}
       {actionError && <Alert type="error">{actionError}</Alert>}
 
       <ListState
         list={list}
-        empty={{ icon: Users, title: 'Chưa có đơn ứng tuyển', description: 'Gia sư ứng tuyển yêu cầu này sẽ hiện ở đây.' }}
+        empty={{ icon: Users, title: "Chưa có đơn ứng tuyển", description: "Gia sư ứng tuyển vào yêu cầu này sẽ hiển thị ở đây." }}
       >
         {list.data && (
           <ul className="review-list">

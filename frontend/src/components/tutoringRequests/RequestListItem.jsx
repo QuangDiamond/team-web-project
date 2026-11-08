@@ -19,7 +19,7 @@ export default function RequestListItem({ request, onDelete }) {
             {request.title}
           </button>
           <span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>
-          {request.is_expired && <span className="status-badge tone-error">Hết hạn</span>}
+          {request.is_expired && <span className="status-badge tone-error">Đã hết hạn</span>}
         </div>
         <p className="item-meta">
           {request.subject_name} · {request.grade_level} · {getModeLabel(request.teaching_mode)} · {formatBudget(request.budget)}
