@@ -19,13 +19,20 @@ export default function DashboardHeader({ title, actions = [], isSidebarOpen, on
     if (!user) {
       return;
     }
-    getUnreadCount()
-      .then((res) => {
-        if (res && res.data && typeof res.data.unreadCount === 'number') {
-          setUnreadCount(res.data.unreadCount);
-        }
-      })
-      .catch(() => {});
+    const fetchUnread = () => {
+      getUnreadCount()
+        .then((res) => {
+          const count = res?.data?.unreadCount ?? res?.unreadCount;
+          if (typeof count === 'number') {
+            setUnreadCount(count);
+          }
+        })
+        .catch(() => {});
+    };
+
+    fetchUnread();
+    const timer = setInterval(fetchUnread, 5000);
+    return () => clearInterval(timer);
   }, [user, location.pathname]);
 
   return (

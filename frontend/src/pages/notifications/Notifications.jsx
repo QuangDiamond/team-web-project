@@ -67,6 +67,8 @@ export default function Notifications() {
 
   useEffect(() => {
     fetchNotifications();
+    const timer = setInterval(fetchNotifications, 10000);
+    return () => clearInterval(timer);
   }, [activeCategory, readFilter]);
 
   useEffect(() => {
