@@ -8,6 +8,7 @@ import {
   FileText,
   History,
   LayoutDashboard,
+  KeyRound,
   Mail,
   MessageSquare,
   Search,
@@ -66,6 +67,7 @@ export const STUDENT_MENU = {
       label: 'ACCOUNT',
       items: [
         { label: 'Transactions', icon: CreditCard },
+        { label: 'Change password', to: '/student/change-password', icon: KeyRound },
         { label: 'Settings', icon: Settings },
       ],
     },
@@ -99,6 +101,7 @@ export const PARENT_MENU = {
         { label: 'Upgrade / Buy Credits', to: '/parent/checkout', icon: CreditCard },
       ],
     },
+    { label: 'ACCOUNT', items: [{ label: 'Change password', to: '/parent/change-password', icon: KeyRound }] },
   ],
   headerActions: [{ label: 'Public Site', to: '/' }],
 };
@@ -138,6 +141,7 @@ export const TUTOR_MENU = {
         { label: 'Upgrade / Buy Credits', to: '/tutor/checkout', icon: CreditCard },
       ],
     },
+    { label: 'ACCOUNT', items: [{ label: 'Change password', to: '/tutor/change-password', icon: KeyRound }] },
   ],
   headerActions: [{ label: 'Public Site', to: '/' }],
 };
@@ -156,6 +160,7 @@ export const ADMIN_MENU = {
         { label: 'Notifications', to: '/admin/notifications', icon: Bell },
       ],
     },
+    { label: 'ACCOUNT', items: [{ label: 'Change password', to: '/admin/change-password', icon: KeyRound }] },
   ],
   headerActions: [{ label: 'Public Site', to: '/' }],
 };

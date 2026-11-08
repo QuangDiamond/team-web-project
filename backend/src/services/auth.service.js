@@ -9,6 +9,7 @@ import {AppError} from '../common/utils/AppError.js';
 import { sendVerificationEmail } from '../common/utils/mailer.js';
 import { env } from '../config/environment.js';
 import { ACCOUNT_LOCKED_MESSAGE } from '../common/middlewares/auth.middleware.js';
+import { issueToken } from '../common/utils/authSession.js';
 
 
 const VERIFY_TOKEN_TTL_MS = 24 * 60 * 60 * 1000;
@@ -18,16 +19,6 @@ const GOOGLE_TICKET_TYPE = 'GOOGLE_REGISTER';
 
 const oauthClient = new OAuth2Client(env.oauthClientId, env.oauthClientSecret, env.oauthRedirectUri);
 
-const issueToken = (user) => {
-  return jwt.sign(
-    {
-      sub: user.id,
-      role: user.role,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '12h' }
-  );
-};
 
 
 const hashToken = (rawToken) => {
@@ -159,20 +150,20 @@ export const login = async (userLogin) =>{
         throw new AppError("Account not verified", 403)
     }
 
+    const passwordHash = user.password_hash;
     user = await userService.updateUserLogin(user._id);
-    return {user: removePasswordHash(user), token: issueToken(user)};
+    return {user: removePasswordHash(user), token: issueToken(user, passwordHash)};
 }
 
 /**
  * Lấy thông tin user đang đăng nhập
  * @param {string} userId - id lấy từ JWT
- * @returns {Promise<Object>} user (không có password_hash, has_password)
+ * @returns {Promise<Object>} Safe user without password_hash, with derived has_password boolean
  */
 export const me = async (userId) =>{
-    const me = await User.findById(userId).select("-password_hash -has_password");
+    const me = await User.findById(userId).select("+password_hash");
     if(!me) throw new AppError("User not found", 404);
-    // const rs = {_id:me._id, email: me.email}
-    return me;
+    return { ...removePasswordHash(me), has_password: Boolean(me.password_hash) };
 }
 
 /**
@@ -229,7 +220,7 @@ export const handleGoogleCallback = async (code) => {
       throw new AppError(ACCOUNT_LOCKED_MESSAGE, 403);
     }
     const loggedInUser = await userService.updateUserLogin(user._id);
-    return { user: removePasswordHash(loggedInUser), token: issueToken(loggedInUser) };
+    return { user: removePasswordHash(loggedInUser), token: issueToken(loggedInUser, user.password_hash) };
   }
 
   const registerTicket = jwt.sign(

@@ -45,6 +45,26 @@ export const resendVerificationSchema = z.object({
   email: z.string().trim().email("Input must be email"),
 });
 
+export const forgotPasswordSchema = resendVerificationSchema;
+
+export const resetPasswordSchema = z.object({
+  token: z.string().regex(/^[a-f0-9]{64}$/, 'The link is invalid or expired'),
+  new_password: passwordRule,
+  confirm_password: z.string(),
+}).refine((data) => data.new_password === data.confirm_password, {
+  message: 'Confirm password does not match',
+  path: ['confirm_password'],
+});
+
+export const changePasswordSchema = z.object({
+  current_password: z.string().max(64).optional(),
+  new_password: passwordRule,
+  confirm_password: z.string(),
+}).refine((data) => data.new_password === data.confirm_password, {
+  message: 'Confirm password does not match',
+  path: ['confirm_password'],
+});
+
 export const googleCompleteSchema = z.object({
   ticket: z.string().min(1, "Ticket is required"),
   full_name: fullNameRule,

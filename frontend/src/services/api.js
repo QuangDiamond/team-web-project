@@ -35,6 +35,11 @@ export const setAccountLockedHandler = (handler) => {
   handleAccountLocked = handler;
 };
 
+let handleSessionExpired = null;
+export const setSessionExpiredHandler = (handler) => {
+  handleSessionExpired = handler;
+};
+
 api.interceptors.response.use(
   (res) => res.data,
   (err) => {
@@ -42,6 +47,12 @@ api.interceptors.response.use(
     const isAccountLocked = apiError.status === 403 && apiError.message === ACCOUNT_LOCKED_MESSAGE;
     if (isAccountLocked && handleAccountLocked) {
       handleAccountLocked();
+    }
+    const requestPath = err.config?.url || '';
+    const isProtectedRequest = !requestPath.startsWith('/auth/v1/') ||
+      requestPath === '/auth/v1/me' || requestPath === '/auth/v1/change-password';
+    if (apiError.status === 401 && isProtectedRequest && handleSessionExpired) {
+      handleSessionExpired();
     }
     return Promise.reject(apiError);
   }

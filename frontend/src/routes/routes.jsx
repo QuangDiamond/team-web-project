@@ -9,6 +9,9 @@ import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
 import RegisterSuccess from '../pages/auth/RegisterSuccess';
 import RegisterComplete from '../pages/auth/RegisterComplete';
+import ForgotPassword from '../pages/auth/ForgotPassword';
+import ResetPassword from '../pages/auth/ResetPassword';
+import ChangePassword from '../pages/dashboard/ChangePassword';
 import Checkout from '../pages/payment/Checkout';
 import PaymentResult from '../pages/payment/PaymentResult';
 import Receipt from '../pages/payment/Receipt';
@@ -73,6 +76,8 @@ export const router = createBrowserRouter([
       { path: 'payment', element: <Navigate to="/checkout" replace /> },
     ],
   },
+  { path: 'forgot-password', element: <ForgotPassword /> },
+  { path: 'reset-password', element: <ResetPassword /> },
   // Các màn auth có bố cục riêng (AuthLayout), không dùng header/footer của Layout
   {
     element: <GuestRoute />,
@@ -88,6 +93,7 @@ export const router = createBrowserRouter([
     element: <PrivateRoute />,
     children: [
       { path: 'dashboard', element: <WorkspaceRedirect /> },
+      { path: 'change-password', element: <WorkspaceRedirect /> },
       {
         element: <PrivateRoute roles={['TUTOR', 'PARENT']} />,
         children: [
@@ -108,6 +114,7 @@ export const router = createBrowserRouter([
         element: <DashboardLayout menu={STUDENT_MENU} />,
         children: [
           { path: 'dashboard', element: <StudentDashboard />, handle: { title: 'Overview' } },
+          { path: 'change-password', element: <ChangePassword />, handle: { title: 'Account Security' } },
           { path: 'notifications', element: <Notifications />, handle: { title: 'Notifications' } },
         ],
       },
@@ -126,6 +133,7 @@ export const router = createBrowserRouter([
           { path: 'payment/result', element: <PaymentResult />, handle: { title: 'Payment Result' } },
           { path: 'receipts/:orderCode', element: <Receipt />, handle: { title: 'Receipt' } },
           { path: 'dashboard', element: <ParentDashboard />, handle: { title: 'Overview' } },
+          { path: 'change-password', element: <ChangePassword />, handle: { title: 'Account Security' } },
           { path: 'requests', element: <TutoringRequests />, handle: { title: 'My Tutoring Requests' } },
           { path: 'requests/new', element: <TutoringRequestForm />, handle: { title: 'Create Tutoring Request' } },
           { path: 'requests/:id', element: <TutoringRequestDetail />, handle: { title: 'Tutoring Request' } },
@@ -161,6 +169,7 @@ export const router = createBrowserRouter([
           { path: 'payment/result', element: <PaymentResult />, handle: { title: 'Payment Result' } },
           { path: 'receipts/:orderCode', element: <Receipt />, handle: { title: 'Receipt' } },
           { path: 'dashboard', element: <TutorDashboard />, handle: { title: 'Overview' } },
+          { path: 'change-password', element: <ChangePassword />, handle: { title: 'Account Security' } },
           { path: 'requests', element: <BrowseRequests />, handle: { title: 'Browse Requests' } },
           { path: 'requests/suggested', element: <SuggestedRequests />, handle: { title: 'Suggested for You' } },
           { path: 'requests/saved', element: <SavedRequests />, handle: { title: 'Saved Requests' } },
@@ -192,6 +201,7 @@ export const router = createBrowserRouter([
           { path: 'users', element: <UserManagement />, handle: { title: 'User Management' } },
           { path: 'users/:userId', element: <UserDetail />, handle: { title: 'User Details' } },
           { path: 'dashboard', element: <AdminDashboard />, handle: { title: 'System Statistics' } },
+          { path: 'change-password', element: <ChangePassword />, handle: { title: 'Account Security' } },
           { path: 'moderation', element: <Moderation />, handle: { title: 'Content Moderation & Reports' } },
           { path: 'notifications', element: <Notifications />, handle: { title: 'Notifications' } },
         ],

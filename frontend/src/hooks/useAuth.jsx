@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import * as authService from '../services/authService.js';
-import { setAccountLockedHandler } from '../services/api.js';
+import { setAccountLockedHandler, setSessionExpiredHandler } from '../services/api.js';
 
 const AuthContext = createContext(null);
 
@@ -20,8 +20,10 @@ export function AuthProvider({ children }) {
       setAccountLockedOnStart(true);
       setUser(null);
     });
+    setSessionExpiredHandler(() => setUser(null));
     return () => {
       setAccountLockedHandler(null);
+      setSessionExpiredHandler(null);
     };
   }, []);
 
@@ -90,7 +92,18 @@ export function AuthProvider({ children }) {
     setAccountLockedOnStart(false);
   }, []);
 
-  const value = { user, initializing, loggedOutByUser, clearLoggedOutByUser, accountLockedOnStart, login, register, completeGoogleRegister, logout };
+  const resetPassword = useCallback(async (data) => {
+    await authService.resetPassword(data);
+    setLoggedOutByUser(true);
+    setUser(null);
+  }, []);
+
+  const changePassword = useCallback(async (data) => {
+    const response = await authService.changePassword(data);
+    setUser(response.data);
+  }, []);
+
+  const value = { user, initializing, loggedOutByUser, clearLoggedOutByUser, accountLockedOnStart, login, register, completeGoogleRegister, logout, resetPassword, changePassword };
 
   return (
     <AuthContext.Provider value={value}>
