@@ -1,17 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  Bell,
+  Check,
+  CheckCheck,
+  Trash2,
+  SlidersHorizontal,
+  ArrowRight,
+  Inbox,
+  Clock,
+  Sparkles,
+  FileText,
+  Mail,
+  Handshake,
+  Calendar,
+  BookOpen,
+  CreditCard,
+  PhoneCall,
+  X,
+  LoaderCircle
+} from 'lucide-react';
 import { notificationService } from '../../services/notificationService';
 import '../../styles/Notifications.css';
 
 const CATEGORIES = [
-  { key: 'ALL', label: 'Tất cả', icon: '📢' },
-  { key: 'APPLICATION', label: 'Ứng tuyển gia sư', icon: '📝' },
-  { key: 'INVITATION', label: 'Lời mời dạy kèm', icon: '✉️' },
-  { key: 'CONVERSATION', label: 'Kết nối & Thỏa thuận', icon: '🤝' },
-  { key: 'SESSION', label: 'Buổi học & Lịch', icon: '📅' },
-  { key: 'ASSIGNMENT', label: 'Bài tập & Điểm số', icon: '📚' },
-  { key: 'SYSTEM', label: 'Hệ thống & Ví', icon: '💳' }
+  { key: 'ALL', label: 'Tất cả', Icon: Inbox },
+  { key: 'APPLICATION', label: 'Ứng tuyển gia sư', Icon: FileText },
+  { key: 'INVITATION', label: 'Lời mời dạy kèm', Icon: Mail },
+  { key: 'CONVERSATION', label: 'Kết nối & Thỏa thuận', Icon: Handshake },
+  { key: 'SESSION', label: 'Buổi học & Lịch', Icon: Calendar },
+  { key: 'ASSIGNMENT', label: 'Bài tập & Điểm số', Icon: BookOpen },
+  { key: 'SYSTEM', label: 'Hệ thống & Ví', Icon: CreditCard }
 ];
+
+const CATEGORY_META = {
+  APPLICATION: { label: 'Ứng tuyển gia sư', Icon: FileText, className: 'cat-application' },
+  INVITATION: { label: 'Lời mời dạy kèm', Icon: Mail, className: 'cat-invitation' },
+  CONVERSATION: { label: 'Kết nối & Thỏa thuận', Icon: Handshake, className: 'cat-conversation' },
+  SESSION: { label: 'Lịch học & Buổi dạy', Icon: Calendar, className: 'cat-session' },
+  ASSIGNMENT: { label: 'Bài tập & Điểm', Icon: BookOpen, className: 'cat-assignment' },
+  SYSTEM: { label: 'Hệ thống & Ví', Icon: CreditCard, className: 'cat-system' }
+};
 
 export default function Notifications() {
   const navigate = useNavigate();
@@ -144,40 +173,6 @@ export default function Notifications() {
     return `${Math.floor(diff / 86400)} ngày trước`;
   };
 
-  const getCategoryClass = (cat) => {
-    switch (cat) {
-      case 'APPLICATION':
-        return 'cat-application';
-      case 'INVITATION':
-        return 'cat-invitation';
-      case 'CONVERSATION':
-        return 'cat-conversation';
-      case 'SESSION':
-        return 'cat-session';
-      case 'ASSIGNMENT':
-        return 'cat-assignment';
-      default:
-        return 'cat-system';
-    }
-  };
-
-  const getCategoryIcon = (cat) => {
-    switch (cat) {
-      case 'APPLICATION':
-        return '📝';
-      case 'INVITATION':
-        return '✉️';
-      case 'CONVERSATION':
-        return '🤝';
-      case 'SESSION':
-        return '📅';
-      case 'ASSIGNMENT':
-        return '📚';
-      default:
-        return '🔔';
-    }
-  };
-
   const handleTogglePref = (key) => {
     setPreferences((prev) => ({ ...prev, [key]: !prev[key] }));
   };
@@ -203,31 +198,18 @@ export default function Notifications() {
     <div className="noti-page">
       <div className="noti-container">
         {toastMessage && (
-          <div
-            style={{
-              position: 'fixed',
-              top: '24px',
-              right: '24px',
-              background: '#0f172a',
-              color: '#ffffff',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              zIndex: 9999,
-              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-              fontWeight: 500,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-          >
-            <span>✨</span> {toastMessage}
+          <div className="noti-toast-banner" role="status">
+            <Sparkles size={16} className="noti-toast-icon" />
+            <span>{toastMessage}</span>
           </div>
         )}
 
         {/* Header */}
         <div className="noti-header">
           <div className="noti-title-wrap">
-            <div className="noti-icon-badge">🔔</div>
+            <div className="noti-icon-badge">
+              <Bell size={24} />
+            </div>
             <div className="noti-title-box">
               <h1>
                 Trung tâm thông báo
@@ -236,8 +218,7 @@ export default function Notifications() {
                 )}
               </h1>
               <p>
-                Cập nhật tức thì các hoạt động ứng tuyển, lời mời, thỏa thuận kết
-                nối và lịch học
+                Cập nhật tức thì các hoạt động ứng tuyển, lời mời nhận lớp, kết nối và lịch học
               </p>
             </div>
           </div>
@@ -249,7 +230,8 @@ export default function Notifications() {
                 onClick={handleMarkAllAsRead}
                 title="Đánh dấu tất cả thông báo là đã đọc"
               >
-                ✓ Đánh dấu tất cả đã đọc
+                <CheckCheck size={16} />
+                <span>Đánh dấu tất cả đã đọc</span>
               </button>
             )}
             <button
@@ -257,7 +239,8 @@ export default function Notifications() {
               onClick={() => setShowPreferences(true)}
               title="Cài đặt kênh nhận thông báo (Email, SMS)"
             >
-              ⚙️ Kênh nhận tin
+              <SlidersHorizontal size={16} />
+              <span>Kênh nhận tin</span>
             </button>
           </div>
         </div>
@@ -265,15 +248,19 @@ export default function Notifications() {
         {/* Filters bar */}
         <div className="noti-filters-bar">
           <div className="noti-categories">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat.key}
-                className={`cat-btn ${activeCategory === cat.key ? 'active' : ''}`}
-                onClick={() => setActiveCategory(cat.key)}
-              >
-                <span>{cat.icon}</span> {cat.label}
-              </button>
-            ))}
+            {CATEGORIES.map((cat) => {
+              const IconComp = cat.Icon;
+              return (
+                <button
+                  key={cat.key}
+                  className={`cat-btn ${activeCategory === cat.key ? 'active' : ''}`}
+                  onClick={() => setActiveCategory(cat.key)}
+                >
+                  <IconComp size={15} />
+                  <span>{cat.label}</span>
+                </button>
+              );
+            })}
           </div>
 
           <div className="noti-read-filters">
@@ -299,101 +286,116 @@ export default function Notifications() {
         </div>
 
         {/* Notifications list */}
-        {loading ? (
+        {loading && notifications.length === 0 ? (
           <div className="noti-empty">
-            <div className="noti-empty-icon">⏳</div>
+            <LoaderCircle size={36} className="spin noti-empty-spinner" />
             <h3>Đang tải thông báo...</h3>
           </div>
         ) : notifications.length === 0 ? (
           <div className="noti-empty">
-            <div className="noti-empty-icon">📭</div>
+            <div className="noti-empty-icon-wrap">
+              <Inbox size={44} strokeWidth={1.5} />
+            </div>
             <h3>Không có thông báo nào</h3>
             <p>
-              Bạn đã cập nhật hết tất cả các thông báo trong mục này. Chúc bạn một
-              ngày học tập & giảng dạy hiệu quả!
+              Bạn đã xem hết các thông báo trong mục này. Khi có tương tác mới, hệ thống sẽ báo ngay cho bạn!
             </p>
           </div>
         ) : (
           <div className="noti-list">
-            {notifications.map((item) => (
-              <div
-                key={item._id}
-                className={`noti-item ${!item.is_read ? 'unread' : ''}`}
-                onClick={() => handleNavigateDeepLink(item)}
-                style={{ cursor: 'pointer' }}
-              >
-                <div
-                  className={`noti-type-icon ${getCategoryClass(item.category)}`}
-                >
-                  {getCategoryIcon(item.category)}
-                </div>
+            {notifications.map((item) => {
+              const meta = CATEGORY_META[item.category] || CATEGORY_META.SYSTEM;
+              const MetaIcon = meta.Icon;
 
-                <div className="noti-body-content">
-                  <div className="noti-top-meta">
-                    <span
-                      className={`noti-category-badge ${getCategoryClass(
-                        item.category
-                      )}`}
-                    >
-                      {item.category}
-                    </span>
-                    <span className="noti-time">
-                      {getRelativeTime(item.created_at)}
-                    </span>
+              return (
+                <article
+                  key={item._id}
+                  className={`noti-item ${!item.is_read ? 'unread' : 'is-read'}`}
+                  onClick={() => handleNavigateDeepLink(item)}
+                >
+                  <div className={`noti-type-icon ${meta.className}`}>
+                    <MetaIcon size={20} />
                   </div>
 
-                  <h3 className="noti-heading">{item.title}</h3>
-                  <p className="noti-desc">{item.body}</p>
-
-                  {/* Delivery logs per UC35 / Pro plan SMS Gateway */}
-                  {item.delivery_logs && item.delivery_logs.length > 0 && (
-                    <div className="noti-delivery-logs">
-                      {item.delivery_logs.map((log, idx) => (
-                        <span
-                          key={idx}
-                          className={`delivery-badge badge-${log.channel.toLowerCase()}`}
-                        >
-                          {log.channel === 'IN_APP' && '🔔 In-App'}
-                          {log.channel === 'EMAIL' && '✉️ Email đã gửi'}
-                          {log.channel === 'SMS' && '📱 SMS Gateway'}
-                          {log.status === 'DELIVERED' ? ' ✓' : ''}
-                        </span>
-                      ))}
+                  <div className="noti-body-content">
+                    <div className="noti-top-meta">
+                      <span className={`noti-category-badge ${meta.className}`}>
+                        {meta.label}
+                      </span>
+                      <span className="noti-time">
+                        <Clock size={12} />
+                        {getRelativeTime(item.created_at)}
+                      </span>
                     </div>
-                  )}
 
-                  <div className="noti-item-actions">
-                    <button
-                      className="btn-open-deeplink"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleNavigateDeepLink(item);
-                      }}
-                    >
-                      Xem chi tiết →
-                    </button>
+                    <h3 className="noti-heading">{item.title}</h3>
+                    <p className="noti-desc">{item.body}</p>
 
-                    {!item.is_read && (
-                      <button
-                        className="btn-single-read"
-                        onClick={(e) => handleMarkAsRead(item._id, e)}
-                        title="Đánh dấu đã đọc"
-                      >
-                        ✓ Đã đọc
-                      </button>
+                    {/* Delivery logs per UC35 / Pro plan SMS Gateway */}
+                    {item.delivery_logs && item.delivery_logs.length > 0 && (
+                      <div className="noti-delivery-logs">
+                        {item.delivery_logs.map((log, idx) => (
+                          <span
+                            key={idx}
+                            className={`delivery-badge badge-${log.channel.toLowerCase()}`}
+                          >
+                            {log.channel === 'IN_APP' && (
+                              <>
+                                <Bell size={11} /> Web in-app
+                              </>
+                            )}
+                            {log.channel === 'EMAIL' && (
+                              <>
+                                <Mail size={11} /> Email đã gửi
+                              </>
+                            )}
+                            {log.channel === 'SMS' && (
+                              <>
+                                <PhoneCall size={11} /> SMS Gateway
+                              </>
+                            )}
+                            {log.status === 'DELIVERED' ? ' ✓' : ''}
+                          </span>
+                        ))}
+                      </div>
                     )}
 
-                    <button
-                      className="btn-single-delete"
-                      onClick={(e) => handleDelete(item._id, e)}
-                      title="Xóa thông báo"
-                    >
-                      🗑️
-                    </button>
+                    <div className="noti-item-actions">
+                      <button
+                        className="btn-open-deeplink"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleNavigateDeepLink(item);
+                        }}
+                      >
+                        <span>Xem chi tiết</span>
+                        <ArrowRight size={14} />
+                      </button>
+
+                      {!item.is_read && (
+                        <button
+                          className="btn-single-read"
+                          onClick={(e) => handleMarkAsRead(item._id, e)}
+                          title="Đánh dấu đã đọc"
+                        >
+                          <Check size={14} />
+                          <span>Đã đọc</span>
+                        </button>
+                      )}
+
+                      <button
+                        className="btn-single-delete"
+                        onClick={(e) => handleDelete(item._id, e)}
+                        title="Xóa thông báo"
+                        aria-label="Xóa thông báo"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                </article>
+              );
+            })}
           </div>
         )}
 
@@ -408,31 +410,22 @@ export default function Notifications() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="noti-modal-header">
-                <h3>⚙️ Cài đặt nhận thông báo (A1)</h3>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <SlidersHorizontal size={18} color="#0284c7" />
+                  <h3>Cài đặt kênh nhận thông báo (A1)</h3>
+                </div>
                 <button
-                  style={{
-                    border: 'none',
-                    background: 'none',
-                    fontSize: '20px',
-                    cursor: 'pointer',
-                    color: '#94a3b8'
-                  }}
+                  className="noti-modal-close"
                   onClick={() => setShowPreferences(false)}
+                  aria-label="Đóng"
                 >
-                  ✕
+                  <X size={18} />
                 </button>
               </div>
 
               <div className="noti-modal-body">
-                <p
-                  style={{
-                    fontSize: '13px',
-                    color: '#64748b',
-                    marginBottom: '16px'
-                  }}
-                >
-                  Tùy chọn nhận thông báo qua Email hoặc SMS (gói Pro có hỗ trợ tin
-                  nhắn SMS nhắc lịch học tức thì).
+                <p className="noti-modal-intro">
+                  Tùy chỉnh thông báo qua Email hoặc SMS để luôn nhận được tin tức nhanh nhất về kết nối và lịch học.
                 </p>
 
                 <div className="pref-row">
@@ -568,7 +561,7 @@ export default function Notifications() {
                   className="btn-open-deeplink"
                   onClick={handleSavePreferences}
                 >
-                  Lưu cấu hình
+                  <span>Lưu cấu hình</span>
                 </button>
               </div>
             </div>
