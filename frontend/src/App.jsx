@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import api from './services/api';
 
@@ -7,13 +8,11 @@ function App() {
   useEffect(() => {
     api.get('/health')
       .then((response) => {
-        const isDbConnected =
-          response?.data?.databaseConnection === 'connected' ||
-          response?.data?.database === 'connected' ||
-          response?.databaseConnection === 'connected';
-        setStatus(isDbConnected
-          ? 'Backend + MongoDB connected'
-          : 'Backend connected, MongoDB not connected');
+        setStatus(
+          response.data?.databaseConnection === 'connected'
+            ? 'Backend + MongoDB connected'
+            : 'Backend connected, MongoDB not connected'
+        );
       })
       .catch(() => setStatus('Backend unavailable'));
   }, []);

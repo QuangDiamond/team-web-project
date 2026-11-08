@@ -1,0 +1,207 @@
+/* Màn của gia sư: duyệt / đã lưu / gợi ý / chi tiết yêu cầu: /tutor/requests/... (UC11, UC12) */
+
+.request-filters {
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+}
+
+.request-filters-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 16px;
+}
+
+/* ---------- Lưới thẻ request ---------- */
+.request-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.request-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+}
+
+.request-card:hover {
+  border-color: var(--color-primary);
+}
+
+.request-card.is-unavailable {
+  background: var(--color-surface);
+}
+
+.request-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.request-card-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.request-card-title {
+  margin: 4px 0 0;
+  font-size: 15px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.request-card-budget {
+  margin: 0;
+  color: var(--color-primary-strong);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.request-card-description {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text);
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
+}
+
+.request-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ---------- Chi tiết ---------- */
+.tutor-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.tutor-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.tutor-back-link:hover {
+  color: var(--color-primary-strong);
+}
+
+.tutor-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.tutor-detail-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.tutor-detail-text {
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.tutor-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0 0;
+}
+
+.tutor-fact {
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.tutor-fact dt {
+  margin: 0 0 2px;
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.tutor-fact dd {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.tutor-detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+@media (max-width: 900px) {
+  .request-filters-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tutor-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .request-filters-grid,
+  .tutor-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .request-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Lời mời nhận được (gia sư) ---------- */
+.received-invitation-warning {
+  margin: 8px 0 0;
+  color: var(--color-warning);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.received-invitation-chat {
+  margin: 8px 0 0;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--color-success-soft);
+  color: var(--color-success);
+  font-size: 13px;
+  font-weight: 600;
+}

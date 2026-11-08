@@ -161,12 +161,12 @@ export default function AdminDashboard() {
           {/* Card 3: Confirmed Connections */}
           <div className="kpi-card kpi-connections">
             <div className="kpi-top">
-              <span className="kpi-title">Kết nối thành công (UC18)</span>
+              <span className="kpi-title">Kết nối & Hội thoại (UC16)</span>
               <div className="kpi-icon-pill pill-connections">🤝</div>
             </div>
-            <div className="kpi-value">{kpis.confirmedConnections}</div>
+            <div className="kpi-value">{kpis.confirmedConnections ?? 0}</div>
             <div className="kpi-subtext">
-              Tỉ lệ khớp nối: <strong>{kpis.conversionRate}%</strong>
+              Hội thoại 1-1: <strong>{kpis.conversationsOpened ?? 0}</strong> · Tỉ lệ chốt: <strong>{kpis.conversionRate ?? 0}%</strong>
             </div>
           </div>
 
@@ -286,19 +286,21 @@ export default function AdminDashboard() {
             </div>
             <div>
               <div className="funnel-step-box">
-                <span className="funnel-step-title">1. Yêu cầu tìm gia sư mở</span>
-                <span className="funnel-step-val">{kpis.totalRequests}</span>
+                <span className="funnel-step-title">1. Yêu cầu tìm gia sư ({kpis.openRequests ?? 0} đang mở)</span>
+                <span className="funnel-step-val">{kpis.totalRequests ?? 0}</span>
               </div>
               <div className="funnel-step-box">
-                <span className="funnel-step-title">2. Ứng tuyển & Lời mời</span>
-                <span className="funnel-step-val">530 lượt</span>
+                <span className="funnel-step-title">2. Ứng tuyển &amp; Lời mời ({kpis.conversationsOpened ?? 0} phòng chat mở)</span>
+                <span className="funnel-step-val">
+                  {(kpis.totalApplications || 0) + (kpis.totalInvitations || 0)} lượt
+                </span>
               </div>
               <div className="funnel-step-box" style={{ background: '#f0fdf4', borderColor: '#bbf7d0' }}>
                 <span className="funnel-step-title" style={{ color: '#166534' }}>
-                  3. Thỏa thuận xác nhận (UC18)
+                  3. Thỏa thuận xác nhận (UC16)
                 </span>
                 <span className="funnel-step-val" style={{ color: '#16a34a' }}>
-                  {kpis.confirmedConnections}
+                  {kpis.confirmedConnections ?? 0}
                 </span>
               </div>
             </div>
@@ -315,13 +317,21 @@ export default function AdminDashboard() {
               <div className="quick-metric-item">
                 <span className="quick-metric-label">Gói nâng cấp Pro</span>
                 <span className="quick-metric-val">
-                  {kpis.planUpgradeRevenue?.toLocaleString('vi-VN')} đ (62%)
+                  {(kpis.planUpgradeRevenue || 0).toLocaleString('vi-VN')} đ (
+                  {kpis.totalGmv > 0
+                    ? `${Math.round(((kpis.planUpgradeRevenue || 0) / kpis.totalGmv) * 100)}%`
+                    : '0%'}
+                  )
                 </span>
               </div>
               <div className="quick-metric-item">
                 <span className="quick-metric-label">Gói nạp Credit</span>
                 <span className="quick-metric-val">
-                  {kpis.creditPackRevenue?.toLocaleString('vi-VN')} đ (38%)
+                  {(kpis.creditPackRevenue || 0).toLocaleString('vi-VN')} đ (
+                  {kpis.totalGmv > 0
+                    ? `${Math.round(((kpis.creditPackRevenue || 0) / kpis.totalGmv) * 100)}%`
+                    : '0%'}
+                  )
                 </span>
               </div>
               <div className="quick-metric-item">
@@ -335,20 +345,22 @@ export default function AdminDashboard() {
           <div className="dash-panel">
             <div className="panel-title-box">
               <h3>
-                <span>🛡️</span> Kiểm duyệt & Tuân thủ
+                <span>🛡️</span> Kiểm duyệt &amp; Tuân thủ
               </h3>
             </div>
             <div>
               <div className="quick-metric-item">
-                <span className="quick-metric-label">Báo cáo vi phạm đang chờ (SC43)</span>
-                <span className="quick-metric-val" style={{ color: '#dc2626' }}>4 mục</span>
+                <span className="quick-metric-label">Báo cáo vi phạm đang chờ (SC40)</span>
+                <span className="quick-metric-val" style={{ color: '#dc2626' }}>
+                  {kpis.pendingReportsCount ?? 0} mục
+                </span>
               </div>
               <div className="quick-metric-item">
-                <span className="quick-metric-label">Thời gian phản hồi TB</span>
-                <span className="quick-metric-val">12 phút</span>
+                <span className="quick-metric-label">Tổng nhật ký Audit Logs (BR-16)</span>
+                <span className="quick-metric-val">{kpis.totalAuditLogs ?? 0} bản ghi</span>
               </div>
               <div className="quick-metric-item">
-                <span className="quick-metric-label">Audit Logs lưu trữ (BR-20)</span>
+                <span className="quick-metric-label">Audit Logs lưu trữ (BR-16)</span>
                 <span className="quick-metric-val">100% đầy đủ</span>
               </div>
             </div>

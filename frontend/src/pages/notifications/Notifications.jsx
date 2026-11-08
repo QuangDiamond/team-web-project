@@ -69,6 +69,25 @@ export default function Notifications() {
     fetchNotifications();
   }, [activeCategory, readFilter]);
 
+  useEffect(() => {
+    notificationService
+      .getPreferences()
+      .then((prefs) => {
+        if (prefs) {
+          setPreferences((prev) => ({
+            ...prev,
+            applicationEmail: prefs.enable_email ?? true,
+            invitationEmail: prefs.enable_email ?? true,
+            sessionEmail: prefs.notify_on_sessions ?? true,
+            sessionSMS: prefs.enable_sms ?? false,
+            assignmentEmail: prefs.notify_on_assignments ?? true,
+            systemEmail: prefs.enable_email ?? true,
+          }));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const handleMarkAsRead = async (id, e) => {
     if (e) e.stopPropagation();
     try {
@@ -161,9 +180,21 @@ export default function Notifications() {
     setPreferences((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const handleSavePreferences = () => {
-    setShowPreferences(false);
-    showToast('Đã lưu cấu hình nhận thông báo (Email / SMS)!');
+  const handleSavePreferences = async () => {
+    try {
+      await notificationService.updatePreferences({
+        enable_in_app: true,
+        enable_email: Boolean(preferences.applicationEmail || preferences.invitationEmail || preferences.systemEmail),
+        enable_sms: Boolean(preferences.sessionSMS || preferences.invitationSMS || preferences.applicationSMS),
+        notify_on_sessions: Boolean(preferences.sessionEmail || preferences.sessionSMS),
+        notify_on_assignments: Boolean(preferences.assignmentEmail),
+        notify_on_messages: true,
+      });
+      setShowPreferences(false);
+      showToast('Đã lưu cấu hình nhận thông báo (Email / SMS) vào hệ thống!');
+    } catch {
+      showToast('Không thể lưu cấu hình thông báo.');
+    }
   };
 
   return (
