@@ -186,7 +186,7 @@ export default function AdminDashboard() {
           {/* Card 3: Confirmed Connections */}
           <div className="kpi-card kpi-connections">
             <div className="kpi-top">
-              <span className="kpi-title">Kết nối & Hội thoại (UC16)</span>
+              <span className="kpi-title">Kết nối & Hội thoại</span>
               <div className="kpi-icon-pill pill-connections">🤝</div>
             </div>
             <div className="kpi-value">{kpis.confirmedConnections ?? 0}</div>
@@ -350,7 +350,7 @@ export default function AdminDashboard() {
               </div>
               <div className="funnel-step-box" style={{ background: '#f0fdf4', borderColor: '#bbf7d0' }}>
                 <span className="funnel-step-title" style={{ color: '#166534' }}>
-                  3. Thỏa thuận xác nhận (UC16)
+                  3. Thỏa thuận xác nhận
                 </span>
                 <span className="funnel-step-val" style={{ color: '#16a34a' }}>
                   {kpis.confirmedConnections ?? 0}
@@ -403,13 +403,13 @@ export default function AdminDashboard() {
             </div>
             <div>
               <div className="quick-metric-item">
-                <span className="quick-metric-label">Báo cáo vi phạm đang chờ (SC40)</span>
+                <span className="quick-metric-label">Báo cáo vi phạm đang chờ</span>
                 <span className="quick-metric-val" style={{ color: '#dc2626' }}>
                   {kpis.pendingReportsCount ?? 0} mục
                 </span>
               </div>
               <div className="quick-metric-item">
-                <span className="quick-metric-label">Tổng nhật ký Audit Logs (BR-16)</span>
+                <span className="quick-metric-label">Tổng nhật ký Audit Logs</span>
                 <span className="quick-metric-val">{kpis.totalAuditLogs ?? 0} bản ghi</span>
               </div>
               <div className="quick-metric-item">

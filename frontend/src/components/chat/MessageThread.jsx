@@ -187,15 +187,15 @@ export default function MessageThread({ thread, basePath }) {
               )}
             </div>
 
-            {/* Quick Context Action: Thỏa thuận dạy kèm */}
+            {/* Quick Context Action: Thỏa thuận */}
             <div className="chat-header-actions">
               <Link
                 to={basePath.startsWith('/parent') ? '/parent/connections' : '/tutor/connections'}
                 className="btn-chat-agreement"
-                title="Xem hoặc tạo thỏa thuận dạy kèm (UC16)"
+                title="Xem danh sách thỏa thuận"
               >
                 <Handshake size={14} />
-                <span>Thỏa thuận (UC16)</span>
+                <span>Thỏa thuận</span>
               </Link>
             </div>
           </div>
