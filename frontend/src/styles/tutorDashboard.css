@@ -1,0 +1,15 @@
+/* Tutor Dashboard: /tutor/dashboard (dùng các lớp dùng chung .welcome-banner, .stat-grid, .dashboard-columns, .compact-list trong index.css) */
+
+.tutor-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tutor-dashboard-links {
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+}

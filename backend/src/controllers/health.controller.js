@@ -6,7 +6,7 @@ export function health(_req, res) {
   const data =  {
       service: 'backend',
       databaseConnection: getDatabaseStatus(),
-      databaseType: process.env.NODE_ENV === "development" ? "mongodb":"mongodb+srv",
+      databaseType: process.env.NODE_ENV == "development" ? process.env.MONGODB_URI : "",
       timestamp: new Date().toISOString(),
     }
 

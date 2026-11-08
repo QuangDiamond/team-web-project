@@ -1,33 +1,42 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { getConnections, confirmAgreement, proposeAgreement } from '../../services/agreementService';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import {
+  getConnections,
+  confirmAgreement,
+  proposeAgreement,
+  rateTutor,
+} from '../../services/agreementService';
 import '../../styles/MyConnections.css';
 
 export default function MyConnections() {
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [connections, setConnections] = useState([]);
+  const [activeConversations, setActiveConversations] = useState([]);
   const [activeTab, setActiveTab] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [processingId, setProcessingId] = useState(null);
 
-  // Modals state
   const [proposeModalOpen, setProposeModalOpen] = useState(false);
   const [proposeForm, setProposeForm] = useState({
+    conversationId: '',
     subject: '',
     schedule: '',
     price: '250000',
-    conversationId: 'conv_sample',
   });
 
-  const [ratingModalTarget, setRatingModalTarget] = useState(null); // SC24 Rate Tutor modal
+  const [ratingModalTarget, setRatingModalTarget] = useState(null);
   const [ratingScore, setRatingScore] = useState(5);
   const [ratingComment, setRatingComment] = useState('');
-  const [sharePublicly, setSharePublicly] = useState(true);
-
-  const [classroomPromptModal, setClassroomPromptModal] = useState(null); // UC21
   const [toast, setToast] = useState(null);
+
+  let messagesBasePath = '/parent/messages';
+  if (user && user.role === 'TUTOR') {
+    messagesBasePath = '/tutor/messages';
+  }
 
   useEffect(() => {
     loadData();
@@ -37,7 +46,19 @@ export default function MyConnections() {
     try {
       setLoading(true);
       const data = await getConnections();
-      setConnections(data.connections || []);
+      const loadedConnections = data?.connections || [];
+      const loadedConversations = data?.activeConversations || [];
+      setConnections(loadedConnections);
+      setActiveConversations(loadedConversations);
+      if (loadedConversations.length > 0 && !proposeForm.conversationId) {
+        const firstConv = loadedConversations[0];
+        setProposeForm({
+          conversationId: firstConv._id,
+          subject: firstConv.subject_name || '',
+          schedule: firstConv.schedule || '',
+          price: String(firstConv.budget || 250000),
+        });
+      }
     } catch (err) {
       showToast(err.message || 'Lỗi tải danh sách kết nối', 'error');
     } finally {
@@ -50,36 +71,33 @@ export default function MyConnections() {
     setTimeout(() => setToast(null), 4000);
   };
 
+  const handleSelectConversation = (convId) => {
+    const selected = activeConversations.find((c) => c._id === convId);
+    if (selected) {
+      setProposeForm({
+        conversationId: selected._id,
+        subject: selected.subject_name || '',
+        schedule: selected.schedule || '',
+        price: String(selected.budget || 250000),
+      });
+    } else {
+      setProposeForm({ ...proposeForm, conversationId: convId });
+    }
+  };
+
   const handleConfirmAction = async (agreement, action) => {
     if (processingId) return;
     setProcessingId(agreement._id);
 
     try {
-      await confirmAgreement(agreement._id, action);
-
-      if (action === 'CONFIRM') {
-        setConnections((prev) =>
-          prev.map((c) =>
-            c._id === agreement._id
-              ? {
-                  ...c,
-                  status: 'CONFIRMED',
-                  canRate: true,
-                  canCreateClassroom: true,
-                  request: { ...c.request, status: 'CLOSED' },
-                }
-              : c
-          )
-        );
-        showToast('Đã xác nhận thỏa thuận kết nối thành công (POST-1)! Bài yêu cầu đã được đóng.');
-      } else {
-        setConnections((prev) =>
-          prev.map((c) =>
-            c._id === agreement._id ? { ...c, status: 'REJECTED' } : c
-          )
-        );
-        showToast('Đã từ chối thỏa thuận. Kết nối vẫn giữ mở để hai bên trao đổi thêm.');
-      }
+      const res = await confirmAgreement(agreement._id, action);
+      showToast(
+        res?.message ||
+          (action === 'CONFIRM'
+            ? 'Đã xác nhận thỏa thuận kết nối thành công!'
+            : 'Đã từ chối thỏa thuận.')
+      );
+      await loadData();
     } catch (err) {
       showToast(err.message || 'Lỗi cập nhật thỏa thuận', 'error');
     } finally {
@@ -89,6 +107,10 @@ export default function MyConnections() {
 
   const handleProposeSubmit = async (e) => {
     e.preventDefault();
+    if (!proposeForm.conversationId) {
+      showToast('Vui lòng chọn phòng trò chuyện để đề xuất thỏa thuận', 'error');
+      return;
+    }
     if (!proposeForm.subject.trim()) {
       showToast('Vui lòng nhập môn học đã thống nhất', 'error');
       return;
@@ -96,57 +118,37 @@ export default function MyConnections() {
 
     try {
       const res = await proposeAgreement({
+        conversationId: proposeForm.conversationId,
         agreedSubject: proposeForm.subject,
         agreedSchedule: proposeForm.schedule,
         agreedPrice: Number(proposeForm.price),
-        conversationId: proposeForm.conversationId,
       });
-
-      const newAgr = {
-        _id: res.agreement?._id || 'agr_' + Date.now(),
-        agreed_subject: proposeForm.subject,
-        agreed_schedule: proposeForm.schedule,
-        agreed_price: Number(proposeForm.price),
-        status: 'PENDING',
-        created_at: new Date(),
-        parent: {
-          full_name: 'Nguyễn Thu Hà',
-          avatar_url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150',
-        },
-        tutor: {
-          full_name: 'Gia sư TuConnector',
-          avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-          headline: 'Gia sư chuyên môn cao',
-        },
-        proposer: {
-          full_name: 'Tôi',
-        },
-      };
-
-      setConnections((prev) => [newAgr, ...prev]);
       setProposeModalOpen(false);
-      showToast('Đã gửi đề xuất thỏa thuận kết nối! Đang chờ đối tác bấm xác nhận.');
+      showToast(res?.message || 'Đã gửi đề xuất thỏa thuận kết nối!');
+      await loadData();
     } catch (err) {
       showToast(err.message || 'Lỗi khi gửi đề xuất', 'error');
     }
   };
 
-  const handleRatingSubmit = (e) => {
+  const handleRatingSubmit = async (e) => {
     e.preventDefault();
     if (!ratingModalTarget) return;
 
-    setConnections((prev) =>
-      prev.map((c) =>
-        c._id === ratingModalTarget._id ? { ...c, hasRated: true } : c
-      )
-    );
-
-    showToast('Cảm ơn bạn đã gửi đánh giá! Nhận xét đã được lưu trên hồ sơ gia sư (UC38).');
-    setRatingModalTarget(null);
-    setRatingComment('');
+    try {
+      const res = await rateTutor(ratingModalTarget._id, {
+        rating: ratingScore,
+        comment: ratingComment,
+      });
+      showToast(res?.message || 'Cảm ơn bạn đã gửi đánh giá!');
+      setRatingModalTarget(null);
+      setRatingComment('');
+      await loadData();
+    } catch (err) {
+      showToast(err.message || 'Lỗi gửi đánh giá', 'error');
+    }
   };
 
-  // Filter & Search
   const filteredConnections = connections
     .filter((c) => {
       if (activeTab === 'ALL') return true;
@@ -169,30 +171,22 @@ export default function MyConnections() {
 
   return (
     <div className="connections-page">
-      {/* Toast */}
       {toast && (
         <div className={`toast-alert ${toast.type}`}>
           <span>{toast.message}</span>
         </div>
       )}
 
-      {/* Breadcrumb */}
-      <nav className="conn-breadcrumb">
-        <Link to="/">Trang chủ</Link>
-        <span className="separator">/</span>
-        <span className="current">Kết nối của tôi</span>
-      </nav>
-
-      {/* Header */}
       <div className="conn-header-row">
         <div>
-          <h1 className="conn-title">Kết nối của tôi</h1>
+          <h2 className="conn-title">Hợp đồng &amp; Thỏa thuận kết nối</h2>
           <p className="conn-subtitle">
-            Quản lý các thỏa thuận dạy kèm đã chốt và xác nhận kết nối hai bên
+            Quản lý các thỏa thuận dạy kèm đã chốt và xác nhận kết nối hai bên (UC16)
           </p>
         </div>
 
         <button
+          type="button"
           className="btn-propose-new"
           onClick={() => setProposeModalOpen(true)}
         >
@@ -204,7 +198,6 @@ export default function MyConnections() {
         </button>
       </div>
 
-      {/* KPI Stats */}
       <div className="conn-kpi-grid">
         <div className="conn-kpi-card">
           <div className="conn-kpi-icon orange">
@@ -214,7 +207,7 @@ export default function MyConnections() {
           </div>
           <div>
             <div className="conn-kpi-val">{totalCount}</div>
-            <div className="conn-kpi-lbl">Tổng số phiên kết nối</div>
+            <div className="conn-kpi-lbl">Tổng số thỏa thuận</div>
           </div>
         </div>
 
@@ -226,7 +219,7 @@ export default function MyConnections() {
           </div>
           <div>
             <div className="conn-kpi-val">{confirmedCount}</div>
-            <div className="conn-kpi-lbl">Đã xác nhận thành công (Confirmed)</div>
+            <div className="conn-kpi-lbl">Đã xác nhận (Confirmed)</div>
           </div>
         </div>
 
@@ -250,33 +243,36 @@ export default function MyConnections() {
           </div>
           <div>
             <div className="conn-kpi-val">{rateableCount}</div>
-            <div className="conn-kpi-lbl">Cần đánh giá gia sư (UC38)</div>
+            <div className="conn-kpi-lbl">Cần đánh giá gia sư</div>
           </div>
         </div>
       </div>
 
-      {/* Filter Toolbar */}
       <div className="conn-toolbar">
         <div className="conn-tabs">
           <button
+            type="button"
             className={`conn-tab-btn ${activeTab === 'ALL' ? 'active' : ''}`}
             onClick={() => setActiveTab('ALL')}
           >
             Tất cả <span className="conn-tab-pill">{totalCount}</span>
           </button>
           <button
+            type="button"
             className={`conn-tab-btn ${activeTab === 'CONFIRMED' ? 'active' : ''}`}
             onClick={() => setActiveTab('CONFIRMED')}
           >
             Đã xác nhận <span className="conn-tab-pill">{confirmedCount}</span>
           </button>
           <button
+            type="button"
             className={`conn-tab-btn ${activeTab === 'PENDING' ? 'active' : ''}`}
             onClick={() => setActiveTab('PENDING')}
           >
             Đang chờ <span className="conn-tab-pill">{pendingCount}</span>
           </button>
           <button
+            type="button"
             className={`conn-tab-btn ${activeTab === 'RATEABLE' ? 'active' : ''}`}
             onClick={() => setActiveTab('RATEABLE')}
           >
@@ -293,16 +289,15 @@ export default function MyConnections() {
         />
       </div>
 
-      {/* Connections List */}
       {loading ? (
         <div className="conn-empty-state">
-          <p>Đang tải danh sách kết nối...</p>
+          <p>Đang tải danh sách thỏa thuận kết nối từ hệ thống...</p>
         </div>
       ) : filteredConnections.length === 0 ? (
         <div className="conn-empty-state">
-          <h3>Không tìm thấy thỏa thuận kết nối nào</h3>
+          <h3>Chưa có thỏa thuận kết nối nào</h3>
           <p style={{ color: '#64748B', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-            Sau khi mở phiên chat 1-1 qua SC17/SC29, bạn và đối tác có thể bấm "Mark as agreed" để ghi nhận thỏa thuận tại đây.
+            Sau khi mở hội thoại 1-1, bạn và đối tác có thể bấm &ldquo;Đề xuất thỏa thuận mới&rdquo; để ghi nhận hợp đồng dạy kèm tại đây.
           </p>
         </div>
       ) : (
@@ -310,27 +305,33 @@ export default function MyConnections() {
           {filteredConnections.map((conn) => {
             const isConfirmed = conn.status === 'CONFIRMED';
             const isPending = conn.status === 'PENDING';
-            const isRejected = conn.status === 'REJECTED';
-            const partner = conn.tutor || conn.parent || {};
+            const partner =
+              user && user.role === 'TUTOR'
+                ? conn.parent || {}
+                : conn.tutor || {};
+            const partnerRoleLabel =
+              user && user.role === 'TUTOR'
+                ? 'Phụ huynh học sinh'
+                : conn.tutor?.headline || 'Gia sư TuConnector';
 
             return (
               <div
                 key={conn._id}
                 className={`conn-card ${isConfirmed ? 'confirmed' : isPending ? 'pending' : 'rejected'}`}
               >
-                {/* Partner Header */}
                 <div className="conn-partner-row">
                   <div className="conn-partner-profile">
                     <img
-                      src={partner.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
+                      src={
+                        partner.avatar_url ||
+                        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
+                      }
                       alt={partner.full_name}
                       className="conn-partner-avatar"
                     />
                     <div>
                       <div className="conn-partner-name">{partner.full_name}</div>
-                      <div className="conn-partner-role">
-                        {partner.headline || 'Gia sư / Phụ huynh'}
-                      </div>
+                      <div className="conn-partner-role">{partnerRoleLabel}</div>
                     </div>
                   </div>
 
@@ -339,11 +340,16 @@ export default function MyConnections() {
                       isConfirmed ? 'confirmed' : isPending ? 'pending' : 'rejected'
                     }`}
                   >
-                    {isConfirmed ? '✓ Đã xác nhận' : isPending ? '⏳ Chờ xác nhận' : '✕ Từ chối'}
+                    {isConfirmed
+                      ? '✓ Đã xác nhận'
+                      : isPending
+                      ? '⏳ Chờ xác nhận'
+                      : conn.status === 'CANCELLED'
+                      ? '⊘ Đã hủy'
+                      : '✕ Từ chối'}
                   </span>
                 </div>
 
-                {/* Agreement Terms Box */}
                 <div className="conn-terms-box">
                   <div className="conn-term-row">
                     <div className="conn-term-icon">
@@ -368,7 +374,7 @@ export default function MyConnections() {
                       </svg>
                     </div>
                     <div className="conn-term-content">
-                      <span className="conn-term-label">Khung giờ & Lịch học chốt</span>
+                      <span className="conn-term-label">Khung giờ &amp; Lịch học chốt</span>
                       <div className="conn-term-val">{conn.agreed_schedule}</div>
                     </div>
                   </div>
@@ -383,8 +389,12 @@ export default function MyConnections() {
                     <div className="conn-term-content">
                       <span className="conn-term-label">Mức học phí thống nhất</span>
                       <div className="conn-term-val price">
-                        {conn.agreed_price ? `${Number(conn.agreed_price).toLocaleString('vi-VN')} đ` : '250.000 đ'}{' '}
-                        <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: '500' }}>/ buổi</span>
+                        {conn.agreed_price
+                          ? `${Number(conn.agreed_price).toLocaleString('vi-VN')} đ`
+                          : '250.000 đ'}{' '}
+                        <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: '500' }}>
+                          / buổi
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -395,16 +405,16 @@ export default function MyConnections() {
                   {conn.created_at && `· ${new Date(conn.created_at).toLocaleDateString('vi-VN')}`}
                   {isConfirmed && conn.request?.status === 'CLOSED' && (
                     <span style={{ color: '#059669', marginLeft: '0.5rem', fontWeight: '600' }}>
-                      (Bài yêu cầu đã được đóng thành công)
+                      (Bài yêu cầu đã đóng)
                     </span>
                   )}
                 </div>
 
-                {/* Card Actions */}
                 <div className="conn-card-actions">
-                  {isPending && (
+                  {isPending && String(conn.proposer?._id) !== String(user?.id) && (
                     <>
                       <button
+                        type="button"
                         className="btn-conn decline"
                         onClick={() => handleConfirmAction(conn, 'REJECT')}
                         disabled={processingId === conn._id}
@@ -413,6 +423,7 @@ export default function MyConnections() {
                       </button>
 
                       <button
+                        type="button"
                         className="btn-conn confirm"
                         onClick={() => handleConfirmAction(conn, 'CONFIRM')}
                         disabled={processingId === conn._id}
@@ -422,38 +433,61 @@ export default function MyConnections() {
                     </>
                   )}
 
-                  {isConfirmed && (
+                  {isPending && String(conn.proposer?._id) === String(user?.id) && (
+                    <button
+                      type="button"
+                      className="btn-conn decline"
+                      onClick={() => handleConfirmAction(conn, 'CANCEL')}
+                      disabled={processingId === conn._id}
+                    >
+                      {processingId === conn._id ? 'Đang hủy...' : 'Hủy đề xuất (Cancel)'}
+                    </button>
+                  )}
+
+                  {isConfirmed && user?.role === 'PARENT' && (
                     <>
                       {!conn.hasRated ? (
                         <button
+                          type="button"
                           className="btn-conn rate"
                           onClick={() => setRatingModalTarget(conn)}
-                          title="Đánh giá gia sư sau buổi học (UC38)"
                         >
                           ⭐ Đánh giá gia sư
                         </button>
                       ) : (
                         <span style={{ fontSize: '0.8125rem', color: '#059669', fontWeight: '700' }}>
-                          ✓ Đã gửi đánh giá 5★
+                          ✓ Đã đánh giá {conn.review?.rating || 5}★
                         </span>
                       )}
-
-                      <button
-                        className="btn-conn classroom"
-                        onClick={() => setClassroomPromptModal(conn)}
-                        title="Tạo lớp học trực tuyến (UC21)"
-                      >
-                        🏫 Tạo lớp học
-                      </button>
                     </>
                   )}
 
+                  {isConfirmed && user?.role === 'TUTOR' && (
+                    <button
+                      type="button"
+                      className="btn-conn rate"
+                      onClick={() =>
+                        showToast(
+                          `Gợi ý UC19: Bạn có thể tạo lớp học mới cho môn "${conn.agreed_subject}" theo lịch ${conn.agreed_schedule}.`
+                        )
+                      }
+                    >
+                      🏫 Tạo lớp học (UC19)
+                    </button>
+                  )}
+
                   <button
+                    type="button"
                     className="btn-conn chat"
-                    onClick={() => navigate('/messages')}
-                    title="Mở phòng chat 1-1 trực tiếp"
+                    onClick={() =>
+                      navigate(
+                        conn.conversation_id
+                          ? `${messagesBasePath}/${conn.conversation_id}`
+                          : messagesBasePath
+                      )
+                    }
                   >
-                    💬 Chat 1-1
+                    💬 Mở phòng chat
                   </button>
                 </div>
               </div>
@@ -462,44 +496,74 @@ export default function MyConnections() {
         </div>
       )}
 
-      {/* MODAL: Propose New Agreement (Mark as agreed) */}
       {proposeModalOpen && (
         <div className="conn-modal-overlay" onClick={() => setProposeModalOpen(false)}>
           <div className="conn-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="conn-modal-header">
-              <span className="conn-modal-title">Đề xuất thỏa thuận dạy học (Mark as agreed)</span>
-              <button className="btn-close-modal" onClick={() => setProposeModalOpen(false)}>✕</button>
+              <span className="conn-modal-title">Đề xuất thỏa thuận dạy học</span>
+              <button
+                type="button"
+                className="btn-close-modal"
+                onClick={() => setProposeModalOpen(false)}
+              >
+                ✕
+              </button>
             </div>
 
             <form onSubmit={handleProposeSubmit} className="conn-modal-body">
-              <p style={{ color: '#64748B', fontSize: '0.875rem', marginBottom: '1.25rem' }}>
-                Sau khi trao đổi với phụ huynh trong phòng chat hoặc ngoài nền tảng, bạn có thể gửi đề xuất này để hai bên chính thức chốt môn, lịch học và mức giá.
+              <p style={{ color: '#64748B', fontSize: '0.875rem', marginBottom: '1rem' }}>
+                Chọn phòng hội thoại 1-1 đang hoạt động để gửi đề xuất chốt môn học, lịch dạy và mức học phí.
               </p>
 
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: '700', marginBottom: '0.35rem' }}>
-                  Môn học & Khối lớp chốt: *
+                  Phòng hội thoại đang mở: *
+                </label>
+                {activeConversations.length === 0 ? (
+                  <p style={{ color: '#EF4444', fontSize: '0.8125rem' }}>
+                    Bạn chưa có phòng hội thoại 1-1 nào đang hoạt động.
+                  </p>
+                ) : (
+                  <select
+                    value={proposeForm.conversationId}
+                    onChange={(e) => handleSelectConversation(e.target.value)}
+                    style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1' }}
+                    required
+                  >
+                    <option value="">-- Chọn hội thoại --</option>
+                    {activeConversations.map((conv) => (
+                      <option key={conv._id} value={conv._id}>
+                        {conv.request_title} ({conv.parent_name} - {conv.tutor_name})
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: '700', marginBottom: '0.35rem' }}>
+                  Môn học &amp; Khối lớp chốt: *
                 </label>
                 <input
                   type="text"
                   placeholder="Ví dụ: Toán lớp 9 ôn thi vào 10"
                   value={proposeForm.subject}
                   onChange={(e) => setProposeForm({ ...proposeForm, subject: e.target.value })}
-                  style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', outline: 'none' }}
+                  style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1' }}
                   required
                 />
               </div>
 
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: '700', marginBottom: '0.35rem' }}>
-                  Khung giờ & Lịch học đã thống nhất:
+                  Khung giờ &amp; Lịch học đã thống nhất:
                 </label>
                 <input
                   type="text"
                   placeholder="Ví dụ: Thứ 3 & Thứ 5 (19:30 – 21:00)"
                   value={proposeForm.schedule}
                   onChange={(e) => setProposeForm({ ...proposeForm, schedule: e.target.value })}
-                  style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', outline: 'none' }}
+                  style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1' }}
                 />
               </div>
 
@@ -513,16 +577,24 @@ export default function MyConnections() {
                   step="10000"
                   value={proposeForm.price}
                   onChange={(e) => setProposeForm({ ...proposeForm, price: e.target.value })}
-                  style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', outline: 'none' }}
+                  style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1' }}
                   required
                 />
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
-                <button type="button" className="btn-conn decline" onClick={() => setProposeModalOpen(false)}>
+                <button
+                  type="button"
+                  className="btn-conn decline"
+                  onClick={() => setProposeModalOpen(false)}
+                >
                   Hủy bỏ
                 </button>
-                <button type="submit" className="btn-conn confirm">
+                <button
+                  type="submit"
+                  className="btn-conn confirm"
+                  disabled={activeConversations.length === 0}
+                >
                   Gửi đề xuất thỏa thuận
                 </button>
               </div>
@@ -531,19 +603,27 @@ export default function MyConnections() {
         </div>
       )}
 
-      {/* MODAL: Rate Tutor (SC24 / UC38) */}
       {ratingModalTarget && (
         <div className="conn-modal-overlay" onClick={() => setRatingModalTarget(null)}>
           <div className="conn-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="conn-modal-header">
-              <span className="conn-modal-title">Đánh giá gia sư & dịch vụ</span>
-              <button className="btn-close-modal" onClick={() => setRatingModalTarget(null)}>✕</button>
+              <span className="conn-modal-title">Đánh giá gia sư</span>
+              <button
+                type="button"
+                className="btn-close-modal"
+                onClick={() => setRatingModalTarget(null)}
+              >
+                ✕
+              </button>
             </div>
 
             <form onSubmit={handleRatingSubmit} className="conn-modal-body">
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem' }}>
                 <img
-                  src={ratingModalTarget.tutor?.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
+                  src={
+                    ratingModalTarget.tutor?.avatar_url ||
+                    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
+                  }
                   alt="Tutor"
                   style={{ width: '3.5rem', height: '3.5rem', borderRadius: '50%', objectFit: 'cover' }}
                 />
@@ -556,10 +636,6 @@ export default function MyConnections() {
                   </p>
                 </div>
               </div>
-
-              <p style={{ textAlign: 'center', fontWeight: '700', color: '#0F172A' }}>
-                Buổi học của bạn và gia sư như thế nào?
-              </p>
 
               <div className="star-rating-row">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -584,18 +660,12 @@ export default function MyConnections() {
                 onChange={(e) => setRatingComment(e.target.value)}
               />
 
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', color: '#475569', margin: '1rem 0 1.5rem', cursor: 'pointer' }}>
-                <input
-                  type="checkbox"
-                  checked={sharePublicly}
-                  onChange={(e) => setSharePublicly(e.target.checked)}
-                  style={{ accentColor: '#F4673A' }}
-                />
-                Hiển thị đánh giá công khai trên trang cá nhân của gia sư
-              </label>
-
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
-                <button type="button" className="btn-conn decline" onClick={() => setRatingModalTarget(null)}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
+                <button
+                  type="button"
+                  className="btn-conn decline"
+                  onClick={() => setRatingModalTarget(null)}
+                >
                   Hủy bỏ
                 </button>
                 <button type="submit" className="btn-conn confirm">
@@ -603,45 +673,6 @@ export default function MyConnections() {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL: Suggest Create Classroom (UC21) */}
-      {classroomPromptModal && (
-        <div className="conn-modal-overlay" onClick={() => setClassroomPromptModal(null)}>
-          <div className="conn-modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="conn-modal-body" style={{ textAlign: 'center', padding: '2.5rem 2rem' }}>
-              <div style={{ width: '4.5rem', height: '4.5rem', borderRadius: '50%', backgroundColor: '#EFF6FF', color: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                  <path d="M6 12v5c3 3 9 3 12 0v-5" />
-                </svg>
-              </div>
-
-              <h3 style={{ fontSize: '1.375rem', fontWeight: '800', color: '#0F172A', marginBottom: '0.5rem' }}>
-                Tạo lớp học trực tuyến (UC21)
-              </h3>
-
-              <p style={{ color: '#475569', fontSize: '0.9375rem', lineHeight: '1.6', maxWidth: '460px', margin: '0 auto 1.75rem' }}>
-                Kết nối môn <strong>{classroomPromptModal.agreed_subject}</strong> đã xác nhận. Bạn có thể khởi tạo Không gian lớp học số trên TuConnector để quản lý tài liệu, điểm danh buổi học và giao bài tập trực tuyến có AI hỗ trợ chấm bài!
-              </p>
-
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem' }}>
-                <button className="btn-conn decline" onClick={() => setClassroomPromptModal(null)}>
-                  Để sau
-                </button>
-                <button
-                  className="btn-conn confirm"
-                  onClick={() => {
-                    setClassroomPromptModal(null);
-                    showToast('Điều hướng tới tính năng Tạo lớp học...');
-                  }}
-                >
-                  Tạo lớp học ngay 🎓
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       )}

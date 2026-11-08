@@ -117,14 +117,14 @@ export default function Moderation() {
       const res = await moderationService.resolveReport(activeReport._id, {
         action: selectedAction,
         admin_note: adminNote.trim(),
-        ban_user_id: activeReport.reporter_user_id?._id
+        ban_user_id: activeReport.target_preview?.author_id || null
       });
       showToast(res.message || 'Đã xử lý báo cáo thành công!');
       handleCloseResolveModal();
       fetchReports();
       fetchAuditLogs();
     } catch (err) {
-      showToast(err.response?.data?.message || 'Có lỗi xảy ra khi xử lý.');
+      showToast(err.message || 'Có lỗi xảy ra khi xử lý.');
     } finally {
       setSubmitting(false);
     }
@@ -348,13 +348,13 @@ export default function Moderation() {
                     <span>⚠️ Lý do vi phạm:</span> {item.reason}
                   </div>
 
-                  {item.content_snippet && (
+                  {item.target_preview && (
                     <div className="report-content-preview">
                       <div className="preview-title">
-                        {item.content_snippet.title} — {item.content_snippet.author}
+                        {item.target_preview.title} — {item.target_preview.author_name} ({item.target_preview.author_role})
                       </div>
                       <div className="preview-body">
-                        "{item.content_snippet.body_preview}"
+                        &ldquo;{item.target_preview.content}&rdquo;
                       </div>
                     </div>
                   )}
@@ -387,12 +387,18 @@ export default function Moderation() {
                     )}
                   </div>
 
-                  <button
-                    className="btn-handle-report"
-                    onClick={() => handleOpenResolveModal(item)}
-                  >
-                    <span>⚖️</span> Xử lý báo cáo
-                  </button>
+                  {(item.status === 'PENDING' || item.status === 'INVESTIGATING') ? (
+                    <button
+                      className="btn-handle-report"
+                      onClick={() => handleOpenResolveModal(item)}
+                    >
+                      <span>⚖️</span> Xử lý báo cáo
+                    </button>
+                  ) : (
+                    <span className="badge-status status-resolved">
+                      ✓ Đã hoàn tất xử lý ({item.action_taken})
+                    </span>
+                  )}
                 </div>
               </div>
             ))}

@@ -1,16 +1,17 @@
 import { Router } from 'express';
+import { authentication } from '../common/middlewares/auth.middleware.js';
+import { validator } from '../common/validator/validator.js';
+import { updatePreferencesSchema } from '../common/validator/notificationSchema.js';
 import * as notificationController from '../controllers/notification.controller.js';
 
 export const notificationRoutes = Router();
 
-// Lấy danh sách thông báo theo bộ lọc danh mục và trạng thái (UC35 / SC10)
-notificationRoutes.get('/', notificationController.getNotifications);
-
-// Đánh dấu tất cả thông báo là đã đọc
-notificationRoutes.post('/mark-all-read', notificationController.markAllAsRead);
-
-// Đánh dấu một thông báo là đã đọc
-notificationRoutes.patch('/:notificationId/read', notificationController.markAsRead);
-
-// Xóa một thông báo
-notificationRoutes.delete('/:notificationId', notificationController.deleteNotification);
+// UC33 / UC35 – View Notifications (dùng chung cho mọi role đã đăng nhập)
+notificationRoutes.get('/', authentication, notificationController.getNotifications);
+notificationRoutes.get('/unread-count', authentication, notificationController.getUnreadCount);
+notificationRoutes.get('/preferences', authentication, notificationController.getPreferences);
+notificationRoutes.put('/preferences', authentication, validator(updatePreferencesSchema), notificationController.updatePreferences);
+notificationRoutes.post('/mark-all-read', authentication, notificationController.markAllAsRead);
+notificationRoutes.patch('/read-all', authentication, notificationController.markAllAsRead);
+notificationRoutes.patch('/:notificationId/read', authentication, notificationController.markAsRead);
+notificationRoutes.delete('/:notificationId', authentication, notificationController.deleteNotification);

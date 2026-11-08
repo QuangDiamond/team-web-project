@@ -1,46 +1,41 @@
-import { responseCode } from '../common/constants/constants.js';
-import { responseCommon } from '../common/response.js';
 import { asyncHandler } from '../common/utils/asyncHandler.js';
+import { responseCommon } from '../common/response.js';
 import * as agreementService from '../services/agreement.service.js';
 
 export const getConnections = asyncHandler(async (req, res) => {
-  const result = await agreementService.getConnections(req.user?.id);
-  return responseCommon(
-    res,
-    result,
-    'Lấy danh sách thỏa thuận kết nối thành công!',
-    200,
-    responseCode.SUCCESSED
-  );
+  const result = await agreementService.getConnections(req.user);
+  return responseCommon(res, 200, {
+    success: 1,
+    message: 'Lấy danh sách thỏa thuận kết nối thành công.',
+    data: result,
+  });
 });
 
 export const proposeAgreement = asyncHandler(async (req, res) => {
-  const result = await agreementService.proposeAgreement({
-    conversationId: req.body.conversationId,
-    proposerUserId: req.user?.id || req.body.proposerUserId,
-    agreedSubject: req.body.agreedSubject,
-    agreedSchedule: req.body.agreedSchedule,
-    agreedPrice: req.body.agreedPrice,
+  const result = await agreementService.proposeAgreement(req.user, req.body);
+  return responseCommon(res, 201, {
+    success: 1,
+    message: result.message,
+    data: result,
   });
-  return responseCommon(
-    res,
-    result,
-    result.message,
-    201,
-    responseCode.SUCCESSED
-  );
 });
 
 export const confirmAgreement = asyncHandler(async (req, res) => {
-  const result = await agreementService.confirmAgreement(req.params.agreementId, {
-    action: req.body.action,
-    userId: req.user?.id || req.body.userId,
+  const { agreementId } = req.params;
+  const result = await agreementService.confirmAgreement(req.user, agreementId, req.body);
+  return responseCommon(res, 200, {
+    success: 1,
+    message: result.message,
+    data: result,
   });
-  return responseCommon(
-    res,
-    result,
-    result.message,
-    200,
-    responseCode.SUCCESSED
-  );
+});
+
+export const rateTutor = asyncHandler(async (req, res) => {
+  const { agreementId } = req.params;
+  const result = await agreementService.rateTutor(req.user, agreementId, req.body);
+  return responseCommon(res, 201, {
+    success: 1,
+    message: result.message,
+    data: result,
+  });
 });
