@@ -8,7 +8,7 @@ test('profile form marks required inputs and validates item completeness and 50-
       import assert from 'node:assert/strict';
       import React from 'react';
       import { renderToStaticMarkup } from 'react-dom/server';
-      import TutorProfileForm, { EMPTY_PROFILE_VALUES, countProfileWords, validateProfileForm, toProfileFormValues } from './src/components/tutorProfile/TutorProfileForm.jsx';
+      import TutorProfileForm, { EMPTY_PROFILE_VALUES, countProfileWords, validateProfileForm, toProfileFormValues } from './src/components/tutor/TutorProfileForm.jsx';
       const values = { ...EMPTY_PROFILE_VALUES, headline: 'Tutor', bio: 'About me', address: 'Hanoi',
         experiences: [{ title: 'Teacher', company: 'School', start_date: '2020-01-01', end_date: '2024-01-01' }],
         educations: [{ school: 'University', degree: 'Bachelor', graduation_year: '2024', description: '' }],

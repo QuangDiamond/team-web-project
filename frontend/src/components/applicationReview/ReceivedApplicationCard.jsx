@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import OpenChatLink from '../common/OpenChatLink';
+import PriorityBadge from '../common/PriorityBadge';
 import { APPLICATION_STATUS, getStatusBadge } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 import { getInitials } from '../../utils/getInitials';
@@ -15,15 +15,16 @@ function RatingText({ rating }) {
 /*
  * Một đơn ứng tuyển phụ huynh nhận được (Figma: Applications review).
  * onContinue / onSkip(application) trả về Promise; chỉ hiện nút khi đơn đang PENDING.
+ * onViewDetails(application) mở chi tiết đơn (có liên kết tới hồ sơ gia sư).
  */
-export default function ReceivedApplicationCard({ application, onContinue, onSkip }) {
+export default function ReceivedApplicationCard({ application, onContinue, onSkip, onViewDetails }) {
   const [busyAction, setBusyAction] = useState('');
   const badge = getStatusBadge(APPLICATION_STATUS, application.status);
   const tutor = application.tutor;
 
   let tutorName = "Gia sư";
   let headline = '';
-  let avatarText = 'T';
+  let avatarText = 'GS';
   if (tutor) {
     tutorName = tutor.full_name;
     headline = tutor.headline || '';
@@ -43,14 +44,12 @@ export default function ReceivedApplicationCard({ application, onContinue, onSki
       <div className="review-card-top">
         <span className="review-card-avatar" aria-hidden="true">{avatarText}</span>
         <div className="review-card-identity">
-          {tutor ? <Link to={`/tutors/${tutor.profile_id}`} className="review-card-name">{tutorName}</Link> : <p className="review-card-name">{tutorName}</p>}
+          <p className="review-card-name">{tutorName}</p>
           {headline && <p className="item-meta">{headline}</p>}
           <p className="review-card-rating">{tutor ? <RatingText rating={tutor.average_rating} /> : null}</p>
         </div>
         <div className="review-card-badges">
-          {application.match_score !== null && application.match_score !== undefined && (
-            <span className="status-badge tone-primary">{application.match_score}% phù hợp</span>
-          )}
+          <PriorityBadge credits={application.credits_spent} />
           <span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>
         </div>
       </div>
@@ -62,26 +61,31 @@ export default function ReceivedApplicationCard({ application, onContinue, onSki
       )}
       <p className="item-meta">Đã ứng tuyển {formatDate(application.created_at)}</p>
 
-      {application.status === 'PENDING' && (
-        <div className="review-card-actions">
-          <button
-            type="button"
-            className="btn btn-outline btn-sm"
-            disabled={isBusy}
-            onClick={() => runAction('skip', onSkip)}
-          >
-            {busyAction === 'skip' ? "Đang bỏ qua..." : "Bỏ qua"}
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary btn-sm"
-            disabled={isBusy}
-            onClick={() => runAction('continue', onContinue)}
-          >
-            {busyAction === 'continue' ? "Đang mở..." : "Tiếp tục"}
-          </button>
-        </div>
-      )}
+      <div className="review-card-actions">
+        <button type="button" className="btn btn-outline btn-sm" disabled={isBusy} onClick={() => onViewDetails(application)}>
+          Xem chi tiết
+        </button>
+        {application.status === 'PENDING' && (
+          <>
+            <button
+              type="button"
+              className="btn btn-outline btn-sm"
+              disabled={isBusy}
+              onClick={() => runAction('skip', onSkip)}
+            >
+              {busyAction === 'skip' ? 'Đang bỏ qua...' : 'Bỏ qua'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary btn-sm"
+              disabled={isBusy}
+              onClick={() => runAction('continue', onContinue)}
+            >
+              {busyAction === 'continue' ? 'Đang mở...' : 'Tiếp tục'}
+            </button>
+          </>
+        )}
+      </div>
 
       {application.status === 'CONTINUED' && (
         <div className="review-card-chat">

@@ -1,4 +1,4 @@
-/* Màn gợi ý gia sư: /parent/requests/:requestId/ai-suggestions (UC09 – SC18) */
+/* Màn gợi ý gia sư: /parent/ai-suggestions và /parent/requests/:requestId/ai-suggestions (UC09) */
 
 .ai-page {
   display: flex;
@@ -33,53 +33,15 @@
   font-size: 13px;
 }
 
-/* ---------- Bộ chỉnh trọng số (A1 Refine) ---------- */
-.ai-weights {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: flex-start;
+/* ---------- Ô chọn request ---------- */
+.ai-request-select {
+  flex: 1;
+  min-width: 0;
+  max-width: 560px;
 }
 
-.ai-weights-hint {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: 13px;
-}
-
-.ai-weights-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  width: 100%;
-}
-
-.ai-weight-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.ai-weight-label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.ai-weight-value {
-  color: var(--color-primary-strong);
-}
-
-.ai-weight-field input[type='range'] {
-  width: 100%;
-  accent-color: var(--color-primary-strong);
-}
-
-.ai-weights-error {
-  margin: 0;
-  color: var(--color-error);
-  font-size: 12px;
+.ai-request-select .form-field {
+  margin-bottom: 0;
 }
 
 /* ---------- Danh sách gợi ý (Figma: card gia sư) ---------- */
@@ -182,47 +144,11 @@
   color: var(--color-text-muted);
 }
 
-.ai-breakdown {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px 20px;
-  margin: 12px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.ai-breakdown-item {
+.ai-card-badges {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
-}
-
-.ai-breakdown-label {
-  width: 64px;
-  flex-shrink: 0;
-  color: var(--color-text-muted);
-}
-
-.ai-breakdown-bar {
-  flex: 1;
-  height: 5px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: var(--color-border);
-}
-
-.ai-breakdown-fill {
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-  background: var(--color-primary-strong);
-}
-
-.ai-breakdown-percent {
-  width: 32px;
-  text-align: right;
-  font-weight: 700;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
 }
 
 .ai-card-actions {
@@ -239,14 +165,6 @@
 
 /* ---------- Responsive ---------- */
 @media (max-width: 640px) {
-  .ai-weights-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .ai-breakdown {
-    grid-template-columns: 1fr;
-  }
-
   .ai-card-top {
     flex-wrap: wrap;
   }

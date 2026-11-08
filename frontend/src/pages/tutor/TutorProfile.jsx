@@ -4,7 +4,7 @@ import { LoaderCircle } from 'lucide-react';
 import { getMyProfile, saveMyProfile } from '../../services/tutorProfileService';
 import Alert from '../../components/common/Alert';
 import SectionCard from '../../components/common/SectionCard';
-import TutorProfileForm, { EMPTY_PROFILE_VALUES, toProfileFormValues } from '../../components/tutorProfile/TutorProfileForm';
+import TutorProfileForm, { EMPTY_PROFILE_VALUES, toProfileFormValues } from '../../components/tutor/TutorProfileForm';
 import '../../styles/tutorProfile.css';
 
 // Hồ sơ gia sư của chính mình: tạo lần đầu hoặc chỉnh sửa. Cần có hồ sơ để duyệt request, ứng tuyển và đăng bài

@@ -4,7 +4,6 @@ import StatCard from '../common/StatCard';
 export default function TutorStats({ summary }) {
   return (
     <div className="stat-grid">
-      <StatCard label="Yêu cầu đang mở" value={summary.available_requests} detail="Có thể ứng tuyển" tone="primary" />
       <StatCard
         label="Đơn ứng tuyển đang chờ"
         value={summary.pending_applications}
@@ -12,7 +11,7 @@ export default function TutorStats({ summary }) {
         tone="warning"
       />
       <StatCard label="Lời mời cần phản hồi" value={summary.pending_invitations} detail="Từ phụ huynh" tone="info" />
-      <StatCard label="Tín dụng" value={summary.credit_balance} detail="1 tín dụng mỗi đơn ứng tuyển" tone="success" />
+      <StatCard label="Tín dụng" value={summary.credit_balance} detail="Dùng khi ứng tuyển" tone="success" />
     </div>
   );
 }

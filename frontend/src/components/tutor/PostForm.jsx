@@ -1,18 +1,24 @@
 import { useState } from 'react';
 import Alert from '../common/Alert';
 import FormInput from '../common/FormInput';
+import FormSelect from '../common/FormSelect';
 import FormTextarea from '../common/FormTextarea';
+import SchedulePicker from '../common/SchedulePicker';
+import { GRADE_LEVELS } from '../../constants/gradeLevels';
+import { useSubjectNames } from '../../hooks/useSubjectNames';
+import { toSelectOptions } from '../../utils/selectOptions';
 import { TEACHING_MODES, formatBudget } from '../../constants/requestLabels';
 import { focusFirstInvalidField, toFieldErrors } from '../../utils/authValidators';
 
 const FIELD_ORDER = ['title', 'subject_name', 'grade_level', 'price', 'schedule', 'description'];
 const REQUIRED_FIELDS = [
-  { name: 'title', label: "Tiêu đề" },
-  { name: 'subject_name', label: "Môn học" },
-  { name: 'grade_level', label: "Khối lớp" },
-  { name: 'schedule', label: "Lịch có thể dạy" },
-  { name: 'description', label: "Mô tả" },
+  { name: 'title', label: 'Tiêu đề' },
+  { name: 'subject_name', label: 'Môn học' },
+  { name: 'grade_level', label: 'Khối lớp' },
+  { name: 'schedule', label: 'Lịch có thể dạy' },
+  { name: 'description', label: 'Mô tả' },
 ];
+const SCHEDULE_REQUIRED_MESSAGE = 'Chọn ít nhất một ngày và giờ bắt đầu, kết thúc hợp lệ';
 const MAX_LENGTHS = { title: 150, subject_name: 100, grade_level: 50, schedule: 300, description: 2000 };
 
 export const EMPTY_POST_VALUES = {
@@ -33,6 +39,9 @@ const validate = (values) => {
       errors[field.name] = `${field.label} là bắt buộc`;
     }
   });
+  if (!values.schedule.trim()) {
+    errors.schedule = SCHEDULE_REQUIRED_MESSAGE;
+  }
   Object.keys(MAX_LENGTHS).forEach((name) => {
     if (values[name].trim().length > MAX_LENGTHS[name]) {
       errors[name] = `Tối đa ${MAX_LENGTHS[name]} ký tự`;
@@ -79,6 +88,16 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const subjects = useSubjectNames();
+  const subjectOptions = toSelectOptions(subjects.subjectNames, values.subject_name);
+  const gradeOptions = toSelectOptions(GRADE_LEVELS, values.grade_level);
+
+  const handleScheduleChange = (schedule) => {
+    setValues((previousValues) => ({ ...previousValues, schedule: schedule }));
+    if (errors.schedule) {
+      setErrors({ ...errors, schedule: '' });
+    }
+  };
 
   const handleChange = (event) => {
     const field = event.target.name;
@@ -138,8 +157,27 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
         disabled={submitting}
       />
       <div className="form-grid">
-        <FormInput id="subject_name" label="Môn học" value={values.subject_name} onChange={handleChange} error={errors.subject_name} placeholder="Ví dụ: Toán" disabled={submitting} />
-        <FormInput id="grade_level" label="Khối lớp" value={values.grade_level} onChange={handleChange} error={errors.grade_level} placeholder="Ví dụ: Lớp 9" disabled={submitting} />
+        <FormSelect
+          id="subject_name"
+          label="Môn học"
+          value={values.subject_name}
+          onChange={handleChange}
+          options={subjectOptions}
+          placeholder={subjects.loading ? 'Đang tải môn học...' : 'Chọn môn học'}
+          error={errors.subject_name}
+          hint={subjects.error ? 'Không tải được danh sách môn học. Hãy tải lại trang.' : undefined}
+          disabled={submitting}
+        />
+        <FormSelect
+          id="grade_level"
+          label="Khối lớp"
+          value={values.grade_level}
+          onChange={handleChange}
+          options={gradeOptions}
+          placeholder="Chọn khối lớp"
+          error={errors.grade_level}
+          disabled={submitting}
+        />
       </div>
       <div className="form-grid">
         <FormInput
@@ -153,8 +191,15 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
           disabled={submitting}
           belowControl={priceHint ? <p className="form-hint-left">{priceHint}</p> : null}
         />
-        <FormInput id="schedule" label="Lịch có thể dạy" value={values.schedule} onChange={handleChange} error={errors.schedule} placeholder="Ví dụ: Tối thứ 3, thứ 5" disabled={submitting} />
       </div>
+      <SchedulePicker
+        id="schedule"
+        label="Lịch dạy"
+        value={values.schedule}
+        onChange={handleScheduleChange}
+        error={errors.schedule}
+        disabled={submitting}
+      />
 
       <div className="form-field">
         <p className="form-label" id="post-mode-label">Hình thức học</p>

@@ -2,7 +2,7 @@
 
 ## 1. UI/UX Design (Figma)
 - **Figma Design Link**: [TuConnector Web Screens](https://www.figma.com/design/tnSOeRA7t71lbpPf9DAXUR/TuConnector-web-screens)
-- **Primary Color Palette**: 
+- **Primary Color Palette**:
   - Primary Orange: `#E85A2C` / `#EB572A`
   - Background: Clean White `#FFFFFF` & Light Gray `#F8FAFC`
   - Typography: Sans-serif (Inter / Plus Jakarta Sans)

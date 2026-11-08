@@ -381,4 +381,3 @@ export const respondParentChildLink = asyncHandler(async (req, res) => {
 
   return responseCommon(res, link, 'Xử lý yêu cầu liên kết thành công', 200, responseCode.SUCCESSED);
 });
-

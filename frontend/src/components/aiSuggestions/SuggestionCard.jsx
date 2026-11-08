@@ -1,18 +1,11 @@
 import { Link } from 'react-router-dom';
 
-const BREAKDOWN_LABELS = {
-  budget: "Mức phù hợp học phí",
-  rating: "Đánh giá",
-  schedule: "Lịch học",
-  area: "Khu vực",
-};
-
 const MODE_LABELS = { ONLINE: "Trực tuyến", OFFLINE: "Trực tiếp", HYBRID: "Kết hợp" };
 
 const getInitials = (fullName) => {
   const words = (fullName || '').trim().split(/\s+/).filter(Boolean);
   if (words.length === 0) {
-    return 'T';
+    return 'GS';
   }
   return words.map((word) => word[0]).join('').slice(0, 2).toUpperCase();
 };
@@ -31,9 +24,9 @@ function RatingText({ rating }) {
   return <span>★ {Number(rating).toFixed(1)}</span>;
 }
 
-// Một gia sư được gợi ý (Figma: Applications ai). Nút Invite mở hộp thoại mời gia sư (UC14)
+// Một gia sư được gợi ý (Figma: Applications ai). Nút Mời mở hộp thoại mời gia sư (UC14), Xem chi tiết mở hồ sơ công khai
 export default function SuggestionCard({ suggestion, rank, isInvited, onInvite }) {
-  const { tutor, post, breakdown } = suggestion;
+  const { tutor, post } = suggestion;
 
   let modeText = '';
   if (post.teaching_mode) {
@@ -46,49 +39,28 @@ export default function SuggestionCard({ suggestion, rank, isInvited, onInvite }
         <span className="ai-card-rank" aria-label={`Thứ hạng ${rank}`}>{rank}</span>
         <span className="ai-card-avatar" aria-hidden="true">{getInitials(tutor.full_name)}</span>
         <div className="ai-card-identity">
-          <Link className="ai-card-name" to={`/tutors/${tutor.profile_id}`}>{tutor.full_name}</Link>
+          <p className="ai-card-name">{tutor.full_name}</p>
           <p className="ai-card-sub">{post.subject_name} · {post.grade_level}</p>
           <p className="ai-card-rating"><RatingText rating={tutor.average_rating} /></p>
         </div>
-        <span className="status-badge tone-primary ai-card-score">{suggestion.match_score}% phù hợp</span>
+        {tutor.availability_status === 'NOT_AVAILABLE' && (
+          <div className="ai-card-badges">
+            <span className="status-badge tone-warning">Tạm không nhận</span>
+          </div>
+        )}
       </div>
 
       <p className="ai-card-meta">
-        <Link to={`/tutors/${tutor.profile_id}`} className="link">{post.title}</Link>
+        <span>{post.title}</span>
         {modeText ? ` · ${modeText}` : ''}
         {' · '}
         <strong>{formatPrice(post.price)}</strong>
       </p>
 
-      {suggestion.ai_reason ? (
-        <p className="ai-card-reason">{suggestion.ai_reason}</p>
-      ) : (
-        <p className="ai-card-reason is-rule-based">Xếp hạng theo mức phù hợp học phí, đánh giá, lịch học và khu vực.</p>
-      )}
-
-      {breakdown && (
-        <ul className="ai-breakdown">
-          {Object.keys(breakdown).map((name) => (
-            <li key={name} className="ai-breakdown-item">
-              <span className="ai-breakdown-label">{BREAKDOWN_LABELS[name]}</span>
-              <span
-                className="ai-breakdown-bar"
-                role="progressbar"
-                aria-valuenow={breakdown[name]}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-label={`${BREAKDOWN_LABELS[name]} ${breakdown[name]}%`}
-              >
-                {/* width là giá trị động nên dùng inline style */}
-                <span className="ai-breakdown-fill" style={{ width: `${breakdown[name]}%` }} />
-              </span>
-              <span className="ai-breakdown-percent">{breakdown[name]}%</span>
-            </li>
-          ))}
-        </ul>
-      )}
+      {suggestion.ai_reason && <p className="ai-card-reason">{suggestion.ai_reason}</p>}
 
       <div className="ai-card-actions">
+        <Link to={`/tutors/${tutor.profile_id}`} className="btn btn-outline btn-sm">Xem chi tiết</Link>
         <button
           type="button"
           className="btn btn-primary btn-sm"

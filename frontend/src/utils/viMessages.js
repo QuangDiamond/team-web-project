@@ -40,6 +40,7 @@ const MESSAGES = {
   'Tutor not found': 'Không tìm thấy gia sư.',
   'This tutor is no longer available': 'Gia sư này không còn khả dụng.',
   'Tutoring request not found': 'Không tìm thấy yêu cầu tìm gia sư.',
+  'This request already has a conversation with a tutor and cannot be deleted': 'Yêu cầu này đã có cuộc trò chuyện với gia sư nên không thể xóa.',
   'This request is no longer open': 'Yêu cầu này không còn mở.',
   'You can only invite tutors to an open request': 'Bạn chỉ có thể mời gia sư vào yêu cầu đang mở.',
   'Selected student is not linked to your account': 'Học sinh đã chọn chưa liên kết với tài khoản của bạn.',

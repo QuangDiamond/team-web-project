@@ -6,7 +6,7 @@ import { getSuggestedRequests, refreshSuggestedRequests } from '../../services/t
 import Alert from '../../components/common/Alert';
 import ListState from '../../components/common/ListState';
 import Pagination from '../../components/common/Pagination';
-import RequestGrid from '../../components/tutorRequests/RequestGrid';
+import RequestGrid from '../../components/tutor/RequestGrid';
 import '../../styles/tutorRequests.css';
 
 const PAGE_SIZE = 9;
@@ -36,15 +36,10 @@ export default function SuggestedRequests() {
     }
   };
 
-  let showFallbackNotice = false;
-  if (list.data && list.data.items.length > 0 && list.data.ai_status === 'FALLBACK') {
-    showFallbackNotice = true;
-  }
-
   return (
     <div className="page-stack">
       <div className="page-toolbar">
-        <p className="item-meta">Yêu cầu phù hợp với bài đăng đã xuất bản của bạn, xếp theo mức phù hợp.</p>
+        <p className="item-meta">Yêu cầu đang mở cùng môn học và khối lớp với bài đăng đã xuất bản của bạn, mới nhất trước.</p>
         <button type="button" className="btn btn-outline btn-sm" disabled={refreshing} onClick={handleRefresh}>
           <RefreshCw size={14} className={refreshing ? 'spin' : ''} aria-hidden="true" />
           <span>{refreshing ? "Đang cập nhật..." : "Cập nhật"}</span>
@@ -52,9 +47,6 @@ export default function SuggestedRequests() {
       </div>
 
       {refreshError && <Alert type="error">{refreshError}</Alert>}
-      {showFallbackNotice && (
-        <Alert type="info">Hiện chưa có giải thích từ AI. Yêu cầu được xếp hạng theo học phí, lịch học và khu vực.</Alert>
-      )}
 
       <ListState
         list={list}

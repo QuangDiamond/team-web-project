@@ -34,7 +34,7 @@ Lưu request đang mở. Gọi nhiều lần vẫn chỉ có một bookmark (uni
 Bỏ lưu (chỉ xóa bookmark của chính gia sư). Gọi lặp lại vẫn 200. Trả `{ is_bookmarked: false }`.
 
 ## GET `/suggestions` · POST `/suggestions/refresh`
-"Suggested for you": tối đa 10 request, điểm `match_score` 0–100, cache 24 giờ trong `AI_POST_SUGGESTIONS`; `refresh` bỏ cache và tính lại. Response: `{ items, pagination, ai_status, cached_until, hint }`.
+"Suggested for you": tối đa 10 request cùng môn học và khối lớp với một bài đăng `PUBLISHED` của gia sư (không xét hình thức học, giá, lịch), mới nhất trước, không có `match_score`, cache 24 giờ trong `AI_POST_SUGGESTIONS`; `refresh` bỏ cache và tính lại. Response: `{ items, pagination, ai_status, cached_until, hint }`.
 
 - **Chưa gọi AI provider**: `ai_reason` luôn `null`, `ai_status = "FALLBACK"`.
 - Thuộc tính của gia sư lấy từ các `TutorPost` **PUBLISHED** của họ (môn, khối, hình thức, giá, lịch) vì `TutorProfile` không có các trường này. Không có bài đăng → `items = []` và `hint` nhắc đăng bài.

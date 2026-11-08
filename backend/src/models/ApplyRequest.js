@@ -14,6 +14,8 @@ const applyRequestSchema = new Schema(
     note:             { type: String, default: null },
     // Điểm số tương thích tính toán cho màn hình SC17
     match_score:      { type: Schema.Types.Double, default: null },
+    // Số credit gia sư đã dùng cho đơn này (1-10). Nhiều hơn thì đơn được xếp lên đầu danh sách của phụ huynh. Thiếu = 1
+    credits_spent:    { type: Schema.Types.Int32, default: 1 },
     // Trạng thái ứng tuyển: PENDING - chờ phụ huynh rep CONTINUED - phụ huynh accept -> mở conversation SKIPPED…
     status:           { type: String, enum: Object.values(ENUMS.ApplyRequestsStatus), default: null },
   },

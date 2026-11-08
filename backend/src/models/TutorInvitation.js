@@ -14,6 +14,8 @@ const tutorInvitationSchema = new Schema(
     request_id:       { type: Schema.Types.ObjectId, ref: 'ParentRequest', default: null },
     // Optional message (Step 2)
     message:          { type: String, default: null },
+    // Số credit phụ huynh đã dùng cho lời mời này (1-10). Nhiều hơn thì lời mời được xếp lên đầu danh sách của gia sư. Thiếu = 1
+    credits_spent:    { type: Schema.Types.Int32, default: 1 },
     // PENDING, - chờ tutor rep ACCEPTED - tutor đồng ý với đề nghị -> mở conversation DECLINED, - đã bị tutor từ…
     status:           { type: String, enum: Object.values(ENUMS.TutorInvitationsStatus), default: null },
   },

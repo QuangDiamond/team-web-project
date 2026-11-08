@@ -54,9 +54,6 @@ export default function RequestCard({ request, onToggleSave, onApply }) {
       <div className="request-card-body">
         <div className="request-card-top">
           <span className="status-badge tone-primary">{request.subject_name}</span>
-          {request.match_score !== null && request.match_score !== undefined && (
-            <span className="status-badge tone-success">{request.match_score}% phù hợp</span>
-          )}
         </div>
         <h3 className="request-card-title">
           <button type="button" className="item-title-link" onClick={() => navigate(`/tutor/requests/${request._id}`)}>

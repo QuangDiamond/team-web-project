@@ -7,7 +7,7 @@ export const getTutorSuggestions = (requestId, params) => {
   return api.get(`${BASE_URL}/requests/${requestId}`, { params });
 };
 
-// weights: { budget, rating, schedule, area } mỗi giá trị 0..100
-export const refreshTutorSuggestions = (requestId, weights) => {
-  return api.post(`${BASE_URL}/requests/${requestId}/refresh`, { weights });
+// Tính lại gợi ý ngay, không có dữ liệu gửi kèm
+export const refreshTutorSuggestions = (requestId) => {
+  return api.post(`${BASE_URL}/requests/${requestId}/refresh`, {});
 };

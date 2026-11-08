@@ -3,28 +3,32 @@ import Alert from '../common/Alert';
 import FormInput from '../common/FormInput';
 import FormSelect from '../common/FormSelect';
 import FormTextarea from '../common/FormTextarea';
+import SchedulePicker from '../common/SchedulePicker';
+import { GRADE_LEVELS } from '../../constants/gradeLevels';
 import { TEACHING_MODES, formatBudget } from '../../constants/requestLabels';
+import { useSubjectNames } from '../../hooks/useSubjectNames';
 import { focusFirstInvalidField, toFieldErrors } from '../../utils/authValidators';
+import { toSelectOptions } from '../../utils/selectOptions';
 
 const FIELD_ORDER = [
   'title',
-  'student_id',
   'subject_name',
   'grade_level',
-  'description',
-  'schedule',
   'budget',
+  'schedule',
   'location_address',
+  'description',
   'tutor_requirements',
 ];
 
 const REQUIRED_FIELDS = [
-  { name: 'title', label: "Tiêu đề yêu cầu" },
-  { name: 'subject_name', label: "Môn học" },
-  { name: 'grade_level', label: "Khối lớp" },
-  { name: 'description', label: "Mục tiêu học tập" },
-  { name: 'schedule', label: "Lịch học mong muốn" },
+  { name: 'title', label: 'Tiêu đề yêu cầu' },
+  { name: 'subject_name', label: 'Môn học' },
+  { name: 'grade_level', label: 'Khối lớp' },
+  { name: 'description', label: 'Mục tiêu học tập' },
 ];
+
+const SCHEDULE_REQUIRED_MESSAGE = 'Chọn ít nhất một ngày và giờ bắt đầu, kết thúc hợp lệ';
 
 const MAX_LENGTHS = {
   title: 150,
@@ -38,14 +42,13 @@ const MAX_LENGTHS = {
 
 export const EMPTY_REQUEST_VALUES = {
   title: '',
-  student_id: '',
   subject_name: '',
   grade_level: '',
-  description: '',
-  schedule: '',
   budget: '',
+  schedule: '',
   teaching_mode: 'ONLINE',
   location_address: '',
+  description: '',
   tutor_requirements: '',
 };
 
@@ -57,6 +60,9 @@ const validate = (values) => {
       errors[field.name] = `${field.label} là bắt buộc`;
     }
   });
+  if (!values.schedule.trim()) {
+    errors.schedule = SCHEDULE_REQUIRED_MESSAGE;
+  }
   Object.keys(MAX_LENGTHS).forEach((name) => {
     if (values[name].trim().length > MAX_LENGTHS[name]) {
       errors[name] = `Tối đa ${MAX_LENGTHS[name]} ký tự`;
@@ -79,10 +85,6 @@ const validate = (values) => {
 };
 
 const toPayload = (values) => {
-  let studentId = null;
-  if (values.student_id) {
-    studentId = values.student_id;
-  }
   let locationAddress = null;
   if (values.location_address.trim()) {
     locationAddress = values.location_address.trim();
@@ -93,7 +95,7 @@ const toPayload = (values) => {
   }
   return {
     title: values.title.trim(),
-    student_id: studentId,
+    student_id: null,
     subject_name: values.subject_name.trim(),
     grade_level: values.grade_level.trim(),
     description: values.description.trim(),
@@ -106,14 +108,17 @@ const toPayload = (values) => {
 };
 
 /*
- * Form tạo / sửa request (Figma: RequestForm). students: con đã liên kết để chọn.
+ * Form tạo / sửa request, cùng bố cục với form tạo bài đăng của gia sư (PostForm).
  * onSubmit(payload) trả về Promise; ném lỗi (có errors theo field) thì form hiện lỗi tại từng ô.
  */
-export default function RequestForm({ initialValues, students, submitLabel, submittingLabel, onSubmit }) {
+export default function RequestForm({ initialValues, submitLabel, submittingLabel, onSubmit }) {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const subjects = useSubjectNames();
+  const subjectOptions = toSelectOptions(subjects.subjectNames, values.subject_name);
+  const gradeOptions = toSelectOptions(GRADE_LEVELS, values.grade_level);
 
   const isOnline = values.teaching_mode === 'ONLINE';
 
@@ -122,6 +127,13 @@ export default function RequestForm({ initialValues, students, submitLabel, subm
     setValues({ ...values, [field]: event.target.value });
     if (errors[field]) {
       setErrors({ ...errors, [field]: '' });
+    }
+  };
+
+  const handleScheduleChange = (schedule) => {
+    setValues((previousValues) => ({ ...previousValues, schedule: schedule }));
+    if (errors.schedule) {
+      setErrors({ ...errors, schedule: '' });
     }
   };
 
@@ -159,11 +171,14 @@ export default function RequestForm({ initialValues, students, submitLabel, subm
     }
   };
 
-  const studentOptions = students.map((student) => ({ value: student._id, label: student.full_name }));
-
   let budgetHint;
   if (values.budget !== '' && Number(values.budget) > 0) {
     budgetHint = formatBudget(values.budget);
+  }
+
+  let locationLabel = 'Địa điểm học';
+  if (isOnline) {
+    locationLabel = 'Địa điểm học (không bắt buộc)';
   }
 
   return (
@@ -179,51 +194,30 @@ export default function RequestForm({ initialValues, students, submitLabel, subm
         placeholder="Ví dụ: Tìm gia sư Toán lớp 9 ôn thi vào 10"
         disabled={submitting}
       />
-
       <div className="form-grid">
         <FormSelect
-          id="student_id"
-          label="Con / Học sinh"
-          optional
-          value={values.student_id}
-          onChange={handleChange}
-          options={studentOptions}
-          placeholder="Chọn học sinh"
-          error={errors.student_id}
-          disabled={submitting}
-          hint={students.length === 0 ? "Chưa liên kết học sinh. Bạn vẫn có thể đăng yêu cầu này." : undefined}
-        />
-        <FormInput
           id="subject_name"
           label="Môn học"
           value={values.subject_name}
           onChange={handleChange}
+          options={subjectOptions}
+          placeholder={subjects.loading ? 'Đang tải môn học...' : 'Chọn môn học'}
           error={errors.subject_name}
-          placeholder="Ví dụ: Lập trình Python"
+          hint={subjects.error ? 'Không tải được danh sách môn học. Hãy tải lại trang.' : undefined}
+          disabled={submitting}
+        />
+        <FormSelect
+          id="grade_level"
+          label="Khối lớp"
+          value={values.grade_level}
+          onChange={handleChange}
+          options={gradeOptions}
+          placeholder="Chọn khối lớp"
+          error={errors.grade_level}
           disabled={submitting}
         />
       </div>
-
-      <FormTextarea
-        id="description"
-        label="Mục tiêu học tập"
-        value={values.description}
-        onChange={handleChange}
-        error={errors.description}
-        placeholder="Mô tả kết quả học tập mong muốn"
-        disabled={submitting}
-      />
-
       <div className="form-grid">
-        <FormInput
-          id="schedule"
-          label="Lịch học mong muốn"
-          value={values.schedule}
-          onChange={handleChange}
-          error={errors.schedule}
-          placeholder="Các ngày trong tuần sau 16 giờ"
-          disabled={submitting}
-        />
         <FormInput
           id="budget"
           label="Ngân sách (VND / buổi)"
@@ -236,27 +230,14 @@ export default function RequestForm({ initialValues, students, submitLabel, subm
           belowControl={budgetHint ? <p className="form-hint-left">{budgetHint}</p> : null}
         />
       </div>
-
-      <div className="form-grid">
-        <FormInput
-          id="grade_level"
-          label="Khối lớp"
-          value={values.grade_level}
-          onChange={handleChange}
-          error={errors.grade_level}
-          placeholder="Ví dụ: Lớp 9"
-          disabled={submitting}
-        />
-        <FormInput
-          id="location_address"
-          label={isOnline ? "Địa điểm / Địa chỉ (không bắt buộc)" : "Địa điểm / Địa chỉ"}
-          value={values.location_address}
-          onChange={handleChange}
-          error={errors.location_address}
-          placeholder="Ví dụ: Cầu Giấy, Hà Nội"
-          disabled={submitting}
-        />
-      </div>
+      <SchedulePicker
+        id="schedule"
+        label="Lịch học mong muốn"
+        value={values.schedule}
+        onChange={handleScheduleChange}
+        error={errors.schedule}
+        disabled={submitting}
+      />
 
       <div className="form-field">
         <p className="form-label" id="mode-label">Hình thức học</p>
@@ -276,6 +257,26 @@ export default function RequestForm({ initialValues, students, submitLabel, subm
         </div>
       </div>
 
+      <FormInput
+        id="location_address"
+        label={locationLabel}
+        value={values.location_address}
+        onChange={handleChange}
+        error={errors.location_address}
+        placeholder="Ví dụ: Cầu Giấy, Hà Nội"
+        disabled={submitting}
+      />
+
+      <FormTextarea
+        id="description"
+        label="Mục tiêu học tập"
+        rows={5}
+        value={values.description}
+        onChange={handleChange}
+        error={errors.description}
+        placeholder="Mô tả kết quả bạn mong muốn"
+        disabled={submitting}
+      />
       <FormTextarea
         id="tutor_requirements"
         label="Yêu cầu đối với gia sư"
@@ -288,9 +289,11 @@ export default function RequestForm({ initialValues, students, submitLabel, subm
         disabled={submitting}
       />
 
-      <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
-        {submitting ? submittingLabel : submitLabel}
-      </button>
+      <div className="request-form-actions">
+        <button type="submit" className="btn btn-primary" disabled={submitting}>
+          {submitting ? submittingLabel : submitLabel}
+        </button>
+      </div>
     </form>
   );
 }
