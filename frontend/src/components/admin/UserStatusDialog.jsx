@@ -6,7 +6,7 @@ import DialogActions from './DialogActions';
 import { updateUserStatus } from '../../services/adminService';
 import { focusFirstInvalidField, toFieldErrors } from '../../utils/authValidators';
 import { validateReason } from '../../utils/pricingValidators';
-import { STATUS_ACTIONS } from '../../utils/userDisplay';
+import { STATUS_ACTIONS, getUserStatusOption } from '../../utils/userDisplay';
 
 // Hộp thoại Suspend / Ban / Reactivate, bắt buộc nhập lý do (UC37 bước 3, BR-16)
 export default function UserStatusDialog({ user, actionKey, onClose, onSaved }) {
@@ -37,7 +37,7 @@ export default function UserStatusDialog({ user, actionKey, onClose, onSaved }) 
     setSubmitting(true);
     try {
       await updateUserStatus(user._id, { account_status: action.targetStatus, reason: reason.trim() });
-      onSaved(`${user.full_name}'s account is now ${action.targetStatus.toLowerCase()}.`);
+      onSaved(`Tài khoản của ${user.full_name} hiện có trạng thái: ${getUserStatusOption(action.targetStatus).label}.`);
     } catch (error) {
       const fieldErrors = toFieldErrors(error.errors);
       if (fieldErrors.reason) {

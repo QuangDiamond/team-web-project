@@ -27,10 +27,10 @@ function ProfileContent({ id, role }) {
     if (user) clearPublicProfileReturn();
   }, [user]);
 
-  if (loading) return <div className="public-profile-state" role="status"><LoaderCircle className="spin" aria-hidden="true" />Loading profile...</div>;
+  if (loading) return <div className="public-profile-state" role="status"><LoaderCircle className="spin" aria-hidden="true" />Đang tải hồ sơ...</div>;
   if (error) {
-    return <div className="public-profile-state"><Alert type="error">{error.status === 404 ? 'This profile is not available' : error.message}</Alert>
-      {error.status !== 404 && <button type="button" className="btn btn-outline" onClick={reload}>Try again</button>}
+    return <div className="public-profile-state"><Alert type="error">{error.status === 404 ? "Hồ sơ này không khả dụng" : error.message}</Alert>
+      {error.status !== 404 && <button type="button" className="btn btn-outline" onClick={reload}>Thử lại</button>}
       </div>;
   }
 
@@ -44,13 +44,13 @@ function ProfileContent({ id, role }) {
       {notice && <Alert type="success">{notice}</Alert>}
       <div className="public-profile-grid">
         <ProfileIdentity profile={profile} role={role}>
-          {canInvite && <button type="button" className="btn btn-primary" onClick={() => setInviting(true)}>Invite tutor</button>}
+          {canInvite && <button type="button" className="btn btn-primary" onClick={() => setInviting(true)}>Mời gia sư</button>}
           {!user && isTutor && <>
-            <p className="item-meta">Sign in or register as a Parent to invite this tutor.</p>
-            <Link to="/login" state={{ from: location.pathname }} onClick={() => rememberPublicProfile(location.pathname)} className="btn btn-primary">Sign in to invite</Link>
-            <Link to="/register" onClick={() => rememberPublicProfile(location.pathname)} className="btn btn-outline">Register as Parent</Link>
+            <p className="item-meta">Đăng nhập hoặc đăng ký tài khoản Phụ huynh để mời gia sư.</p>
+            <Link to="/login" state={{ from: location.pathname }} onClick={() => rememberPublicProfile(location.pathname)} className="btn btn-primary">Đăng nhập để mời</Link>
+            <Link to="/register" onClick={() => rememberPublicProfile(location.pathname)} className="btn btn-outline">Đăng ký làm phụ huynh</Link>
           </>}
-          {user?.role === 'TUTOR' && user.id === profile.user_id && <Link to="/tutor/profile" className="btn btn-outline">Edit my profile</Link>}
+          {user?.role === 'TUTOR' && user.id === profile.user_id && <Link to="/tutor/profile" className="btn btn-outline">Sửa hồ sơ của tôi</Link>}
         </ProfileIdentity>
         <div className="public-profile-main">
           {isTutor && <ProfileBackground profile={profile} />}
@@ -61,12 +61,12 @@ function ProfileContent({ id, role }) {
       </div>
       {inviting && <InviteTutorDialog profile={profile} onClose={() => setInviting(false)} onInvited={(result) => {
         setInviting(false);
-        setNotice(`Invitation sent. You have ${result.remaining_credits} credit(s) left.`);
+        setNotice(`Đã gửi lời mời. Bạn còn ${result.remaining_credits} tín dụng.`);
       }} />}
       {applying && <ApplyModal request={applying} onClose={() => setApplying(null)} onApplied={(result) => {
         setAppliedIds([...appliedIds, applying._id]);
         setApplying(null);
-        setNotice(`Application sent. You have ${result.remaining_credits} credit(s) left.`);
+        setNotice(`Đã gửi đơn ứng tuyển. Bạn còn ${result.remaining_credits} tín dụng.`);
       }} />}
     </div>
   );

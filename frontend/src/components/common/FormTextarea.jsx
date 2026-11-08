@@ -20,7 +20,7 @@ export default function FormTextarea({ id, label, value, onChange, error, hint, 
       <label htmlFor={id} className="form-label">
         {label}
         {required && <span className="form-required" aria-hidden="true"> *</span>}
-        {optional && <span className="form-optional"> (optional)</span>}
+        {optional && <span className="form-optional"> (không bắt buộc)</span>}
       </label>
       <div className={error ? 'form-control has-error' : 'form-control'}>
         <textarea

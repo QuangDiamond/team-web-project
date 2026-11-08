@@ -11,7 +11,7 @@ import SuggestionCard from '../../components/aiSuggestions/SuggestionCard';
 import WeightControls from '../../components/aiSuggestions/WeightControls';
 import '../../styles/aiSuggestions.css';
 
-const MODE_LABELS = { ONLINE: 'Online', OFFLINE: 'In person', HYBRID: 'Hybrid' };
+const MODE_LABELS = { ONLINE: "Trực tuyến", OFFLINE: "Trực tiếp", HYBRID: "Kết hợp" };
 
 // UC09 – View AI Tutor Suggestions (SC18). Hiển thị trong DashboardLayout với PARENT_MENU
 export default function AiTutorSuggestions() {
@@ -45,7 +45,7 @@ export default function AiTutorSuggestions() {
 
   const handleInvited = (result) => {
     setInvitedTutorIds([...invitedTutorIds, invitingSuggestion.tutor.profile_id]);
-    setInviteNotice(`Invitation sent. You have ${result.remaining_credits} credit(s) left.`);
+    setInviteNotice(`Đã gửi lời mời. Bạn còn ${result.remaining_credits} tín dụng.`);
     setInvitingSuggestion(null);
   };
 
@@ -53,7 +53,7 @@ export default function AiTutorSuggestions() {
     return (
       <div className="ai-state" role="status">
         <LoaderCircle size={26} className="spin" aria-hidden="true" />
-        <span className="visually-hidden">Loading...</span>
+        <span className="visually-hidden">Đang tải...</span>
       </div>
     );
   }
@@ -63,7 +63,7 @@ export default function AiTutorSuggestions() {
       <div className="ai-page">
         <Alert type="error">
           <p className="ai-error-text">{error.message}</p>
-          <button type="button" className="btn btn-outline btn-sm" onClick={reload}>Try again</button>
+          <button type="button" className="btn btn-outline btn-sm" onClick={reload}>Thử lại</button>
         </Alert>
       </div>
     );
@@ -74,7 +74,7 @@ export default function AiTutorSuggestions() {
 
   return (
     <div className="ai-page">
-      <SectionCard title={request.title || 'Tutoring request'} action={<span className="ai-request-mode">{MODE_LABELS[request.teaching_mode]}</span>}>
+      <SectionCard title={request.title || "Yêu cầu tìm gia sư"} action={<span className="ai-request-mode">{MODE_LABELS[request.teaching_mode]}</span>}>
         <p className="ai-request-meta">{request.subject_name} · {request.grade_level}</p>
         <WeightControls
           initialWeights={data.weights}
@@ -88,15 +88,15 @@ export default function AiTutorSuggestions() {
       {inviteNotice && <Alert type="success">{inviteNotice}</Alert>}
 
       {aiStatus === 'FALLBACK' && items.length > 0 && (
-        <Alert type="info">AI explanations are not available right now. Tutors are ranked by price, rating, schedule and area.</Alert>
+        <Alert type="info">Hiện chưa có giải thích từ AI. Gia sư được xếp hạng theo học phí, đánh giá, lịch học và khu vực.</Alert>
       )}
 
       {items.length === 0 ? (
-        <SectionCard title="Suggested tutors">
-          <EmptyState icon={SearchX} title="No matching tutor yet" description={hint} />
+        <SectionCard title="Gia sư được gợi ý">
+          <EmptyState icon={SearchX} title="Chưa có gia sư phù hợp" description={hint} />
         </SectionCard>
       ) : (
-        <SectionCard title="Suggested tutors" action={<span className="ai-count">Top {items.length}</span>}>
+        <SectionCard title="Gia sư được gợi ý" action={<span className="ai-count">Hàng đầu {items.length}</span>}>
           <ul className="ai-list">
             {items.map((suggestion, index) => (
               <SuggestionCard
@@ -112,7 +112,7 @@ export default function AiTutorSuggestions() {
       )}
 
       <p className="ai-footer-link">
-        <Link to="/parent/invitations" className="link">View my invitations</Link>
+        <Link to="/parent/invitations" className="link">Xem lời mời đã gửi</Link>
       </p>
 
       {invitingSuggestion && (

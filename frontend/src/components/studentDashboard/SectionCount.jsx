@@ -5,7 +5,7 @@ export default function SectionCount({ section, label }) {
   }
 
   if (section.total > section.items.length) {
-    return <span className="student-section-count">Showing {section.items.length} of {section.total}</span>;
+    return <span className="student-section-count">Đang hiển thị {section.items.length} trên {section.total}</span>;
   }
 
   return <span className="student-section-count">{label}</span>;

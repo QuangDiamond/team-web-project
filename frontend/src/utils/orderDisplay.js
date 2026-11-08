@@ -21,18 +21,18 @@ export const getOrderItemLabel = (order) => {
 
   if (order.item_type === 'PLAN_UPGRADE') {
     const months = readOrderField(order, 'duration_months');
-    const planLabel = `${getPlanTitle(itemName)} plan`;
+    const planLabel = `Gói ${getPlanTitle(itemName)}`;
     if (!months) {
       return planLabel;
     }
-    return `${planLabel} · ${pluralize(months, 'month')}`;
+    return `${planLabel} · ${pluralize(months, 'tháng')}`;
   }
 
   const quantity = readOrderField(order, 'quantity');
   if (!quantity || quantity === 1) {
     return itemName;
   }
-  return `${itemName} × ${quantity}`;
+  return `${itemName} × ${quantity.toLocaleString('vi-VN')}`;
 };
 
 // Link "Try again": quay lại Checkout với đúng mục đã chọn (UC17 E1)
@@ -72,7 +72,7 @@ export const getRetryLink = (order) => {
 
 // Tiêu đề + mô tả cho từng trạng thái thất bại
 export const FAILURE_TEXT = {
-  FAILED: { title: 'Payment failed', description: 'The payment gateway declined this payment. Nothing was charged and your plan and credits are unchanged.' },
-  CANCELLED: { title: 'Payment cancelled', description: 'You cancelled this payment. Nothing was charged and your plan and credits are unchanged.' },
-  EXPIRED: { title: 'Payment expired', description: 'This order was not paid within 15 minutes. Nothing was charged and your plan and credits are unchanged.' },
+  FAILED: { title: 'Thanh toán thất bại', description: 'Cổng thanh toán đã từ chối giao dịch. Bạn không bị trừ tiền; gói dịch vụ và tín dụng vẫn được giữ nguyên.' },
+  CANCELLED: { title: 'Đã hủy thanh toán', description: 'Bạn đã hủy thanh toán. Bạn không bị trừ tiền; gói dịch vụ và tín dụng vẫn được giữ nguyên.' },
+  EXPIRED: { title: 'Thanh toán đã hết hạn', description: 'Đơn hàng chưa được thanh toán trong vòng 15 phút. Bạn không bị trừ tiền; gói dịch vụ và tín dụng vẫn được giữ nguyên.' },
 };

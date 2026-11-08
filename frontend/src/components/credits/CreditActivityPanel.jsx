@@ -26,8 +26,8 @@ export default function CreditActivityPanel() {
       <HistoryFilters
         idPrefix="credit"
         filterField="type"
-        filterLabel="Type"
-        allLabel="All types"
+        filterLabel="Loại"
+        allLabel="Tất cả loại"
         options={CREDIT_TYPE_OPTIONS}
         filters={history.filters}
         onChange={history.changeFilter}
@@ -42,21 +42,21 @@ export default function CreditActivityPanel() {
         isEmpty={list.items.length === 0}
         filtersActive={history.filtersActive}
         onClearFilters={history.clearFilters}
-        emptyTitle="No credit activity yet"
-        emptyText="Upgrade to Pro or buy a credit pack to get started."
-        emptyAction={<Link to="/checkout" className="btn btn-primary btn-sm">Upgrade / Buy credits</Link>}
+        emptyTitle="Chưa có biến động tín dụng"
+        emptyText="Nâng cấp lên Pro hoặc mua gói tín dụng để bắt đầu."
+        emptyAction={<Link to="/checkout" className="btn btn-primary btn-sm">Nâng cấp / Mua tín dụng</Link>}
       />
 
       {!list.loadError && list.items.length > 0 && (
         <table className="data-table history-table">
-          <caption className="visually-hidden">Credit activity</caption>
+          <caption className="visually-hidden">Biến động tín dụng</caption>
           <thead>
             <tr>
-              <th scope="col">Date</th>
-              <th scope="col">Type</th>
-              <th scope="col">Details</th>
-              <th scope="col" className="cell-number">Credits</th>
-              <th scope="col">Expires</th>
+              <th scope="col">Ngày</th>
+              <th scope="col">Loại</th>
+              <th scope="col">Chi tiết</th>
+              <th scope="col" className="cell-number">Tín dụng</th>
+              <th scope="col">Hết hạn</th>
             </tr>
           </thead>
           <tbody>
@@ -67,11 +67,11 @@ export default function CreditActivityPanel() {
               }
               return (
                 <tr key={transaction._id}>
-                  <td data-label="Date">{formatDateTime(transaction.created_at)}</td>
-                  <td data-label="Type">{getCreditTypeLabel(transaction.type)}</td>
-                  <td data-label="Details">{getCreditDescription(transaction)}</td>
-                  <td data-label="Credits" className={amountClass}>{formatCreditAmount(transaction.amount)}</td>
-                  <td data-label="Expires">{formatDate(transaction.expires_at)}</td>
+                  <td data-label="Ngày">{formatDateTime(transaction.created_at)}</td>
+                  <td data-label="Loại">{getCreditTypeLabel(transaction.type)}</td>
+                  <td data-label="Chi tiết">{getCreditDescription(transaction)}</td>
+                  <td data-label="Tín dụng" className={amountClass}>{formatCreditAmount(transaction.amount)}</td>
+                  <td data-label="Hết hạn">{formatDate(transaction.expires_at)}</td>
                 </tr>
               );
             })}
@@ -83,7 +83,7 @@ export default function CreditActivityPanel() {
         pagination={list.pagination}
         onPageChange={history.setPage}
         disabled={list.loading}
-        label="Credit activity pages"
+        label="Phân trang biến động tín dụng"
       />
     </>
   );

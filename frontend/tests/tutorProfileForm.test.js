@@ -26,19 +26,19 @@ test('profile form marks required inputs and validates item completeness and 50-
       const fifty = Array(50).fill('dạy').join(' \\n\\t ');
       assert.equal(countProfileWords(fifty), 50);
       assert.equal(validateProfileForm({ ...values, bio: fifty }).top.bio, undefined);
-      assert.match(validateProfileForm({ ...values, bio: fifty + ' thêm' }).top.bio, /50 words/);
+      assert.match(validateProfileForm({ ...values, bio: fifty + ' thêm' }).top.bio, /50 từ/);
       const html = renderToStaticMarkup(<TutorProfileForm initialValues={values} submitLabel="Save" onSubmit={async () => {}} />);
       assert.equal((html.match(/class="form-required"/g) || []).length, 12);
       assert.equal((html.match(/ required=""/g) || []).length, 12);
-      assert.equal((html.match(/\\(optional\\)/g) || []).length, 2);
-      assert.match(html, /2\\/50 words/);
+      assert.equal((html.match(/\\(không bắt buộc\\)/g) || []).length, 2);
+      assert.match(html, /2\\/50 từ/);
       const current = { ...values, experiences: [{ ...values.experiences[0], end_date: 'NOW' }] };
       assert.deepEqual(validateProfileForm(current).experiences, [{}]);
       assert.equal(toProfileFormValues({ ...values, experiences: [{ ...values.experiences[0], end_date: null }] }).experiences[0].end_date, 'NOW');
       const currentHtml = renderToStaticMarkup(<TutorProfileForm initialValues={current} submitLabel="Save" onSubmit={async () => {}} />);
       assert.match(currentHtml, /id="experiences-0-end_date"[^>]*disabled=""/);
       assert.match(currentHtml, /type="checkbox"[^>]*checked=""/);
-      assert.match(currentHtml, />Now<\\/span>/);
+      assert.match(currentHtml, />Hiện tại<\\/span>/);
     ` },
     bundle: true, platform: 'node', format: 'cjs', jsx: 'automatic', write: false,
   });

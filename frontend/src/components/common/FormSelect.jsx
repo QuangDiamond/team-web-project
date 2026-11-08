@@ -11,7 +11,7 @@ export default function FormSelect({ id, label, value, onChange, options, error,
       <label htmlFor={id} className="form-label">
         {label}
         {required && <span className="form-required" aria-hidden="true"> *</span>}
-        {optional && <span className="form-optional"> (optional)</span>}
+        {optional && <span className="form-optional"> (không bắt buộc)</span>}
       </label>
       <div className={error ? 'form-control has-error' : 'form-control'}>
         <select

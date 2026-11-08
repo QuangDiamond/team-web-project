@@ -7,11 +7,11 @@ import { focusFirstInvalidField, toFieldErrors } from '../../utils/authValidator
 
 const FIELD_ORDER = ['title', 'subject_name', 'grade_level', 'price', 'schedule', 'description'];
 const REQUIRED_FIELDS = [
-  { name: 'title', label: 'Title' },
-  { name: 'subject_name', label: 'Subject' },
-  { name: 'grade_level', label: 'Grade level' },
-  { name: 'schedule', label: 'Available schedule' },
-  { name: 'description', label: 'Description' },
+  { name: 'title', label: "Tiêu đề" },
+  { name: 'subject_name', label: "Môn học" },
+  { name: 'grade_level', label: "Khối lớp" },
+  { name: 'schedule', label: "Lịch có thể dạy" },
+  { name: 'description', label: "Mô tả" },
 ];
 const MAX_LENGTHS = { title: 150, subject_name: 100, grade_level: 50, schedule: 300, description: 2000 };
 
@@ -30,22 +30,22 @@ const validate = (values) => {
   const errors = {};
   REQUIRED_FIELDS.forEach((field) => {
     if (!values[field.name].trim()) {
-      errors[field.name] = `${field.label} is required`;
+      errors[field.name] = `${field.label} là bắt buộc`;
     }
   });
   Object.keys(MAX_LENGTHS).forEach((name) => {
     if (values[name].trim().length > MAX_LENGTHS[name]) {
-      errors[name] = `Must be at most ${MAX_LENGTHS[name]} characters`;
+      errors[name] = `Tối đa ${MAX_LENGTHS[name]} ký tự`;
     }
   });
 
   const price = Number(values.price);
   if (values.price === '' || Number.isNaN(price)) {
-    errors.price = 'Price is required';
+    errors.price = "Vui lòng nhập học phí";
   } else if (price <= 0) {
-    errors.price = 'Price must be greater than 0';
+    errors.price = "Học phí phải lớn hơn 0";
   } else if (price > 100000000) {
-    errors.price = 'Price is too large';
+    errors.price = "Học phí quá lớn";
   }
   return errors;
 };
@@ -130,34 +130,34 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
 
       <FormInput
         id="title"
-        label="Title"
+        label="Tiêu đề"
         value={values.title}
         onChange={handleChange}
         error={errors.title}
-        placeholder="e.g. Gia sư Toán lớp 9 ôn thi vào 10"
+        placeholder="Ví dụ: Gia sư Toán lớp 9 ôn thi vào 10"
         disabled={submitting}
       />
       <div className="form-grid">
-        <FormInput id="subject_name" label="Subject" value={values.subject_name} onChange={handleChange} error={errors.subject_name} placeholder="e.g. Toán" disabled={submitting} />
-        <FormInput id="grade_level" label="Grade level" value={values.grade_level} onChange={handleChange} error={errors.grade_level} placeholder="e.g. Lớp 9" disabled={submitting} />
+        <FormInput id="subject_name" label="Môn học" value={values.subject_name} onChange={handleChange} error={errors.subject_name} placeholder="Ví dụ: Toán" disabled={submitting} />
+        <FormInput id="grade_level" label="Khối lớp" value={values.grade_level} onChange={handleChange} error={errors.grade_level} placeholder="Ví dụ: Lớp 9" disabled={submitting} />
       </div>
       <div className="form-grid">
         <FormInput
           id="price"
-          label="Price (VND / session)"
+          label="Học phí (VND / buổi)"
           type="number"
           value={values.price}
           onChange={handleChange}
           error={errors.price}
-          placeholder="e.g. 150000"
+          placeholder="Ví dụ: 150000"
           disabled={submitting}
           belowControl={priceHint ? <p className="form-hint-left">{priceHint}</p> : null}
         />
-        <FormInput id="schedule" label="Available schedule" value={values.schedule} onChange={handleChange} error={errors.schedule} placeholder="e.g. Tối thứ 3, thứ 5" disabled={submitting} />
+        <FormInput id="schedule" label="Lịch có thể dạy" value={values.schedule} onChange={handleChange} error={errors.schedule} placeholder="Ví dụ: Tối thứ 3, thứ 5" disabled={submitting} />
       </div>
 
       <div className="form-field">
-        <p className="form-label" id="post-mode-label">Session mode</p>
+        <p className="form-label" id="post-mode-label">Hình thức học</p>
         <div className="mode-toggle" role="group" aria-labelledby="post-mode-label">
           {TEACHING_MODES.map((mode) => (
             <button
@@ -176,27 +176,27 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
 
       <FormTextarea
         id="description"
-        label="Description"
+        label="Mô tả"
         rows={5}
         value={values.description}
         onChange={handleChange}
         error={errors.description}
-        placeholder="Describe your teaching method and what students will learn"
+        placeholder="Mô tả phương pháp giảng dạy và nội dung học sinh sẽ được học"
         disabled={submitting}
       />
 
       <div className="post-form-actions">
         {isEdit ? (
           <button type="submit" className="btn btn-primary" disabled={submitting}>
-            {submitting ? 'Saving...' : 'Save changes'}
+            {submitting ? "Đang lưu..." : "Lưu thay đổi"}
           </button>
         ) : (
           <>
             <button type="button" className="btn btn-outline" disabled={submitting} onClick={() => submitWithStatus('DRAFT')}>
-              Save as draft
+              Lưu bản nháp
             </button>
             <button type="button" className="btn btn-primary" disabled={submitting} onClick={() => submitWithStatus('PUBLISHED')}>
-              {submitting ? 'Saving...' : 'Publish'}
+              {submitting ? "Đang lưu..." : "Đăng bài"}
             </button>
           </>
         )}

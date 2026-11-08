@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { getHomePathByRole } from '../utils/getHomePathByRole';
 import { getUnreadCount } from '../services/notificationService';
 import { getMyProfile } from '../services/tutorProfileService';
+import { getRoleLabel } from '../constants/dashboardNav';
 
 export default function Layout() {
   const { user, logout } = useAuth();
@@ -132,7 +133,7 @@ export default function Layout() {
                   )}
                 </Link>
                 <Link to={dashboardPath} className="btn btn-primary">
-                  Dashboard
+                  Bảng điều khiển
                 </Link>
                 <Link to={profilePath} className="btn btn-outline">
                   {user.full_name || user.email || 'Tài khoản'}
@@ -161,7 +162,7 @@ export default function Layout() {
               type="button"
               className="mobile-menu-btn"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle Navigation"
+              aria-label="Mở/đóng menu"
             >
               <svg
                 width="24"
@@ -245,7 +246,7 @@ export default function Layout() {
                     className="btn btn-primary"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Vào Dashboard ({user.role})
+                    Vào bảng điều khiển ({getRoleLabel(user.role)})
                   </Link>
                   <Link
                     to={notificationsPath}
@@ -320,9 +321,9 @@ export default function Layout() {
             <div className="footer-col">
               <h4>Dành cho người dùng</h4>
               <ul>
-                <li><Link to={user ? dashboardPath : '/login'}>Bảng điều khiển (Dashboard)</Link></li>
+                <li><Link to={user ? dashboardPath : '/login'}>Bảng điều khiển</Link></li>
                 <li><Link to="/register">Đăng ký Phụ huynh / Gia sư</Link></li>
-                <li><Link to="/payment">Gói dịch vụ &amp; Credits</Link></li>
+                <li><Link to="/payment">Gói dịch vụ &amp; tín dụng</Link></li>
               </ul>
             </div>
 
@@ -336,7 +337,7 @@ export default function Layout() {
           </div>
 
           <div className="footer-bottom">
-            <p>&copy; {new Date().getFullYear()} TuConnector. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} TuConnector. Bảo lưu mọi quyền.</p>
             <div className="footer-bottom-links">
               <Link to="/">Trang chủ</Link>
               <Link to="/login">Đăng nhập</Link>

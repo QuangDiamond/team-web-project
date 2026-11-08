@@ -1,34 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { moderationService } from '../../services/moderationService';
+import { getUserRoleLabel, getAuditActionLabel } from '../../utils/userDisplay';
 import '../../styles/Moderation.css';
 
 const ACTION_OPTIONS = [
   {
     key: 'NONE',
-    title: 'Bỏ qua báo cáo (Dismiss)',
+    title: 'Bỏ qua báo cáo',
     desc: 'Báo cáo không vi phạm tiêu chuẩn cộng đồng hoặc không đủ bằng chứng.'
   },
   {
     key: 'CONTENT_HIDDEN',
-    title: 'Tạm ẩn nội dung (Content Hidden)',
+    title: 'Tạm ẩn nội dung',
     desc: 'Tạm ẩn nội dung khỏi trang tìm kiếm công khai để chờ người dùng đính chính.'
   },
   {
     key: 'CONTENT_REMOVED',
-    title: 'Gỡ bỏ nội dung (Content Removed)',
+    title: 'Gỡ bỏ nội dung',
     desc: 'Xóa vĩnh viễn nội dung vi phạm nghiêm trọng (lừa đảo, thông tin giả mạo).'
   },
   {
     key: 'WARNING_SENT',
-    title: 'Gửi cảnh cáo đến người dùng (Warning Sent)',
+    title: 'Gửi cảnh cáo đến người dùng',
     desc: 'Gửi thông báo cảnh cáo chính thức vi phạm điều khoản dịch vụ (BR-22).'
   },
   {
     key: 'USER_BANNED',
-    title: 'Khóa tài khoản vi phạm (Lock User - UC39)',
+    title: 'Khóa tài khoản vi phạm',
     desc: 'Khóa tài khoản người dùng do tái phạm nhiều lần hoặc vi phạm đặc biệt nghiêm trọng.'
   }
 ];
+
+const MODERATION_LABELS = {
+  CRITICAL: 'Khẩn cấp', HIGH: 'Cao', MEDIUM: 'Trung bình', LOW: 'Thấp',
+  PENDING: 'Chờ xử lý', INVESTIGATING: 'Đang xác minh', RESOLVED: 'Đã xử lý', DISMISSED: 'Đã bỏ qua',
+  POST: 'Bài đăng gia sư', REQUEST: 'Yêu cầu tìm gia sư', REVIEW: 'Đánh giá',
+  MESSAGE: 'Tin nhắn', USER: 'Tài khoản người dùng', CLASSROOM: 'Lớp học',
+  NONE: 'Bỏ qua báo cáo', CONTENT_HIDDEN: 'Tạm ẩn nội dung', CONTENT_REMOVED: 'Gỡ bỏ nội dung',
+  WARNING_SENT: 'Gửi cảnh cáo', USER_BANNED: 'Khóa tài khoản',
+};
+
+const getModerationLabel = (value) => MODERATION_LABELS[value] || getAuditActionLabel(value);
 
 export default function Moderation() {
   const [reports, setReports] = useState([]);
@@ -108,7 +120,7 @@ export default function Moderation() {
 
   const handleSubmitResolution = async () => {
     if (!adminNote.trim()) {
-      showToast('⚠️ Quy tắc BR-20: Vui lòng nhập lý do/ghi chú xử lý của Admin.');
+      showToast('⚠️ Vui lòng nhập lý do hoặc ghi chú xử lý của quản trị viên.');
       return;
     }
 
@@ -198,7 +210,7 @@ export default function Moderation() {
             className="mod-audit-btn"
             onClick={() => setShowAuditSection(!showAuditSection)}
           >
-            <span>📜</span> {showAuditSection ? 'Ẩn Audit Log' : 'Xem Audit Log (BR-20)'}
+            <span>📜</span> {showAuditSection ? 'Ẩn nhật ký quản trị' : 'Xem nhật ký quản trị'}
           </button>
         </div>
 
@@ -263,10 +275,10 @@ export default function Moderation() {
               onChange={(e) => setSeverityFilter(e.target.value)}
             >
               <option value="ALL">Mọi mức độ nghiêm trọng</option>
-              <option value="CRITICAL">🔴 Critical (Khẩn cấp)</option>
-              <option value="HIGH">🟠 High (Cao)</option>
-              <option value="MEDIUM">🟡 Medium (Vừa)</option>
-              <option value="LOW">🟢 Low (Thấp)</option>
+              <option value="CRITICAL">🔴 Khẩn cấp</option>
+              <option value="HIGH">🟠 Cao</option>
+              <option value="MEDIUM">🟡 Trung bình</option>
+              <option value="LOW">🟢 Thấp</option>
             </select>
 
             <select
@@ -275,12 +287,12 @@ export default function Moderation() {
               onChange={(e) => setTargetTypeFilter(e.target.value)}
             >
               <option value="ALL">Mọi loại đối tượng</option>
-              <option value="POST">Bài đăng gia sư (POST)</option>
-              <option value="REQUEST">Yêu cầu tìm gia sư (REQUEST)</option>
-              <option value="REVIEW">Đánh giá & Rating (REVIEW)</option>
-              <option value="MESSAGE">Tin nhắn hội thoại (MESSAGE)</option>
-              <option value="USER">Tài khoản người dùng (USER)</option>
-              <option value="CLASSROOM">Lớp học (CLASSROOM)</option>
+              <option value="POST">Bài đăng gia sư</option>
+              <option value="REQUEST">Yêu cầu tìm gia sư</option>
+              <option value="REVIEW">Đánh giá</option>
+              <option value="MESSAGE">Tin nhắn hội thoại</option>
+              <option value="USER">Tài khoản người dùng</option>
+              <option value="CLASSROOM">Lớp học</option>
             </select>
           </div>
         </div>
@@ -329,12 +341,12 @@ export default function Moderation() {
               >
                 <div className="report-top-meta">
                   <div className="meta-badges-group">
-                    <span className="badge-target">{item.target_type}</span>
+                    <span className="badge-target">{getModerationLabel(item.target_type)}</span>
                     <span className={getSeverityBadgeClass(item.severity)}>
-                      {item.severity}
+                      {getModerationLabel(item.severity)}
                     </span>
                     <span className={getStatusBadgeClass(item.status)}>
-                      {item.status}
+                      {getModerationLabel(item.status)}
                     </span>
                   </div>
 
@@ -351,7 +363,7 @@ export default function Moderation() {
                   {item.target_preview && (
                     <div className="report-content-preview">
                       <div className="preview-title">
-                        {item.target_preview.title} — {item.target_preview.author_name} ({item.target_preview.author_role})
+                        {item.target_preview.title} — {item.target_preview.author_name} ({getUserRoleLabel(item.target_preview.author_role)})
                       </div>
                       <div className="preview-body">
                         &ldquo;{item.target_preview.content}&rdquo;
@@ -371,7 +383,7 @@ export default function Moderation() {
                         className="reporter-avatar"
                       />
                       <strong>{item.reporter_user_id.full_name}</strong>
-                      <span>({item.reporter_user_id.role})</span>
+                      <span>({getUserRoleLabel(item.reporter_user_id.role)})</span>
                       <span>· {item.reporter_user_id.email}</span>
                     </div>
                   )}
@@ -381,8 +393,8 @@ export default function Moderation() {
                   <div>
                     {item.admin_note && (
                       <span className="resolved-note-tag">
-                        <span>📝 Ghi chú Admin:</span> {item.admin_note} (Hành
-                        động: {item.action_taken})
+                        <span>📝 Ghi chú quản trị viên:</span> {item.admin_note} (Hành
+                        động: {getModerationLabel(item.action_taken)})
                       </span>
                     )}
                   </div>
@@ -396,7 +408,7 @@ export default function Moderation() {
                     </button>
                   ) : (
                     <span className="badge-status status-resolved">
-                      ✓ Đã hoàn tất xử lý ({item.action_taken})
+                      ✓ Đã hoàn tất xử lý ({getModerationLabel(item.action_taken)})
                     </span>
                   )}
                 </div>
@@ -410,7 +422,7 @@ export default function Moderation() {
           <div className="audit-logs-section">
             <div className="audit-section-header">
               <h2>
-                <span>📜</span> Nhật ký kiểm duyệt (Admin Audit Logs - BR-20)
+                <span>📜</span> Nhật ký kiểm duyệt
               </h2>
               <span style={{ fontSize: '13px', color: '#64748b' }}>
                 Ghi vết bắt buộc mọi quyết định xử lý
@@ -422,7 +434,7 @@ export default function Moderation() {
                 <thead>
                   <tr>
                     <th>Thời gian</th>
-                    <th>Admin thực hiện</th>
+                    <th>Quản trị viên thực hiện</th>
                     <th>Hành động</th>
                     <th>Lý do xử lý (BR-20)</th>
                     <th>Chi tiết đối tượng</th>
@@ -435,10 +447,10 @@ export default function Moderation() {
                         {new Date(log.created_at).toLocaleString('vi-VN')}
                       </td>
                       <td>
-                        <strong>{log.admin_user_id?.full_name || 'Admin'}</strong>
+                        <strong>{log.admin_user_id?.full_name || 'Quản trị viên'}</strong>
                       </td>
                       <td>
-                        <span className="audit-action-tag">{log.action}</span>
+                        <span className="audit-action-tag">{getModerationLabel(log.action)}</span>
                       </td>
                       <td>{log.reason}</td>
                       <td style={{ fontSize: '12px', color: '#64748b' }}>
@@ -483,9 +495,9 @@ export default function Moderation() {
                     className={getSeverityBadgeClass(activeReport.severity)}
                     style={{ marginRight: '8px' }}
                   >
-                    {activeReport.severity}
+                    {getModerationLabel(activeReport.severity)}
                   </span>
-                  <span className="badge-target">{activeReport.target_type}</span>
+                  <span className="badge-target">{getModerationLabel(activeReport.target_type)}</span>
                   <p
                     style={{
                       marginTop: '8px',
@@ -524,7 +536,7 @@ export default function Moderation() {
                   <span>📌</span>
                   <span>
                     <strong>Quy định BR-20:</strong> Mọi hành động can thiệp nội
-                    dung và tài khoản của Admin phải ghi rõ căn cứ và lý do xử lý
+                    dung và tài khoản của quản trị viên phải ghi rõ căn cứ và lý do xử lý
                     để lưu vào nhật ký kiểm toán.
                   </span>
                 </div>
@@ -539,7 +551,7 @@ export default function Moderation() {
                       marginBottom: '6px'
                     }}
                   >
-                    Lý do / Căn cứ xử lý của Admin <span style={{ color: '#ef4444' }}>*</span>
+                    Lý do / Căn cứ xử lý của quản trị viên <span style={{ color: '#ef4444' }}>*</span>
                   </label>
                   <textarea
                     className="admin-note-input"

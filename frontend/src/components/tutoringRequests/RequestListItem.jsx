@@ -4,9 +4,9 @@ import { REQUEST_STATUS, formatBudget, getModeLabel, getStatusBadge } from '../.
 
 const pluralize = (count) => {
   if (count === 1) {
-    return '1 application';
+    return "1 đơn ứng tuyển";
   }
-  return `${count} applications`;
+  return `${count} đơn ứng tuyển`;
 };
 
 // Một dòng trong danh sách request của phụ huynh (Figma: RequestsScreen)
@@ -14,15 +14,15 @@ export default function RequestListItem({ request }) {
   const navigate = useNavigate();
   const badge = getStatusBadge(REQUEST_STATUS, request.status);
 
-  let learner = 'no specific learner';
+  let learner = "không chỉ định học sinh";
   if (request.student) {
     learner = request.student.full_name;
   }
 
-  let editOrView = 'View';
+  let editOrView = "Xem";
   let editOrViewPath = `/parent/requests/${request._id}`;
   if (request.can_edit) {
-    editOrView = 'Edit';
+    editOrView = "Sửa";
     editOrViewPath = `/parent/requests/${request._id}/edit`;
   }
 
@@ -36,10 +36,10 @@ export default function RequestListItem({ request }) {
             {request.title}
           </button>
           <span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>
-          {request.is_expired && <span className="status-badge tone-error">Expired</span>}
+          {request.is_expired && <span className="status-badge tone-error">Đã hết hạn</span>}
         </div>
         <p className="item-meta">
-          For {learner} · {getModeLabel(request.teaching_mode)} · {formatBudget(request.budget)}
+          Cho yêu cầu {learner} · {getModeLabel(request.teaching_mode)} · {formatBudget(request.budget)}
         </p>
       </div>
       <span className="item-count">{pluralize(request.application_count)}</span>
@@ -50,7 +50,7 @@ export default function RequestListItem({ request }) {
           onClick={() => navigate(`/parent/requests/${request._id}/applications`)}
         >
           <Users size={14} aria-hidden="true" />
-          <span>Applications</span>
+          <span>Đơn ứng tuyển</span>
         </button>
         {canSuggest && (
           <button
@@ -59,7 +59,7 @@ export default function RequestListItem({ request }) {
             onClick={() => navigate(`/parent/requests/${request._id}/ai-suggestions`)}
           >
             <Sparkles size={14} aria-hidden="true" />
-            <span>AI Suggestions</span>
+            <span>Gợi ý AI</span>
           </button>
         )}
         <button type="button" className="btn btn-outline btn-sm" onClick={() => navigate(editOrViewPath)}>
