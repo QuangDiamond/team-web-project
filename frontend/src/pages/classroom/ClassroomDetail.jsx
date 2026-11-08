@@ -895,7 +895,7 @@ export default function ClassroomDetail() {
                             <div>
                               <div style={{ fontWeight: 600, color: '#0f172a' }}>{name}</div>
                               <div style={{ fontSize: '12px', color: '#64748b' }}>
-                                {u.role === 'PARENT' ? 'Phụ huynh' : 'Học sinh'}
+                                {u.role === 'PARENT' ? 'Phụ huynh' : u.role === 'STUDENT' ? 'Học sinh' : u.role === 'ADMIN' ? 'Quản trị viên' : 'Thành viên'}
                               </div>
                               {/* Xem liên kết phụ huynh - học viên (UC23) */}
                               {u.role === 'PARENT' && mem.linked_children && mem.linked_children.length > 0 && (
@@ -916,7 +916,7 @@ export default function ClassroomDetail() {
                         <td>{mem.joined_at ? new Date(mem.joined_at).toLocaleDateString('vi-VN') : '—'}</td>
                         <td>
                           <span className={`status-pill ${isActive ? 'active' : 'removed'}`}>
-                            {isActive ? 'Đang học' : 'Đã xóa'}
+                            {isActive ? (u.role === 'PARENT' ? 'Đang theo dõi' : 'Đang học') : 'Đã gỡ'}
                           </span>
                           {mem.removal_reason && (
                             <div style={{ fontSize: '11px', color: '#991b1b', marginTop: '2px' }}>

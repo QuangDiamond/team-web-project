@@ -832,9 +832,9 @@ export const getClassMembers = async ({ classroomId }) => {
     return m;
   });
 
-  // Loại bỏ các bản ghi tài khoản Gia sư khỏi danh sách thành viên học viên/phụ huynh
+  // Loại bỏ các bản ghi tài khoản Gia sư và Admin khỏi danh sách thành viên học viên/phụ huynh
   const validMembers = enrichedMembers.filter(
-    (m) => m.user_id && m.user_id.role !== 'TUTOR'
+    (m) => m.user_id && m.user_id.role !== 'TUTOR' && m.user_id.role !== 'ADMIN'
   );
 
   return validMembers;
@@ -868,6 +868,14 @@ export const addMemberToClass = async ({ classroomId, tutorProfile, data }) => {
     throw new AppError(`Không tìm thấy người dùng nào với email "${email.trim()}"`, 404);
   }
 
+  // Không cho phép thêm Admin hoặc Gia sư làm thành viên lớp học
+  if (targetUser.role === 'ADMIN') {
+    throw new AppError('Tài khoản Quản trị viên (Admin) không thể tham gia lớp học với tư cách thành viên', 400);
+  }
+  if (targetUser.role === 'TUTOR') {
+    throw new AppError('Tài khoản Gia sư không thể tham gia lớp học với tư cách học viên/phụ huynh', 400);
+  }
+
   // Không cho phép tự thêm chính gia sư làm thành viên học sinh
   if (targetUser._id.toString() === tutorProfile.user_id?.toString()) {
     throw new AppError('Bạn là gia sư phụ trách lớp này, không thể thêm chính mình làm thành viên học sinh', 400);
@@ -878,6 +886,25 @@ export const addMemberToClass = async ({ classroomId, tutorProfile, data }) => {
     const activeStudentCount = await countActiveStudentsInClass(classroom._id);
     if (activeStudentCount >= classroom.capacity) {
       throw new AppError(`Lớp học đã đạt sĩ số tối đa (${classroom.capacity} học sinh)`, 400);
+    }
+  } else if (targetUser.role === 'PARENT') {
+    // Nếu thêm Phụ huynh: Phụ huynh bắt buộc phải có con đang theo học trong lớp này
+    const childLinks = await ParentChildLink.find({
+      parent_user_id: targetUser._id,
+      status: ENUMS.ParentChildLinksStatus.ACCEPTED,
+    }).select('student_user_id').lean();
+    const studentUserIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
+
+    const isChildInClass = await ClassMember.findOne({
+      class_id: classroom._id,
+      user_id: { $in: studentUserIds },
+      status: ENUMS.ClassMembersStatus.ACTIVE,
+    });
+    if (!isChildInClass) {
+      throw new AppError(
+        'Phụ huynh này chưa có con nào đang theo học trong lớp. Vui lòng thêm học sinh (con của phụ huynh) vào lớp trước!',
+        400
+      );
     }
   }
 
