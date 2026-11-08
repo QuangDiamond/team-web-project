@@ -16,6 +16,29 @@ const configureCloudinary = () => {
 };
 
 /**
+ * Decode and resize a user avatar using the existing Cloudinary connection.
+ * @param {Object} file - Validated image buffer.
+ * @param {string} userId - Authenticated owner.
+ * @returns {Promise<Object>} Uploaded image details.
+ */
+export const uploadAvatarToCloudinary = (file, userId) => {
+  configureCloudinary();
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream({
+      folder: `avatars/${userId}`, resource_type: 'image', format: 'jpg',
+      transformation: [{ width: 512, height: 512, crop: 'fill', gravity: 'auto' }],
+    }, (error, result) => {
+      if (error || !result?.secure_url || !result?.public_id) {
+        reject(new AppError('Không thể tải ảnh đại diện. Vui lòng thử lại.', 502));
+        return;
+      }
+      resolve(result);
+    });
+    stream.end(file.buffer);
+  });
+};
+
+/**
  * Upload a file buffer to Cloudinary
  * @param {Buffer} fileBuffer - File contents held in memory
  * @param {string} fileName - Original file name

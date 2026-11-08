@@ -42,7 +42,7 @@ export const getTutorPublicProfile = async (profileId, query = {}) => {
     throw new AppError(UNAVAILABLE, 404);
   }
   const profile = await TutorProfile.findById(profileId)
-    .select('_id user_id avatar_url cover_url headline bio address is_address_hidden is_complete availability_status average_rating experiences educations achievements')
+    .select('_id user_id avatar_url cover_url headline bio address is_address_hidden is_complete availability_status average_rating experiences educations achievements teaching_categories')
     .lean();
   if (!profile || profile.is_complete !== true) {
     throw new AppError(UNAVAILABLE, 404);
@@ -63,7 +63,8 @@ export const getTutorPublicProfile = async (profileId, query = {}) => {
       _id: String(profile._id),
       user_id: String(profile.user_id),
       full_name: maskContact(user.full_name),
-      avatar_url: profile.avatar_url || user.avatar_url || null,
+      avatar_url: user.avatar_url || profile.avatar_url || null,
+      teaching_categories: (profile.teaching_categories || []).map((item) => ({ type: item.type, category_id: String(item.category_id), name: maskContact(item.name) })),
       cover_url: profile.cover_url ?? null,
       headline: maskContact(profile.headline),
       bio: maskContact(profile.bio),

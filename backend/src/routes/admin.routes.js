@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import { categoryBodySchema, deleteCategorySchema } from '../common/validator/categorySchema.js';
+import { listAdminCategories, createCategory, updateCategory, removeCategory } from '../controllers/category.controller.js';
 import { authentication, authorize } from '../common/middlewares/auth.middleware.js';
 import { validator } from '../common/validator/validator.js';
 import {
@@ -20,6 +22,10 @@ import {
 import { updateUserStatusSchema, createAdminSchema } from '../common/validator/adminUserSchema.js';
 import { getUsers, getUserDetail, updateUserStatus, createAdmin } from '../controllers/adminUser.controller.js';
 export const adminRoutes = Router();
+adminRoutes.get('/categories/:type', authentication, authorize('ADMIN'), listAdminCategories);
+adminRoutes.post('/categories/:type', authentication, authorize('ADMIN'), validator(categoryBodySchema), createCategory);
+adminRoutes.put('/categories/:type/:id', authentication, authorize('ADMIN'), validator(categoryBodySchema), updateCategory);
+adminRoutes.delete('/categories/:type/:id', authentication, authorize('ADMIN'), validator(deleteCategorySchema), removeCategory);
 
 // UC39 Manage Plans & Pricing: chỉ ADMIN
 adminRoutes.get('/plans', authentication, authorize('ADMIN'), getPlans)

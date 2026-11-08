@@ -1,4 +1,5 @@
-// Ghép gia sư với request chỉ dựa trên môn học và khối lớp (UC09, UC11). Toàn bộ là hàm thuần, không đụng DB hay mạng.
+// Shared pure matching rules for both Parent and Tutor suggestions.
+import { maskContact } from '../common/utils/contactMask.js';
 
 /**
  * Chuẩn hóa chuỗi để so khớp: bỏ dấu tiếng Việt, chữ thường, bỏ ký tự đặc biệt
@@ -64,4 +65,24 @@ export const isGradeMatch = (requestGrade, postGrade) => {
  */
 export const matchesSubjectAndGrade = (request, post) => {
   return isSubjectMatch(request.subject_name, post.subject_name) && isGradeMatch(request.grade_level, post.grade_level);
+};
+
+/**
+ * Match both catalog types using their authoritative active names and IDs.
+ * @param {Object} request - Request subject and education level.
+ * @param {Object[]} selections - Tutor profile category references.
+ * @param {Map} catalog - Active category names keyed by type and ID.
+ * @returns {Object[]} Matching subject and level, or an empty list.
+ */
+export const matchTeachingCategories = (request, selections, catalog) => {
+  const subject = selections.find((item) => item.type === 'subjects' &&
+    normalizeText(catalog.get('subjects:' + item.category_id)) === normalizeText(request.subject_name));
+  const grade = selections.find((item) => item.type === 'grades' &&
+    normalizeText(catalog.get('grades:' + item.category_id)) === normalizeText(request.grade_level));
+  if (!subject || !grade || !request.subject_name || !request.grade_level) return [];
+  return [subject, grade].map((item) => ({
+    type: item.type,
+    category_id: String(item.category_id),
+    name: maskContact(catalog.get(item.type + ':' + item.category_id)),
+  }));
 };

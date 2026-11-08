@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { categoryRoutes } from './category.routes.js';
 import { authRoute } from './auth.routes.js';
 import { userRoutes } from './user.routes.js';
 import { healthRoutes } from './health.routes.js';
@@ -27,6 +28,7 @@ import { classMaterialRoutes } from './classMaterial.routes.js';
 import { classSessionRoutes } from './classSession.routes.js';
 
 export const router = Router();
+router.use('/categories/v1', categoryRoutes);
 
 router.use('/user/v1', userRoutes);
 router.use('/auth/v1', authRoute);
@@ -36,6 +38,7 @@ router.use('/admin/v1', adminRoutes);
 router.use('/classroom/v1', classroomRoutes);
 router.use('/student-dashboard/v1', studentDashboardRoutes);
 router.use('/ai-suggestions/v1', aiSuggestionRoutes);
+router.use('/suggestions/v1', aiSuggestionRoutes);
 router.use('/parent-requests/v1', parentRequestRoutes);
 router.use('/tutor-requests/v1', tutorRequestRoutes);
 router.use('/applications/v1', applicationRoutes);

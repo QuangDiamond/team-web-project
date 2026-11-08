@@ -2,19 +2,15 @@ import mongoose from 'mongoose';
 import { ParentRequest } from '../models/ParentRequest.js';
 import { BookmarkedRequest } from '../models/BookmarkedRequest.js';
 import { ApplyRequest } from '../models/ApplyRequest.js';
-import { AiPostSuggestion } from '../models/AiPostSuggestion.js';
-import { TutorPost } from '../models/TutorPost.js';
 import { ENUMS } from '../models/enums.js';
 import { AppError } from '../common/utils/AppError.js';
 import { buildPagination } from '../common/utils/pagination.js';
 import { decimalToNumber, escapeRegex, getRequestCutoff, isRequestAvailable } from '../common/utils/requestRules.js';
 import { countApplications } from './parentRequest.service.js';
 import { getTutorProfileOrThrow } from './tutorContext.service.js';
-import { matchesSubjectAndGrade } from './tutorMatching.service.js';
+import { matchesSubjectAndGrade, matchTeachingCategories } from './tutorMatching.service.js';
+import { loadActiveTeachingCatalog } from './category.service.js';
 
-// UC11 – gợi ý request chỉ dựa trên môn học và khối lớp của các bài đăng gia sư, mới nhất trước (ai_reason luôn null, giống UC09)
-const SUGGESTION_LIMIT = 10;
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
 const { ParentRequestsStatus } = ENUMS;
 
@@ -282,125 +278,50 @@ export const listBookmarks = async (user, { page, limit }) => {
 };
 
 /**
- * Tính lại "Suggested for you" và thay cache cũ của gia sư này (24 giờ)
- * @param {Object} profile - TutorProfile (lean)
- * @returns {Promise<{ rows: Object[], hint: string|null }>} rows: bản ghi AI_POST_SUGGESTIONS vừa lưu
+ * Suggest current requests using the tutor's active teaching-category selections.
+ * @param {Object} user - Authenticated Tutor account.
+ * @param {Object} query - Page and limit.
+ * @returns {Promise<Object>} Decorated matching requests, pagination and optional profile hint.
  */
-const regenerateSuggestions = async (profile) => {
-  const posts = await TutorPost.find({ profile_id: profile._id, status: ENUMS.TutorPostsStatus.PUBLISHED }).lean();
-  // Chỉ xóa cache gợi ý của đúng gia sư này
-  await AiPostSuggestion.deleteMany({ tutor_profile_id: profile._id });
+export const getSuggestions = async (user, { page, limit }) => {
+  const profile = await getTutorProfileOrThrow(user);
+  const selections = profile.teaching_categories || [];
+  const profileHint = 'Chọn môn học và cấp học / trình độ giảng dạy trong hồ sơ để nhận gợi ý.';
+  const empty = { items: [], pagination: buildPagination(page, limit, 0), hint: profileHint };
+  if (profile.is_complete !== true || !selections.some((item) => item.type === 'subjects') ||
+      !selections.some((item) => item.type === 'grades')) return empty;
 
-  if (posts.length === 0) {
-    return { rows: [], hint: 'Publish a tutoring post to get suggestions that fit your profile.' };
-  }
+  const { catalog } = await loadActiveTeachingCatalog();
+  const activeSelections = selections.filter((item) => catalog.has(item.type + ':' + item.category_id));
+  if (!activeSelections.some((item) => item.type === 'subjects') ||
+      !activeSelections.some((item) => item.type === 'grades')) return empty;
 
   const appliedRequestIds = await ApplyRequest.distinct('request_id', {
     tutor_profile_id: profile._id,
     status: { $ne: ENUMS.ApplyRequestsStatus.WITHDRAWN },
   });
   const requests = await ParentRequest.find({
-    status: ParentRequestsStatus.OPEN,
-    created_at: { $gte: getRequestCutoff() },
+    ...buildBrowseFilter({}),
     _id: { $nin: appliedRequestIds },
-  }).lean();
-
-  const matched = requests.filter((request) => matchesAnyPost(request, posts));
-  matched.sort((first, second) => second.created_at - first.created_at);
-  const top = matched.slice(0, SUGGESTION_LIMIT);
-
-  if (top.length === 0) {
-    return { rows: [], hint: 'No open request fits your published posts yet. Check back later.' };
-  }
-
-  const cachedUntil = new Date(Date.now() + CACHE_TTL_MS);
-  const created = await AiPostSuggestion.insertMany(
-    top.map((entry) => ({
-      tutor_profile_id: profile._id,
-      request_id: entry._id,
-      match_score: null,
-      ai_reason: null,
-      cached_until: cachedUntil,
-    }))
-  );
-  return { rows: created.map((document) => document.toObject()), hint: null };
-};
-
-/**
- * Gắn thông tin request vào các dòng gợi ý; bỏ request đã đóng / hết hạn / đã ứng tuyển
- * @param {Object[]} rows - AI_POST_SUGGESTIONS (lean)
- * @param {Object} profile
- * @returns {Promise<Object[]>} mới nhất trước
- */
-const hydrateSuggestions = async (rows, profile) => {
-  const requests = await ParentRequest.find({ _id: { $in: rows.map((row) => row.request_id) } }).lean();
-  const appliedRequestIds = await ApplyRequest.distinct('request_id', {
-    tutor_profile_id: profile._id,
-    request_id: { $in: rows.map((row) => row.request_id) },
-    status: { $ne: ENUMS.ApplyRequestsStatus.WITHDRAWN },
+  }).sort({ created_at: -1, _id: -1 }).lean();
+  const matches = requests.filter((request) =>
+    isRequestAvailable(request) && matchTeachingCategories(request, activeSelections, catalog).length === 2);
+  matches.sort((first, second) => {
+    const dateOrder = new Date(second.created_at).getTime() - new Date(first.created_at).getTime();
+    if (dateOrder !== 0) return dateOrder;
+    return String(second._id).localeCompare(String(first._id));
   });
-  const appliedSet = new Set(appliedRequestIds.map((id) => String(id)));
-
-  const usableRequests = requests.filter((request) => isRequestAvailable(request) && !appliedSet.has(String(request._id)));
-  const items = await decorateRequests(usableRequests, profile);
-  items.sort((first, second) => new Date(second.created_at) - new Date(first.created_at));
-  return items;
-};
-
-const buildSuggestionResponse = (items, rows, hint, page, limit) => {
-  let cachedUntil = null;
-  if (rows.length > 0) {
-    cachedUntil = rows[0].cached_until;
-  }
+  const items = await decorateRequests(matches.slice((page - 1) * limit, page * limit), profile);
   return {
-    items: items.slice((page - 1) * limit, page * limit),
-    pagination: buildPagination(page, limit, items.length),
-    // Chưa có AI provider nên không có lời giải thích (giống UC09 E1)
-    ai_status: 'FALLBACK',
-    cached_until: cachedUntil,
-    hint: hint,
+    items,
+    pagination: buildPagination(page, limit, matches.length),
+    hint: matches.length === 0 ? 'Chưa có yêu cầu đang mở phù hợp với môn học và trình độ trong hồ sơ của bạn.' : null,
   };
 };
 
 /**
- * "Suggested for you": dùng cache còn hạn, hết hạn / rỗng thì tính lại
- * @param {Object} user - req.user { id, role }
- * @param {Object} query - { page, limit }
- * @returns {Promise<Object>} { items, pagination, ai_status, cached_until, hint }
+ * Reload profile-based suggestions without reading or writing any AI cache.
+ * @param {Object} user - Authenticated Tutor account.
+ * @returns {Promise<Object>} First page of current matching requests.
  */
-export const getSuggestions = async (user, { page, limit }) => {
-  const profile = await getTutorProfileOrThrow(user);
-
-  let rows = await AiPostSuggestion.find({ tutor_profile_id: profile._id, cached_until: { $gt: new Date() } }).lean();
-  let items = [];
-  if (rows.length > 0) {
-    items = await hydrateSuggestions(rows, profile);
-  }
-
-  let hint = null;
-  if (items.length === 0) {
-    const regenerated = await regenerateSuggestions(profile);
-    rows = regenerated.rows;
-    hint = regenerated.hint;
-    if (rows.length > 0) {
-      items = await hydrateSuggestions(rows, profile);
-    }
-  }
-  return buildSuggestionResponse(items, rows, hint, page, limit);
-};
-
-/**
- * Bỏ cache và tính lại "Suggested for you"
- * @param {Object} user - req.user { id, role }
- * @returns {Promise<Object>} cùng dạng getSuggestions (trang 1)
- */
-export const refreshSuggestions = async (user) => {
-  const profile = await getTutorProfileOrThrow(user);
-  const regenerated = await regenerateSuggestions(profile);
-
-  let items = [];
-  if (regenerated.rows.length > 0) {
-    items = await hydrateSuggestions(regenerated.rows, profile);
-  }
-  return buildSuggestionResponse(items, regenerated.rows, regenerated.hint, 1, SUGGESTION_LIMIT);
-};
+export const refreshSuggestions = (user) => getSuggestions(user, { page: 1, limit: 10 });

@@ -5,7 +5,7 @@ const OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/;
 
 const paymentMethodRule = z.enum(PAYMENT_METHODS, "Payment method must be one of these ['VIETQR', 'ATM_CARD', 'CREDIT_CARD']");
 
-// D9: Pro 1–12 tháng
+// duration_months is optional for older clients; the server derives it from the saved plan.
 const planUpgradeOrderSchema = z.object({
   item_type: z.literal('PLAN_UPGRADE'),
   plan_id: z.string({ error: 'Plan is required' }).regex(OBJECT_ID_REGEX, 'Invalid plan id'),
@@ -13,7 +13,8 @@ const planUpgradeOrderSchema = z.object({
     .number({ error: 'Duration must be a number' })
     .int('Duration must be a whole number of months')
     .min(1, 'Duration must be at least 1 month')
-    .max(12, 'Duration must be at most 12 months'),
+    .max(12, 'Duration must be at most 12 months')
+    .optional(),
   payment_method: paymentMethodRule,
 });
 

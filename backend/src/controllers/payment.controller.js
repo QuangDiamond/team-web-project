@@ -46,10 +46,10 @@ const EXPORT_MAX_ROWS = 5000;
 // D17: CSV dùng nhãn dễ đọc giống giao diện; giá trị lạ giữ nguyên
 const CSV_LABELS = {
   MONTHLY_GRANT: 'Cấp hàng tháng',
-  PURCHASE: 'Mua tín dụng',
+  PURCHASE: 'Mua credits',
   USED_APPLY: 'Dùng để ứng tuyển',
   USED_INVITATION: 'Dùng để mời gia sư',
-  EXPIRED_GRANT: 'Tín dụng hết hạn',
+  EXPIRED_GRANT: 'Credits hết hạn',
   APPLY: 'Đơn ứng tuyển',
   INVITATION: 'Lời mời',
   SUCCESS: 'Đã thanh toán',
@@ -61,7 +61,7 @@ const CSV_LABELS = {
   ATM_CARD: 'Thẻ ATM',
   CREDIT_CARD: 'Thẻ tín dụng',
   PLAN_UPGRADE: 'Nâng cấp gói',
-  CREDIT_PACK: 'Gói tín dụng',
+  CREDIT_PACK: 'Gói credits',
 };
 const PLAN_LABELS = { PRO: 'Gói Pro', FREE_DEFAULT: 'Gói miễn phí' };
 
@@ -101,7 +101,7 @@ export const exportCreditTransactions = asyncHandler(async (req, res) => {
     }
     return [item.created_at, toLabel(item.type, CSV_LABELS), item.amount, item.expires_at, toLabel(relatedKind, CSV_LABELS), relatedTitle];
   });
-  const csv = buildCsv(['Ngày', 'Loại', 'Tín dụng', 'Hết hạn lúc', 'Liên quan đến', 'Tiêu đề yêu cầu'], rows);
+  const csv = buildCsv(['Ngày', 'Loại', 'Credits', 'Hết hạn lúc', 'Liên quan đến', 'Tiêu đề yêu cầu'], rows);
   return sendCsv(res, 'credit-transactions', csv);
 });
 
