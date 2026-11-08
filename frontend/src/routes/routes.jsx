@@ -48,8 +48,6 @@ export const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'profile', element: <Profile /> },
       { path: 'payment', element: <Payment /> },
-      { path: 'classes', element: <ClassroomsPage /> },
-      { path: 'classes/:id', element: <ClassroomDetail /> },
       { path: 'join-class', element: <JoinClassPage /> },
       { path: 'join-class/:code', element: <JoinClassPage /> },
     ],
@@ -73,6 +71,8 @@ export const router = createBrowserRouter([
         element: <DashboardLayout menu={STUDENT_MENU} />,
         children: [
           { path: 'dashboard', element: <StudentDashboard />, handle: { title: 'Overview' } },
+          { path: 'classes', element: <ClassroomsPage />, handle: { title: 'Lớp học của tôi' } },
+          { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
           { path: 'notifications', element: <Notifications />, handle: { title: 'Notifications' } },
         ],
       },
@@ -87,6 +87,8 @@ export const router = createBrowserRouter([
         element: <DashboardLayout menu={PARENT_MENU} />,
         children: [
           { path: 'dashboard', element: <ParentDashboard />, handle: { title: 'Overview' } },
+          { path: 'classes', element: <ClassroomsPage />, handle: { title: 'Lớp học của con' } },
+          { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
           { path: 'requests', element: <TutoringRequests />, handle: { title: 'My Tutoring Requests' } },
           { path: 'requests/new', element: <TutoringRequestForm />, handle: { title: 'Create Tutoring Request' } },
           { path: 'requests/:id', element: <TutoringRequestDetail />, handle: { title: 'Tutoring Request' } },
@@ -118,6 +120,8 @@ export const router = createBrowserRouter([
         element: <DashboardLayout menu={TUTOR_MENU} />,
         children: [
           { path: 'dashboard', element: <TutorDashboard />, handle: { title: 'Overview' } },
+          { path: 'classes', element: <ClassroomsPage />, handle: { title: 'Quản lý lớp học' } },
+          { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
           { path: 'requests', element: <BrowseRequests />, handle: { title: 'Browse Requests' } },
           { path: 'requests/suggested', element: <SuggestedRequests />, handle: { title: 'Suggested for You' } },
           { path: 'requests/saved', element: <SavedRequests />, handle: { title: 'Saved Requests' } },

@@ -60,6 +60,12 @@ export default function ClassroomsPage() {
     fetchClassrooms();
   };
 
+  const getClassroomDetailUrl = (id) => {
+    if (user?.role === 'TUTOR') return `/tutor/classes/${id}`;
+    if (user?.role === 'PARENT') return `/parent/classes/${id}`;
+    return `/student/classes/${id}`;
+  };
+
   return (
     <div className="classroom-container">
       {/* Toast Notification */}
@@ -74,6 +80,8 @@ export default function ClassroomsPage() {
           <p>
             {isTutor
               ? 'Quản lý các lớp học trực tuyến, tạo lớp mới và chia sẻ mã tham gia cho học viên của bạn.'
+              : user?.role === 'PARENT'
+              ? 'Theo dõi danh sách các lớp học con đang theo học, tiến độ làm bài và điểm số từ gia sư.'
               : 'Theo dõi các lớp học trực tuyến đã tham gia, làm bài tập và trao đổi cùng gia sư.'}
           </p>
         </div>
@@ -260,7 +268,7 @@ export default function ClassroomsPage() {
                     >
                       🔗 Link mời
                     </button>
-                    <Link to={`/classes/${cls._id}`} className="btn-primary-orange">
+                    <Link to={getClassroomDetailUrl(cls._id)} className="btn-primary-orange">
                       Vào lớp học →
                     </Link>
                   </div>

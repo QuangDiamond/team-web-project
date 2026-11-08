@@ -73,7 +73,13 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
       }
       handleClose();
       if (res?.data?.class_id) {
-        navigate(`/classes/${res.data.class_id}`);
+        const targetUrl =
+          user?.role === 'TUTOR'
+            ? `/tutor/classes/${res.data.class_id}`
+            : user?.role === 'PARENT'
+            ? `/parent/classes/${res.data.class_id}`
+            : `/student/classes/${res.data.class_id}`;
+        navigate(targetUrl);
       }
     } catch (err) {
       setError(err?.response?.data?.message || err.message || 'Không thể tham gia lớp học');
@@ -204,7 +210,13 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
                     className="btn-primary-orange"
                     onClick={() => {
                       handleClose();
-                      navigate(`/classes/${preview._id}`);
+                      const targetUrl =
+                        user?.role === 'TUTOR'
+                          ? `/tutor/classes/${preview._id}`
+                          : user?.role === 'PARENT'
+                          ? `/parent/classes/${preview._id}`
+                          : `/student/classes/${preview._id}`;
+                      navigate(targetUrl);
                     }}
                   >
                     👉 Vào trang quản lý lớp học
