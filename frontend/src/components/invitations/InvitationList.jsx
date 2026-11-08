@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import OpenChatLink from '../common/OpenChatLink';
 import { INVITATION_STATUS, getStatusBadge } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
@@ -26,7 +27,7 @@ function InvitationRow({ invitation, onCancel }) {
     <li className="item-row">
       <div className="item-row-body">
         <div className="item-row-heading">
-          <p className="item-title">{tutorName}</p>
+          {invitation.tutor ? <Link to={`/tutors/${invitation.tutor.profile_id}`} className="item-title">{tutorName}</Link> : <p className="item-title">{tutorName}</p>}
           <span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>
         </div>
         <p className="item-meta">For {requestTitle} · Sent {formatDate(invitation.created_at)}</p>

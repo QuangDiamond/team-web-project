@@ -232,6 +232,7 @@ export const toReceivedInvitationDto = (invitation, request, conversationId) => 
   }
   return {
     _id: String(invitation._id),
+    parent_user_id: invitation.parent_user_id ? String(invitation.parent_user_id) : null,
     status: invitation.status,
     message: invitation.message,
     created_at: invitation.created_at,

@@ -1,5 +1,5 @@
 // Ô chọn một giá trị, cùng kiểu với FormInput. options: [{ value, label }]
-export default function FormSelect({ id, label, value, onChange, options, error, disabled, placeholder, optional = false, hint }) {
+export default function FormSelect({ id, label, value, onChange, options, error, disabled, placeholder, optional = false, hint, required = false }) {
   const errorId = `${id}-error`;
   let describedBy;
   if (error) {
@@ -10,6 +10,7 @@ export default function FormSelect({ id, label, value, onChange, options, error,
     <div className="form-field">
       <label htmlFor={id} className="form-label">
         {label}
+        {required && <span className="form-required" aria-hidden="true"> *</span>}
         {optional && <span className="form-optional"> (optional)</span>}
       </label>
       <div className={error ? 'form-control has-error' : 'form-control'}>
@@ -19,6 +20,7 @@ export default function FormSelect({ id, label, value, onChange, options, error,
           value={value}
           onChange={onChange}
           disabled={disabled}
+          required={required}
           aria-invalid={error ? 'true' : 'false'}
           aria-describedby={describedBy}
         >

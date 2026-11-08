@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const BREAKDOWN_LABELS = {
   budget: 'Price fit',
   rating: 'Rating',
@@ -44,7 +46,7 @@ export default function SuggestionCard({ suggestion, rank, isInvited, onInvite }
         <span className="ai-card-rank" aria-label={`Rank ${rank}`}>{rank}</span>
         <span className="ai-card-avatar" aria-hidden="true">{getInitials(tutor.full_name)}</span>
         <div className="ai-card-identity">
-          <p className="ai-card-name">{tutor.full_name}</p>
+          <Link className="ai-card-name" to={`/tutors/${tutor.profile_id}`}>{tutor.full_name}</Link>
           <p className="ai-card-sub">{post.subject_name} · {post.grade_level}</p>
           <p className="ai-card-rating"><RatingText rating={tutor.average_rating} /></p>
         </div>
@@ -52,7 +54,7 @@ export default function SuggestionCard({ suggestion, rank, isInvited, onInvite }
       </div>
 
       <p className="ai-card-meta">
-        {post.title}
+        <Link to={`/tutors/${tutor.profile_id}`} className="link">{post.title}</Link>
         {modeText ? ` · ${modeText}` : ''}
         {' · '}
         <strong>{formatPrice(post.price)}</strong>
