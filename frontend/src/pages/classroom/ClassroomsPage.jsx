@@ -94,7 +94,7 @@ export default function ClassroomsPage() {
             style={{ padding: '12px 18px', fontSize: '15px' }}
             onClick={() => setIsJoinModalOpen(true)}
           >
-            <span>🔑</span> Tham gia bằng mã (UC24)
+            <span>🔑</span> Tham gia bằng mã
           </button>
           {isTutor && (
             <button
@@ -102,7 +102,7 @@ export default function ClassroomsPage() {
               className="btn-primary-orange"
               onClick={() => setIsModalOpen(true)}
             >
-              <span>➕</span> Tạo lớp học mới (UC21)
+              <span>➕</span> Tạo lớp học mới
             </button>
           )}
         </div>
@@ -183,7 +183,7 @@ export default function ClassroomsPage() {
               className="btn-primary-orange"
               onClick={() => setIsJoinModalOpen(true)}
             >
-              <span>🔑</span> Tham gia lớp học bằng mã (UC24)
+              <span>🔑</span> Tham gia lớp học bằng mã
             </button>
           )}
         </div>

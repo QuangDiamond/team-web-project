@@ -93,7 +93,7 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>
-            <span>🔑</span> Tham gia lớp học (UC24)
+            <span>🔑</span> Tham gia lớp học
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
             ×

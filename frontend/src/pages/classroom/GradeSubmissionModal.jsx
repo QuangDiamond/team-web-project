@@ -89,7 +89,7 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, show
       <div className="modal-content" style={{ maxWidth: '840px' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>
-            <span>📊</span> Chấm điểm bài tập: {assignment.title} (UC26)
+            <span>📊</span> Chấm điểm bài tập: {assignment.title}
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
             ×
