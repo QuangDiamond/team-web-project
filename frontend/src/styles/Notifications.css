@@ -1,4 +1,4 @@
-/* Notifications.css - SC10 Notifications */
+/* Notifications.css - SC10 Notifications (Senior BA & Lead UX Redesign) */
 
 .noti-page {
   padding: 32px 0 64px 0;
@@ -12,6 +12,42 @@
   padding: 0 24px;
 }
 
+/* Toast Floating Notification */
+.noti-toast-banner {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 10px;
+  z-index: 9999;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: notiToastSlide 0.25s ease-out;
+}
+
+@keyframes notiToastSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.noti-toast-icon {
+  color: #38bdf8;
+  flex-shrink: 0;
+}
+
 /* Header */
 .noti-header {
   display: flex;
@@ -21,8 +57,8 @@
   background: white;
   padding: 24px 28px;
   border-radius: 16px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-  border: 1px solid #edf2f7;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
   gap: 20px;
   flex-wrap: wrap;
 }
@@ -30,114 +66,121 @@
 .noti-title-wrap {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
 .noti-icon-badge {
-  width: 50px;
-  height: 50px;
+  width: 52px;
+  height: 52px;
   border-radius: 14px;
-  background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
   color: #0284c7;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
   box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+  flex-shrink: 0;
 }
 
 .noti-title-box h1 {
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 800;
   color: #0f172a;
   margin: 0 0 4px 0;
   display: flex;
   align-items: center;
   gap: 10px;
+  letter-spacing: -0.02em;
 }
 
 .noti-unread-tag {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   padding: 3px 10px;
-  border-radius: 20px;
+  border-radius: 9999px;
   background: #ef4444;
   color: white;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.25);
 }
 
 .noti-title-box p {
   font-size: 14px;
   color: #64748b;
   margin: 0;
+  line-height: 1.4;
 }
 
 .noti-header-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .btn-mark-all {
-  background: #f1f5f9;
+  background: #f8fafc;
   color: #334155;
   border: 1px solid #cbd5e1;
-  padding: 10px 18px;
+  padding: 9px 16px;
   border-radius: 10px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s;
+  transition: all 0.15s ease-in-out;
 }
 
 .btn-mark-all:hover {
-  background: #e2e8f0;
+  background: #f1f5f9;
   color: #0f172a;
+  border-color: #94a3b8;
 }
 
 .btn-preferences {
   background: white;
   color: #0284c7;
   border: 1px solid #bae6fd;
-  padding: 10px 18px;
+  padding: 9px 16px;
   border-radius: 10px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s;
+  transition: all 0.15s ease-in-out;
 }
 
 .btn-preferences:hover {
   background: #f0f9ff;
-  border-color: #7dd3fc;
+  border-color: #38bdf8;
+  color: #0369a1;
 }
 
-/* Category Filter Tabs */
+/* Category Filter Tabs Bar */
 .noti-filters-bar {
   background: white;
-  padding: 14px 20px;
+  padding: 12px 18px;
   border-radius: 14px;
-  border: 1px solid #edf2f7;
+  border: 1px solid #e2e8f0;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-  overflow-x: auto;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
 }
 
 .noti-categories {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   overflow-x: auto;
+  scrollbar-width: thin;
   padding-bottom: 2px;
 }
 
@@ -146,12 +189,15 @@
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
-  border: none;
+  border: 1px solid transparent;
   background: #f8fafc;
   color: #475569;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease-in-out;
 }
 
 .cat-btn:hover {
@@ -161,33 +207,41 @@
 
 .cat-btn.active {
   background: #0284c7;
-  color: white;
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
 }
 
 .noti-read-filters {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  background: #f1f5f9;
+  padding: 3px;
+  border-radius: 8px;
   flex-shrink: 0;
 }
 
 .read-btn {
-  padding: 6px 12px;
+  padding: 5px 12px;
   border-radius: 6px;
   font-size: 12px;
   font-weight: 600;
-  border: 1px solid #e2e8f0;
-  background: white;
+  border: none;
+  background: transparent;
   color: #64748b;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.15s ease-in-out;
+}
+
+.read-btn:hover {
+  color: #0f172a;
 }
 
 .read-btn.active {
-  border-color: #0284c7;
-  color: #0284c7;
-  background: #f0f9ff;
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* Notifications List */
@@ -201,23 +255,27 @@
   display: flex;
   align-items: flex-start;
   gap: 16px;
-  background: white;
-  padding: 20px 22px;
+  background: #ffffff;
+  padding: 18px 22px;
   border-radius: 14px;
-  border: 1px solid #edf2f7;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
-  transition: all 0.2s;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease-in-out;
   position: relative;
+  cursor: pointer;
 }
 
 .noti-item:hover {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -2px rgba(0, 0, 0, 0.06), 0 3px 6px -2px rgba(0, 0, 0, 0.03);
   border-color: #cbd5e1;
 }
 
+/* Unread distinction */
 .noti-item.unread {
-  background: #f8fafc;
+  background: linear-gradient(90deg, #f0f9ff 0%, #ffffff 100%);
   border-left: 4px solid #0284c7;
+  border-color: #bae6fd;
 }
 
 .noti-item.unread::after {
@@ -225,13 +283,31 @@
   position: absolute;
   top: 18px;
   right: 18px;
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   background: #0284c7;
   border-radius: 50%;
-  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25);
+  animation: notiPulse 2s infinite;
 }
 
+@keyframes notiPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(2, 132, 199, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(2, 132, 199, 0);
+  }
+}
+
+.noti-item.is-read {
+  opacity: 0.9;
+}
+
+/* Category visual icons */
 .noti-type-icon {
   width: 44px;
   height: 44px;
@@ -239,42 +315,53 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
   flex-shrink: 0;
+  transition: transform 0.15s ease-in-out;
+}
+
+.noti-item:hover .noti-type-icon {
+  transform: scale(1.05);
 }
 
 .cat-application {
   background: #eff6ff;
   color: #2563eb;
+  border: 1px solid #dbeafe;
 }
 
 .cat-invitation {
   background: #fdf4ff;
-  color: #c026d3;
+  color: #9333ea;
+  border: 1px solid #f3e8ff;
 }
 
 .cat-conversation {
   background: #ecfdf5;
   color: #059669;
+  border: 1px solid #d1fae5;
 }
 
 .cat-session {
   background: #fff7ed;
   color: #ea580c;
+  border: 1px solid #ffedd5;
 }
 
 .cat-assignment {
   background: #fefce8;
-  color: #ca8a04;
+  color: #b45309;
+  border: 1px solid #fef08a;
 }
 
 .cat-system {
   background: #f1f5f9;
   color: #475569;
+  border: 1px solid #e2e8f0;
 }
 
 .noti-body-content {
   flex: 1;
+  min-width: 0;
 }
 
 .noti-top-meta {
@@ -288,38 +375,45 @@
 .noti-category-badge {
   font-size: 11px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 2px 8px;
-  border-radius: 4px;
+  letter-spacing: 0.3px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .noti-time {
   font-size: 12px;
-  color: #94a3b8;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .noti-heading {
   font-size: 15px;
   font-weight: 700;
-  color: #1e293b;
+  color: #0f172a;
   margin: 0 0 6px 0;
+  line-height: 1.35;
 }
 
 .noti-desc {
   font-size: 14px;
-  color: #475569;
+  color: #334155;
   line-height: 1.5;
   margin: 0 0 12px 0;
+  word-break: break-word;
 }
 
-/* Delivery logs */
+/* Delivery logs badge */
 .noti-delivery-logs {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
   margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 
 .delivery-badge {
@@ -327,7 +421,7 @@
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 6px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 4px;
 }
@@ -350,23 +444,23 @@
   border: 1px solid #fde68a;
 }
 
-/* Action buttons per noti */
+/* Action buttons */
 .noti-item-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .btn-open-deeplink {
   background: #0284c7;
-  color: white;
+  color: #ffffff;
   border: none;
   padding: 6px 14px;
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s ease-in-out;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -375,68 +469,94 @@
 
 .btn-open-deeplink:hover {
   background: #0369a1;
-  color: white;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
 }
 
 .btn-single-read {
   background: transparent;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
+  color: #475569;
+  border: 1px solid #cbd5e1;
   padding: 6px 12px;
   border-radius: 8px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.15s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .btn-single-read:hover {
-  background: #f8fafc;
+  background: #f1f5f9;
   color: #0f172a;
+  border-color: #94a3b8;
 }
 
 .btn-single-delete {
   background: transparent;
   color: #94a3b8;
-  border: none;
-  padding: 6px 8px;
-  font-size: 14px;
+  border: 1px solid transparent;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  border-radius: 6px;
-  transition: all 0.15s;
+  border-radius: 8px;
+  transition: all 0.15s ease-in-out;
 }
 
 .btn-single-delete:hover {
   background: #fee2e2;
   color: #ef4444;
+  border-color: #fca5a5;
 }
 
-/* Empty state */
+/* Empty State */
 .noti-empty {
-  background: white;
-  padding: 60px 20px;
+  background: #ffffff;
+  padding: 64px 24px;
   border-radius: 16px;
-  border: 1px solid #edf2f7;
+  border: 1px solid #e2e8f0;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
 }
 
-.noti-empty-icon {
-  font-size: 54px;
+.noti-empty-icon-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: #f1f5f9;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 16px;
-  opacity: 0.6;
+}
+
+.noti-empty-spinner {
+  color: #0284c7;
+  margin-bottom: 16px;
 }
 
 .noti-empty h3 {
   font-size: 18px;
   font-weight: 700;
-  color: #334155;
+  color: #1e293b;
   margin: 0 0 6px 0;
 }
 
 .noti-empty p {
   font-size: 14px;
-  color: #94a3b8;
+  color: #64748b;
   margin: 0;
+  max-width: 440px;
+  line-height: 1.5;
 }
 
 /* Preferences Modal */
@@ -446,7 +566,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -460,15 +580,15 @@
   border-radius: 16px;
   max-width: 520px;
   width: 100%;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  animation: modalFadeIn 0.2s ease-out;
+  animation: notiModalEnter 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes modalFadeIn {
+@keyframes notiModalEnter {
   from {
     opacity: 0;
-    transform: translateY(12px) scale(0.98);
+    transform: translateY(12px) scale(0.97);
   }
   to {
     opacity: 1;
@@ -477,22 +597,47 @@
 }
 
 .noti-modal-header {
-  padding: 20px 24px;
-  border-bottom: 1px solid #f1f5f9;
+  padding: 18px 24px;
+  border-bottom: 1px solid #e2e8f0;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .noti-modal-header h3 {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: #0f172a;
   margin: 0;
 }
 
+.noti-modal-close {
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.noti-modal-close:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
 .noti-modal-body {
   padding: 20px 24px;
+}
+
+.noti-modal-intro {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
 }
 
 .pref-row {
@@ -500,7 +645,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 0;
-  border-bottom: 1px solid #f8fafc;
+  border-bottom: 1px solid #f1f5f9;
+  gap: 16px;
 }
 
 .pref-label {
@@ -517,11 +663,13 @@
 .pref-subtitle {
   font-size: 12px;
   color: #64748b;
+  line-height: 1.4;
 }
 
 .pref-toggles {
   display: flex;
-  gap: 16px;
+  gap: 14px;
+  flex-shrink: 0;
 }
 
 .pref-checkbox-label {
@@ -529,8 +677,16 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #475569;
+  color: #334155;
   cursor: pointer;
+  font-weight: 500;
+}
+
+.pref-checkbox-label input[type='checkbox'] {
+  cursor: pointer;
+  accent-color: #0284c7;
+  width: 15px;
+  height: 15px;
 }
 
 .noti-modal-footer {
@@ -539,4 +695,5 @@
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  border-top: 1px solid #e2e8f0;
 }
