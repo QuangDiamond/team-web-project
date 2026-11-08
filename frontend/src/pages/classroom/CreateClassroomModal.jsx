@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { GraduationCap, AlertTriangle, Check, X, Plus } from 'lucide-react';
 import { createClassroom, getConfirmedAgreements } from '../../services/classroomService';
 
 export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreated, showToast }) {
@@ -145,12 +146,12 @@ export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreat
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
         <div className="modal-header">
-          <h2>
-            <span>🏫</span>
-            {createdResult ? 'Lớp học đã được tạo thành công!' : 'Tạo lớp học mới'}
+          <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <GraduationCap size={20} style={{ color: '#e85a2c' }} />
+            <span>{createdResult ? 'Lớp học đã được tạo thành công!' : 'Tạo lớp học mới'}</span>
           </h2>
           <button className="modal-close-btn" onClick={handleClose} title="Đóng">
-            &times;
+            <X size={18} />
           </button>
         </div>
 
@@ -158,7 +159,7 @@ export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreat
         <div className="modal-body">
           {error && (
             <div className="error-alert">
-              <span>⚠️</span>
+              <AlertTriangle size={18} style={{ flexShrink: 0 }} />
               <div>{error}</div>
             </div>
           )}
@@ -166,7 +167,9 @@ export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreat
           {/* Màn hình hiển thị kết quả tạo thành công */}
           {createdResult ? (
             <div className="success-container">
-              <div className="success-icon-badge">✓</div>
+              <div className="success-icon-badge">
+                <Check size={28} />
+              </div>
               <h3>{createdResult.name}</h3>
               <p>
                 Lớp học đã sẵn sàng hoạt động. Bạn có thể chia sẻ mã tham gia hoặc link mời dưới đây
@@ -374,8 +377,9 @@ export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreat
                 <button type="button" className="btn-outline-gray" onClick={handleClose} disabled={submitting}>
                   Hủy
                 </button>
-                <button type="submit" className="btn-primary-orange" disabled={submitting}>
-                  {submitting ? 'Đang khởi tạo lớp...' : 'Tạo lớp học ngay 🚀'}
+                <button type="submit" className="btn-primary-orange" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }} disabled={submitting}>
+                  <Plus size={15} />
+                  <span>{submitting ? 'Đang khởi tạo lớp...' : 'Tạo lớp học ngay'}</span>
                 </button>
               </div>
             </form>

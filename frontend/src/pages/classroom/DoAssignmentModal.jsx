@@ -1,4 +1,20 @@
 import { useState, useEffect } from 'react';
+import {
+  Eye,
+  PenTool,
+  X,
+  CheckCircle2,
+  AlertTriangle,
+  AlertCircle,
+  Info,
+  Lock,
+  Users,
+  ClipboardList,
+  Award,
+  RotateCcw,
+  Send,
+  Loader2,
+} from 'lucide-react';
 import { submitAssignment } from '../../services/classroomService';
 import { useAuth } from '../../hooks/useAuth.jsx';
 
@@ -84,26 +100,30 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-content" style={{ maxWidth: '720px' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>
+          <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {isParent ? (
               <>
-                <span>👁️</span> Xem đề bài tập: {assignment.title}
+                <Eye size={20} color="#0284c7" />
+                <span>Xem đề bài tập: {assignment.title}</span>
               </>
             ) : (
               <>
-                <span>✍️</span> Làm bài tập: {assignment.title}
+                <PenTool size={20} color="#e85a2c" />
+                <span>Làm bài tập: {assignment.title}</span>
               </>
             )}
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
-            ×
+            <X size={18} />
           </button>
         </div>
 
         {result ? (
           <div className="modal-body">
             <div className="success-container" style={{ textAlign: 'center', padding: '20px' }}>
-              <div className="success-icon-badge" style={{ fontSize: '48px', marginBottom: '12px' }}>🎉</div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+                <CheckCircle2 size={48} color="#16a34a" />
+              </div>
               <h3 style={{ margin: '0 0 8px 0', color: '#0f172a' }}>Đã nộp bài tập thành công!</h3>
               <p style={{ color: '#64748b', margin: '0 0 20px 0' }}>Hệ thống đã ghi nhận bài làm của bạn.</p>
 
@@ -124,8 +144,18 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                     {result.provisional_score || 0} / {assignment.total_points} điểm
                   </span>
                 </div>
-                <div style={{ marginBottom: '8px', fontSize: '14px', color: '#64748b' }}>
-                  Trạng thái: {result.timeliness === 'LATE' ? '⚠️ Nộp muộn' : '✅ Đúng hạn'} (Lần nộp #{result.attempt_number || 1})
+                <div style={{ marginBottom: '8px', fontSize: '14px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span>Trạng thái:</span>
+                  {result.timeliness === 'LATE' ? (
+                    <span style={{ color: '#b45309', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <AlertTriangle size={14} /> Nộp muộn
+                    </span>
+                  ) : (
+                    <span style={{ color: '#16a34a', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <CheckCircle2 size={14} /> Đúng hạn
+                    </span>
+                  )}{' '}
+                  <span>(Lần nộp #{result.attempt_number || 1})</span>
                 </div>
                 <div style={{ fontSize: '13px', color: '#64748b' }}>
                   Gia sư sẽ chấm các câu tự luận / file và công bố điểm chính thức sớm nhất.
@@ -144,7 +174,7 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
             <div className="modal-body" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
               {error && (
                 <div className="error-alert">
-                  <span>⚠️</span>
+                  <AlertTriangle size={16} />
                   <div>{error}</div>
                 </div>
               )}
@@ -165,7 +195,7 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                     gap: '10px',
                   }}
                 >
-                  <span style={{ fontSize: '22px' }}>👨‍👩‍👧</span>
+                  <Users size={22} />
                   <div>
                     <strong>Chế độ giám sát của Phụ huynh:</strong> Bạn đang xem đề bài
                     {mySubmission ? ` và bài làm của con (${mySubmission.student_user_id?.full_name || 'Học sinh'})` : ''}.
@@ -176,20 +206,64 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
 
               {/* Deadline & Warning Notices */}
               {isBlockedByGraded && !isParent && (
-                <div style={{ background: '#fef3c7', border: '1px solid #fde68a', color: '#92400e', padding: '12px', borderRadius: '8px', marginBottom: '14px', fontSize: '13px' }}>
-                  🔒 <strong>Lưu ý:</strong> Bài tập này đã được gia sư công bố điểm cho cả lớp. Không được nộp lại sau khi đã công bố điểm.
+                <div
+                  style={{
+                    background: '#fef3c7',
+                    border: '1px solid #fde68a',
+                    color: '#92400e',
+                    padding: '12px',
+                    borderRadius: '8px',
+                    marginBottom: '14px',
+                    fontSize: '13px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}
+                >
+                  <Lock size={15} />
+                  <div>
+                    <strong>Lưu ý:</strong> Bài tập này đã được gia sư công bố điểm cho cả lớp. Không được nộp lại sau khi đã công bố điểm.
+                  </div>
                 </div>
               )}
 
               {isBlockedByLate && !isBlockedByGraded && !isParent && (
-                <div style={{ background: '#fee2e2', border: '1px solid #fca5a5', color: '#991b1b', padding: '12px', borderRadius: '8px', marginBottom: '14px', fontSize: '13px' }}>
-                  ⛔ Bài tập này đã hết hạn nộp lúc {new Date(assignment.due_date).toLocaleString('vi-VN')} và không cho phép nộp trễ.
+                <div
+                  style={{
+                    background: '#fee2e2',
+                    border: '1px solid #fca5a5',
+                    color: '#991b1b',
+                    padding: '12px',
+                    borderRadius: '8px',
+                    marginBottom: '14px',
+                    fontSize: '13px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}
+                >
+                  <AlertCircle size={15} />
+                  <div>Bài tập này đã hết hạn nộp lúc {new Date(assignment.due_date).toLocaleString('vi-VN')} và không cho phép nộp trễ.</div>
                 </div>
               )}
 
               {isBlockedByResubmit && !isParent && (
-                <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', color: '#1e40af', padding: '12px', borderRadius: '8px', marginBottom: '14px', fontSize: '13px' }}>
-                  ℹ️ Bạn đã nộp bài tập này (Lần #{mySubmission.attempt_number}). Gia sư không kích hoạt chính sách cho phép nộp lại.
+                <div
+                  style={{
+                    background: '#eff6ff',
+                    border: '1px solid #bfdbfe',
+                    color: '#1e40af',
+                    padding: '12px',
+                    borderRadius: '8px',
+                    marginBottom: '14px',
+                    fontSize: '13px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}
+                >
+                  <Info size={15} />
+                  <div>Bạn đã nộp bài tập này (Lần #{mySubmission.attempt_number}). Gia sư không kích hoạt chính sách cho phép nộp lại.</div>
                 </div>
               )}
 
@@ -205,16 +279,30 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 600, color: '#334155' }}>
+                    <span style={{ fontWeight: 600, color: '#334155', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <ClipboardList size={14} />
                       {isParent
-                        ? `📋 Bài nộp của con (${mySubmission.student_user_id?.full_name || 'Học sinh'}): Lần #${mySubmission.attempt_number}`
-                        : `📋 Lịch sử nộp trước: Lần #${mySubmission.attempt_number}`}{' '}
+                        ? `Bài nộp của con (${mySubmission.student_user_id?.full_name || 'Học sinh'}): Lần #${mySubmission.attempt_number}`
+                        : `Lịch sử nộp trước: Lần #${mySubmission.attempt_number}`}{' '}
                       (Nộp lúc {new Date(mySubmission.submitted_at).toLocaleString('vi-VN')})
                     </span>
-                    <span style={{ color: mySubmission.status === 'GRADED' ? '#16a34a' : '#e85a2c', fontWeight: 600 }}>
-                      {mySubmission.status === 'GRADED'
-                        ? `⭐ Điểm chính thức: ${mySubmission.final_score}/${assignment.total_points}đ`
-                        : `Điểm tạm tính: ${mySubmission.provisional_score || 0}đ (Đang chờ chấm)`}
+                    <span
+                      style={{
+                        color: mySubmission.status === 'GRADED' ? '#16a34a' : '#e85a2c',
+                        fontWeight: 600,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}
+                    >
+                      {mySubmission.status === 'GRADED' ? (
+                        <>
+                          <Award size={14} />
+                          <span>Điểm chính thức: {mySubmission.final_score}/{assignment.total_points}đ</span>
+                        </>
+                      ) : (
+                        `Điểm tạm tính: ${mySubmission.provisional_score || 0}đ (Đang chờ chấm)`
+                      )}
                     </span>
                   </div>
                   {mySubmission.overall_feedback && (
@@ -337,8 +425,9 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                             background: '#ffffff',
                           }}
                         />
-                        <div style={{ fontSize: '12px', color: '#64748b', marginTop: '4px' }}>
-                          💡 Hãy đảm bảo đường link được đặt ở chế độ công khai (Anyone with the link can view) để gia sư chấm điểm.
+                        <div style={{ fontSize: '12px', color: '#64748b', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <Info size={13} color="#0284c7" />
+                          <span>Hãy đảm bảo đường link được đặt ở chế độ công khai (Anyone with the link can view) để gia sư chấm điểm.</span>
                         </div>
                       </div>
                     )}
@@ -352,8 +441,28 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                 Đóng
               </button>
               {canSubmit && (
-                <button type="submit" className="btn-primary-orange" disabled={submitting}>
-                  {submitting ? 'Đang nộp...' : mySubmission ? '🔄 Nộp lại bài tập' : '🚀 Nộp bài tập'}
+                <button
+                  type="submit"
+                  className="btn-primary-orange"
+                  disabled={submitting}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 size={15} className="spin" />
+                      <span>Đang nộp...</span>
+                    </>
+                  ) : mySubmission ? (
+                    <>
+                      <RotateCcw size={15} />
+                      <span>Nộp lại bài tập</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={15} />
+                      <span>Nộp bài tập</span>
+                    </>
+                  )}
                 </button>
               )}
             </div>

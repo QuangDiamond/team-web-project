@@ -1,5 +1,14 @@
 import { useState } from 'react';
 import {
+  Pencil,
+  Pin,
+  PinOff,
+  Trash2,
+  Send,
+  Megaphone,
+  Loader2,
+} from 'lucide-react';
+import {
   createClassAnnouncement,
   updateClassAnnouncement,
   deleteClassAnnouncement,
@@ -88,8 +97,9 @@ export default function ClassroomAnnouncementsTab({
       {/* Trình tạo bài đăng thông báo (Chỉ hiển thị cho Gia sư chủ lớp) */}
       {isOwner && (
         <form className="announcement-composer" onSubmit={handlePostAnnouncement}>
-          <div className="composer-header">
-            <span>✍️</span> Đăng thông báo mới cho lớp học
+          <div className="composer-header" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Pencil size={16} color="#e85a2c" />
+            <span>Đăng thông báo mới cho lớp học</span>
           </div>
           <textarea
             className="composer-textarea"
@@ -101,24 +111,35 @@ export default function ClassroomAnnouncementsTab({
           />
 
           <div className="composer-actions">
-            <label className="composer-pin-check">
+            <label className="composer-pin-check" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <input
                 type="checkbox"
                 checked={isPinned}
                 onChange={(e) => setIsPinned(e.target.checked)}
               />
-              📌 Ghim lên đầu bảng tin
+              <Pin size={14} />
+              <span>Ghim lên đầu bảng tin</span>
             </label>
 
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <span className="composer-char-count">{announcementContent.length} / 5000 ký tự</span>
               <button
                 type="submit"
                 className="btn-primary-orange"
-                style={{ padding: '8px 18px', fontSize: '14px' }}
+                style={{ padding: '8px 18px', fontSize: '14px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 disabled={postingAnnouncement || !announcementContent.trim()}
               >
-                {postingAnnouncement ? 'Đang đăng...' : '📢 Đăng thông báo'}
+                {postingAnnouncement ? (
+                  <>
+                    <Loader2 size={14} className="spin" />
+                    <span>Đang đăng...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send size={14} />
+                    <span>Đăng thông báo</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
@@ -129,7 +150,9 @@ export default function ClassroomAnnouncementsTab({
       <div className="announcements-feed">
         {announcements.length === 0 ? (
           <div className="classroom-empty-state" style={{ padding: '40px 20px' }}>
-            <div className="empty-icon">📢</div>
+            <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+              <Megaphone size={44} color="#94a3b8" />
+            </div>
             <h3>Chưa có thông báo nào trên bảng tin</h3>
             <p>Hãy đăng bài đầu tiên để chào mừng học sinh hoặc dặn dò lịch học!</p>
           </div>
@@ -157,7 +180,10 @@ export default function ClassroomAnnouncementsTab({
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     {item.is_pinned && (
-                      <span className="announcement-badge-pinned">📌 Đã ghim</span>
+                      <span className="announcement-badge-pinned" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Pin size={12} />
+                        <span>Đã ghim</span>
+                      </span>
                     )}
 
                     {isOwner && (
@@ -167,8 +193,19 @@ export default function ClassroomAnnouncementsTab({
                           className="btn-icon-action"
                           onClick={() => handleTogglePin(item._id)}
                           title={item.is_pinned ? 'Bỏ ghim' : 'Ghim lên đầu'}
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                         >
-                          {item.is_pinned ? 'Bỏ ghim' : '📌 Ghim'}
+                          {item.is_pinned ? (
+                            <>
+                              <PinOff size={13} />
+                              <span>Bỏ ghim</span>
+                            </>
+                          ) : (
+                            <>
+                              <Pin size={13} />
+                              <span>Ghim</span>
+                            </>
+                          )}
                         </button>
                         <button
                           type="button"
@@ -178,8 +215,10 @@ export default function ClassroomAnnouncementsTab({
                             setEditContent(item.content);
                           }}
                           title="Sửa nội dung"
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                         >
-                          ✏️ Sửa
+                          <Pencil size={13} />
+                          <span>Sửa</span>
                         </button>
                         <button
                           type="button"
@@ -187,7 +226,7 @@ export default function ClassroomAnnouncementsTab({
                           onClick={() => handleDeleteAnnouncement(item._id)}
                           title="Xóa thông báo"
                         >
-                          🗑️
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     )}
