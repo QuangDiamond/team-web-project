@@ -1,9 +1,55 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
+import {
+  Bell,
+  MessageSquare,
+  CheckCheck,
+  Inbox,
+  Clock,
+  ArrowRight,
+  LoaderCircle,
+  FileText,
+  Mail,
+  Handshake,
+  Calendar,
+  BookOpen,
+  CreditCard
+} from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { getHomePathByRole } from '../utils/getHomePathByRole';
-import { getUnreadCount } from '../services/notificationService';
+import { getUnreadCount, notificationService } from '../services/notificationService';
+import { getConversations } from '../services/chatService';
 import { getMyProfile } from '../services/tutorProfileService';
+import { getInitials } from '../utils/getInitials';
+
+const AVATAR_PALETTE = ['#0284C7', '#6366F1', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#0D9488'];
+
+const getAvatarBg = (name) => {
+  if (!name) return AVATAR_PALETTE[0];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_PALETTE[Math.abs(hash) % AVATAR_PALETTE.length];
+};
+
+const getRelativeTime = (isoString) => {
+  if (!isoString) return 'Gần đây';
+  const diff = Math.floor((new Date() - new Date(isoString)) / 1000);
+  if (diff < 60) return 'Vừa xong';
+  if (diff < 3600) return `${Math.floor(diff / 60)}p trước`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h trước`;
+  return `${Math.floor(diff / 86400)} ngày trước`;
+};
+
+const NOTI_ICONS = {
+  APPLICATION: FileText,
+  INVITATION: Mail,
+  CONVERSATION: Handshake,
+  SESSION: Calendar,
+  ASSIGNMENT: BookOpen,
+  SYSTEM: CreditCard
+};
 
 export default function Layout() {
   const { user, logout } = useAuth();
@@ -11,7 +57,20 @@ export default function Layout() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [chatUnreadCount, setChatUnreadCount] = useState(0);
   const [ownProfile, setOwnProfile] = useState(null);
+
+  // Popover Dropdowns state
+  const [notiDropdownOpen, setNotiDropdownOpen] = useState(false);
+  const [chatDropdownOpen, setChatDropdownOpen] = useState(false);
+  const [recentNotis, setRecentNotis] = useState([]);
+  const [loadingNotis, setLoadingNotis] = useState(false);
+  const [recentChats, setRecentChats] = useState([]);
+  const [loadingChats, setLoadingChats] = useState(false);
+
+  const notiRef = useRef(null);
+  const chatRef = useRef(null);
+
   const userId = user?.id || user?._id;
   const activeSection = location.pathname === '/' ? location.hash : null;
 
@@ -28,6 +87,21 @@ export default function Layout() {
     return () => cancelAnimationFrame(frame);
   }, [location.pathname, location.hash, location.key]);
 
+  // Click outside listener for dropdown popovers
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (notiRef.current && !notiRef.current.contains(e.target)) {
+        setNotiDropdownOpen(false);
+      }
+      if (chatRef.current && !chatRef.current.contains(e.target)) {
+        setChatDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Fetch tutor profile if tutor
   useEffect(() => {
     if (user?.role !== 'TUTOR' || !userId) return;
     let ignore = false;
@@ -52,11 +126,14 @@ export default function Layout() {
 
   let dashboardPath = '/login';
   let notificationsPath = '/login';
+  let messagesPath = '/login';
   if (user && user.role) {
     dashboardPath = getHomePathByRole(user.role);
     notificationsPath = `/${user.role.toLowerCase()}/notifications`;
+    messagesPath = `/${user.role.toLowerCase()}/messages`;
   }
 
+  // Fetch Notification unread count periodically
   useEffect(() => {
     if (!user) {
       setUnreadCount(0);
@@ -77,6 +154,105 @@ export default function Layout() {
     const timer = setInterval(fetchUnread, 5000);
     return () => clearInterval(timer);
   }, [user, location.pathname]);
+
+  // Fetch Chat unread count periodically
+  useEffect(() => {
+    if (!user || (user.role !== 'PARENT' && user.role !== 'TUTOR')) {
+      setChatUnreadCount(0);
+      return;
+    }
+    const fetchChatUnread = () => {
+      getConversations({ page: 1, limit: 10 })
+        .then((res) => {
+          const items = res?.data?.items || [];
+          const unread = items.reduce((sum, item) => sum + (item.unread_count || 0), 0);
+          setChatUnreadCount(unread);
+        })
+        .catch(() => {});
+    };
+
+    fetchChatUnread();
+    const timer = setInterval(fetchChatUnread, 6000);
+    return () => clearInterval(timer);
+  }, [user, location.pathname]);
+
+  // Handle opening notification dropdown
+  const handleToggleNotiDropdown = async () => {
+    const nextState = !notiDropdownOpen;
+    setNotiDropdownOpen(nextState);
+    setChatDropdownOpen(false);
+
+    if (nextState) {
+      setLoadingNotis(true);
+      try {
+        const res = await notificationService.getNotifications({ limit: 5 });
+        setRecentNotis(res.notifications || []);
+        if (typeof res.unreadCount === 'number') {
+          setUnreadCount(res.unreadCount);
+        }
+      } catch (err) {
+        console.error('Failed to load recent notifications:', err);
+      } finally {
+        setLoadingNotis(false);
+      }
+    }
+  };
+
+  // Handle opening chat dropdown
+  const handleToggleChatDropdown = async () => {
+    const nextState = !chatDropdownOpen;
+    setChatDropdownOpen(nextState);
+    setNotiDropdownOpen(false);
+
+    if (nextState) {
+      setLoadingChats(true);
+      try {
+        const res = await getConversations({ page: 1, limit: 5 });
+        const items = res?.data?.items || [];
+        setRecentChats(items);
+        const unread = items.reduce((sum, item) => sum + (item.unread_count || 0), 0);
+        setChatUnreadCount(unread);
+      } catch (err) {
+        console.error('Failed to load recent chats:', err);
+      } finally {
+        setLoadingChats(false);
+      }
+    }
+  };
+
+  const handleMarkAllNotisRead = async (e) => {
+    e.stopPropagation();
+    try {
+      await notificationService.markAllAsRead();
+      setRecentNotis((prev) => prev.map((n) => ({ ...n, is_read: true })));
+      setUnreadCount(0);
+    } catch (err) {
+      console.error('Failed to mark all as read:', err);
+    }
+  };
+
+  const handleNotiItemClick = async (item) => {
+    if (!item.is_read) {
+      try {
+        await notificationService.markAsRead(item._id);
+        setUnreadCount((c) => Math.max(0, c - 1));
+        setRecentNotis((prev) =>
+          prev.map((n) => (n._id === item._id ? { ...n, is_read: true } : n))
+        );
+      } catch {}
+    }
+    setNotiDropdownOpen(false);
+    if (item.deepLink) {
+      navigate(item.deepLink);
+    } else {
+      navigate(notificationsPath);
+    }
+  };
+
+  const handleChatItemClick = (conversationId) => {
+    setChatDropdownOpen(false);
+    navigate(`${messagesPath}/${conversationId}`);
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -100,13 +276,25 @@ export default function Layout() {
             >
               Trang chủ
             </Link>
-            <Link to="/#features" className={`nav-link ${activeSection === '#features' ? 'active' : ''}`} aria-current={activeSection === '#features' ? 'location' : undefined}>
+            <Link
+              to="/#features"
+              className={`nav-link ${activeSection === '#features' ? 'active' : ''}`}
+              aria-current={activeSection === '#features' ? 'location' : undefined}
+            >
               Tính năng
             </Link>
-            <Link to="/#featured-tutors" className={`nav-link ${activeSection === '#featured-tutors' ? 'active' : ''}`} aria-current={activeSection === '#featured-tutors' ? 'location' : undefined}>
+            <Link
+              to="/#featured-tutors"
+              className={`nav-link ${activeSection === '#featured-tutors' ? 'active' : ''}`}
+              aria-current={activeSection === '#featured-tutors' ? 'location' : undefined}
+            >
               Gia sư tiêu biểu
             </Link>
-            <Link to="/#how-it-works" className={`nav-link ${activeSection === '#how-it-works' ? 'active' : ''}`} aria-current={activeSection === '#how-it-works' ? 'location' : undefined}>
+            <Link
+              to="/#how-it-works"
+              className={`nav-link ${activeSection === '#how-it-works' ? 'active' : ''}`}
+              aria-current={activeSection === '#how-it-works' ? 'location' : undefined}
+            >
               Cách hoạt động
             </Link>
           </div>
@@ -114,30 +302,202 @@ export default function Layout() {
           <div className="nav-actions">
             {user ? (
               <>
-                <Link
-                  to={notificationsPath}
-                  className="nav-noti-btn"
-                  title="Thông báo hệ thống"
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                {/* Chat Popover Dropdown (Homepage Experience) */}
+                {(user.role === 'PARENT' || user.role === 'TUTOR') && (
+                  <div className="nav-dropdown-wrap" ref={chatRef}>
+                    <button
+                      type="button"
+                      className={`nav-noti-btn ${chatDropdownOpen ? 'active' : ''}`}
+                      onClick={handleToggleChatDropdown}
+                      title="Tin nhắn & Trò chuyện"
+                      aria-label="Tin nhắn & Trò chuyện"
+                      aria-expanded={chatDropdownOpen}
+                    >
+                      <MessageSquare size={19} />
+                      {chatUnreadCount > 0 && (
+                        <span className="nav-noti-badge">
+                          {chatUnreadCount > 9 ? '9+' : chatUnreadCount}
+                        </span>
+                      )}
+                    </button>
+
+                    {chatDropdownOpen && (
+                      <div className="nav-popover">
+                        <div className="nav-popover-header">
+                          <div className="nav-popover-title">
+                            <span>Tin nhắn</span>
+                            {chatUnreadCount > 0 && (
+                              <span className="nav-popover-count-tag">
+                                {chatUnreadCount} mới
+                              </span>
+                            )}
+                          </div>
+                          <Link
+                            to={messagesPath}
+                            className="nav-popover-action"
+                            onClick={() => setChatDropdownOpen(false)}
+                          >
+                            <span>Soạn tin</span>
+                          </Link>
+                        </div>
+
+                        {loadingChats ? (
+                          <div className="nav-popover-empty">
+                            <LoaderCircle size={22} className="spin" color="#0284c7" />
+                            <span>Đang tải tin nhắn...</span>
+                          </div>
+                        ) : recentChats.length === 0 ? (
+                          <div className="nav-popover-empty">
+                            <MessageSquare size={32} strokeWidth={1.5} color="#94a3b8" />
+                            <span>Chưa có cuộc trò chuyện nào</span>
+                          </div>
+                        ) : (
+                          <ul className="nav-popover-list">
+                            {recentChats.map((c) => {
+                              const otherName = c.other?.name || 'Người dùng';
+                              const hasUnread = c.unread_count > 0;
+                              const lastMsg = c.last_message?.content || 'Bắt đầu cuộc trò chuyện...';
+                              const isMine = c.last_message?.sender_is_me;
+                              const preview = isMine ? `Bạn: ${lastMsg}` : lastMsg;
+                              const time = getRelativeTime(
+                                c.last_message?.created_at || c.updated_at
+                              );
+
+                              return (
+                                <li
+                                  key={c._id}
+                                  className={`nav-popover-item ${hasUnread ? 'unread' : ''}`}
+                                  onClick={() => handleChatItemClick(c._id)}
+                                >
+                                  <div
+                                    className="nav-chat-avatar"
+                                    style={{ background: getAvatarBg(otherName) }}
+                                  >
+                                    {getInitials(otherName)}
+                                  </div>
+                                  <div className="nav-popover-content">
+                                    <div className="nav-popover-heading">
+                                      <span>{otherName}</span>
+                                      <span className="nav-popover-time">{time}</span>
+                                    </div>
+                                    <p className="nav-popover-desc">{preview}</p>
+                                  </div>
+                                  {hasUnread && (
+                                    <span
+                                      className="nav-noti-badge"
+                                      style={{ position: 'static' }}
+                                    >
+                                      {c.unread_count}
+                                    </span>
+                                  )}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        )}
+
+                        <Link
+                          to={messagesPath}
+                          className="nav-popover-footer"
+                          onClick={() => setChatDropdownOpen(false)}
+                        >
+                          Xem tất cả tin nhắn trong Dashboard →
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Notifications Popover Dropdown (Homepage Experience) */}
+                <div className="nav-dropdown-wrap" ref={notiRef}>
+                  <button
+                    type="button"
+                    className={`nav-noti-btn ${notiDropdownOpen ? 'active' : ''}`}
+                    onClick={handleToggleNotiDropdown}
+                    title="Thông báo hệ thống"
+                    aria-label="Thông báo hệ thống"
+                    aria-expanded={notiDropdownOpen}
                   >
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                  </svg>
-                  {unreadCount > 0 && (
-                    <span className="nav-noti-badge">
-                      {unreadCount > 9 ? '9+' : unreadCount}
-                    </span>
+                    <Bell size={19} />
+                    {unreadCount > 0 && (
+                      <span className="nav-noti-badge">
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
+                  </button>
+
+                  {notiDropdownOpen && (
+                    <div className="nav-popover">
+                      <div className="nav-popover-header">
+                        <div className="nav-popover-title">
+                          <span>Thông báo</span>
+                          {unreadCount > 0 && (
+                            <span className="nav-popover-count-tag">
+                              {unreadCount} mới
+                            </span>
+                          )}
+                        </div>
+                        {unreadCount > 0 && (
+                          <button
+                            type="button"
+                            className="nav-popover-action"
+                            onClick={handleMarkAllNotisRead}
+                          >
+                            <CheckCheck size={14} />
+                            <span>Đã đọc hết</span>
+                          </button>
+                        )}
+                      </div>
+
+                      {loadingNotis ? (
+                        <div className="nav-popover-empty">
+                          <LoaderCircle size={22} className="spin" color="#0284c7" />
+                          <span>Đang tải thông báo...</span>
+                        </div>
+                      ) : recentNotis.length === 0 ? (
+                        <div className="nav-popover-empty">
+                          <Inbox size={32} strokeWidth={1.5} color="#94a3b8" />
+                          <span>Không có thông báo mới nào</span>
+                        </div>
+                      ) : (
+                        <ul className="nav-popover-list">
+                          {recentNotis.map((item) => {
+                            const IconComponent = NOTI_ICONS[item.category] || CreditCard;
+                            const time = getRelativeTime(item.created_at);
+
+                            return (
+                              <li
+                                key={item._id}
+                                className={`nav-popover-item ${!item.is_read ? 'unread' : ''}`}
+                                onClick={() => handleNotiItemClick(item)}
+                              >
+                                <div className="nav-popover-icon">
+                                  <IconComponent size={17} />
+                                </div>
+                                <div className="nav-popover-content">
+                                  <div className="nav-popover-heading">
+                                    <span>{item.title}</span>
+                                    <span className="nav-popover-time">{time}</span>
+                                  </div>
+                                  <p className="nav-popover-desc">{item.body}</p>
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
+
+                      <Link
+                        to={notificationsPath}
+                        className="nav-popover-footer"
+                        onClick={() => setNotiDropdownOpen(false)}
+                      >
+                        Xem tất cả thông báo trong Dashboard →
+                      </Link>
+                    </div>
                   )}
-                </Link>
+                </div>
+
                 <Link to={dashboardPath} className="btn btn-primary">
                   Dashboard
                 </Link>
@@ -255,11 +615,18 @@ export default function Layout() {
                     Vào Dashboard ({user.role})
                   </Link>
                   <Link
+                    to={messagesPath}
+                    className="btn btn-outline"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Tin nhắn {chatUnreadCount > 0 ? `(${chatUnreadCount})` : ''}
+                  </Link>
+                  <Link
                     to={notificationsPath}
                     className="btn btn-outline"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Thông báo ({unreadCount})
+                    Thông báo {unreadCount > 0 ? `(${unreadCount})` : ''}
                   </Link>
                   <button
                     type="button"
@@ -304,51 +671,45 @@ export default function Layout() {
         <div className="footer-container">
           <div className="footer-grid">
             <div className="footer-brand">
-              <Link to="/" className="nav-brand">
+              <div className="footer-logo">
                 <div className="brand-icon">Tu</div>
                 <span>TuConnector</span>
-              </Link>
-              <p>
-                Nền tảng kết nối gia sư và phụ huynh thông minh hàng đầu Việt Nam.
-                Ứng dụng AI ghép đôi chính xác và quản lý lịch dạy hiệu quả.
+              </div>
+              <p className="footer-desc">
+                Nền tảng công nghệ kết nối gia sư và phụ huynh thông minh, minh bạch và an toàn hàng đầu Việt Nam.
               </p>
             </div>
 
-            <div className="footer-col">
-              <h4>Khám phá</h4>
+            <div className="footer-column">
+              <h4>Dành cho phụ huynh</h4>
               <ul>
-                <li><Link to="/">Trang chủ</Link></li>
-                <li><a href="/#features">Tính năng nổi bật</a></li>
-                <li><a href="/#featured-tutors">Gia sư tiêu biểu</a></li>
-                <li><a href="/#how-it-works">Quy trình kết nối</a></li>
+                <li><Link to="/register">Đăng yêu cầu tìm gia sư</Link></li>
+                <li><Link to="/#featured-tutors">Tìm kiếm gia sư giỏi</Link></li>
+                <li><Link to="/#features">Tính năng ghép đôi AI</Link></li>
               </ul>
             </div>
 
-            <div className="footer-col">
-              <h4>Dành cho người dùng</h4>
+            <div className="footer-column">
+              <h4>Dành cho gia sư</h4>
               <ul>
-                <li><Link to={user ? dashboardPath : '/login'}>Bảng điều khiển (Dashboard)</Link></li>
-                <li><Link to="/register">Đăng ký Phụ huynh / Gia sư</Link></li>
-                <li><Link to="/payment">Gói dịch vụ &amp; Credits</Link></li>
+                <li><Link to="/register">Đăng ký làm gia sư</Link></li>
+                <li><Link to="/#how-it-works">Quy trình nhận lớp</Link></li>
+                <li><Link to="/register">Bảng giá gói Pro</Link></li>
               </ul>
             </div>
 
-            <div className="footer-col">
-              <h4>Hỗ trợ</h4>
+            <div className="footer-column">
+              <h4>Hỗ trợ &amp; Quy định</h4>
               <ul>
-                <li><a href="/#how-it-works">Hướng dẫn sử dụng</a></li>
-                <li><Link to="/login">Đăng nhập tài khoản</Link></li>
+                <li><Link to="/">Điều khoản sử dụng</Link></li>
+                <li><Link to="/">Chính sách bảo mật</Link></li>
+                <li><Link to="/">Liên hệ hỗ trợ</Link></li>
               </ul>
             </div>
           </div>
 
           <div className="footer-bottom">
-            <p>&copy; {new Date().getFullYear()} TuConnector. All rights reserved.</p>
-            <div className="footer-bottom-links">
-              <Link to="/">Trang chủ</Link>
-              <Link to="/login">Đăng nhập</Link>
-              <Link to="/register">Đăng ký</Link>
-            </div>
+            <p>&copy; 2026 TuConnector. Tất cả các quyền được bảo lưu.</p>
           </div>
         </div>
       </footer>
