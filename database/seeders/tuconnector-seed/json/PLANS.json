@@ -8,6 +8,10 @@
     "monthly_price": {
       "$numberDecimal": "0"
     },
+    "billing_period": "MONTHLY",
+    "annual_discount_percent": {
+      "$numberInt": "0"
+    },
     "monthly_credits": {
       "$numberInt": "20"
     },
@@ -29,6 +33,10 @@
     "monthly_price": {
       "$numberDecimal": "199000"
     },
+    "billing_period": "MONTHLY",
+    "annual_discount_percent": {
+      "$numberInt": "0"
+    },
     "monthly_credits": {
       "$numberInt": "30"
     },
@@ -48,6 +56,10 @@
     "monthly_price": {
       "$numberDecimal": "0"
     },
+    "billing_period": "MONTHLY",
+    "annual_discount_percent": {
+      "$numberInt": "0"
+    },
     "monthly_credits": {
       "$numberInt": "20"
     },
@@ -66,6 +78,10 @@
     "name": "PRO",
     "monthly_price": {
       "$numberDecimal": "99000"
+    },
+    "billing_period": "MONTHLY",
+    "annual_discount_percent": {
+      "$numberInt": "0"
     },
     "monthly_credits": {
       "$numberInt": "15"

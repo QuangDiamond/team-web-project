@@ -1,46 +1,25 @@
-import { useCallback, useEffect, useState } from 'react';
-import { getTutorSuggestions, refreshTutorSuggestions } from '../services/aiSuggestionService.js';
+import { useCallback, useState } from 'react';
+import { getTutorSuggestions } from '../services/aiSuggestionService.js';
+import { usePagedList } from './usePagedList';
 
-// Dữ liệu gợi ý gia sư của một request (UC09): lần đầu đọc (có cache), "Refresh" tính lại ngay
+// Retain the hook name for existing imports; every load reads current profile selections.
 export function useAiSuggestions(requestId) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState(null);
-  const [refreshError, setRefreshError] = useState(null);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await getTutorSuggestions(requestId);
-      setData(response.data);
-    } catch (loadError) {
-      setError(loadError);
-    } finally {
-      setLoading(false);
-    }
-  }, [requestId]);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  const refresh = useCallback(
-    async () => {
-      setRefreshing(true);
-      setRefreshError(null);
-      try {
-        const response = await refreshTutorSuggestions(requestId);
-        setData(response.data);
-      } catch (refreshFailure) {
-        setRefreshError(refreshFailure);
-      } finally {
-        setRefreshing(false);
-      }
-    },
-    [requestId]
-  );
-
-  return { data, loading, refreshing, error, refreshError, reload: load, refresh };
+  const [page, setPage] = useState(1);
+  const fetchPage = useCallback((params) => getTutorSuggestions(requestId, params), [requestId]);
+  const list = usePagedList(fetchPage, { page, limit: 10 });
+  const refresh = () => {
+    if (page === 1) list.reload();
+    else setPage(1);
+  };
+  return {
+    data: list.data,
+    loading: list.loading,
+    refreshing: list.loading && Boolean(list.data),
+    error: list.error,
+    refreshError: null,
+    reload: list.reload,
+    refresh,
+    page,
+    setPage,
+  };
 }

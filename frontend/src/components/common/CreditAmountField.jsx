@@ -14,18 +14,18 @@ export default function CreditAmountField({ id, value, onChange, balance, disabl
 
   const options = [];
   for (let amount = MIN_CREDITS_PER_ACTION; amount <= maxChoice; amount += 1) {
-    options.push({ value: String(amount), label: `${amount} tín dụng` });
+    options.push({ value: String(amount), label: `${amount} credits` });
   }
 
   return (
     <FormSelect
       id={id}
-      label="Số tín dụng sử dụng"
+      label="Số credits sử dụng"
       value={value}
       onChange={onChange}
       options={options}
       disabled={disabled}
-      hint={`Dùng càng nhiều tín dụng, bạn càng được xếp lên đầu danh sách của ${audience}. Tín dụng không được hoàn lại.`}
+      hint={`Dùng càng nhiều credits, bạn càng được xếp lên đầu danh sách của ${audience}. Credits không được hoàn lại.`}
     />
   );
 }

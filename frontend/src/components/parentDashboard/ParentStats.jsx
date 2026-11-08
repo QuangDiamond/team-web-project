@@ -6,7 +6,7 @@ export default function ParentStats({ summary }) {
     <div className="stat-grid">
       <StatCard label="Đơn cần xem xét" value={summary.pending_applications} detail="Đang chờ bạn" tone="warning" />
       <StatCard label="Lời mời đã gửi" value={summary.pending_invitations} detail="Đang chờ phản hồi" tone="info" />
-      <StatCard label="Tín dụng" value={summary.credit_balance} detail="Dùng khi mời gia sư" tone="success" />
+      <StatCard label="Credits" value={summary.credit_balance} detail="Dùng khi mời gia sư" tone="success" />
     </div>
   );
 }

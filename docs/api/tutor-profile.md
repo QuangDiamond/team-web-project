@@ -2,7 +2,7 @@
 
 Hồ sơ gia sư của **chính mình**. Chỉ role `TUTOR`. Cần đăng nhập. Hồ sơ là điều kiện để duyệt request, ứng tuyển, nhận lời mời và đăng bài (các API đó trả 409 `Complete your tutor profile first` khi chưa có).
 
-> Middleware `authorize` chưa có (AGENTS.md: Planned) nên service tự kiểm tra role; route có `// TODO: authorize('TUTOR')`.
+Middleware: authentication → authorize('TUTOR') → body validator (PUT) → controller.
 
 | Status | Khi nào |
 |---|---|
@@ -50,4 +50,24 @@ Tạo hồ sơ lần đầu hoặc **ghi đè** toàn bộ nội dung hồ sơ (
 - `experiences[].end_date` không được trước `start_date`; `educations[].graduation_year` từ 1950 đến 2100.
 - Experience cho phép chọn **Now** thay cho End date: gửi `end_date: null` để biểu thị công việc hiện tại. Không chọn Now thì phải gửi ngày kết thúc hợp lệ; không được bỏ field `end_date`.
 - Body dùng `strictObject`: gửi `user_id`, `is_complete`, `average_rating`, `avatar_url`... bị từ chối (422). `user_id` lấy từ JWT, `average_rating` giữ nguyên, `is_complete` luôn là `true` sau khi lưu.
-- Chưa hỗ trợ tải ảnh đại diện / ảnh bìa.
+- Avatar dùng `POST /api/user/v1/me/avatar`; xem `avatar.md`. Chưa hỗ trợ tải ảnh bìa.
+
+## Teaching categories
+
+`teaching_categories` is an optional PUT field containing at most 50 unique selections:
+
+```json
+{ "teaching_categories": [{ "type": "subjects", "category_id": "507f1f77bcf86cd799439011" }, { "type": "grades", "category_id": "507f1f77bcf86cd799439012" }] }
+```
+
+The backend resolves names from SUBJECTS/GRADE_LEVELS; clients cannot supply names.
+Unknown IDs, wrong category types, duplicates, and new inactive choices return 422.
+Previously saved inactive choices may be retained or removed. Sending [] clears tags;
+omitting the field preserves saved selections for older clients. Existing profiles
+default to [] without rewriting stored documents.
+
+GET/PUT profile responses and the public tutor profile include
+`teaching_categories: [{type, category_id, name}]`. Public names use contact masking.
+Referenced categories cannot be renamed/deleted by admins, including profile references.
+The UI combines active subjects and levels in one searchable, multi-select dropdown;
+public profiles render the selected names as tags. These tags do not create or edit tutor posts.

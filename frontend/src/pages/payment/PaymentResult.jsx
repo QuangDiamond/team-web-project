@@ -36,7 +36,7 @@ export default function PaymentResult() {
         tone="gray"
         Icon={SearchX}
         title="Chưa có đơn hàng để hiển thị"
-        description="Trang này hiển thị kết quả thanh toán. Hãy đến trang thanh toán để mua gói dịch vụ hoặc tín dụng."
+        description="Trang này hiển thị kết quả thanh toán. Hãy đến trang thanh toán để mua gói dịch vụ hoặc credits."
         actions={NOT_FOUND_ACTIONS}
       />
     );
@@ -67,9 +67,9 @@ export default function PaymentResult() {
   }
 
   if (order.status === 'SUCCESS') {
-    let description = 'Gói Pro đã được kích hoạt và tín dụng tháng này đã được cộng vào số dư.';
+    let description = 'Gói Pro đã được kích hoạt và credits tháng này đã được cộng vào số dư.';
     if (order.item_type === 'CREDIT_PACK') {
-      description = 'Tín dụng đã được cộng vào số dư và có thể sử dụng ngay.';
+      description = 'Credits đã được cộng vào số dư và có thể sử dụng ngay.';
     }
     return (
       <ResultCard
@@ -80,7 +80,7 @@ export default function PaymentResult() {
         actions={(
           <>
             <Link to="/dashboard" className="btn btn-outline">Về trang tổng quan</Link>
-            <Link to="/credits" className="btn btn-primary">Xem tín dụng và giao dịch</Link>
+            <Link to="/credits" className="btn btn-primary">Xem credits và giao dịch</Link>
           </>
         )}
       >
@@ -127,7 +127,7 @@ export default function PaymentResult() {
       description={failureText.description}
       actions={(
         <>
-          <Link to="/credits" className="btn btn-outline">Quay lại Tín dụng và giao dịch</Link>
+          <Link to="/credits" className="btn btn-outline">Quay lại Credits và giao dịch</Link>
           <Link to={getRetryLink(order)} className="btn btn-primary">Thử lại</Link>
         </>
       )}

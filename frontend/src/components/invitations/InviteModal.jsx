@@ -43,9 +43,9 @@ export default function InviteModal({ requestId, requestTitle, tutorProfileId, t
     }
   };
 
-  let creditText = "Đang kiểm tra tín dụng...";
+  let creditText = "Đang kiểm tra credits...";
   if (credits.error) {
-    creditText = "Không thể tải số dư tín dụng";
+    creditText = "Không thể tải số dư credits";
   } else if (!credits.loading) {
     creditText = `Số dư: ${credits.balance}`;
   }
@@ -58,10 +58,10 @@ export default function InviteModal({ requestId, requestTitle, tutorProfileId, t
         </p>
 
         <p className="modal-cost">
-          <span>Chi phí: {amount} tín dụng</span>
+          <span>Chi phí: {amount} credits</span>
           <span>{creditText}</span>
         </p>
-        <p className="item-meta modal-note">Tín dụng không được hoàn lại khi gia sư từ chối hoặc bạn hủy lời mời.</p>
+        <p className="item-meta modal-note">Credits không được hoàn lại khi gia sư từ chối hoặc bạn hủy lời mời.</p>
 
         <CreditAmountField
           id="invite-credits"
@@ -72,7 +72,7 @@ export default function InviteModal({ requestId, requestTitle, tutorProfileId, t
           audience="gia sư"
         />
 
-        {hasNoCredit && <Alert type="error">Bạn cần ít nhất 1 tín dụng để mời gia sư.</Alert>}
+        {hasNoCredit && <Alert type="error">Bạn cần ít nhất 1 credits để mời gia sư.</Alert>}
         {error && <Alert type="error">{error}</Alert>}
 
         <FormTextarea

@@ -1,4 +1,9 @@
-/* Màn gợi ý gia sư: /parent/ai-suggestions và /parent/requests/:requestId/ai-suggestions (UC09) */
+/* Profile-based tutor suggestions: /parent/suggestions. Legacy class names are retained. */
+
+.suggestion-category-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 8px; padding: 0; list-style: none; }
+.suggestion-category-tags li { padding: 5px 12px; border-radius: 999px; background: var(--color-primary-soft); color: var(--color-primary-strong); font-size: 13px; }
+.suggestion-rating { display: inline-flex; align-items: center; gap: 4px; }
+.ai-card-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
 
 .ai-page {
   display: flex;

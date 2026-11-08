@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   AlertTriangle,
+  BookOpen,
+  CalendarDays,
   Sparkles,
   GraduationCap,
   Users,

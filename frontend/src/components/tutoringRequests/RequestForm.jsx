@@ -4,7 +4,6 @@ import FormInput from '../common/FormInput';
 import FormSelect from '../common/FormSelect';
 import FormTextarea from '../common/FormTextarea';
 import SchedulePicker from '../common/SchedulePicker';
-import { GRADE_LEVELS } from '../../constants/gradeLevels';
 import { TEACHING_MODES, formatBudget } from '../../constants/requestLabels';
 import { useSubjectNames } from '../../hooks/useSubjectNames';
 import { focusFirstInvalidField, toFieldErrors } from '../../utils/authValidators';
@@ -24,7 +23,7 @@ const FIELD_ORDER = [
 const REQUIRED_FIELDS = [
   { name: 'title', label: 'Tiêu đề yêu cầu' },
   { name: 'subject_name', label: 'Môn học' },
-  { name: 'grade_level', label: 'Khối lớp' },
+  { name: 'grade_level', label: 'Cấp học / Trình độ' },
   { name: 'description', label: 'Mục tiêu học tập' },
 ];
 
@@ -118,7 +117,7 @@ export default function RequestForm({ initialValues, submitLabel, submittingLabe
   const [submitting, setSubmitting] = useState(false);
   const subjects = useSubjectNames();
   const subjectOptions = toSelectOptions(subjects.subjectNames, values.subject_name);
-  const gradeOptions = toSelectOptions(GRADE_LEVELS, values.grade_level);
+  const gradeOptions = toSelectOptions(subjects.gradeNames, values.grade_level);
 
   const isOnline = values.teaching_mode === 'ONLINE';
 
@@ -203,16 +202,16 @@ export default function RequestForm({ initialValues, submitLabel, submittingLabe
           options={subjectOptions}
           placeholder={subjects.loading ? 'Đang tải môn học...' : 'Chọn môn học'}
           error={errors.subject_name}
-          hint={subjects.error ? 'Không tải được danh sách môn học. Hãy tải lại trang.' : undefined}
+          hint={subjects.error ? 'Không tải được danh mục môn học/cấp học. Hãy tải lại trang.' : undefined}
           disabled={submitting}
         />
         <FormSelect
           id="grade_level"
-          label="Khối lớp"
+          label="Cấp học / Trình độ"
           value={values.grade_level}
           onChange={handleChange}
           options={gradeOptions}
-          placeholder="Chọn khối lớp"
+          placeholder="Chọn cấp học / trình độ"
           error={errors.grade_level}
           disabled={submitting}
         />

@@ -11,7 +11,7 @@ export default function TutorStats({ summary }) {
         tone="warning"
       />
       <StatCard label="Lời mời cần phản hồi" value={summary.pending_invitations} detail="Từ phụ huynh" tone="info" />
-      <StatCard label="Tín dụng" value={summary.credit_balance} detail="Dùng khi ứng tuyển" tone="success" />
+      <StatCard label="Credits" value={summary.credit_balance} detail="Dùng khi ứng tuyển" tone="success" />
     </div>
   );
 }

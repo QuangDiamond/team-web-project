@@ -9,7 +9,7 @@ const HAS_CONVERSATION_MESSAGE = 'This request already has a conversation with a
 const HAS_CONVERSATION_MESSAGE_VI = 'Yêu cầu này đã có hội thoại với gia sư nên không thể xóa.';
 
 /*
- * Hộp thoại xác nhận xóa một request. Xóa hẳn cùng đơn ứng tuyển, lời mời liên quan; tín dụng đã dùng không hoàn lại.
+ * Hộp thoại xác nhận xóa một request. Xóa hẳn cùng đơn ứng tuyển, lời mời liên quan; credits đã dùng không hoàn lại.
  * Server từ chối (409) khi request đã có cuộc trò chuyện với gia sư: hiện lý do (đã dịch ở api.js) ngay trong hộp thoại.
  * onDeleted() được gọi sau khi xóa thành công.
  */

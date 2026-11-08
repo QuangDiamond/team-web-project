@@ -606,6 +606,8 @@ Table PLANS {
   target_role plan_target_role_enum [not null, note: 'Gói dành cho vai trò nào: TUTOR hoặc PARENT. Người dùng chỉ đăng ký được gói đúng vai trò của mình. Gói PARENT để null các quyền chỉ có ở gia sư (max_classrooms, sms_reminders_enabled).']
   name String [note: 'FREE_DEFAULT, PRO. -> Lý do UC19/UC20 cần: Phân loại tên gói cước hiển thị trên màn hình Checkout (SC20) và Credits & Transactions (SC12).']
   monthly_price Decimal128 [note: 'Giá cước hàng tháng. -> Lý do UC19/UC20 cần: Hiển thị mức giá tiền VND tương ứng khi gia sư chọn nâng cấp gói Pro (UC19 bước 2).']
+  billing_period String [not null, default: 'MONTHLY', note: 'Chu kỳ mua gói: MONTHLY hoặc YEARLY.']
+  annual_discount_percent Int32 [not null, default: 0, note: 'Phần trăm giảm trên giá 12 tháng, chỉ áp dụng cho gói YEARLY (0–99).']
   monthly_credits Int32 [note: 'Số credit cấp hàng tháng. -> Lý do UC19/UC20 cần: Xác định số lượng điểm kết nối cộng định kỳ (Free: 5, Pro: 30 theo BR-10).']
   ai_quota Int32 [note: 'Giới hạn AI hàng tháng. -> Lý do UC19/UC20 cần: Quy định định mức sử dụng AI tương ứng với gói (UC19, UC20 bước 1).']
   sms_reminders_enabled Boolean [null, note: 'Cờ tính năng SMS. -> Lý do UC19/UC20 cần: Xác định quyền lợi bật tính năng nhắc nhở SMS khi nâng cấp gói Pro (BR-10).']

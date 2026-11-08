@@ -1,36 +1,17 @@
-import { useState } from 'react';
-import TutorDirectory from '../../components/invitations/TutorDirectory';
+import { Link } from 'react-router-dom';
 import SentInvitations from './SentInvitations';
 import '../../styles/invitations.css';
 
-const TABS = [
-  { value: 'tutors', label: 'Tìm gia sư' },
-  { value: 'sent', label: 'Lời mời đã gửi' },
-];
-
-// UC14 – Invitations của phụ huynh: xem tất cả gia sư đang hoạt động để mời, hoặc xem lại lời mời đã gửi
+// UC14: manage sent invitations; tutor discovery is available on the public /tutors page.
 export default function Invitations() {
-  const [activeTab, setActiveTab] = useState('tutors');
 
   return (
     <div className="page-stack">
-      <div className="invite-tabs" role="tablist" aria-label="Lời mời">
-        {TABS.map((tab) => (
-          <button
-            key={tab.value}
-            type="button"
-            role="tab"
-            aria-selected={activeTab === tab.value}
-            className={activeTab === tab.value ? 'invite-tab is-active' : 'invite-tab'}
-            onClick={() => setActiveTab(tab.value)}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className="page-toolbar">
+        <h2>Lời mời đã gửi</h2>
+        <Link to="/tutors" className="btn btn-primary">Tìm gia sư để mời</Link>
       </div>
-
-      {activeTab === 'tutors' && <TutorDirectory />}
-      {activeTab === 'sent' && <SentInvitations />}
+      <SentInvitations />
     </div>
   );
 }

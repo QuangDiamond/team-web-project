@@ -15,8 +15,7 @@ export const getPaymentMethodLabel = (value) => {
   return method.label;
 };
 
-// D9: Pro mua 1–12 tháng, credit pack mua 1–10 gói
-export const DURATION_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+// Credit pack mua 1–10 gói.
 export const QUANTITY_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 const dateTimeFormatter = new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium', timeStyle: 'short' });

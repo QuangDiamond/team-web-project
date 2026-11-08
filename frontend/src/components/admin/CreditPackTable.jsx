@@ -42,8 +42,8 @@ export default function CreditPackTable({ creditPacks, onEdit, onToggleStatus })
     return (
       <div className="card empty-state">
         <PackageOpen size={32} className="empty-state-icon" aria-hidden="true" />
-        <p className="empty-state-title">Chưa có gói tín dụng</p>
-        <p className="empty-state-text">Thêm gói để gia sư và phụ huynh có thể mua thêm tín dụng.</p>
+        <p className="empty-state-title">Chưa có gói credits</p>
+        <p className="empty-state-text">Thêm gói để gia sư và phụ huynh có thể mua thêm credits.</p>
       </div>
     );
   }
@@ -51,12 +51,12 @@ export default function CreditPackTable({ creditPacks, onEdit, onToggleStatus })
   return (
     <div className="card table-card">
       <table className="data-table">
-        <caption className="visually-hidden">Gói tín dụng</caption>
+        <caption className="visually-hidden">Gói credits</caption>
         <thead>
           <tr>
-            <th scope="col">Gói tín dụng</th>
+            <th scope="col">Gói credits</th>
             <th scope="col">Dành cho</th>
-            <th scope="col" className="cell-number">Tín dụng</th>
+            <th scope="col" className="cell-number">Credits</th>
             <th scope="col" className="cell-number">Giá</th>
             <th scope="col">Trạng thái</th>
             <th scope="col" className="cell-actions">Thao tác</th>
@@ -70,9 +70,9 @@ export default function CreditPackTable({ creditPacks, onEdit, onToggleStatus })
             }
             return (
               <tr key={pack._id} className={rowClass}>
-                <th scope="row" data-label="Gói tín dụng" className="cell-name">{pack.name}</th>
+                <th scope="row" data-label="Gói credits" className="cell-name">{pack.name}</th>
                 <td data-label="Dành cho">{getTargetRoleLabel(pack.target_role)}</td>
-                <td data-label="Tín dụng" className="cell-number">{pack.credit_amount.toLocaleString('vi-VN')}</td>
+                <td data-label="Credits" className="cell-number">{pack.credit_amount.toLocaleString('vi-VN')}</td>
                 <td data-label="Giá" className="cell-number">{formatVnd(pack.price)}</td>
                 <td data-label="Trạng thái"><PackStatusBadge isActive={pack.is_active} /></td>
                 <td data-label="Thao tác" className="cell-actions">

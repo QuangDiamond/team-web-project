@@ -21,7 +21,7 @@ export default function CurrentPlanBanner({ billing }) {
         <dd className="current-plan-note">{expiryLabel}</dd>
       </div>
       <div>
-        <dt>Số dư tín dụng</dt>
+        <dt>Số dư credits</dt>
         <dd>{billing.credit_balance?.toLocaleString('vi-VN')}</dd>
       </div>
       <div>

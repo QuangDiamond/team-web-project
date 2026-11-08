@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Mail, Send, Sparkles } from 'lucide-react';
+import { Mail, Send, Search } from 'lucide-react';
 import { usePagedList } from '../../hooks/usePagedList';
 import { getMyApplications } from '../../services/applicationService';
 import { getReceivedInvitations } from '../../services/invitationService';
@@ -61,10 +61,10 @@ export default function TutorQuickLists() {
   return (
     <div className="dashboard-columns">
       <div className="dashboard-column">
-        <SectionCard title="Gợi ý dành cho bạn" action={<Link to="/tutor/requests/suggested" className="link">Xem tất cả</Link>}>
+        <SectionCard title="Gợi ý" action={<Link to="/tutor/requests/suggested" className="link">Xem tất cả</Link>}>
           <ListState
             list={suggestions}
-            empty={{ icon: Sparkles, title: "Chưa có gợi ý", description: "Hãy quay lại khi có yêu cầu mới." }}
+            empty={{ icon: Search, title: 'Chưa có gợi ý', description: 'Chọn môn học và trình độ trong hồ sơ để nhận gợi ý.' }}
           >
             {suggestions.data && <CompactList items={suggestions.data.items.map(toRecommendedItem)} />}
           </ListState>

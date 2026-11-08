@@ -571,6 +571,23 @@
 
 }
 
+.public-profile-teaching-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.public-profile-teaching-tags li {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 850px) {
   .public-profile-grid {
     grid-template-columns: minmax(0, 1fr);

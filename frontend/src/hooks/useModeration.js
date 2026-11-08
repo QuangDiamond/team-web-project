@@ -9,14 +9,11 @@ const EMPTY_SUMMARY = {
 export function useModeration() {
   const [reports, setReports] = useState([]);
   const [summary, setSummary] = useState(EMPTY_SUMMARY);
-  const [auditLogs, setAuditLogs] = useState([]);
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [severityFilter, setSeverityFilter] = useState('ALL');
   const [targetTypeFilter, setTargetTypeFilter] = useState('ALL');
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
-  const [auditLoading, setAuditLoading] = useState(true);
-  const [auditError, setAuditError] = useState('');
   const [revision, setRevision] = useState(0);
   useEffect(() => {
     let ignore = false;
@@ -43,26 +40,7 @@ export function useModeration() {
         }
       }
     };
-    const loadAuditLogs = async () => {
-      setAuditLoading(true);
-      setAuditError('');
-      try {
-        const logs = await moderationService.getAuditLogs();
-        if (!ignore) {
-          setAuditLogs(logs || []);
-        }
-      } catch (error) {
-        if (!ignore) {
-          setAuditError(error.message || 'Không thể tải nhật ký kiểm duyệt.');
-        }
-      } finally {
-        if (!ignore) {
-          setAuditLoading(false);
-        }
-      }
-    };
     loadReports();
-    loadAuditLogs();
     return () => {
       ignore = true;
     };
@@ -71,11 +49,8 @@ export function useModeration() {
   return {
     reports,
     summary,
-    auditLogs,
     loading,
     loadError,
-    auditLoading,
-    auditError,
     reload,
     statusFilter,
     setStatusFilter,

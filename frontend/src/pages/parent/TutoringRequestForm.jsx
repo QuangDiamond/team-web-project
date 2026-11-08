@@ -104,9 +104,9 @@ export default function TutoringRequestForm() {
             <button
               type="button"
               className="btn btn-outline btn-sm"
-              onClick={() => navigate(`/parent/requests/${savedRequest._id}/ai-suggestions`)}
+              onClick={() => navigate(`/parent/requests/${savedRequest._id}/suggestions`)}
             >
-              Xem gia sư do AI gợi ý
+              Xem gia sư được gợi ý
             </button>
           )}
         </div>

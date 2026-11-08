@@ -4,6 +4,7 @@ import { LoaderCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { usePublicProfile } from '../hooks/usePublicProfile';
 import Alert from '../components/common/Alert';
+import AvatarUpload from '../components/common/AvatarUpload';
 import ProfileIdentity from '../components/publicProfile/ProfileIdentity';
 import ProfileBackground from '../components/publicProfile/ProfileBackground';
 import ProfilePosts from '../components/publicProfile/ProfilePosts';
@@ -62,6 +63,7 @@ function ProfileContent({ id, role }) {
             {user?.role === 'TUTOR' && user.id === profile.user_id && <Link to="/tutor/profile" className="btn btn-outline">Sửa hồ sơ của tôi</Link>}
           </ProfileIdentity>
           {isTutor && <ProfileRates posts={data.posts.items} onViewSchedule={() => changeSection('posts')} />}
+          {!isTutor && user && String(user.id || user._id) === profile.user_id && <AvatarUpload fallbackUrl={profile.avatar_url} onUploaded={reload} />}
         </div>
         <div className="public-profile-main">
           {isTutor ? (
@@ -78,12 +80,12 @@ function ProfileContent({ id, role }) {
       </div>
       {inviting && <InviteTutorDialog profile={profile} onClose={() => setInviting(false)} onInvited={(result) => {
         setInviting(false);
-        setNotice(`Đã gửi lời mời. Bạn còn ${result.remaining_credits} tín dụng.`);
+        setNotice(`Đã gửi lời mời. Bạn còn ${result.remaining_credits} credits.`);
       }} />}
       {applying && <ApplyModal request={applying} onClose={() => setApplying(null)} onApplied={(result) => {
         setAppliedIds([...appliedIds, applying._id]);
         setApplying(null);
-        setNotice(`Đã gửi đơn ứng tuyển. Bạn còn ${result.remaining_credits} tín dụng.`);
+        setNotice(`Đã gửi đơn ứng tuyển. Bạn còn ${result.remaining_credits} credits.`);
       }} />}
     </div>
   );

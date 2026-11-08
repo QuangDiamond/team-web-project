@@ -24,7 +24,7 @@ export default function StatsDetails({
       <SectionCard title="Cơ cấu doanh thu">
         <dl>
           <Metric label="Nâng cấp gói dịch vụ" value={formatVnd(kpis.planUpgradeRevenue)} />
-          <Metric label="Mua gói tín dụng" value={formatVnd(kpis.creditPackRevenue)} />
+          <Metric label="Mua gói credits" value={formatVnd(kpis.creditPackRevenue)} />
           <Metric label="Tổng đã thanh toán" value={formatVnd(kpis.totalGmv)} />
         </dl>
         <p className="admin-stats-meta">Số liệu tích lũy từ các đơn thanh toán thành công.</p>

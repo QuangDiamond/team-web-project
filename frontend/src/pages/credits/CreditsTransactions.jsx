@@ -9,7 +9,7 @@ import PaymentHistoryPanel from '../../components/credits/PaymentHistoryPanel';
 import '../../styles/credits.css';
 
 const TABS = [
-  { key: 'credits', label: 'Biến động tín dụng' },
+  { key: 'credits', label: 'Biến động credits' },
   { key: 'payments', label: 'Thanh toán' },
 ];
 
@@ -51,12 +51,12 @@ export default function CreditsTransactions() {
     <>
       <PageHeader
         eyebrow="THANH TOÁN"
-        title="Tín dụng và giao dịch"
-        description="Theo dõi gói dịch vụ, số dư, biến động tín dụng và lịch sử thanh toán của bạn."
+        title="Credits và giao dịch"
+        description="Theo dõi gói dịch vụ, số dư, biến động credits và lịch sử thanh toán của bạn."
         actions={(
           <Link to="/checkout" className="btn btn-primary btn-sm">
             <Sparkles size={16} aria-hidden="true" />
-            <span>Nâng cấp / Mua tín dụng</span>
+            <span>Nâng cấp / Mua credits</span>
           </Link>
         )}
       />

@@ -1,7 +1,7 @@
 import api from './api.js';
 
-// UC09 – View AI Tutor Suggestions
-const BASE_URL = '/ai-suggestions/v1';
+// Profile/category-based tutor suggestions. No AI provider or quota is used.
+const BASE_URL = '/suggestions/v1';
 
 export const getTutorSuggestions = (requestId, params) => {
   return api.get(`${BASE_URL}/requests/${requestId}`, { params });
