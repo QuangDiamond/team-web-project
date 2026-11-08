@@ -32,7 +32,7 @@ export default function TutoringRequests() {
   return (
     <div className="page-stack">
       <div className="page-toolbar">
-        <p className="item-meta">Quản lý các yêu cầu đang mở và xem gia sư nào quan tâm.</p>
+        <p className="item-meta">Quản lý yêu cầu đang mở và xem gia sư quan tâm.</p>
         <button type="button" className="btn btn-primary btn-sm" onClick={goToCreate}>
           <Plus size={14} aria-hidden="true" />
           <span>Tạo yêu cầu</span>
@@ -58,8 +58,8 @@ export default function TutoringRequests() {
       {data && data.items.length === 0 && (
         <EmptyState
           icon={FileText}
-          title="Chưa có yêu cầu nào"
-          description="Hãy tạo yêu cầu đầu tiên, các gia sư phù hợp sẽ bắt đầu ứng tuyển."
+          title="Chưa có yêu cầu tìm gia sư"
+          description="Tạo yêu cầu đầu tiên để các gia sư phù hợp ứng tuyển."
         />
       )}
 

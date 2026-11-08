@@ -8,7 +8,7 @@ export default function SectionContent({ section, onRetry, emptyIcon, emptyTitle
     return (
       <div className="student-section-loading" role="status">
         <LoaderCircle size={22} className="spin" aria-hidden="true" />
-        <span className="visually-hidden">Loading...</span>
+        <span className="visually-hidden">Đang tải...</span>
       </div>
     );
   }
@@ -17,7 +17,7 @@ export default function SectionContent({ section, onRetry, emptyIcon, emptyTitle
     return (
       <Alert type="error">
         <p className="student-section-error-text">{section.error.message}</p>
-        <button type="button" className="btn btn-outline btn-sm" onClick={onRetry}>Try again</button>
+        <button type="button" className="btn btn-outline btn-sm" onClick={onRetry}>Thử lại</button>
       </Alert>
     );
   }

@@ -19,7 +19,7 @@ export default function Pagination({ pagination, onPageChange, disabled = false,
           onClick={() => onPageChange(pagination.page - 1)}
         >
           <ChevronLeft size={14} aria-hidden="true" />
-          <span>Trước</span>
+          <span>Trang trước</span>
         </button>
         <button
           type="button"
@@ -27,7 +27,7 @@ export default function Pagination({ pagination, onPageChange, disabled = false,
           disabled={disabled || pagination.page >= pagination.totalPages}
           onClick={() => onPageChange(pagination.page + 1)}
         >
-          <span>Sau</span>
+          <span>Trang sau</span>
           <ChevronRight size={14} aria-hidden="true" />
         </button>
       </div>

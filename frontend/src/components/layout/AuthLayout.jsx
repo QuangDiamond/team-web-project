@@ -2,15 +2,15 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 
 const JOURNEY_STEPS = [
-  { number: '01', title: 'Create account', description: 'Fill in your basic info' },
-  { number: '02', title: 'Choose your role', description: 'Student, Tutor or Parent?' },
-  { number: '03', title: 'Start learning', description: 'Connect with the right tutor' },
+  { number: '01', title: 'Tạo tài khoản', description: 'Điền thông tin cơ bản' },
+  { number: '02', title: 'Chọn vai trò', description: 'Học sinh, Gia sư hay Phụ huynh?' },
+  { number: '03', title: 'Bắt đầu học tập', description: 'Kết nối với gia sư phù hợp' },
 ];
 
 const STATS = [
-  { value: 'Free', label: 'To sign up' },
-  { value: '< 2 min', label: 'To complete' },
-  { value: '24/7', label: 'Support' },
+  { value: 'Miễn phí', label: 'Đăng ký' },
+  { value: '< 2 phút', label: 'Hoàn tất' },
+  { value: '24/7', label: 'Hỗ trợ' },
 ];
 
 function BrandLogo() {
@@ -35,10 +35,10 @@ export default function AuthLayout({ activeStep = 0, children }) {
         <BrandLogo />
 
         <div className="auth-panel-content">
-          <span className="auth-panel-badge">Free for your first 7 days</span>
-          <p className="auth-panel-heading">Start your learning journey today.</p>
+          <span className="auth-panel-badge">Miễn phí 7 ngày đầu tiên</span>
+          <p className="auth-panel-heading">Bắt đầu hành trình học tập ngay hôm nay.</p>
           <p className="auth-panel-text">
-            Create a free account and connect with thousands of quality tutors in just a few minutes.
+            Tạo tài khoản miễn phí và kết nối với hàng nghìn gia sư chất lượng chỉ trong vài phút.
           </p>
 
           <ol className="journey-steps">
@@ -72,7 +72,7 @@ export default function AuthLayout({ activeStep = 0, children }) {
           <div className="auth-topbar">
             <Link to="/" className="link-back">
               <ChevronLeft size={16} aria-hidden="true" />
-              <span>Back</span>
+              <span>Quay lại</span>
             </Link>
             <BrandLogo />
             <span className="auth-topbar-spacer" aria-hidden="true" />

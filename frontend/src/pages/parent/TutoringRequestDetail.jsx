@@ -75,8 +75,8 @@ export default function TutoringRequestDetail() {
       <div className="request-detail-grid">
         <div className="request-detail-main">
           <SectionCard title={request.title} action={<span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>}>
-            <p className="item-meta">Đăng ngày {formatDate(request.created_at)}</p>
-            {request.is_expired && <Alert type="info">Yêu cầu này đã quá 30 ngày nên không còn hiển thị với gia sư.</Alert>}
+            <p className="item-meta">Đã đăng {formatDate(request.created_at)}</p>
+            {request.is_expired && <Alert type="info">Yêu cầu này đã quá 30 ngày và không còn hiển thị với gia sư.</Alert>}
             <p className="request-detail-text">{request.description}</p>
             <dl className="request-facts">
               {facts.map((fact) => (
@@ -88,17 +88,17 @@ export default function TutoringRequestDetail() {
             </dl>
           </SectionCard>
           <SectionCard title="Yêu cầu đối với gia sư">
-            <p className="request-detail-text">{request.tutor_requirements || 'Không có yêu cầu cụ thể.'}</p>
+            <p className="request-detail-text">{request.tutor_requirements || "Không có yêu cầu cụ thể."}</p>
           </SectionCard>
         </div>
 
         <SectionCard title="Gia sư quan tâm">
           <p className="request-detail-count">{request.application_count}</p>
-          <p className="item-meta">đơn ứng tuyển đã nhận</p>
+          <p className="item-meta">Đơn ứng tuyển đã nhận</p>
           <div className="request-detail-actions">
             {request.can_edit && (
               <button type="button" className="btn btn-primary btn-block" onClick={() => navigate(`/parent/requests/${request._id}/edit`)}>
-                Chỉnh sửa yêu cầu
+                Sửa yêu cầu
               </button>
             )}
             {canSuggest && (
@@ -108,7 +108,7 @@ export default function TutoringRequestDetail() {
                 onClick={() => navigate(`/parent/requests/${request._id}/ai-suggestions`)}
               >
                 <Sparkles size={16} aria-hidden="true" />
-                <span>Gợi ý gia sư</span>
+                <span>Gợi ý gia sư bằng AI</span>
               </button>
             )}
             <button type="button" className="btn btn-outline btn-block" onClick={() => setDeleting(true)}>
@@ -116,7 +116,7 @@ export default function TutoringRequestDetail() {
               <span>Xóa yêu cầu</span>
             </button>
             {!request.can_edit && (
-              <p className="item-meta">Yêu cầu này ở trạng thái "{badge.label}" nên không thể chỉnh sửa nữa.</p>
+              <p className="item-meta">Yêu cầu này đang ở trạng thái {badge.label.toLowerCase()} và không thể chỉnh sửa.</p>
             )}
           </div>
         </SectionCard>

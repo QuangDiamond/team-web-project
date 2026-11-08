@@ -86,10 +86,10 @@ export default function TutoringRequestForm() {
 
   if (savedRequest) {
     let successTitle = 'Đã đăng yêu cầu';
-    let successText = 'Gia sư đã có thể xem và ứng tuyển yêu cầu của bạn.';
+    let successText = 'Gia sư có thể xem và ứng tuyển vào yêu cầu.';
     if (isEdit) {
       successTitle = 'Đã cập nhật yêu cầu';
-      successText = 'Thay đổi của bạn đã hiển thị với gia sư.';
+      successText = 'Gia sư có thể xem các thay đổi của bạn.';
     }
     return (
       <div className="request-success">
@@ -106,7 +106,7 @@ export default function TutoringRequestForm() {
               className="btn btn-outline btn-sm"
               onClick={() => navigate(`/parent/requests/${savedRequest._id}/ai-suggestions`)}
             >
-              Xem gợi ý gia sư
+              Xem gia sư do AI gợi ý
             </button>
           )}
         </div>
@@ -122,7 +122,7 @@ export default function TutoringRequestForm() {
     return (
       <div className="page-stack">
         <Alert type="info">
-          Yêu cầu này không thể chỉnh sửa nữa (trạng thái: {statusLabel}).
+          Không thể sửa yêu cầu này (trạng thái: {statusLabel}).
         </Alert>
         <Link to={`/parent/requests/${id}`} className="link">Xem yêu cầu</Link>
       </div>

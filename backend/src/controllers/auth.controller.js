@@ -4,8 +4,28 @@ import { responseCommon } from "../common/response.js";
 import { asyncHandler } from "../common/utils/asyncHandler.js";
 import * as  authService from '../services/auth.service.js'
 import { env } from '../config/environment.js';
+import * as passwordService from '../services/password.service.js';
 
 const OAUTH_STATE_COOKIE = 'oauth_state';
+
+export const forgotPassword = asyncHandler(async (req, res) => {
+    passwordService.forgotPassword(req.body.email);
+    return responseCommon(res, null, 'If the email exists, a reset link has been sent', 200, responseCode.SUCCESSED);
+});
+
+export const resetPassword = asyncHandler(async (req, res) => {
+    await passwordService.resetPassword(req.body);
+    res.clearCookie('token', {
+        httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax',
+    });
+    return responseCommon(res, null, 'Password reset successfully. Please log in', 200, responseCode.SUCCESSED);
+});
+
+export const changePassword = asyncHandler(async (req, res) => {
+    const { user, token } = await passwordService.changePassword(req.user.id, req.body);
+    setAuthCookie(res, token);
+    return responseCommon(res, user, 'Password changed successfully', 200, responseCode.SUCCESSED);
+});
 
 const setAuthCookie = (res, token) => {
     res.cookie('token', token, {

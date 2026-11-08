@@ -18,16 +18,16 @@ export default function InviteTutorDialog({ profile, onClose, onInvited }) {
   }
 
   return (
-    <Modal title="Chọn yêu cầu để mời gia sư này" onClose={onClose}>
-      <p className="item-meta">Mỗi lời mời tốn credit. Hãy chọn một yêu cầu đang mở bên dưới.</p>
-      <ListState list={list} empty={{ title: 'Chưa có yêu cầu đang mở', description: 'Hãy tạo một yêu cầu tìm gia sư trước.' }}>
+    <Modal title="Chọn yêu cầu để mời gia sư" onClose={onClose}>
+      <p className="item-meta">Mỗi lời mời tốn ít nhất 1 tín dụng. Chọn một yêu cầu đang mở bên dưới.</p>
+      <ListState list={list} empty={{ title: "Chưa có yêu cầu đang mở", description: "Hãy tạo yêu cầu tìm gia sư trước." }}>
         <ul className="public-profile-list">
           {list.data?.items.map((item) => (
             <li key={item._id}>
               <h3>{item.title}</h3>
               <p className="item-meta">{item.subject_name} · {item.grade_level}</p>
               <button type="button" className="btn btn-outline btn-sm" disabled={item.is_expired}
-                onClick={() => setRequest(item)}>{item.is_expired ? 'Hết hạn' : 'Chọn yêu cầu'}</button>
+                onClick={() => setRequest(item)}>{item.is_expired ? "Đã hết hạn" : "Chọn yêu cầu"}</button>
             </li>
           ))}
         </ul>

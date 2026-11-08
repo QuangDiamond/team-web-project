@@ -4,9 +4,9 @@ import StatCard from '../common/StatCard';
 export default function ParentStats({ summary }) {
   return (
     <div className="stat-grid">
-      <StatCard label="Applications to review" value={summary.pending_applications} detail="Waiting for you" tone="warning" />
-      <StatCard label="Invitations sent" value={summary.pending_invitations} detail="Awaiting a reply" tone="info" />
-      <StatCard label="Credits" value={summary.credit_balance} detail="1 per invitation" tone="success" />
+      <StatCard label="Đơn cần xem xét" value={summary.pending_applications} detail="Đang chờ bạn" tone="warning" />
+      <StatCard label="Lời mời đã gửi" value={summary.pending_invitations} detail="Đang chờ phản hồi" tone="info" />
+      <StatCard label="Tín dụng" value={summary.credit_balance} detail="Dùng khi mời gia sư" tone="success" />
     </div>
   );
 }

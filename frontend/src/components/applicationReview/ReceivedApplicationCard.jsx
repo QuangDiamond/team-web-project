@@ -22,7 +22,7 @@ export default function ReceivedApplicationCard({ application, onContinue, onSki
   const badge = getStatusBadge(APPLICATION_STATUS, application.status);
   const tutor = application.tutor;
 
-  let tutorName = 'Gia sư';
+  let tutorName = "Gia sư";
   let headline = '';
   let avatarText = 'GS';
   if (tutor) {
@@ -57,9 +57,9 @@ export default function ReceivedApplicationCard({ application, onContinue, onSki
       {application.note ? (
         <p className="review-card-note">“{application.note}”</p>
       ) : (
-        <p className="review-card-note is-empty">Gia sư không để lại lời nhắn.</p>
+        <p className="review-card-note is-empty">Gia sư chưa để lại lời nhắn.</p>
       )}
-      <p className="item-meta">Ứng tuyển ngày {formatDate(application.created_at)}</p>
+      <p className="item-meta">Đã ứng tuyển {formatDate(application.created_at)}</p>
 
       <div className="review-card-actions">
         <button type="button" className="btn btn-outline btn-sm" disabled={isBusy} onClick={() => onViewDetails(application)}>
@@ -81,7 +81,7 @@ export default function ReceivedApplicationCard({ application, onContinue, onSki
               disabled={isBusy}
               onClick={() => runAction('continue', onContinue)}
             >
-              {busyAction === 'continue' ? 'Đang mở...' : 'Trao đổi'}
+              {busyAction === 'continue' ? 'Đang mở...' : 'Tiếp tục'}
             </button>
           </>
         )}
@@ -89,7 +89,7 @@ export default function ReceivedApplicationCard({ application, onContinue, onSki
 
       {application.status === 'CONTINUED' && (
         <div className="review-card-chat">
-          <span>Đã mở hội thoại.</span>
+          <span>Đã mở cuộc trò chuyện.</span>
           {application.conversation_id && <OpenChatLink to={`/parent/messages/${application.conversation_id}`} />}
         </div>
       )}

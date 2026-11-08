@@ -1,11 +1,18 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import * as authService from '../services/authService.js';
-import { setAccountLockedHandler } from '../services/api.js';
+import { setAccountLockedHandler, setSessionExpiredHandler } from '../services/api.js';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem('user');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
   // true cho đến khi biết user đã đăng nhập hay chưa (gọi /me lúc mở app)
   const [initializing, setInitializing] = useState(true);
   // true sau khi user tự bấm Log out: PrivateRoute không ghi nhớ trang cũ, lần đăng nhập sau về /dashboard
@@ -20,8 +27,10 @@ export function AuthProvider({ children }) {
       setAccountLockedOnStart(true);
       setUser(null);
     });
+    setSessionExpiredHandler(() => setUser(null));
     return () => {
       setAccountLockedHandler(null);
+      setSessionExpiredHandler(null);
     };
   }, []);
 
@@ -30,10 +39,16 @@ export function AuthProvider({ children }) {
     authService.me()
       .then((response) => {
         setUser(response.data);
+        try {
+          localStorage.setItem('user', JSON.stringify(response.data));
+        } catch {}
       })
       .catch(() => {
         // 403 tài khoản bị khóa đã được handler ở trên xử lý
         setUser(null);
+        try {
+          localStorage.removeItem('user');
+        } catch {}
       })
       .finally(() => {
         setInitializing(false);
@@ -46,8 +61,12 @@ export function AuthProvider({ children }) {
       const response = await authService.login(credentials);
       setLoggedOutByUser(false);
       setAccountLockedOnStart(false);
-      setUser(response.data);
-      return { success: true };
+      const userData = response.data;
+      setUser(userData);
+      try {
+        localStorage.setItem('user', JSON.stringify(userData));
+      } catch {}
+      return { success: true, user: userData };
     } catch (error) {
       return { success: false, error: error };
     }
@@ -56,8 +75,15 @@ export function AuthProvider({ children }) {
   // Đăng ký xong chưa đăng nhập, phải kích hoạt email trước
   const register = useCallback(async (data) => {
     try {
-      await authService.register(data);
-      return { success: true };
+      const response = await authService.register(data);
+      const userData = response?.data?.user || response?.data;
+      if (userData) {
+        setUser(userData);
+        try {
+          localStorage.setItem('user', JSON.stringify(userData));
+        } catch {}
+      }
+      return { success: true, user: userData };
     } catch (error) {
       return { success: false, error: error };
     }
@@ -67,8 +93,12 @@ export function AuthProvider({ children }) {
     try {
       const response = await authService.completeGoogleRegister(data);
       setLoggedOutByUser(false);
-      setUser(response.data);
-      return { success: true };
+      const userData = response.data;
+      setUser(userData);
+      try {
+        localStorage.setItem('user', JSON.stringify(userData));
+      } catch {}
+      return { success: true, user: userData };
     } catch (error) {
       return { success: false, error: error };
     }
@@ -80,6 +110,9 @@ export function AuthProvider({ children }) {
     } finally {
       setLoggedOutByUser(true);
       setUser(null);
+      try {
+        localStorage.removeItem('user');
+      } catch {}
     }
   }, []);
 
@@ -90,7 +123,18 @@ export function AuthProvider({ children }) {
     setAccountLockedOnStart(false);
   }, []);
 
-  const value = { user, initializing, loggedOutByUser, clearLoggedOutByUser, accountLockedOnStart, login, register, completeGoogleRegister, logout };
+  const resetPassword = useCallback(async (data) => {
+    await authService.resetPassword(data);
+    setLoggedOutByUser(true);
+    setUser(null);
+  }, []);
+
+  const changePassword = useCallback(async (data) => {
+    const response = await authService.changePassword(data);
+    setUser(response.data);
+  }, []);
+
+  const value = { user, initializing, loggedOutByUser, clearLoggedOutByUser, accountLockedOnStart, login, register, completeGoogleRegister, logout, resetPassword, changePassword };
 
   return (
     <AuthContext.Provider value={value}>

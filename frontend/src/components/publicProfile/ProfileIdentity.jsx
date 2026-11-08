@@ -11,18 +11,18 @@ export default function ProfileIdentity({ profile, role, children }) {
         <div className="public-profile-avatar">
           {profile.avatar_url ? <img src={profile.avatar_url} alt={profile.full_name} /> : getInitials(profile.full_name)}
         </div>
-        <p className="public-profile-role"><ShieldCheck size={16} aria-hidden="true" /> {role === 'TUTOR' ? 'Tutor profile' : 'Parent profile'}</p>
+        <p className="public-profile-role"><ShieldCheck size={16} aria-hidden="true" /> {role === 'TUTOR' ? "Hồ sơ gia sư" : "Hồ sơ phụ huynh"}</p>
         <h1>{profile.full_name}</h1>
         {profile.headline && <p className="public-profile-headline">{profile.headline}</p>}
         {profile.address && <p className="public-profile-meta"><MapPin size={16} aria-hidden="true" />{profile.address}</p>}
         {role === 'TUTOR' && (
           <div className="public-profile-facts">
-            <p><Star size={16} aria-hidden="true" />{profile.average_rating == null ? 'No ratings yet' : `${Number(profile.average_rating).toFixed(1)} / 5`}</p>
-            <p>{profile.availability_status === 'AVAILABLE' ? 'Available for tutoring' : 'Not currently available'}</p>
+            <p><Star size={16} aria-hidden="true" />{profile.average_rating == null ? "Chưa có đánh giá" : `${Number(profile.average_rating).toFixed(1)} / 5`}</p>
+            <p>{profile.availability_status === 'AVAILABLE' ? "Đang nhận học sinh" : "Hiện chưa nhận học sinh"}</p>
           </div>
         )}
         <div className="public-profile-actions">{children}</div>
-        <p className="public-profile-privacy">Contact details are protected. Connect through TuConnector to discuss lessons.</p>
+        <p className="public-profile-privacy">Thông tin liên hệ được bảo vệ. Kết nối qua TuConnector để trao đổi về việc học.</p>
       </div>
     </aside>
   );

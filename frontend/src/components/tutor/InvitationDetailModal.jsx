@@ -94,7 +94,7 @@ export default function InvitationDetailModal({ invitation, onClose, onAccept, o
 
         {invitation.status === 'ACCEPTED' && (
           <div className="review-card-chat">
-            <span>Đã mở hội thoại.</span>
+            <span>Đã mở cuộc trò chuyện.</span>
             {invitation.conversation_id && <OpenChatLink to={`/tutor/messages/${invitation.conversation_id}`} />}
           </div>
         )}

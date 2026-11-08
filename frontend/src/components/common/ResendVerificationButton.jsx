@@ -25,7 +25,7 @@ export default function ResendVerificationButton({ email }) {
     setMessage('');
     try {
       await authService.resendVerification(email);
-      setMessage('If your account is not verified yet, a new verification email has been sent.');
+      setMessage('Nếu tài khoản chưa được xác minh, một email xác minh mới đã được gửi.');
       setSecondsLeft(COOLDOWN_SECONDS);
     } catch (error) {
       setMessage(error.message);
@@ -37,11 +37,11 @@ export default function ResendVerificationButton({ email }) {
   const hasEmail = Boolean(email && email.trim());
   const disabled = !hasEmail || sending || secondsLeft > 0;
 
-  let buttonText = 'Resend verification email';
+  let buttonText = 'Gửi lại email xác minh';
   if (sending) {
-    buttonText = 'Sending...';
+    buttonText = 'Đang gửi...';
   } else if (secondsLeft > 0) {
-    buttonText = `Resend in ${secondsLeft}s`;
+    buttonText = `Gửi lại sau ${secondsLeft} giây`;
   }
 
   return (
@@ -50,7 +50,7 @@ export default function ResendVerificationButton({ email }) {
         <MailCheck size={18} aria-hidden="true" />
         <span>{buttonText}</span>
       </button>
-      {!hasEmail && <p className="form-hint">Enter your email above to resend the verification email.</p>}
+      {!hasEmail && <p className="form-hint">Nhập email ở trên để gửi lại email xác minh.</p>}
       {message && <p className="form-hint" role="status">{message}</p>}
     </div>
   );

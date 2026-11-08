@@ -1,8 +1,7 @@
 import { responseCode } from '../common/constants/constants.js';
 import { responseCommon } from '../common/response.js';
 import { asyncHandler } from '../common/utils/asyncHandler.js';
-import { getPagination, buildPagination } from '../common/utils/pagination.js';
-import { validateQuery } from '../common/validator/validator.js';
+import { getPagination, buildPagination, parseQuery } from '../common/utils/pagination.js';
 import { userQuerySchema } from '../common/validator/adminUserSchema.js';
 import * as adminUserService from '../services/adminUser.service.js';
 
@@ -15,7 +14,7 @@ const getAdminContext = (req) => {
 };
 
 export const getUsers = asyncHandler(async (req, res) => {
-  const filters = validateQuery(userQuerySchema, req.query);
+  const filters = parseQuery(userQuerySchema, req.query);
   const { page, limit, skip } = getPagination(req.query);
   const result = await adminUserService.listUsers(filters, skip, limit);
   const data = { items: result.items, pagination: buildPagination(page, limit, result.total) };

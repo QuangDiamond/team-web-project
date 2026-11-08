@@ -22,7 +22,7 @@ const FIELD_ORDER = [
 ];
 
 const REQUIRED_FIELDS = [
-  { name: 'title', label: 'Tiêu đề' },
+  { name: 'title', label: 'Tiêu đề yêu cầu' },
   { name: 'subject_name', label: 'Môn học' },
   { name: 'grade_level', label: 'Khối lớp' },
   { name: 'description', label: 'Mục tiêu học tập' },
@@ -71,15 +71,15 @@ const validate = (values) => {
 
   const budget = Number(values.budget);
   if (values.budget === '' || Number.isNaN(budget)) {
-    errors.budget = 'Vui lòng nhập ngân sách';
+    errors.budget = "Vui lòng nhập ngân sách";
   } else if (budget <= 0) {
-    errors.budget = 'Ngân sách phải lớn hơn 0';
+    errors.budget = "Ngân sách phải lớn hơn 0";
   } else if (budget > 100000000) {
-    errors.budget = 'Ngân sách quá lớn';
+    errors.budget = "Ngân sách quá lớn";
   }
 
   if (values.teaching_mode !== 'ONLINE' && !values.location_address.trim()) {
-    errors.location_address = 'Cần nhập địa điểm khi học trực tiếp hoặc kết hợp';
+    errors.location_address = "Vui lòng nhập địa điểm cho hình thức trực tiếp hoặc kết hợp";
   }
   return errors;
 };
@@ -187,11 +187,11 @@ export default function RequestForm({ initialValues, submitLabel, submittingLabe
 
       <FormInput
         id="title"
-        label="Tiêu đề"
+        label="Tiêu đề yêu cầu"
         value={values.title}
         onChange={handleChange}
         error={errors.title}
-        placeholder="VD: Tìm gia sư Toán lớp 9 ôn thi vào 10"
+        placeholder="Ví dụ: Tìm gia sư Toán lớp 9 ôn thi vào 10"
         disabled={submitting}
       />
       <div className="form-grid">
@@ -225,7 +225,7 @@ export default function RequestForm({ initialValues, submitLabel, submittingLabe
           value={values.budget}
           onChange={handleChange}
           error={errors.budget}
-          placeholder="VD: 250000"
+          placeholder="Ví dụ: 250000"
           disabled={submitting}
           belowControl={budgetHint ? <p className="form-hint-left">{budgetHint}</p> : null}
         />
@@ -263,7 +263,7 @@ export default function RequestForm({ initialValues, submitLabel, submittingLabe
         value={values.location_address}
         onChange={handleChange}
         error={errors.location_address}
-        placeholder="VD: Cầu Giấy, Hà Nội"
+        placeholder="Ví dụ: Cầu Giấy, Hà Nội"
         disabled={submitting}
       />
 
@@ -279,12 +279,13 @@ export default function RequestForm({ initialValues, submitLabel, submittingLabe
       />
       <FormTextarea
         id="tutor_requirements"
-        label="Yêu cầu đối với gia sư (không bắt buộc)"
+        label="Yêu cầu đối với gia sư"
+        optional
         rows={3}
         value={values.tutor_requirements}
         onChange={handleChange}
         error={errors.tutor_requirements}
-        placeholder="Giới tính, kinh nghiệm, trường... những điều gia sư nên biết"
+        placeholder="Giới tính, kinh nghiệm, trường học… hoặc yêu cầu khác dành cho gia sư"
         disabled={submitting}
       />
 

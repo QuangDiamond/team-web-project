@@ -42,7 +42,7 @@ export default function SuggestionsPanel({ requestId }) {
 
   const handleInvited = (result) => {
     setInvitedTutorIds([...invitedTutorIds, invitingSuggestion.tutor.profile_id]);
-    setInviteNotice(`Đã gửi lời mời. Bạn còn ${result.remaining_credits} credit.`);
+    setInviteNotice(`Đã gửi lời mời. Bạn còn ${result.remaining_credits} tín dụng.`);
     setInvitingSuggestion(null);
   };
 

@@ -9,8 +9,8 @@ const HAS_CONVERSATION_MESSAGE = 'This request already has a conversation with a
 const HAS_CONVERSATION_MESSAGE_VI = 'Yêu cầu này đã có hội thoại với gia sư nên không thể xóa.';
 
 /*
- * Hộp thoại xác nhận xóa một request. Xóa hẳn cùng đơn ứng tuyển, lời mời liên quan; credit đã dùng không hoàn lại.
- * Server từ chối (409) khi request đã có hội thoại với gia sư: hiện lý do ngay trong hộp thoại.
+ * Hộp thoại xác nhận xóa một request. Xóa hẳn cùng đơn ứng tuyển, lời mời liên quan; tín dụng đã dùng không hoàn lại.
+ * Server từ chối (409) khi request đã có cuộc trò chuyện với gia sư: hiện lý do (đã dịch ở api.js) ngay trong hộp thoại.
  * onDeleted() được gọi sau khi xóa thành công.
  */
 export default function DeleteRequestModal({ request, onClose, onDeleted }) {
@@ -24,11 +24,7 @@ export default function DeleteRequestModal({ request, onClose, onDeleted }) {
       await deleteRequest(request._id);
       onDeleted();
     } catch (deleteError) {
-      if (deleteError.message === HAS_CONVERSATION_MESSAGE) {
-        setError(HAS_CONVERSATION_MESSAGE_VI);
-      } else {
-        setError(deleteError.message);
-      }
+      setError(deleteError.message);
       setDeleting(false);
     }
   };

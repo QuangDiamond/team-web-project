@@ -49,7 +49,7 @@ const features = [
       </svg>
     ),
     title: 'Theo dõi tiến độ & Thỏa thuận minh bạch',
-    desc: 'Phụ huynh và gia sư trao đổi 1-1, chốt hợp đồng dạy kèm và theo dõi toàn bộ kết quả học tập trực quan trên Dashboard.',
+    desc: 'Phụ huynh và gia sư trao đổi 1-1, chốt hợp đồng dạy kèm và theo dõi toàn bộ kết quả học tập trực quan trên bảng điều khiển.',
   },
 ];
 
@@ -67,7 +67,7 @@ const howItWorksSteps = [
   {
     step: '03',
     title: 'Xác nhận hợp đồng & Học tập',
-    desc: 'Hai bên thống nhất lịch học, xác nhận thỏa thuận kết nối và theo dõi tiến độ trên Dashboard.',
+    desc: 'Hai bên thống nhất lịch học, xác nhận thỏa thuận kết nối và theo dõi tiến độ trên bảng điều khiển.',
   },
 ];
 
@@ -165,7 +165,7 @@ export default function Home() {
                   onChange={(e) => setTeachingMode(e.target.value)}
                   aria-label="Chọn hình thức học"
                 >
-                  <option value="ONLINE">Học Online</option>
+                  <option value="ONLINE">Học trực tuyến</option>
                   <option value="OFFLINE">Gia sư tại nhà</option>
                   <option value="HYBRID">Linh hoạt</option>
                 </select>
@@ -214,7 +214,7 @@ export default function Home() {
 
                 <div className="window-body">
                   <div className="window-sidebar">
-                    <div className="sidebar-title">DASHBOARD</div>
+                    <div className="sidebar-title">BẢNG ĐIỀU KHIỂN</div>
                     <div className="sidebar-item active">Tổng quan</div>
                     <div className="sidebar-item">Yêu cầu tìm gia sư</div>
                     <div className="sidebar-item">Gợi ý AI</div>
@@ -326,7 +326,7 @@ export default function Home() {
               <p className="section-desc">Được phụ huynh đánh giá cao về chuyên môn và sự tận tâm</p>
             </div>
             <Link to={targetDashboardPath} className="btn btn-outline" style={{ display: 'inline-flex' }}>
-              {user ? 'Vào Dashboard →' : 'Đăng nhập để kết nối →'}
+              {user ? 'Vào bảng điều khiển →' : 'Đăng nhập để kết nối →'}
             </Link>
           </div>
 
@@ -373,7 +373,7 @@ export default function Home() {
             <div className="section-tag">Quy trình đơn giản</div>
             <h2 className="section-title">3 bước kết nối gia sư trên TuConnector</h2>
             <p className="section-desc">
-              Mọi thao tác quản lý yêu cầu, ứng tuyển, lời mời và hợp đồng đều được thực hiện trực tiếp trong Dashboard của bạn.
+              Mọi thao tác quản lý yêu cầu, ứng tuyển, lời mời và hợp đồng đều được thực hiện trực tiếp trong bảng điều khiển của bạn.
             </p>
           </div>
 
@@ -444,7 +444,7 @@ export default function Home() {
             <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
               {user ? (
                 <Link to={targetDashboardPath} className="btn btn-cta">
-                  Đi tới Dashboard của bạn
+                  Đi tới bảng điều khiển của bạn
                 </Link>
               ) : (
                 <>

@@ -1,9 +1,10 @@
-import { authRoute } from "./auth.routes.js";
-import { userRoutes } from "./user.routes.js";
-import {healthRoutes} from './health.routes.js'
-import {Router} from 'express';
-import { paymentRoutes } from "./payment.routes.js";
-import { adminRoutes } from "./admin.routes.js";
+import { Router } from 'express';
+import { authRoute } from './auth.routes.js';
+import { userRoutes } from './user.routes.js';
+import { healthRoutes } from './health.routes.js';
+import { paymentRoutes } from './payment.routes.js';
+import { adminRoutes } from './admin.routes.js';
+import { classroomRoutes } from './classroom.routes.js';
 import { studentDashboardRoutes } from './studentDashboard.routes.js';
 import { aiSuggestionRoutes } from './aiSuggestion.routes.js';
 import { parentRequestRoutes } from './parentRequest.routes.js';
@@ -28,6 +29,8 @@ router.use('/user/v1', userRoutes);
 router.use('/auth/v1', authRoute);
 router.use('/health', healthRoutes);
 router.use('/payment/v1', paymentRoutes);
+router.use('/admin/v1', adminRoutes);
+router.use('/classroom/v1', classroomRoutes);
 router.use('/student-dashboard/v1', studentDashboardRoutes);
 router.use('/ai-suggestions/v1', aiSuggestionRoutes);
 router.use('/parent-requests/v1', parentRequestRoutes);
@@ -45,4 +48,3 @@ router.use('/notifications/v1', notificationRoutes);
 router.use('/moderation/v1', moderationRoutes);
 router.use('/stats/v1', statsRoutes);
 router.use('/discovery/v1', discoveryRoutes);
-router.use("/admin/v1", adminRoutes)

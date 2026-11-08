@@ -12,13 +12,13 @@ export default function RequestCard({ request, onToggleSave, onApply }) {
     return (
       <li className="request-card is-unavailable">
         <div className="request-card-body">
-          <h3 className="request-card-title">{request.title || 'Request'}</h3>
+          <h3 className="request-card-title">{request.title || "Yêu cầu"}</h3>
           <p className="item-meta">{request.subject_name}</p>
-          <span className="status-badge tone-error">No longer available</span>
+          <span className="status-badge tone-error">Không còn khả dụng</span>
         </div>
         <div className="request-card-actions">
           <button type="button" className="btn btn-outline btn-sm" onClick={() => onToggleSave({ ...request, is_bookmarked: true })}>
-            Remove
+            Xóa
           </button>
         </div>
       </li>
@@ -27,21 +27,21 @@ export default function RequestCard({ request, onToggleSave, onApply }) {
 
   let applyButton = (
     <button type="button" className="btn btn-primary btn-sm" onClick={() => onApply(request)}>
-      Apply
+      Ứng tuyển
     </button>
   );
   if (request.has_applied) {
     applyButton = (
       <button type="button" className="btn btn-primary btn-sm" disabled>
-        Applied
+        Đã ứng tuyển
       </button>
     );
   }
 
   const SaveIcon = request.is_bookmarked ? BookmarkCheck : Bookmark;
-  let saveLabel = 'Save request';
+  let saveLabel = "Lưu yêu cầu";
   if (request.is_bookmarked) {
-    saveLabel = 'Remove from saved';
+    saveLabel = "Bỏ lưu";
   }
 
   const metaParts = [request.grade_level, getModeLabel(request.teaching_mode)];
@@ -64,7 +64,7 @@ export default function RequestCard({ request, onToggleSave, onApply }) {
         <p className="item-meta">{metaParts.join(' · ')}</p>
         <p className="request-card-description">{request.description}</p>
         <p className="item-meta">
-          Posted {formatDate(request.created_at)} · {request.application_count} applied
+          Đã đăng {formatDate(request.created_at)} · {request.application_count} lượt ứng tuyển
         </p>
       </div>
       <div className="request-card-actions">
@@ -79,7 +79,7 @@ export default function RequestCard({ request, onToggleSave, onApply }) {
           <SaveIcon size={18} aria-hidden="true" />
         </button>
         <button type="button" className="btn btn-outline btn-sm" onClick={() => navigate(`/tutor/requests/${request._id}`)}>
-          Details
+          Chi tiết
         </button>
         {applyButton}
       </div>

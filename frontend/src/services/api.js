@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { translateSystemMessage } from '../utils/viMessages';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
@@ -10,17 +11,21 @@ const api = axios.create({
 
 // Lỗi trả về giữ lại status (vd: 403 chưa kích hoạt) và errors (lỗi theo từng field)
 const toApiError = (err) => {
-  const apiError = new Error('Something went wrong, please try again');
+  const apiError = new Error('Có lỗi xảy ra, vui lòng thử lại.');
+  apiError.rawMessage = '';
   apiError.status = 0;
   apiError.errors = null;
 
   if (err.response) {
     apiError.status = err.response.status;
     if (err.response.data && err.response.data.message) {
-      apiError.message = err.response.data.message;
+      apiError.rawMessage = err.response.data.message;
+      apiError.message = translateSystemMessage(apiError.rawMessage);
     }
     if (err.response.data && err.response.data.errors) {
-      apiError.errors = err.response.data.errors;
+      apiError.errors = Object.fromEntries(Object.entries(err.response.data.errors).map(([field, messages]) => [
+        field, Array.isArray(messages) ? messages.map((message) => translateSystemMessage(message)) : messages,
+      ]));
     }
   }
   return apiError;
@@ -35,13 +40,29 @@ export const setAccountLockedHandler = (handler) => {
   handleAccountLocked = handler;
 };
 
+let handleSessionExpired = null;
+export const setSessionExpiredHandler = (handler) => {
+  handleSessionExpired = handler;
+};
+
 api.interceptors.response.use(
-  (res) => res.data,
+  (res) => {
+    if (res.data && typeof res.data.message === 'string') {
+      res.data.message = translateSystemMessage(res.data.message, true);
+    }
+    return res.data;
+  },
   (err) => {
     const apiError = toApiError(err);
-    const isAccountLocked = apiError.status === 403 && apiError.message === ACCOUNT_LOCKED_MESSAGE;
+    const isAccountLocked = apiError.status === 403 && apiError.rawMessage === ACCOUNT_LOCKED_MESSAGE;
     if (isAccountLocked && handleAccountLocked) {
       handleAccountLocked();
+    }
+    const requestPath = err.config?.url || '';
+    const isProtectedRequest = !requestPath.startsWith('/auth/v1/') ||
+      requestPath === '/auth/v1/me' || requestPath === '/auth/v1/change-password';
+    if (apiError.status === 401 && isProtectedRequest && handleSessionExpired) {
+      handleSessionExpired();
     }
     return Promise.reject(apiError);
   }

@@ -22,8 +22,8 @@ export default function SavedRequests() {
         list={list}
         empty={{
           icon: Bookmark,
-          title: 'No saved requests',
-          description: 'Save a request with the bookmark button to find it here later.',
+          title: "Chưa lưu yêu cầu nào",
+          description: "Bấm nút lưu trên yêu cầu để dễ tìm lại sau.",
         }}
       >
         {list.data && <RequestGrid items={list.data.items} actions={actions} />}

@@ -12,7 +12,7 @@ export default function GuestRoute() {
     return (
       <div className="page-loading" role="status">
         <LoaderCircle size={28} className="spin" aria-hidden="true" />
-        <span className="visually-hidden">Loading...</span>
+        <span className="visually-hidden">Đang tải...</span>
       </div>
     );
   }

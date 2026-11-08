@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { env } from '../../config/environment.js';
+import { escapeHtml } from './html.js';
 
 // Gửi mail qua Gmail SMTP, SMTP_PASS là App Password của Gmail
 const transporter = nodemailer.createTransport({
@@ -9,15 +10,6 @@ const transporter = nodemailer.createTransport({
     pass: env.smtpPass,
   },
 });
-
-// Escape ký tự HTML để tên người dùng không chèn được HTML vào email
-const escapeHtml = (text) => {
-  return String(text)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
-};
 
 /**
  * Gửi email chứa link kích hoạt tài khoản
@@ -43,6 +35,24 @@ const STATUS_LABELS = {
   ACTIVE: 'reactivated',
   SUSPENDED: 'suspended',
   BANNED: 'banned',
+};
+
+export const sendPasswordResetEmail = async (toEmail, fullName, resetLink) => {
+  await transporter.sendMail({
+    from: env.smtpUser, to: toEmail, subject: 'Reset your TuConnector password',
+    html: `<p>Hello ${escapeHtml(fullName)},</p>
+      <p>This single-use reset link expires in 15 minutes. If you did not request it, ignore this email.</p>
+      <p><a href="${escapeHtml(resetLink)}">Reset password</a></p>`,
+  });
+};
+
+export const sendPasswordChangedEmail = async (toEmail, fullName) => {
+  await transporter.sendMail({
+    from: env.smtpUser, to: toEmail, subject: 'Your TuConnector password was changed',
+    html: `<p>Hello ${escapeHtml(fullName)},</p>
+      <p>Your password was changed. Other sessions have been signed out.</p>
+      <p>If this was not you, reset your password immediately and contact support.</p>`,
+  });
 };
 
 /**

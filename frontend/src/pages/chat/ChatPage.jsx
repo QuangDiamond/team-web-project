@@ -21,11 +21,11 @@ export default function ChatPage({ basePath }) {
 
   return (
     <div className={layoutClass}>
-      <aside className="chat-sidebar" aria-label="Conversations">
+      <aside className="chat-sidebar" aria-label="Cuộc trò chuyện">
         {conversations.loading && (
           <div className="page-loading-inline" role="status">
             <LoaderCircle size={22} className="spin" aria-hidden="true" />
-            <span className="visually-hidden">Loading...</span>
+            <span className="visually-hidden">Đang tải...</span>
           </div>
         )}
         {conversations.error && <Alert type="error">{conversations.error.message}</Alert>}
@@ -38,7 +38,7 @@ export default function ChatPage({ basePath }) {
         {conversationId ? (
           <MessageThread key={conversationId} thread={thread} basePath={basePath} />
         ) : (
-          <EmptyState icon={MessageSquare} title="Select a conversation" description="Choose a conversation on the left to read and send messages." />
+          <EmptyState icon={MessageSquare} title="Chọn cuộc trò chuyện" description="Chọn cuộc trò chuyện bên trái để đọc và gửi tin nhắn." />
         )}
       </section>
     </div>

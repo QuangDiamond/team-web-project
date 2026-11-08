@@ -5,12 +5,12 @@ import { formatDateTime } from '../../utils/paymentDisplay';
 export default function UserAuditList({ auditLogs }) {
   return (
     <section className="card user-audit" aria-labelledby="user-audit-title">
-      <h2 id="user-audit-title" className="user-side-title">Recent admin actions</h2>
-      {auditLogs.length === 0 && <p className="user-side-text">No admin actions on this account yet.</p>}
+      <h2 id="user-audit-title" className="user-side-title">Thao tác quản trị gần đây</h2>
+      {auditLogs.length === 0 && <p className="user-side-text">Chưa có thao tác quản trị nào trên tài khoản này.</p>}
       {auditLogs.length > 0 && (
         <ol className="audit-list">
           {auditLogs.map((log, index) => {
-            let adminName = 'Unknown admin';
+            let adminName = 'Quản trị viên không xác định';
             if (log.admin && log.admin.full_name) {
               adminName = log.admin.full_name;
             }

@@ -42,7 +42,7 @@ export function useRequestActions({ patchItem, onSaveChanged }) {
       has_applied: true,
       application_count: applyingRequest.application_count + 1,
     });
-    setNotice(`Application sent. You have ${result.remaining_credits} credit(s) left.`);
+    setNotice(`Đã gửi đơn ứng tuyển. Bạn còn ${result.remaining_credits} tín dụng.`);
     setApplyingRequest(null);
   };
 

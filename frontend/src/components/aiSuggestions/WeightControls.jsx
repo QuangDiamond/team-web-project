@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { RefreshCw } from 'lucide-react';
 
 const WEIGHT_FIELDS = [
-  { name: 'budget', label: 'Price fit' },
-  { name: 'rating', label: 'Rating' },
-  { name: 'schedule', label: 'Schedule' },
-  { name: 'area', label: 'Area' },
+  { name: 'budget', label: "Mức phù hợp học phí" },
+  { name: 'rating', label: "Đánh giá" },
+  { name: 'schedule', label: "Lịch học" },
+  { name: 'area', label: "Khu vực" },
 ];
 
 // Bộ chỉnh trọng số (UC09 A1 Refine). Khu vực không có nghĩa với request học online nên bị khóa
@@ -30,7 +30,7 @@ export default function WeightControls({ initialWeights, isOnlineRequest, refres
 
   return (
     <form className="ai-weights" onSubmit={handleSubmit}>
-      <p className="ai-weights-hint">Adjust what matters most to you, then refresh the ranking.</p>
+      <p className="ai-weights-hint">Điều chỉnh mức độ ưu tiên của bạn rồi cập nhật xếp hạng.</p>
       <div className="ai-weights-grid">
         {WEIGHT_FIELDS.map((field) => {
           const isDisabled = field.name === 'area' && isOnlineRequest;
@@ -55,9 +55,9 @@ export default function WeightControls({ initialWeights, isOnlineRequest, refres
       </div>
       <button type="submit" className="btn btn-outline btn-sm" disabled={!canRefresh}>
         <RefreshCw size={14} aria-hidden="true" className={refreshing ? 'spin' : ''} />
-        <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
+        <span>{refreshing ? "Đang cập nhật..." : "Cập nhật"}</span>
       </button>
-      {total <= 0 && <p className="ai-weights-error">Set at least one weight above 0.</p>}
+      {total <= 0 && <p className="ai-weights-error">Cần đặt ít nhất một trọng số lớn hơn 0.</p>}
     </form>
   );
 }

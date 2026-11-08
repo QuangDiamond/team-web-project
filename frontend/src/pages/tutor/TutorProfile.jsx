@@ -37,9 +37,9 @@ export default function TutorProfile() {
     setState({ ...state, profile: response.data.profile });
     setFormVersion(formVersion + 1);
     if (response.data.created) {
-      setNotice('Your profile is ready. You can now browse requests, apply and create posts.');
+      setNotice("Hồ sơ đã sẵn sàng. Bạn có thể xem yêu cầu, ứng tuyển và tạo bài đăng.");
     } else {
-      setNotice('Profile saved.');
+      setNotice("Đã lưu hồ sơ.");
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -48,7 +48,7 @@ export default function TutorProfile() {
     return (
       <div className="page-loading-inline" role="status">
         <LoaderCircle size={26} className="spin" aria-hidden="true" />
-        <span className="visually-hidden">Loading...</span>
+        <span className="visually-hidden">Đang tải...</span>
       </div>
     );
   }
@@ -62,32 +62,32 @@ export default function TutorProfile() {
   }
 
   let initialValues = EMPTY_PROFILE_VALUES;
-  let submitLabel = 'Create profile';
+  let submitLabel = "Tạo hồ sơ";
   if (state.profile) {
     initialValues = toProfileFormValues(state.profile);
-    submitLabel = 'Save profile';
+    submitLabel = "Lưu hồ sơ";
   }
 
   return (
     <div className="profile-page">
       {!state.profile && (
         <Alert type="info">
-          Welcome, {state.fullName}! Create your tutor profile to start working on TuConnector.
+          Xin chào, {state.fullName}! Hãy tạo hồ sơ để bắt đầu giảng dạy trên TuConnector.
         </Alert>
       )}
       {notice && (
         <Alert type="success">
           <p>{notice}</p>
           <p>
-            <Link to="/tutor/posts/new" className="link">Create a post</Link>
+            <Link to="/tutor/posts/new" className="link">Tạo bài đăng</Link>
             {' · '}
-            <Link to="/tutor/requests" className="link">Browse requests</Link>
+            <Link to="/tutor/requests" className="link">Tìm yêu cầu</Link>
           </p>
         </Alert>
       )}
 
-      <SectionCard title="My tutor profile" action={state.profile && (
-        <Link to={`/tutors/${state.profile._id}`} className="btn btn-outline btn-sm">Overview</Link>
+      <SectionCard title="Hồ sơ gia sư của tôi" action={state.profile && (
+        <Link to={`/tutors/${state.profile._id}`} className="btn btn-outline btn-sm">Tổng quan</Link>
       )}>
         <TutorProfileForm key={formVersion} initialValues={initialValues} submitLabel={submitLabel} onSubmit={handleSubmit} />
       </SectionCard>

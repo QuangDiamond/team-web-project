@@ -49,7 +49,7 @@ export default function TutorRequestDetail() {
   const handleApplied = (result) => {
     const request = state.request;
     setState({ ...state, request: { ...request, has_applied: true, application_count: request.application_count + 1 } });
-    setNotice(`Application sent. You have ${result.remaining_credits} credit(s) left.`);
+    setNotice(`Đã gửi đơn ứng tuyển. Bạn còn ${result.remaining_credits} tín dụng.`);
     setApplying(false);
   };
 
@@ -57,7 +57,7 @@ export default function TutorRequestDetail() {
     return (
       <div className="page-loading-inline" role="status">
         <LoaderCircle size={26} className="spin" aria-hidden="true" />
-        <span className="visually-hidden">Loading...</span>
+        <span className="visually-hidden">Đang tải...</span>
       </div>
     );
   }
@@ -67,9 +67,9 @@ export default function TutorRequestDetail() {
       <div className="page-stack">
         <Alert type="error">
           <p>{state.error.message}</p>
-          <button type="button" className="btn btn-outline btn-sm" onClick={load}>Try again</button>
+          <button type="button" className="btn btn-outline btn-sm" onClick={load}>Thử lại</button>
         </Alert>
-        <Link to="/tutor/requests" className="link">Back to requests</Link>
+        <Link to="/tutor/requests" className="link">Quay lại danh sách yêu cầu</Link>
       </div>
     );
   }
@@ -77,19 +77,19 @@ export default function TutorRequestDetail() {
   const request = state.request;
   const SaveIcon = request.is_bookmarked ? BookmarkCheck : Bookmark;
   const facts = [
-    ['Subject', request.subject_name],
-    ['Grade level', request.grade_level],
-    ['Budget', formatBudget(request.budget)],
-    ['Schedule', request.schedule],
-    ['Session mode', getModeLabel(request.teaching_mode)],
-    ['Area', request.location_address || '—'],
+    ["Môn học", request.subject_name],
+    ["Khối lớp", request.grade_level],
+    ["Ngân sách", formatBudget(request.budget)],
+    ["Lịch học", request.schedule],
+    ["Hình thức học", getModeLabel(request.teaching_mode)],
+    ["Khu vực", request.location_address || '—'],
   ];
 
   return (
     <div className="tutor-detail">
       <Link to="/tutor/requests" className="tutor-back-link">
         <ChevronLeft size={16} aria-hidden="true" />
-        <span>Back to requests</span>
+        <span>Quay lại danh sách yêu cầu</span>
       </Link>
 
       {notice && <Alert type="success">{notice}</Alert>}
@@ -98,8 +98,8 @@ export default function TutorRequestDetail() {
       <div className="tutor-detail-grid">
         <div className="tutor-detail-main">
           <SectionCard title={request.title}>
-            <p className="item-meta">Posted {formatDate(request.created_at)} by a parent · {request.application_count} tutors applied</p>
-            {request.parent_user_id && <Link to={`/parents/${request.parent_user_id}`} className="link">View parent profile</Link>}
+            <p className="item-meta">Đã đăng {formatDate(request.created_at)} bởi phụ huynh · {request.application_count} gia sư đã ứng tuyển</p>
+            {request.parent_user_id && <Link to={`/parents/${request.parent_user_id}`} className="link">Xem hồ sơ phụ huynh</Link>}
             <p className="tutor-detail-text">{request.description}</p>
             <dl className="tutor-facts">
               {facts.map((fact) => (
@@ -110,13 +110,13 @@ export default function TutorRequestDetail() {
               ))}
             </dl>
           </SectionCard>
-          <SectionCard title="Tutor requirements">
-            <p className="tutor-detail-text">{request.tutor_requirements || 'No specific requirements.'}</p>
+          <SectionCard title="Yêu cầu đối với gia sư">
+            <p className="tutor-detail-text">{request.tutor_requirements || "Không có yêu cầu cụ thể."}</p>
           </SectionCard>
         </div>
 
-        <SectionCard title="Interested in this request?">
-          <p className="item-meta">Introduce your experience with a short note. Applying costs 1 credit.</p>
+        <SectionCard title="Bạn quan tâm đến yêu cầu này?">
+          <p className="item-meta">Giới thiệu ngắn về kinh nghiệm của bạn. Ứng tuyển tốn ít nhất 1 tín dụng.</p>
           <div className="tutor-detail-actions">
             <button
               type="button"
@@ -124,11 +124,11 @@ export default function TutorRequestDetail() {
               disabled={request.has_applied}
               onClick={() => setApplying(true)}
             >
-              {request.has_applied ? 'Applied' : 'Apply'}
+              {request.has_applied ? "Đã ứng tuyển" : "Ứng tuyển"}
             </button>
             <button type="button" className="btn btn-outline btn-block" onClick={handleToggleSave}>
               <SaveIcon size={16} aria-hidden="true" />
-              <span>{request.is_bookmarked ? 'Saved' : 'Save request'}</span>
+              <span>{request.is_bookmarked ? "Đã lưu" : "Lưu yêu cầu"}</span>
             </button>
           </div>
         </SectionCard>

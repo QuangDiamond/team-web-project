@@ -89,7 +89,7 @@ export default function ApplicationDetailModal({ application, request, onClose, 
 
         {application.status === 'CONTINUED' && (
           <div className="review-card-chat">
-            <span>Đã mở hội thoại.</span>
+            <span>Đã mở cuộc trò chuyện.</span>
             {application.conversation_id && <OpenChatLink to={`/parent/messages/${application.conversation_id}`} />}
           </div>
         )}
@@ -100,7 +100,7 @@ export default function ApplicationDetailModal({ application, request, onClose, 
               {busyAction === 'skip' ? 'Đang bỏ qua...' : 'Bỏ qua'}
             </button>
             <button type="button" className="btn btn-primary btn-sm" disabled={isBusy} onClick={() => runAction('continue', onContinue)}>
-              {busyAction === 'continue' ? 'Đang mở...' : 'Trao đổi'}
+              {busyAction === 'continue' ? 'Đang mở...' : 'Tiếp tục'}
             </button>
           </div>
         )}

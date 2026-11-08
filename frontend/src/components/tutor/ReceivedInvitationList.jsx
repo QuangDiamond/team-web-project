@@ -17,7 +17,7 @@ function ReceivedInvitationRow({ invitation, onAccept, onDecline, onViewDetails 
   };
   const isBusy = busyAction !== '';
 
-  let title = 'Yêu cầu không còn khả dụng';
+  let title = "Yêu cầu không còn khả dụng";
   let metaParts = [];
   let canAccept = false;
   if (request) {
@@ -38,14 +38,14 @@ function ReceivedInvitationRow({ invitation, onAccept, onDecline, onViewDetails 
           <PriorityBadge credits={invitation.credits_spent} />
         </div>
         <p className="item-meta">{metaParts.join(' · ')}</p>
-        <p className="item-meta">Một phụ huynh đã mời bạn · {formatDate(invitation.created_at)}</p>
+        <p className="item-meta">Phụ huynh đã mời bạn · {formatDate(invitation.created_at)}</p>
         {invitation.parent_user_id && <Link to={`/parents/${invitation.parent_user_id}`} className="link">Xem hồ sơ phụ huynh</Link>}
         {invitation.message && <p className="item-note">“{invitation.message}”</p>}
         {invitation.status === 'PENDING' && !canAccept && (
-          <p className="received-invitation-warning">Yêu cầu này không còn mở nên không thể chấp nhận lời mời.</p>
+          <p className="received-invitation-warning">Yêu cầu này đã đóng nên không thể chấp nhận lời mời.</p>
         )}
         {invitation.status === 'ACCEPTED' && (
-          <p className="received-invitation-chat">Đã mở hội thoại.</p>
+          <p className="received-invitation-chat">Đã mở cuộc trò chuyện.</p>
         )}
       </div>
       <div className="item-actions">

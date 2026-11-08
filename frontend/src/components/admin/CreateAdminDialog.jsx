@@ -16,9 +16,9 @@ const validateAdminForm = (values) => {
   let fullNameError = '';
   const fullName = values.full_name.trim();
   if (fullName.length === 0) {
-    fullNameError = 'Full name is required';
+    fullNameError = 'Vui lòng nhập họ tên';
   } else if (fullName.length > FULL_NAME_MAX_LENGTH) {
-    fullNameError = `Full name must be at most ${FULL_NAME_MAX_LENGTH} characters`;
+    fullNameError = `Họ tên không được vượt quá ${FULL_NAME_MAX_LENGTH} ký tự`;
   }
   return {
     full_name: fullNameError,
@@ -40,33 +40,33 @@ function TemporaryPasswordView({ createdUser, temporaryPassword, onDone }) {
       setCopied(true);
       setCopyError('');
     } catch {
-      setCopyError('Could not copy automatically. Please select the password and copy it manually.');
+      setCopyError('Không thể sao chép tự động. Vui lòng chọn mật khẩu và sao chép thủ công.');
     }
   };
 
   return (
     <div>
-      <Alert type="success">Admin account for {createdUser.full_name} ({createdUser.email}) was created.</Alert>
+      <Alert type="success">Đã tạo tài khoản quản trị viên cho {createdUser.full_name} ({createdUser.email}).</Alert>
 
-      <label htmlFor="temporary-password" className="form-label">Temporary password</label>
+      <label htmlFor="temporary-password" className="form-label">Mật khẩu tạm thời</label>
       <div className="temp-password">
         <input id="temporary-password" className="temp-password-value" value={temporaryPassword} readOnly onFocus={(event) => event.target.select()} />
         <button type="button" className="btn btn-outline btn-sm" onClick={handleCopy}>
           {copied && <Check size={16} aria-hidden="true" />}
           {!copied && <Copy size={16} aria-hidden="true" />}
-          <span>{copied ? 'Copied' : 'Copy'}</span>
+          <span>{copied ? 'Đã sao chép' : 'Sao chép'}</span>
         </button>
       </div>
-      <p className="visually-hidden" role="status">{copied ? 'Password copied to clipboard' : ''}</p>
+      <p className="visually-hidden" role="status">{copied ? 'Đã sao chép mật khẩu vào bộ nhớ tạm' : ''}</p>
       {copyError && <p className="form-error">{copyError}</p>}
 
       <p className="temp-password-warning">
         <TriangleAlert size={16} aria-hidden="true" />
-        <span>This password will not be shown again. It was also emailed to the new admin. Ask them to sign in and change it.</span>
+        <span>Mật khẩu này chỉ hiển thị một lần và đã được gửi qua thư điện tử cho quản trị viên mới. Hãy yêu cầu họ đăng nhập và đổi mật khẩu.</span>
       </p>
 
       <div className="modal-actions">
-        <button type="button" className="btn btn-primary" onClick={onDone}>Done</button>
+        <button type="button" className="btn btn-primary" onClick={onDone}>Hoàn tất</button>
       </div>
     </div>
   );
@@ -127,7 +127,7 @@ export default function CreateAdminDialog({ onClose, onCreated }) {
   // Đã tạo xong: đóng hộp thoại nào cũng phải tải lại danh sách
   const handleClose = () => {
     if (result) {
-      onCreated(`Admin account for ${result.user.email} was created.`);
+      onCreated(`Đã tạo tài khoản quản trị viên cho ${result.user.email} .`);
       return;
     }
     onClose();
@@ -135,19 +135,19 @@ export default function CreateAdminDialog({ onClose, onCreated }) {
 
   if (result) {
     return (
-      <Modal id="create-admin" title="Admin account created" description="Share the temporary password with the new admin securely." onClose={handleClose}>
+      <Modal id="create-admin" title="Đã tạo tài khoản quản trị viên" description="Chia sẻ mật khẩu tạm thời cho quản trị viên mới qua kênh an toàn." onClose={handleClose}>
         <TemporaryPasswordView createdUser={result.user} temporaryPassword={result.temporary_password} onDone={handleClose} />
       </Modal>
     );
   }
 
   return (
-    <Modal id="create-admin" title="Create admin account" description="A temporary password is generated and shown once after the account is created." onClose={handleClose}>
+    <Modal id="create-admin" title="Tạo tài khoản quản trị viên" description="Mật khẩu tạm thời được tạo và chỉ hiển thị một lần sau khi tạo tài khoản." onClose={handleClose}>
       <form onSubmit={handleSubmit} noValidate>
         {formError && <Alert type="error">{formError}</Alert>}
         <FormInput
           id="full_name"
-          label="Full name"
+          label="Họ tên"
           value={values.full_name}
           onChange={handleChange}
           error={errors.full_name}
@@ -156,7 +156,7 @@ export default function CreateAdminDialog({ onClose, onCreated }) {
         />
         <FormInput
           id="email"
-          label="Email"
+          label="Thư điện tử"
           type="email"
           value={values.email}
           onChange={handleChange}
@@ -165,7 +165,7 @@ export default function CreateAdminDialog({ onClose, onCreated }) {
           disabled={submitting}
         />
         <ReasonField value={values.reason} onChange={handleChange} error={errors.reason} disabled={submitting} />
-        <DialogActions submitLabel="Create admin" submitting={submitting} onCancel={handleClose} />
+        <DialogActions submitLabel="Tạo tài khoản quản trị viên" submitting={submitting} onCancel={handleClose} />
       </form>
     </Modal>
   );

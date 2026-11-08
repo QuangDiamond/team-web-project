@@ -69,14 +69,14 @@ export default function TutorDirectory() {
   };
 
   const handleInvited = (result) => {
-    setNotice(`Đã gửi lời mời tới ${invitingTutor.full_name}. Bạn còn ${result.remaining_credits} credit.`);
+    setNotice(`Đã gửi lời mời tới ${invitingTutor.full_name}. Bạn còn ${result.remaining_credits} tín dụng.`);
     setInvitingTutor(null);
   };
 
   return (
     <div className="page-stack">
       <div className="page-toolbar">
-        <p className="item-meta">Các gia sư đang hoạt động trên TuConnector. Xem chi tiết để biết thêm, hoặc mời gia sư vào một yêu cầu của bạn (tốn credit).</p>
+        <p className="item-meta">Các gia sư đang hoạt động trên TuConnector. Xem chi tiết để biết thêm, hoặc mời gia sư vào một yêu cầu của bạn (tốn tín dụng).</p>
         <form className="tutor-search" role="search" onSubmit={handleSearch}>
           <input
             type="search"

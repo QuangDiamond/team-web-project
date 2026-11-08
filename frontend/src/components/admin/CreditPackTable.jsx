@@ -4,9 +4,9 @@ import { getTargetRoleLabel } from '../../utils/planDisplay';
 
 function PackStatusBadge({ isActive }) {
   if (isActive) {
-    return <span className="badge badge-green">Active</span>;
+    return <span className="badge badge-green">Đang hoạt động</span>;
   }
-  return <span className="badge badge-gray">Disabled</span>;
+  return <span className="badge badge-gray">Đã tắt</span>;
 }
 
 function PackStatusButton({ pack, onToggleStatus }) {
@@ -16,10 +16,10 @@ function PackStatusButton({ pack, onToggleStatus }) {
         type="button"
         className="btn btn-outline btn-sm"
         onClick={() => onToggleStatus(pack)}
-        aria-label={`Disable ${pack.name}`}
+        aria-label={`Tắt ${pack.name}`}
       >
         <PowerOff size={16} aria-hidden="true" />
-        <span>Disable</span>
+        <span>Tắt</span>
       </button>
     );
   }
@@ -28,10 +28,10 @@ function PackStatusButton({ pack, onToggleStatus }) {
       type="button"
       className="btn btn-outline btn-sm"
       onClick={() => onToggleStatus(pack)}
-      aria-label={`Enable ${pack.name}`}
+      aria-label={`Bật ${pack.name}`}
     >
       <Power size={16} aria-hidden="true" />
-      <span>Enable</span>
+      <span>Bật</span>
     </button>
   );
 }
@@ -42,8 +42,8 @@ export default function CreditPackTable({ creditPacks, onEdit, onToggleStatus })
     return (
       <div className="card empty-state">
         <PackageOpen size={32} className="empty-state-icon" aria-hidden="true" />
-        <p className="empty-state-title">No credit packs yet</p>
-        <p className="empty-state-text">Add a pack so tutors and parents can buy extra credits.</p>
+        <p className="empty-state-title">Chưa có gói tín dụng</p>
+        <p className="empty-state-text">Thêm gói để gia sư và phụ huynh có thể mua thêm tín dụng.</p>
       </div>
     );
   }
@@ -51,15 +51,15 @@ export default function CreditPackTable({ creditPacks, onEdit, onToggleStatus })
   return (
     <div className="card table-card">
       <table className="data-table">
-        <caption className="visually-hidden">Credit packs</caption>
+        <caption className="visually-hidden">Gói tín dụng</caption>
         <thead>
           <tr>
-            <th scope="col">Pack</th>
-            <th scope="col">For</th>
-            <th scope="col" className="cell-number">Credits</th>
-            <th scope="col" className="cell-number">Price</th>
-            <th scope="col">Status</th>
-            <th scope="col" className="cell-actions">Actions</th>
+            <th scope="col">Gói tín dụng</th>
+            <th scope="col">Dành cho</th>
+            <th scope="col" className="cell-number">Tín dụng</th>
+            <th scope="col" className="cell-number">Giá</th>
+            <th scope="col">Trạng thái</th>
+            <th scope="col" className="cell-actions">Thao tác</th>
           </tr>
         </thead>
         <tbody>
@@ -70,21 +70,21 @@ export default function CreditPackTable({ creditPacks, onEdit, onToggleStatus })
             }
             return (
               <tr key={pack._id} className={rowClass}>
-                <th scope="row" data-label="Pack" className="cell-name">{pack.name}</th>
-                <td data-label="For">{getTargetRoleLabel(pack.target_role)}</td>
-                <td data-label="Credits" className="cell-number">{pack.credit_amount}</td>
-                <td data-label="Price" className="cell-number">{formatVnd(pack.price)}</td>
-                <td data-label="Status"><PackStatusBadge isActive={pack.is_active} /></td>
-                <td data-label="Actions" className="cell-actions">
+                <th scope="row" data-label="Gói tín dụng" className="cell-name">{pack.name}</th>
+                <td data-label="Dành cho">{getTargetRoleLabel(pack.target_role)}</td>
+                <td data-label="Tín dụng" className="cell-number">{pack.credit_amount.toLocaleString('vi-VN')}</td>
+                <td data-label="Giá" className="cell-number">{formatVnd(pack.price)}</td>
+                <td data-label="Trạng thái"><PackStatusBadge isActive={pack.is_active} /></td>
+                <td data-label="Thao tác" className="cell-actions">
                   <div className="row-actions">
                     <button
                       type="button"
                       className="btn btn-outline btn-sm"
                       onClick={() => onEdit(pack)}
-                      aria-label={`Edit ${pack.name}`}
+                      aria-label={`Sửa ${pack.name}`}
                     >
                       <Pencil size={16} aria-hidden="true" />
-                      <span>Edit</span>
+                      <span>Sửa</span>
                     </button>
                     <PackStatusButton pack={pack} onToggleStatus={onToggleStatus} />
                   </div>

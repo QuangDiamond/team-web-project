@@ -43,25 +43,25 @@ export default function InviteModal({ requestId, requestTitle, tutorProfileId, t
     }
   };
 
-  let creditText = 'Đang kiểm tra credit...';
+  let creditText = "Đang kiểm tra tín dụng...";
   if (credits.error) {
-    creditText = 'Không tải được số credit';
+    creditText = "Không thể tải số dư tín dụng";
   } else if (!credits.loading) {
-    creditText = `Số dư: ${credits.balance} credit`;
+    creditText = `Số dư: ${credits.balance}`;
   }
 
   return (
     <Modal title="Mời gia sư" onClose={onClose}>
       <form onSubmit={handleSubmit} noValidate>
         <p className="modal-summary">
-          Mời <strong>{tutorName}</strong> tham gia yêu cầu <strong>{requestTitle}</strong>.
+          Mời <strong>{tutorName}</strong> vào yêu cầu của bạn <strong>{requestTitle}</strong>.
         </p>
 
         <p className="modal-cost">
-          <span>Chi phí: {amount} credit</span>
+          <span>Chi phí: {amount} tín dụng</span>
           <span>{creditText}</span>
         </p>
-        <p className="item-meta modal-note">Credit không được hoàn lại nếu gia sư từ chối hoặc bạn hủy lời mời.</p>
+        <p className="item-meta modal-note">Tín dụng không được hoàn lại khi gia sư từ chối hoặc bạn hủy lời mời.</p>
 
         <CreditAmountField
           id="invite-credits"
@@ -72,17 +72,18 @@ export default function InviteModal({ requestId, requestTitle, tutorProfileId, t
           audience="gia sư"
         />
 
-        {hasNoCredit && <Alert type="error">Bạn cần ít nhất 1 credit để mời gia sư.</Alert>}
+        {hasNoCredit && <Alert type="error">Bạn cần ít nhất 1 tín dụng để mời gia sư.</Alert>}
         {error && <Alert type="error">{error}</Alert>}
 
         <FormTextarea
           id="invite-message"
-          label="Lời nhắn gửi gia sư (không bắt buộc)"
+          label="Lời nhắn cho gia sư"
+          optional
           rows={3}
           maxLength={MESSAGE_MAX_LENGTH}
           value={message}
           onChange={(event) => setMessage(event.target.value)}
-          placeholder="Cho gia sư biết vì sao bạn muốn học cùng họ"
+          placeholder="Chia sẻ lý do bạn muốn hợp tác với gia sư"
           disabled={submitting}
         />
 
@@ -90,7 +91,7 @@ export default function InviteModal({ requestId, requestTitle, tutorProfileId, t
           <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={submitting}>Hủy</button>
           <button type="submit" className="btn btn-primary btn-sm" disabled={!canSubmit}>
             {submitting ? <LoaderCircle size={14} className="spin" aria-hidden="true" /> : null}
-            <span>{submitting ? 'Đang gửi...' : 'Gửi lời mời'}</span>
+            <span>{submitting ? "Đang gửi..." : "Gửi lời mời"}</span>
           </button>
         </div>
       </form>

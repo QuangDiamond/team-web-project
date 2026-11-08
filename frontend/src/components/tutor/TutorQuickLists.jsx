@@ -25,28 +25,28 @@ const toRecommendedItem = (request) => {
 };
 
 const toInvitationItem = (invitation) => {
-  let title = 'Request no longer available';
+  let title = "Yêu cầu không còn khả dụng";
   if (invitation.request) {
     title = invitation.request.title;
   }
   return {
     key: invitation._id,
     title: title,
-    meta: `A parent invited you · ${formatDate(invitation.created_at)}`,
+    meta: `Phụ huynh đã mời bạn · ${formatDate(invitation.created_at)}`,
     to: '/tutor/invitations',
-    badge: { label: 'Pending', tone: 'warning' },
+    badge: { label: "Đang chờ", tone: 'warning' },
   };
 };
 
 const toApplicationItem = (application) => {
-  let title = 'Request no longer available';
+  let title = "Yêu cầu không còn khả dụng";
   if (application.request) {
     title = application.request.title;
   }
   return {
     key: application._id,
     title: title,
-    meta: `Applied ${formatDate(application.created_at)}`,
+    meta: `Ứng tuyển lúc ${formatDate(application.created_at)}`,
     to: '/tutor/applications',
     badge: getStatusBadge(APPLICATION_STATUS, application.status),
   };
@@ -61,28 +61,28 @@ export default function TutorQuickLists() {
   return (
     <div className="dashboard-columns">
       <div className="dashboard-column">
-        <SectionCard title="Recommended for you" action={<Link to="/tutor/requests/suggested" className="link">View all</Link>}>
+        <SectionCard title="Gợi ý dành cho bạn" action={<Link to="/tutor/requests/suggested" className="link">Xem tất cả</Link>}>
           <ListState
             list={suggestions}
-            empty={{ icon: Sparkles, title: 'No suggestions yet', description: 'Check back when new requests are posted.' }}
+            empty={{ icon: Sparkles, title: "Chưa có gợi ý", description: "Hãy quay lại khi có yêu cầu mới." }}
           >
             {suggestions.data && <CompactList items={suggestions.data.items.map(toRecommendedItem)} />}
           </ListState>
         </SectionCard>
       </div>
       <div className="dashboard-column">
-        <SectionCard title="Invitations" action={<Link to="/tutor/invitations" className="link">View all</Link>}>
+        <SectionCard title="Lời mời" action={<Link to="/tutor/invitations" className="link">Xem tất cả</Link>}>
           <ListState
             list={invitations}
-            empty={{ icon: Mail, title: 'No pending invitations', description: 'Parents who invite you will appear here.' }}
+            empty={{ icon: Mail, title: "Không có lời mời đang chờ", description: "Các phụ huynh mời bạn sẽ hiển thị ở đây." }}
           >
             {invitations.data && <CompactList items={invitations.data.items.map(toInvitationItem)} />}
           </ListState>
         </SectionCard>
-        <SectionCard title="Recent applications" action={<Link to="/tutor/applications" className="link">View all</Link>}>
+        <SectionCard title="Đơn ứng tuyển gần đây" action={<Link to="/tutor/applications" className="link">Xem tất cả</Link>}>
           <ListState
             list={applications}
-            empty={{ icon: Send, title: 'No applications yet', description: 'Browse open requests and apply to the ones that fit you.' }}
+            empty={{ icon: Send, title: "Chưa có đơn ứng tuyển", description: "Xem các yêu cầu đang mở và ứng tuyển vào yêu cầu phù hợp." }}
           >
             {applications.data && <CompactList items={applications.data.items.map(toApplicationItem)} />}
           </ListState>

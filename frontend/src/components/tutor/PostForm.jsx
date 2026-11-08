@@ -15,7 +15,7 @@ const REQUIRED_FIELDS = [
   { name: 'title', label: 'Tiêu đề' },
   { name: 'subject_name', label: 'Môn học' },
   { name: 'grade_level', label: 'Khối lớp' },
-  { name: 'schedule', label: 'Lịch dạy' },
+  { name: 'schedule', label: 'Lịch có thể dạy' },
   { name: 'description', label: 'Mô tả' },
 ];
 const SCHEDULE_REQUIRED_MESSAGE = 'Chọn ít nhất một ngày và giờ bắt đầu, kết thúc hợp lệ';
@@ -50,11 +50,11 @@ const validate = (values) => {
 
   const price = Number(values.price);
   if (values.price === '' || Number.isNaN(price)) {
-    errors.price = 'Vui lòng nhập học phí';
+    errors.price = "Vui lòng nhập học phí";
   } else if (price <= 0) {
-    errors.price = 'Học phí phải lớn hơn 0';
+    errors.price = "Học phí phải lớn hơn 0";
   } else if (price > 100000000) {
-    errors.price = 'Học phí quá lớn';
+    errors.price = "Học phí quá lớn";
   }
   return errors;
 };
@@ -153,7 +153,7 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
         value={values.title}
         onChange={handleChange}
         error={errors.title}
-        placeholder="VD: Gia sư Toán lớp 9 ôn thi vào 10"
+        placeholder="Ví dụ: Gia sư Toán lớp 9 ôn thi vào 10"
         disabled={submitting}
       />
       <div className="form-grid">
@@ -187,7 +187,7 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
           value={values.price}
           onChange={handleChange}
           error={errors.price}
-          placeholder="VD: 150000"
+          placeholder="Ví dụ: 150000"
           disabled={submitting}
           belowControl={priceHint ? <p className="form-hint-left">{priceHint}</p> : null}
         />
@@ -202,7 +202,7 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
       />
 
       <div className="form-field">
-        <p className="form-label" id="post-mode-label">Hình thức dạy</p>
+        <p className="form-label" id="post-mode-label">Hình thức học</p>
         <div className="mode-toggle" role="group" aria-labelledby="post-mode-label">
           {TEACHING_MODES.map((mode) => (
             <button
@@ -226,22 +226,22 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
         value={values.description}
         onChange={handleChange}
         error={errors.description}
-        placeholder="Mô tả phương pháp dạy và những gì học sinh sẽ học được"
+        placeholder="Mô tả phương pháp giảng dạy và nội dung học sinh sẽ được học"
         disabled={submitting}
       />
 
       <div className="post-form-actions">
         {isEdit ? (
           <button type="submit" className="btn btn-primary" disabled={submitting}>
-            {submitting ? 'Đang lưu...' : 'Lưu thay đổi'}
+            {submitting ? "Đang lưu..." : "Lưu thay đổi"}
           </button>
         ) : (
           <>
             <button type="button" className="btn btn-outline" disabled={submitting} onClick={() => submitWithStatus('DRAFT')}>
-              Lưu nháp
+              Lưu bản nháp
             </button>
             <button type="button" className="btn btn-primary" disabled={submitting} onClick={() => submitWithStatus('PUBLISHED')}>
-              {submitting ? 'Đang lưu...' : 'Đăng bài'}
+              {submitting ? "Đang lưu..." : "Đăng bài"}
             </button>
           </>
         )}

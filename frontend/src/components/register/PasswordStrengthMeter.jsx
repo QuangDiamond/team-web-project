@@ -20,7 +20,7 @@ export default function PasswordStrengthMeter({ password }) {
   return (
     <div className={`password-strength strength-${strength.score}`}>
       <div className="strength-bar" aria-hidden="true">{segments}</div>
-      {strength.label && <p className="strength-label">Password strength: {strength.label}</p>}
+      {strength.label && <p className="strength-label">Độ mạnh mật khẩu: {strength.label}</p>}
     </div>
   );
 }

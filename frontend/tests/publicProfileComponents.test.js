@@ -20,9 +20,9 @@ test('public profile components render tutor and parent API shapes without a bro
           <ProfileBackground profile={profile} /><ProfilePosts list={empty} role="TUTOR" appliedIds={[]} />
           <ProfileReviews list={empty} /></MemoryRouter>);
         assert.match(tutor, /Test tutor/);
-        assert.match(tutor, /No ratings yet/);
-        assert.match(tutor, /No published posts yet/);
-        assert.match(tutor, /No approved reviews yet/);
+        assert.match(tutor, /Chưa có đánh giá/);
+        assert.match(tutor, /Chưa có bài đăng đã xuất bản/);
+        assert.match(tutor, /Chưa có đánh giá được duyệt/);
         const request = { _id: 'request1', title: 'Math lessons', subject_name: 'Math', grade_level: '10', budget: 200000 };
         const parent = renderToStaticMarkup(<MemoryRouter><ProfileIdentity profile={{ full_name: 'Test parent' }} role="PARENT" />
           <ProfilePosts list={{ ...empty, items: [request] }} role="PARENT" onApply={() => {}} appliedIds={['request1']} />
@@ -30,7 +30,7 @@ test('public profile components render tutor and parent API shapes without a bro
         assert.match(parent, /Test parent/);
         assert.match(parent, /Math lessons/);
         assert.match(parent, /href="\\/tutor\\/requests\\/request1"/);
-        assert.match(parent, /disabled=""[^>]*>Applied/);
+        assert.match(parent, /disabled=""[^>]*>Đã ứng tuyển/);
       `,
     },
     bundle: true, platform: 'node', format: 'cjs', jsx: 'automatic', write: false,
