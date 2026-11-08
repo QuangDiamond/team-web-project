@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import {
   getClassroomDetail,
   updateClassroomStatus,
@@ -27,6 +28,7 @@ import './classroom.css';
 export default function ClassroomDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // Classroom State
   const [classroom, setClassroom] = useState(null);
