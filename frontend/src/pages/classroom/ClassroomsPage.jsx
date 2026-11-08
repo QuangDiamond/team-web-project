@@ -191,9 +191,9 @@ export default function ClassroomsPage() {
         /* Grid danh sách lớp học */
         <div className="classroom-grid">
           {classrooms.map((cls) => {
-            const memberCount = cls.member_count || 0;
+            const studentCount = typeof cls.student_count === 'number' ? cls.student_count : (cls.member_count || 0);
             const capacity = cls.capacity || 20;
-            const percent = Math.min(Math.round((memberCount / capacity) * 100), 100);
+            const percent = Math.min(Math.round((studentCount / capacity) * 100), 100);
 
             return (
               <div key={cls._id} className="classroom-card">
@@ -244,7 +244,7 @@ export default function ClassroomsPage() {
                   <div className="capacity-row">
                     <span>Sĩ số học viên</span>
                     <span>
-                      <strong>{memberCount}</strong> / {capacity} học viên ({percent}%)
+                      <strong>{studentCount}</strong> / {capacity} học sinh ({percent}%)
                     </span>
                   </div>
                   <div className="capacity-progress-bar">

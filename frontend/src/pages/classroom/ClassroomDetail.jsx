@@ -64,6 +64,7 @@ export default function ClassroomDetail() {
   // Tab 2: Members State
   const [members, setMembers] = useState([]);
   const [loadingMembers, setLoadingMembers] = useState(false);
+  const [memberFilter, setMemberFilter] = useState('ALL'); // 'ALL' | 'STUDENT' | 'PARENT'
 
   // Tab 3: Assignments State
   const [assignments, setAssignments] = useState([]);
@@ -372,10 +373,20 @@ export default function ClassroomDetail() {
     );
   }
 
-  const memberCount = classroom.member_count || members.filter((m) => m.status === 'ACTIVE').length || 0;
+  const activeMembers = members.filter((m) => m.status === 'ACTIVE');
+  const studentMembers = activeMembers.filter((m) => m.user_id?.role === 'STUDENT');
+  const parentMembers = activeMembers.filter((m) => m.user_id?.role === 'PARENT');
+  const studentCount = typeof classroom.student_count === 'number' ? classroom.student_count : studentMembers.length;
+  const memberCount = classroom.member_count || activeMembers.length || 0;
   const capacity = classroom.capacity || 20;
-  const percent = Math.min(Math.round((memberCount / capacity) * 100), 100);
+  const percent = Math.min(Math.round((studentCount / capacity) * 100), 100);
   const isOwner = Boolean(classroom.is_owner || user?.role === 'TUTOR');
+
+  const displayedMembers = members.filter((m) => {
+    if (memberFilter === 'STUDENT') return m.user_id?.role === 'STUDENT';
+    if (memberFilter === 'PARENT') return m.user_id?.role === 'PARENT';
+    return true;
+  });
 
   return (
     <div className="classroom-container">
@@ -440,9 +451,14 @@ export default function ClassroomDetail() {
           {/* Sĩ số lớp & Thanh tiến độ */}
           <div style={{ maxWidth: '320px', marginTop: '12px' }}>
             <div className="capacity-row">
-              <span>Sĩ số hiện tại:</span>
+              <span>Sĩ số học viên:</span>
               <span>
-                <strong>{memberCount}</strong> / {capacity} học viên ({percent}%)
+                <strong>{studentCount}</strong> / {capacity} học sinh ({percent}%)
+                {parentMembers.length > 0 && (
+                  <span style={{ marginLeft: '6px', fontSize: '12px', color: '#64748b', fontWeight: 'normal' }}>
+                    (+ {parentMembers.length} phụ huynh)
+                  </span>
+                )}
               </span>
             </div>
             <div className="capacity-progress-bar">
@@ -549,7 +565,7 @@ export default function ClassroomDetail() {
             className={`tab-btn ${activeTab === 'members' ? 'active' : ''}`}
             onClick={() => setActiveTab('members')}
           >
-            👥 Thành viên ({memberCount}) (UC23)
+            👥 Thành viên ({studentCount} HS{parentMembers.length > 0 ? ` + ${parentMembers.length} PH` : ''})
           </button>
           <button
             type="button"
@@ -732,7 +748,12 @@ export default function ClassroomDetail() {
                 Danh sách thành viên trong lớp (UC23)
               </h3>
               <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>
-                Sĩ số hiện tại: <strong>{memberCount}</strong> / {capacity} học viên
+                Sĩ số học viên: <strong>{studentCount}</strong> / {capacity} học sinh
+                {parentMembers.length > 0 && (
+                  <span style={{ marginLeft: '8px', color: '#0284c7', fontWeight: 500 }}>
+                    (kèm {parentMembers.length} phụ huynh theo dõi)
+                  </span>
+                )}
               </p>
             </div>
 
@@ -796,20 +817,72 @@ export default function ClassroomDetail() {
               )}
             </div>
           ) : (
-            <div className="members-table-wrapper">
-              <table className="members-table">
-                <thead>
-                  <tr>
-                    <th>Thành viên & Liên kết</th>
-                    <th>Email</th>
-                    <th>Số điện thoại</th>
-                    <th>Ngày tham gia</th>
-                    <th>Trạng thái</th>
-                    {isOwner && <th style={{ textAlign: 'right' }}>Tác vụ</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {members.map((mem) => {
+            <div>
+              {/* Bộ lọc phân loại thành viên: Tất cả / Học sinh / Phụ huynh (UC23) */}
+              <div style={{ display: 'flex', gap: '8px', marginBottom: '14px', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  className="btn-outline-gray"
+                  style={{
+                    padding: '6px 14px',
+                    fontSize: '13px',
+                    borderRadius: '20px',
+                    background: memberFilter === 'ALL' ? '#f1f5f9' : '#ffffff',
+                    borderColor: memberFilter === 'ALL' ? '#94a3b8' : '#e2e8f0',
+                    fontWeight: memberFilter === 'ALL' ? 600 : 400,
+                  }}
+                  onClick={() => setMemberFilter('ALL')}
+                >
+                  Tất cả ({members.length})
+                </button>
+                <button
+                  type="button"
+                  className="btn-outline-gray"
+                  style={{
+                    padding: '6px 14px',
+                    fontSize: '13px',
+                    borderRadius: '20px',
+                    background: memberFilter === 'STUDENT' ? '#f0fdf4' : '#ffffff',
+                    borderColor: memberFilter === 'STUDENT' ? '#86efac' : '#e2e8f0',
+                    color: memberFilter === 'STUDENT' ? '#15803d' : '#334155',
+                    fontWeight: memberFilter === 'STUDENT' ? 600 : 400,
+                  }}
+                  onClick={() => setMemberFilter('STUDENT')}
+                >
+                  🎒 Học sinh ({studentMembers.length})
+                </button>
+                <button
+                  type="button"
+                  className="btn-outline-gray"
+                  style={{
+                    padding: '6px 14px',
+                    fontSize: '13px',
+                    borderRadius: '20px',
+                    background: memberFilter === 'PARENT' ? '#eff6ff' : '#ffffff',
+                    borderColor: memberFilter === 'PARENT' ? '#bfdbfe' : '#e2e8f0',
+                    color: memberFilter === 'PARENT' ? '#1d4ed8' : '#334155',
+                    fontWeight: memberFilter === 'PARENT' ? 600 : 400,
+                  }}
+                  onClick={() => setMemberFilter('PARENT')}
+                >
+                  👨‍👩‍👧 Phụ huynh ({parentMembers.length})
+                </button>
+              </div>
+
+              <div className="members-table-wrapper">
+                <table className="members-table">
+                  <thead>
+                    <tr>
+                      <th>Thành viên & Liên kết</th>
+                      <th>Email</th>
+                      <th>Số điện thoại</th>
+                      <th>Ngày tham gia</th>
+                      <th>Trạng thái</th>
+                      {isOwner && <th style={{ textAlign: 'right' }}>Tác vụ</th>}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {displayedMembers.map((mem) => {
                     const u = mem.user_id || {};
                     const name = u.full_name || 'Học viên';
                     const isActive = mem.status === 'ACTIVE';
@@ -871,6 +944,7 @@ export default function ClassroomDetail() {
                 </tbody>
               </table>
             </div>
+          </div>
           )}
         </div>
       )}
