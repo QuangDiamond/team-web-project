@@ -97,7 +97,7 @@ export default function EditClassroomModal({ isOpen, onClose, classroom, onUpdat
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>
-            <span>⚙️</span> Chỉnh sửa thông tin lớp học (UC22)
+            <span>⚙️</span> Chỉnh sửa thông tin lớp học
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
             ×

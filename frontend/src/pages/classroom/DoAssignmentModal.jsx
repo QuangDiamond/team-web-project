@@ -91,7 +91,7 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
               </>
             ) : (
               <>
-                <span>✍️</span> Làm bài tập: {assignment.title} (UC27)
+                <span>✍️</span> Làm bài tập: {assignment.title}
               </>
             )}
           </h2>
@@ -177,7 +177,7 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
               {/* Deadline & Warning Notices */}
               {isBlockedByGraded && !isParent && (
                 <div style={{ background: '#fef3c7', border: '1px solid #fde68a', color: '#92400e', padding: '12px', borderRadius: '8px', marginBottom: '14px', fontSize: '13px' }}>
-                  🔒 <strong>Quy tắc UC27:</strong> Bài tập này đã được gia sư công bố điểm cho cả lớp. Không được nộp lại sau khi đã công bố điểm.
+                  🔒 <strong>Lưu ý:</strong> Bài tập này đã được gia sư công bố điểm cho cả lớp. Không được nộp lại sau khi đã công bố điểm.
                 </div>
               )}
 

@@ -298,7 +298,7 @@ export default function CreateAssignmentModal({
       <div className="modal-content" style={{ maxWidth: '720px' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>
-            <span>{isEditing ? '✏️' : '📝'}</span> {isEditing ? 'Chỉnh sửa bài tập' : 'Tạo bài tập mới'} (UC26)
+            <span>{isEditing ? '✏️' : '📝'}</span> {isEditing ? 'Chỉnh sửa bài tập' : 'Tạo bài tập mới'}
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
             ×
@@ -316,7 +316,7 @@ export default function CreateAssignmentModal({
 
             {isQuestionLocked && (
               <div style={{ background: '#fef3c7', border: '1px solid #fde68a', color: '#92400e', padding: '10px 14px', borderRadius: '8px', marginBottom: '14px', fontSize: '13px' }}>
-                🔒 <strong>Quy tắc UC26:</strong> Bài tập đã công bố điểm cho học sinh, không thể chỉnh sửa nội dung và danh sách câu hỏi.
+                🔒 <strong>Lưu ý:</strong> Bài tập đã công bố điểm cho học sinh, không thể chỉnh sửa nội dung và danh sách câu hỏi.
               </div>
             )}
 
@@ -337,7 +337,7 @@ export default function CreateAssignmentModal({
               >
                 <div>
                   <div style={{ fontWeight: 600, color: '#0f766e', fontSize: '14px' }}>
-                    ✨ Trợ lý AI tạo đề bài thông minh (UC26)
+                    ✨ Trợ lý AI tạo đề bài thông minh
                   </div>
                   <div style={{ fontSize: '12px', color: '#64748b' }}>
                     Tự động tạo trắc nghiệm, trả lời ngắn và nộp file theo môn học. (Trừ vào hạn mức AI gói gia sư)

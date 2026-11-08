@@ -147,7 +147,7 @@ export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreat
         <div className="modal-header">
           <h2>
             <span>🏫</span>
-            {createdResult ? 'Lớp học đã được tạo thành công!' : 'Tạo lớp học mới (UC21)'}
+            {createdResult ? 'Lớp học đã được tạo thành công!' : 'Tạo lớp học mới'}
           </h2>
           <button className="modal-close-btn" onClick={handleClose} title="Đóng">
             &times;
@@ -237,7 +237,7 @@ export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreat
                         }
                       }}
                     />
-                    Tạo nhanh từ thỏa thuận kết nối đã xác nhận (UC21.A1)
+                    Tạo nhanh từ thỏa thuận kết nối đã xác nhận
                   </label>
 
                   {useAgreement && (

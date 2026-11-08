@@ -558,7 +558,7 @@ export default function ClassroomDetail() {
             className={`tab-btn ${activeTab === 'announcements' ? 'active' : ''}`}
             onClick={() => setActiveTab('announcements')}
           >
-            📢 Bảng tin (UC22)
+            📢 Bảng tin
           </button>
           <button
             type="button"
@@ -572,14 +572,14 @@ export default function ClassroomDetail() {
             className={`tab-btn ${activeTab === 'assignments' ? 'active' : ''}`}
             onClick={() => setActiveTab('assignments')}
           >
-            📝 Bài tập ({assignments.length}) (UC26 & UC27)
+            📝 Bài tập ({assignments.length})
           </button>
           <button
             type="button"
             className={`tab-btn ${activeTab === 'chat' ? 'active' : ''}`}
             onClick={() => setActiveTab('chat')}
           >
-            💬 Nhóm Chat lớp (UC33)
+            💬 Nhóm Chat lớp
           </button>
         </div>
       </div>
@@ -745,7 +745,7 @@ export default function ClassroomDetail() {
           <div className="members-toolbar">
             <div>
               <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', color: '#0f172a' }}>
-                Danh sách thành viên trong lớp (UC23)
+                Danh sách thành viên trong lớp
               </h3>
               <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>
                 Sĩ số học viên: <strong>{studentCount}</strong> / {capacity} học sinh
@@ -971,7 +971,7 @@ export default function ClassroomDetail() {
                 style={{ fontSize: '14px', padding: '9px 16px' }}
                 onClick={handleOpenCreateAssignment}
               >
-                <span>➕</span> Tạo bài tập mới (UC26)
+                <span>➕</span> Tạo bài tập mới
               </button>
             )}
           </div>
@@ -1137,7 +1137,7 @@ export default function ClassroomDetail() {
                               ? asg.results_published_at || asg.my_submission.status === 'GRADED' || asg.allow_resubmission === false
                                 ? '👁️ Xem bài đã nộp & Điểm'
                                 : '🔄 Nộp lại bài'
-                              : '✍️ Làm bài tập (UC27)'}
+                              : '✍️ Làm bài tập'}
                           </button>
                         </div>
                       )}
@@ -1158,7 +1158,7 @@ export default function ClassroomDetail() {
           <div className="members-toolbar" style={{ marginBottom: '16px' }}>
             <div>
               <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', color: '#0f172a' }}>
-                💬 Phòng chat nhóm lớp học (UC33)
+                💬 Phòng chat nhóm lớp học
               </h3>
               <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>
                 Kênh trao đổi học tập trực tiếp giữa Gia sư và toàn thể học sinh, phụ huynh lớp <strong>{classroom.name}</strong>.
@@ -1183,7 +1183,7 @@ export default function ClassroomDetail() {
                   onClick={() => setIsAddMemberOpen(true)}
                   title="Thêm thành viên vào lớp và nhóm chat"
                 >
-                  <span>➕</span> Thêm vào nhóm (UC33)
+                  <span>➕</span> Thêm vào nhóm
                 </button>
               )}
             </div>

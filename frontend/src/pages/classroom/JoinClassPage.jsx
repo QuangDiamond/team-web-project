@@ -87,7 +87,7 @@ export default function JoinClassPage() {
       >
         <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔑</div>
         <h2 style={{ fontSize: '24px', fontWeight: 700, margin: '0 0 8px 0', color: '#0f172a' }}>
-          Tham gia lớp học (UC24)
+          Tham gia lớp học
         </h2>
         <p style={{ color: '#64748b', fontSize: '15px', margin: '0 0 24px 0' }}>
           Nhập mã tham gia do gia sư cung cấp để kết nối và bắt đầu buổi học.

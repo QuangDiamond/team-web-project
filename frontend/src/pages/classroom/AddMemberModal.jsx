@@ -51,7 +51,7 @@ export default function AddMemberModal({ isOpen, onClose, classroomId, onMemberA
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>
-            <span>👤</span> Thêm học viên vào lớp (UC23)
+            <span>👤</span> Thêm học viên vào lớp
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
             ×

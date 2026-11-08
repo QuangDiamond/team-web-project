@@ -49,7 +49,7 @@ export default function RemoveMemberModal({ isOpen, onClose, classroomId, member
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>
-            <span>⚠️</span> Xác nhận xóa thành viên (UC23)
+            <span>⚠️</span> Xác nhận xóa thành viên
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
             ×
