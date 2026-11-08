@@ -1379,9 +1379,11 @@ export const sendClassChatMessage = async ({ classroomId, user, content }) => {
 
   // Kiểm tra quyền: Gia sư chủ lớp, thành viên ACTIVE, hoặc Phụ huynh có con đang học trong lớp (BR-14)
   let isAuthorized = false;
+  let isTutorOwner = false;
   const tutorProfile = await TutorProfile.findOne({ user_id: user._id });
   if (tutorProfile && classroom.tutor_profile_id?.toString() === tutorProfile._id.toString()) {
     isAuthorized = true;
+    isTutorOwner = true;
   } else {
     const member = await ClassMember.findOne({
       class_id: classroom._id,
@@ -1409,6 +1411,11 @@ export const sendClassChatMessage = async ({ classroomId, user, content }) => {
 
   if (!isAuthorized) {
     throw new AppError('Bạn không có quyền gửi tin nhắn trong nhóm chat lớp học này', 403);
+  }
+
+  // Quy tắc: Cài "chỉ gia sư được đăng" (UC31 A1) thì Student và Parent chỉ đọc
+  if (classroom.only_tutor_can_post && !isTutorOwner) {
+    throw new AppError('Nhóm chat lớp học đang ở chế độ chỉ gia sư mới được đăng tin', 403);
   }
 
   let conversation = await Conversation.findOne({ class_id: classroomId });
@@ -1640,6 +1647,17 @@ export const submitAssignment = async ({ assignmentId, user, answers = [] }) => 
   const assignment = await Assignment.findById(assignmentId);
   if (!assignment) {
     throw new AppError('Không tìm thấy bài tập', 404);
+  }
+
+  // Quy tắc UC27: Học sinh chỉ làm bài của lớp mình đang là thành viên và bài đã PUBLISHED
+  if (assignment.status !== 'PUBLISHED') {
+    throw new AppError('Bài tập này đang ở dạng bản nháp (Draft), chưa được xuất bản để làm bài', 400);
+  }
+
+  // Quy tắc: Lớp học Archived thì thành viên chỉ xem, không nộp bài mới
+  const classroom = await Classroom.findById(assignment.class_id);
+  if (classroom && classroom.status === ENUMS.ClassroomsStatus.ARCHIVED) {
+    throw new AppError('Lớp học này đã được lưu trữ (Archived), không thể nộp bài tập mới', 400);
   }
 
   // Quy tắc UC27: Chỉ thành viên lớp được làm
