@@ -34,6 +34,40 @@ export const getCloudinaryPublicIdFromUrl = (fileUrl) => {
 };
 
 /**
+ * Read the Cloudinary resource type and public ID from an uploaded asset URL
+ * @param {string} fileUrl - Cloudinary secure URL
+ * @returns {{ publicId: string, resourceType: string }|null} Asset details, or null for external URLs
+ */
+export const getCloudinaryAssetDetailsFromUrl = (fileUrl) => {
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(fileUrl);
+  } catch {
+    return null;
+  }
+
+  if (parsedUrl.hostname !== 'res.cloudinary.com') {
+    return null;
+  }
+
+  const resourceMatch = parsedUrl.pathname.match(/\/(image|video|raw)\/upload\/(.+)$/);
+  if (!resourceMatch) {
+    return null;
+  }
+
+  const resourceType = resourceMatch[1];
+  let publicId = resourceMatch[2].replace(/^v\d+\//, '');
+  if (resourceType !== 'raw') {
+    publicId = publicId.replace(/\.[^/.]+$/, '');
+  }
+
+  return {
+    publicId: decodeURIComponent(publicId),
+    resourceType: resourceType,
+  };
+};
+
+/**
  * Get the secure public URL from a Cloudinary upload response.
  * @param {Object | null | undefined} cloudinaryResponse - Response returned by Cloudinary.
  * @returns {string | null} The response's secure_url, or null if it is unavailable.

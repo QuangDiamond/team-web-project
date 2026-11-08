@@ -10,6 +10,7 @@ export default function FormInput({
   placeholder,
   autoComplete,
   disabled,
+  maxLength,
   endAdornment,
   belowControl,
 }) {
@@ -33,6 +34,7 @@ export default function FormInput({
           placeholder={placeholder}
           autoComplete={autoComplete}
           disabled={disabled}
+          maxLength={maxLength}
           aria-invalid={error ? 'true' : 'false'}
           aria-describedby={describedBy}
         />
