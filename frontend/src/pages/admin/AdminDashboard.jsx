@@ -4,6 +4,7 @@ import '../../styles/AdminDashboard.css';
 
 export default function AdminDashboard() {
   const [period, setPeriod] = useState('30d');
+  const [trendMetric, setTrendMetric] = useState('revenue');
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -44,15 +45,38 @@ export default function AdminDashboard() {
     return (
       <div className="dash-page">
         <div className="dash-container" style={{ textAlign: 'center', padding: '100px 0' }}>
-          <h3>Đang tải số liệu thống kê hệ thống (SC40)...</h3>
+          <h3>Đang tải số liệu thống kê hệ thống (SC38)...</h3>
         </div>
       </div>
     );
   }
 
   const kpis = stats?.kpis || {};
-  const trends = stats?.trends || { labels: [], revenue: [], userGrowth: [] };
-  const maxRevenue = Math.max(...(trends.revenue || [1]), 1);
+  const trends = stats?.trends || { labels: [], revenue: [], userGrowth: [], connections: [] };
+
+  let activeTrendData = trends.revenue || [];
+  let trendUnit = 'VNĐ / Kỳ';
+  let trendTitle = `Biểu đồ doanh thu (${period})`;
+  let formatVal = (v) => `${(v || 0).toLocaleString('vi-VN')} đ`;
+
+  if (trendMetric === 'users') {
+    activeTrendData = trends.userGrowth || [];
+    trendUnit = 'Tài khoản / Kỳ';
+    trendTitle = `Tăng trưởng tài khoản (${period})`;
+    formatVal = (v) => `${v || 0} người dùng`;
+  } else if (trendMetric === 'connections') {
+    activeTrendData = trends.connections || [];
+    trendUnit = 'Thỏa thuận / Kỳ';
+    trendTitle = `Thỏa thuận kết nối (${period})`;
+    formatVal = (v) => `${v || 0} thỏa thuận`;
+  }
+
+  const maxMetricVal = Math.max(...activeTrendData, 1);
+
+  const dominantRole =
+    stats?.roleDistribution && stats.roleDistribution.length > 0
+      ? [...stats.roleDistribution].sort((a, b) => b.count - a.count)[0]
+      : null;
 
   return (
     <div className="dash-page">
@@ -151,10 +175,11 @@ export default function AdminDashboard() {
               <div className="kpi-icon-pill pill-revenue">💰</div>
             </div>
             <div className="kpi-value">
-              {kpis.totalGmv ? `${(kpis.totalGmv / 1000000).toFixed(1)}M đ` : '0 đ'}
+              {kpis.totalGmv != null ? `${Number(kpis.totalGmv).toLocaleString('vi-VN')} đ` : '0 đ'}
             </div>
             <div className="kpi-subtext">
-              <strong>+18.4%</strong> so với kỳ trước · Gói Pro & Credit
+              <span>{(kpis.planUpgradeRevenue || 0).toLocaleString('vi-VN')} đ Pro</span> ·{' '}
+              <span>{(kpis.creditPackRevenue || 0).toLocaleString('vi-VN')} đ Credit</span>
             </div>
           </div>
 
@@ -176,28 +201,50 @@ export default function AdminDashboard() {
               <span className="kpi-title">Lớp học & Trợ lý AI</span>
               <div className="kpi-icon-pill pill-classes">🏫</div>
             </div>
-            <div className="kpi-value">{kpis.activeClassrooms} lớp</div>
+            <div className="kpi-value">{kpis.activeClassrooms ?? 0} lớp</div>
             <div className="kpi-subtext">
-              Đã tạo <strong>{kpis.aiQuotaUtilized?.toLocaleString('vi-VN')}</strong> bài tập & câu hỏi AI
+              Đã tạo <strong>{(kpis.aiQuotaUtilized ?? 0).toLocaleString('vi-VN')}</strong> lượt dùng AI
             </div>
           </div>
         </div>
 
         {/* Middle Section: Chart & Role Breakdown */}
         <div className="dash-middle-grid">
-          {/* Revenue Trend Visual Bar Chart */}
+          {/* Trend Visual Bar Chart with Metric Switcher */}
           <div className="dash-panel">
             <div className="panel-title-box">
               <h3>
-                <span>📊</span> Biểu đồ doanh thu theo chu kỳ ({period})
+                <span>📊</span> {trendTitle}
               </h3>
-              <span className="panel-tag">VNĐ / Kỳ</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="period-switcher">
+                  <button
+                    className={`period-btn ${trendMetric === 'revenue' ? 'active' : ''}`}
+                    onClick={() => setTrendMetric('revenue')}
+                  >
+                    Doanh thu
+                  </button>
+                  <button
+                    className={`period-btn ${trendMetric === 'users' ? 'active' : ''}`}
+                    onClick={() => setTrendMetric('users')}
+                  >
+                    Người dùng
+                  </button>
+                  <button
+                    className={`period-btn ${trendMetric === 'connections' ? 'active' : ''}`}
+                    onClick={() => setTrendMetric('connections')}
+                  >
+                    Kết nối
+                  </button>
+                </div>
+                <span className="panel-tag">{trendUnit}</span>
+              </div>
             </div>
 
             <div className="bar-chart-container">
               {trends.labels?.map((label, idx) => {
-                const val = trends.revenue[idx] || 0;
-                const heightPct = Math.max(15, Math.round((val / maxRevenue) * 90));
+                const val = activeTrendData[idx] || 0;
+                const heightPct = val > 0 ? Math.max(12, Math.round((val / maxMetricVal) * 90)) : 4;
                 return (
                   <div key={idx} className="bar-col">
                     <div
@@ -205,7 +252,7 @@ export default function AdminDashboard() {
                       style={{ height: `${heightPct}%` }}
                     >
                       <div className="bar-tooltip">
-                        {val.toLocaleString('vi-VN')} đ
+                        {formatVal(val)}
                       </div>
                     </div>
                     <div className="bar-label">{label}</div>
@@ -268,9 +315,15 @@ export default function AdminDashboard() {
                 color: '#64748b'
               }}
             >
-              💡 <strong>Nhận định:</strong> Lượng phụ huynh đăng ký chiếm tỷ trọng
-              lớn nhất (50.7%), tương ứng với nhu cầu cao tìm gia sư ôn thi học kỳ
-              và tuyển sinh vào 10.
+              💡 <strong>Nhận định cơ cấu:</strong>{' '}
+              {dominantRole ? (
+                <span>
+                  Vai trò <strong>{dominantRole.role}</strong> chiếm tỷ trọng lớn nhất ({dominantRole.percent}%) với{' '}
+                  <strong>{dominantRole.count}</strong> tài khoản đang hoạt động trên hệ thống.
+                </span>
+              ) : (
+                'Dữ liệu phân bổ người dùng được tổng hợp trực tiếp từ cơ sở dữ liệu MongoDB.'
+              )}
             </div>
           </div>
         </div>
