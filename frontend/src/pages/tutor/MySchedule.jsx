@@ -11,7 +11,7 @@ import {
 import { Link } from 'react-router-dom';
 import Alert from '../../components/common/Alert';
 import EmptyState from '../../components/common/EmptyState';
-import { getClassSessions, getMyClassrooms } from '../../services/classroomService';
+import { getClassSessions, getMyClassroomsPage } from '../../services/classroomService';
 import '../../styles/mySchedule.css';
 
 const PAGE_SIZE = 100;
@@ -238,7 +238,7 @@ export default function MySchedule() {
       setError('');
 
       try {
-        const classrooms = await getAllPages((page) => getMyClassrooms({ page: page, limit: PAGE_SIZE }));
+        const classrooms = await getAllPages((page) => getMyClassroomsPage({ page: page, limit: PAGE_SIZE }));
         const sessionsByClass = await Promise.all(classrooms.map(async (classroom) => {
           const classSessions = await getAllPages((page) => getClassSessions(classroom._id, {
             page: page,

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authentication } from '../common/middlewares/auth.middleware.js';
+import { authentication, authorize } from '../common/middlewares/auth.middleware.js';
 import {
   listJoinedClasses,
   listPendingAssignments,
@@ -10,8 +10,7 @@ import {
 // UC36 – View Student Dashboard
 export const studentDashboardRoutes = Router();
 
-// TODO: authorize('STUDENT') — middleware chưa có (AGENTS.md: Planned); tạm thời service tự kiểm tra role
-studentDashboardRoutes.get('/classes', authentication, listJoinedClasses);
-studentDashboardRoutes.get('/sessions/upcoming', authentication, listUpcomingSessions);
-studentDashboardRoutes.get('/assignments/pending', authentication, listPendingAssignments);
-studentDashboardRoutes.get('/grades', authentication, listPublishedGrades);
+studentDashboardRoutes.get('/classes', authentication, authorize('STUDENT'), listJoinedClasses);
+studentDashboardRoutes.get('/sessions/upcoming', authentication, authorize('STUDENT'), listUpcomingSessions);
+studentDashboardRoutes.get('/assignments/pending', authentication, authorize('STUDENT'), listPendingAssignments);
+studentDashboardRoutes.get('/grades', authentication, authorize('STUDENT'), listPublishedGrades);

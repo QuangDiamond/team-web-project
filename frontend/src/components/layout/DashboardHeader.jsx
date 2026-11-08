@@ -1,15 +1,40 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Bell, Menu } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
+import { getUnreadCount } from '../../services/notificationService';
 
-// Header của DashboardLayout: nút mở sidebar (mobile), tiêu đề trang, các nút hành động theo role
+// Header của DashboardLayout: nút mở sidebar (mobile), tiêu đề trang, chuông thông báo (UC33/UC35), các nút hành động theo role
 export default function DashboardHeader({ title, actions = [], isSidebarOpen, onOpenSidebar }) {
+  const { user } = useAuth();
+  const location = useLocation();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  let notificationsPath = '/student/notifications';
+  if (user && user.role) {
+    notificationsPath = `/${user.role.toLowerCase()}/notifications`;
+  }
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    getUnreadCount()
+      .then((res) => {
+        if (res && res.data && typeof res.data.unreadCount === 'number') {
+          setUnreadCount(res.data.unreadCount);
+        }
+      })
+      .catch(() => {});
+  }, [user, location.pathname]);
+
   return (
     <header className="dashboard-header">
       <div className="dashboard-header-start">
         <button
           type="button"
           className="dashboard-icon-button dashboard-menu-button"
-          aria-label="Open navigation"
+          aria-label="Mở menu điều hướng"
           aria-controls="dashboard-sidebar"
           aria-expanded={isSidebarOpen}
           onClick={onOpenSidebar}
@@ -20,10 +45,20 @@ export default function DashboardHeader({ title, actions = [], isSidebarOpen, on
       </div>
 
       <div className="dashboard-header-actions">
-        {/* Chưa có UC thông báo nên chỉ hiển thị, chưa bấm được */}
-        <button type="button" className="dashboard-icon-button" aria-label="Notifications (coming soon)" title="Coming soon" disabled>
+        <Link
+          to={notificationsPath}
+          className="dashboard-icon-button"
+          aria-label="Thông báo"
+          title="Thông báo"
+          style={{ position: 'relative' }}
+        >
           <Bell size={20} aria-hidden="true" />
-        </button>
+          {unreadCount > 0 && (
+            <span className="nav-noti-badge">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </Link>
         {actions.map((action) => (
           <Link key={action.label} to={action.to} className="dashboard-header-link">
             {action.label}

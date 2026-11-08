@@ -27,29 +27,29 @@ export default function SentInvitations() {
 
   return (
     <div className="page-stack">
-      <p className="item-meta">Invitations you sent to tutors. Each invitation costs 1 credit, which is not refunded.</p>
+      <p className="item-meta">Lời mời bạn đã gửi cho gia sư. Mỗi lời mời tốn ít nhất 1 tín dụng và không được hoàn lại.</p>
 
       {actionError && <Alert type="error">{actionError}</Alert>}
 
       {loading && !data && (
         <div className="page-loading-inline" role="status">
           <LoaderCircle size={26} className="spin" aria-hidden="true" />
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">Đang tải...</span>
         </div>
       )}
 
       {error && (
         <Alert type="error">
           <p>{error.message}</p>
-          <button type="button" className="btn btn-outline btn-sm" onClick={reload}>Try again</button>
+          <button type="button" className="btn btn-outline btn-sm" onClick={reload}>Thử lại</button>
         </Alert>
       )}
 
       {data && data.items.length === 0 && (
         <EmptyState
           icon={Mail}
-          title="No invitations sent yet"
-          description="Invite a tutor from the AI suggestions of one of your requests."
+          title="Chưa gửi lời mời nào"
+          description="Mời gia sư từ tab Tìm gia sư hoặc từ danh sách gợi ý AI của một yêu cầu."
         />
       )}
 

@@ -3,24 +3,24 @@ import { useEffect, useState } from 'react';
 import api from './services/api';
 
 function App() {
-  const [status, setStatus] = useState('Checking backend and database...');
+  const [status, setStatus] = useState("Đang kiểm tra máy chủ và cơ sở dữ liệu...");
 
   useEffect(() => {
     api.get('/health')
       .then((response) => {
         setStatus(
           response.data?.databaseConnection === 'connected'
-            ? 'Backend + MongoDB connected'
-            : 'Backend connected, MongoDB not connected'
+            ? "Đã kết nối máy chủ và MongoDB"
+            : "Đã kết nối máy chủ, chưa kết nối MongoDB"
         );
       })
-      .catch(() => setStatus('Backend unavailable'));
+      .catch(() => setStatus("Không thể kết nối máy chủ"));
   }, []);
 
   return (
     <main className="container">
-      <h1>Team Web Project</h1>
-      <p>React + Express + MongoDB environment is ready.</p>
+      <h1>TuConnector</h1>
+      <p>Hệ thống đã sẵn sàng.</p>
       <p className="status">{status}</p>
     </main>
   );

@@ -13,6 +13,7 @@ export default function FormInput({
   maxLength,
   endAdornment,
   belowControl,
+  required = false,
 }) {
   const errorId = `${id}-error`;
   let describedBy;
@@ -22,7 +23,7 @@ export default function FormInput({
 
   return (
     <div className="form-field">
-      <label htmlFor={id} className="form-label">{label}</label>
+      <label htmlFor={id} className="form-label">{label}{required && <span className="form-required" aria-hidden="true"> *</span>}</label>
       <div className={error ? 'form-control has-error' : 'form-control'}>
         <input
           id={id}
@@ -34,7 +35,7 @@ export default function FormInput({
           placeholder={placeholder}
           autoComplete={autoComplete}
           disabled={disabled}
-          maxLength={maxLength}
+          required={required}
           aria-invalid={error ? 'true' : 'false'}
           aria-describedby={describedBy}
         />

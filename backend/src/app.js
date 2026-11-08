@@ -12,7 +12,7 @@ const app = express();
 app.use(helmet());
 app.use(cors({ origin: env.corsOrigin, credentials: true }));
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({ verify: (req, _res, buffer) => { req.rawBody = buffer; } }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'));
 
