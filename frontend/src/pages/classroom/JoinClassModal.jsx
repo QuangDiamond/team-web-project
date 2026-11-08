@@ -126,12 +126,12 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
 
           <div className="form-group">
             <label>
-              Nhập mã tham gia (Join Code) hoặc đường dẫn mời: <span className="required">*</span>
+              Nhập mã tham gia hoặc đường dẫn mời: <span className="required">*</span>
             </label>
             <div style={{ display: 'flex', gap: '8px' }}>
               <input
                 type="text"
-                placeholder="VD: TC1A2B hoặc dán link mời"
+                placeholder="VD: TC1A2B hoặc dán liên kết mời"
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value)}
                 style={{ textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}

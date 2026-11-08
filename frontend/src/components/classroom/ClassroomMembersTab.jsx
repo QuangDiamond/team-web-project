@@ -64,13 +64,13 @@ export default function ClassroomMembersTab({
             onClick={() =>
               onCopy(
                 classroom.invite_link || `${window.location.origin}/join-class/${classroom.join_code}`,
-                'link mời'
+                'liên kết mời'
               )
             }
-            title="Sao chép link mời tham gia"
+            title="Sao chép liên kết mời tham gia"
           >
             <LinkIcon size={13} />
-            <span>Link mời</span>
+            <span>Liên kết mời</span>
           </button>
 
           {isOwner && (
@@ -99,7 +99,7 @@ export default function ClassroomMembersTab({
           </div>
           <h3>Chưa có học viên nào tham gia lớp</h3>
           <p>
-            Chia sẻ mã <code>{classroom.join_code}</code> hoặc link mời để học sinh tham gia!
+            Chia sẻ mã <code>{classroom.join_code}</code> hoặc liên kết mời để học sinh tham gia!
           </p>
           {isOwner && (
             <button
@@ -260,4 +260,3 @@ export default function ClassroomMembersTab({
     </div>
   );
 }
-

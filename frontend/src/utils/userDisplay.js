@@ -1,24 +1,24 @@
 // Nhãn hiển thị cho màn User Management (UC37)
 
 export const USER_ROLE_OPTIONS = [
-  { value: 'TUTOR', label: 'Tutor' },
-  { value: 'PARENT', label: 'Parent' },
-  { value: 'STUDENT', label: 'Student' },
-  { value: 'ADMIN', label: 'Admin' },
+  { value: 'TUTOR', label: 'Gia sư' },
+  { value: 'PARENT', label: 'Phụ huynh' },
+  { value: 'STUDENT', label: 'Học sinh' },
+  { value: 'ADMIN', label: 'Quản trị viên' },
 ];
 
 // Màu badge theo Figma: Active xanh, Suspended vàng, Banned đỏ
 export const USER_STATUS_OPTIONS = [
-  { value: 'ACTIVE', label: 'Active', tone: 'green' },
-  { value: 'SUSPENDED', label: 'Suspended', tone: 'amber' },
-  { value: 'BANNED', label: 'Banned', tone: 'red' },
+  { value: 'ACTIVE', label: 'Đang hoạt động', tone: 'green' },
+  { value: 'SUSPENDED', label: 'Tạm khóa', tone: 'amber' },
+  { value: 'BANNED', label: 'Bị cấm', tone: 'red' },
 ];
 
 const AUDIT_ACTION_LABELS = {
-  LOCK_USER: 'Account locked',
-  UNLOCK_USER: 'Account reactivated',
-  UPDATE_SETTINGS: 'Settings updated',
-  UPDATE_PLAN: 'Plan updated',
+  LOCK_USER: 'Đã khóa tài khoản',
+  UNLOCK_USER: 'Đã kích hoạt lại tài khoản',
+  UPDATE_SETTINGS: 'Đã cập nhật cài đặt',
+  UPDATE_PLAN: 'Đã cập nhật gói dịch vụ',
 };
 
 export const getUserRoleLabel = (role) => {
@@ -59,26 +59,26 @@ export const getInitials = (fullName) => {
 export const STATUS_ACTIONS = {
   SUSPEND: {
     targetStatus: 'SUSPENDED',
-    buttonLabel: 'Suspend',
-    title: 'Suspend this account?',
-    description: 'The user is signed out and cannot sign in until an admin reactivates the account.',
-    submitLabel: 'Suspend account',
+    buttonLabel: 'Tạm khóa',
+    title: 'Tạm khóa tài khoản này?',
+    description: 'Người dùng sẽ bị đăng xuất và không thể đăng nhập cho đến khi quản trị viên kích hoạt lại tài khoản.',
+    submitLabel: 'Tạm khóa tài khoản',
     danger: true,
   },
   BAN: {
     targetStatus: 'BANNED',
-    buttonLabel: 'Ban',
-    title: 'Ban this account?',
-    description: 'Use for serious violations. The user is signed out and cannot sign in. An admin can still reactivate the account later.',
-    submitLabel: 'Ban account',
+    buttonLabel: 'Cấm tài khoản',
+    title: 'Cấm tài khoản này?',
+    description: 'Áp dụng cho vi phạm nghiêm trọng. Người dùng sẽ bị đăng xuất và không thể đăng nhập. Quản trị viên vẫn có thể kích hoạt lại tài khoản sau này.',
+    submitLabel: 'Cấm tài khoản',
     danger: true,
   },
   REACTIVATE: {
     targetStatus: 'ACTIVE',
-    buttonLabel: 'Reactivate',
-    title: 'Reactivate this account?',
-    description: 'The user can sign in and use TuConnector again.',
-    submitLabel: 'Reactivate account',
+    buttonLabel: 'Kích hoạt lại',
+    title: 'Kích hoạt lại tài khoản này?',
+    description: 'Người dùng có thể đăng nhập và sử dụng lại TuConnector.',
+    submitLabel: 'Kích hoạt lại tài khoản',
     danger: false,
   },
 };

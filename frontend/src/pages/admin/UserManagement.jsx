@@ -38,13 +38,13 @@ export default function UserManagement() {
   return (
     <div className="user-management">
       <PageHeader
-        eyebrow="ADMIN"
-        title="User Management"
-        description="Search, review, and manage student, parent, tutor and admin accounts."
+        eyebrow="QUẢN TRỊ VIÊN"
+        title="Quản lý người dùng"
+        description="Tìm kiếm, xem và quản lý tài khoản học sinh, phụ huynh, gia sư và quản trị viên."
         actions={(
           <button type="button" className="btn btn-primary btn-sm" onClick={openCreateDialog}>
             <UserPlus size={16} aria-hidden="true" />
-            <span>Create admin</span>
+            <span>Tạo tài khoản quản trị viên</span>
           </button>
         )}
       />
@@ -53,7 +53,7 @@ export default function UserManagement() {
 
       <UserFilters filters={filterState.filters} onChange={filterState.changeFilter} dateError={filterState.dateError} />
 
-      <section className="card user-list" aria-label="Users">
+      <section className="card user-list" aria-label="Người dùng">
         {list.pagination && !list.loadError && (
           <p className="user-list-count" aria-live="polite">
             {list.pagination.total} {list.pagination.total === 1 ? 'user' : 'users'}
@@ -66,14 +66,14 @@ export default function UserManagement() {
           isEmpty={list.items.length === 0}
           filtersActive={true}
           onClearFilters={filterState.clearFilters}
-          emptyTitle="No users"
+          emptyTitle="Chưa có người dùng"
         />
         {!list.loadError && list.items.length > 0 && <UserTable users={list.items} currentUserId={user._id} />}
         <Pagination
           pagination={list.pagination}
           onPageChange={filterState.setPage}
           disabled={list.loading}
-          label="User pages"
+          label="Phân trang người dùng"
         />
       </section>
 

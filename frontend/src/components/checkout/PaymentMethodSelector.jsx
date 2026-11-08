@@ -4,7 +4,7 @@ import { PAYMENT_METHODS } from '../../utils/paymentDisplay';
 export default function PaymentMethodSelector({ value, onChange, disabled }) {
   return (
     <fieldset className="checkout-fieldset">
-      <legend className="checkout-legend">Payment method</legend>
+      <legend className="checkout-legend">Phương thức thanh toán</legend>
       <div className="method-list">
         {PAYMENT_METHODS.map((method) => {
           const Icon = method.Icon;

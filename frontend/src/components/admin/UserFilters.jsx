@@ -68,7 +68,7 @@ export default function UserFilters({ filters, onChange, dateError }) {
   return (
     <div className="card user-filters">
       <div className="user-filter user-search">
-        <label htmlFor="user-search" className="form-label">Search</label>
+        <label htmlFor="user-search" className="form-label">Tìm kiếm</label>
         <div className="form-control">
           <Search size={18} className="user-search-icon" aria-hidden="true" />
           <input
@@ -76,29 +76,29 @@ export default function UserFilters({ filters, onChange, dateError }) {
             type="search"
             value={searchText}
             onChange={(event) => setSearchText(event.target.value)}
-            placeholder="Name or email"
+            placeholder="Tên hoặc địa chỉ thư điện tử"
             autoComplete="off"
           />
         </div>
       </div>
       <FilterSelect
         id="user-role"
-        label="Role"
-        allLabel="All roles"
+        label="Vai trò"
+        allLabel="Tất cả vai trò"
         options={USER_ROLE_OPTIONS}
         value={filters.role}
         onChange={(value) => onChange('role', value)}
       />
       <FilterSelect
         id="user-status"
-        label="Status"
-        allLabel="All statuses"
+        label="Trạng thái"
+        allLabel="Tất cả trạng thái"
         options={USER_STATUS_OPTIONS}
         value={filters.status}
         onChange={(value) => onChange('status', value)}
       />
-      <DateFilter id="user-from" label="Created from" value={filters.from} onChange={(value) => onChange('from', value)} dateError={dateError} />
-      <DateFilter id="user-to" label="Created to" value={filters.to} onChange={(value) => onChange('to', value)} dateError={dateError} />
+      <DateFilter id="user-from" label="Ngày tạo từ" value={filters.from} onChange={(value) => onChange('from', value)} dateError={dateError} />
+      <DateFilter id="user-to" label="Ngày tạo đến" value={filters.to} onChange={(value) => onChange('to', value)} dateError={dateError} />
       {dateError && <p id="user-date-error" className="form-error user-date-error">{dateError}</p>}
     </div>
   );

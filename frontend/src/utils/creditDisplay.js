@@ -1,19 +1,19 @@
 // Nhãn hiển thị cho màn Credits & Transactions (UC18)
 
 export const CREDIT_TYPE_OPTIONS = [
-  { value: 'MONTHLY_GRANT', label: 'Monthly grant', description: 'Monthly credits from your plan' },
-  { value: 'PURCHASE', label: 'Purchase', description: 'Credit pack purchase' },
-  { value: 'USED_APPLY', label: 'Used for application', description: 'Applied to a tutoring request' },
-  { value: 'USED_INVITATION', label: 'Used for invitation', description: 'Invited a tutor' },
-  { value: 'EXPIRED_GRANT', label: 'Expired', description: 'Unused monthly credits expired' },
+  { value: 'MONTHLY_GRANT', label: 'Cấp hằng tháng', description: 'Tín dụng hằng tháng từ gói dịch vụ' },
+  { value: 'PURCHASE', label: 'Mua tín dụng', description: 'Mua gói tín dụng' },
+  { value: 'USED_APPLY', label: 'Dùng để ứng tuyển', description: 'Đã ứng tuyển yêu cầu tìm gia sư' },
+  { value: 'USED_INVITATION', label: 'Dùng để mời gia sư', description: 'Đã mời gia sư' },
+  { value: 'EXPIRED_GRANT', label: 'Đã hết hạn', description: 'Tín dụng hằng tháng chưa dùng đã hết hạn' },
 ];
 
 export const ORDER_STATUS_OPTIONS = [
-  { value: 'SUCCESS', label: 'Paid', tone: 'green' },
-  { value: 'PENDING', label: 'Pending', tone: 'blue' },
-  { value: 'FAILED', label: 'Failed', tone: 'red' },
-  { value: 'CANCELLED', label: 'Cancelled', tone: 'gray' },
-  { value: 'EXPIRED', label: 'Expired', tone: 'gray' },
+  { value: 'SUCCESS', label: 'Đã thanh toán', tone: 'green' },
+  { value: 'PENDING', label: 'Đang chờ', tone: 'blue' },
+  { value: 'FAILED', label: 'Thất bại', tone: 'red' },
+  { value: 'CANCELLED', label: 'Đã hủy', tone: 'gray' },
+  { value: 'EXPIRED', label: 'Đã hết hạn', tone: 'gray' },
 ];
 
 const findOption = (options, value) => {
@@ -32,9 +32,9 @@ export const getCreditTypeLabel = (type) => {
 export const getCreditDescription = (transaction) => {
   if (transaction.related && transaction.related.title) {
     if (transaction.related.kind === 'INVITATION') {
-      return `Invitation: ${transaction.related.title}`;
+      return `Lời mời: ${transaction.related.title}`;
     }
-    return `Application: ${transaction.related.title}`;
+    return `Ứng tuyển: ${transaction.related.title}`;
   }
   const option = findOption(CREDIT_TYPE_OPTIONS, transaction.type);
   if (!option) {
@@ -46,9 +46,9 @@ export const getCreditDescription = (transaction) => {
 // Số credit có dấu, vd: "+30", "-1"
 export const formatCreditAmount = (amount) => {
   if (amount > 0) {
-    return `+${amount}`;
+    return `+${amount.toLocaleString('vi-VN')}`;
   }
-  return String(amount);
+  return amount.toLocaleString('vi-VN');
 };
 
 export const getOrderStatusOption = (status) => {
@@ -61,9 +61,9 @@ export const getOrderStatusOption = (status) => {
 
 export const getOrderItemTypeLabel = (itemType) => {
   if (itemType === 'PLAN_UPGRADE') {
-    return 'Plan upgrade';
+    return 'Nâng cấp gói dịch vụ';
   }
-  return 'Credit pack';
+  return 'Gói tín dụng';
 };
 
 // Bỏ các bộ lọc rỗng trước khi gửi lên API / ghép vào link CSV
@@ -84,7 +84,7 @@ export const hasActiveFilters = (filters) => {
 // Ngày bắt đầu không được sau ngày kết thúc (ô date trả về chuỗi YYYY-MM-DD nên so sánh chuỗi được)
 export const validateDateRange = (filters) => {
   if (filters.from && filters.to && filters.from > filters.to) {
-    return 'The start date must be before the end date';
+    return 'Ngày bắt đầu không được sau ngày kết thúc';
   }
   return '';
 };

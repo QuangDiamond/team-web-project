@@ -7,7 +7,7 @@ import Alert from '../../components/common/Alert';
 import ListState from '../../components/common/ListState';
 import Modal from '../../components/common/Modal';
 import Pagination from '../../components/common/Pagination';
-import PostList from '../../components/tutorPosts/PostList';
+import PostList from '../../components/tutor/PostList';
 import '../../styles/tutorPosts.css';
 
 const PAGE_SIZE = 10;
@@ -28,9 +28,9 @@ export default function TutorPosts() {
     try {
       await changePostStatus(post._id, status);
       if (status === 'PUBLISHED') {
-        setNotice(`"${post.title}" is now published.`);
+        setNotice(`"${post.title}" đã được đăng.`);
       } else {
-        setNotice(`"${post.title}" is now hidden.`);
+        setNotice(`"${post.title}" đã được ẩn.`);
       }
     } catch (error) {
       setActionError(error.message);
@@ -44,7 +44,7 @@ export default function TutorPosts() {
     setActionError('');
     try {
       await deletePost(postToDelete._id);
-      setNotice(`"${postToDelete.title}" was deleted.`);
+      setNotice(`"${postToDelete.title}" đã được xóa.`);
     } catch (error) {
       setActionError(error.message);
     }
@@ -56,10 +56,10 @@ export default function TutorPosts() {
   return (
     <div className="page-stack">
       <div className="page-toolbar">
-        <p className="item-meta">Posts parents can find you with. Only published posts are used for suggestions.</p>
+        <p className="item-meta">Các bài đăng giúp phụ huynh tìm thấy bạn. Chỉ bài đã xuất bản được dùng để gợi ý.</p>
         <button type="button" className="btn btn-primary btn-sm" onClick={() => navigate('/tutor/posts/new')}>
           <Plus size={14} aria-hidden="true" />
-          <span>New post</span>
+          <span>Bài đăng mới</span>
         </button>
       </div>
 
@@ -68,7 +68,7 @@ export default function TutorPosts() {
 
       <ListState
         list={list}
-        empty={{ icon: FileText, title: 'No posts yet', description: 'Create a post so parents can find you and get suggested to them.' }}
+        empty={{ icon: FileText, title: "Chưa có bài đăng", description: "Tạo bài đăng để phụ huynh tìm thấy bạn và nhận gợi ý về bạn." }}
       >
         {list.data && <PostList posts={list.data.items} onChangeStatus={handleChangeStatus} onDelete={setPostToDelete} />}
       </ListState>
@@ -76,14 +76,14 @@ export default function TutorPosts() {
       {list.data && <Pagination pagination={list.data.pagination} onPageChange={setPage} />}
 
       {postToDelete && (
-        <Modal title="Delete this post?" onClose={() => setPostToDelete(null)}>
+        <Modal title="Xóa bài đăng này?" onClose={() => setPostToDelete(null)}>
           <p className="modal-summary">
-            <strong>{postToDelete.title}</strong> will be removed from your posts and no longer suggested to parents.
+            <strong>{postToDelete.title}</strong> sẽ bị xóa khỏi danh sách và không còn được gợi ý cho phụ huynh.
           </p>
           <div className="modal-actions">
-            <button type="button" className="btn btn-outline btn-sm" disabled={deleting} onClick={() => setPostToDelete(null)}>Cancel</button>
+            <button type="button" className="btn btn-outline btn-sm" disabled={deleting} onClick={() => setPostToDelete(null)}>Hủy</button>
             <button type="button" className="btn btn-primary btn-sm" disabled={deleting} onClick={confirmDelete}>
-              {deleting ? 'Deleting...' : 'Delete'}
+              {deleting ? "Đang xóa..." : "Xóa"}
             </button>
           </div>
         </Modal>

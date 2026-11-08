@@ -54,7 +54,7 @@ export default function Receipt() {
   const backLink = (
     <Link to="/credits?tab=payments" className="link-back no-print">
       <ChevronLeft size={16} aria-hidden="true" />
-      <span>Back to payments</span>
+      <span>Quay lại lịch sử thanh toán</span>
     </Link>
   );
 
@@ -62,7 +62,7 @@ export default function Receipt() {
     return (
       <div className="receipt-page">
         {backLink}
-        <Alert type="error">Could not load this receipt: {loadError}</Alert>
+        <Alert type="error">Không thể tải biên nhận này: {loadError}</Alert>
       </div>
     );
   }
@@ -71,7 +71,7 @@ export default function Receipt() {
     return (
       <div className="receipt-page receipt-loading" role="status">
         <LoaderCircle size={22} className="spin" aria-hidden="true" />
-        <span>Loading receipt...</span>
+        <span>Đang tải biên nhận...</span>
       </div>
     );
   }
@@ -80,7 +80,7 @@ export default function Receipt() {
     return (
       <div className="receipt-page">
         {backLink}
-        <Alert type="info">A receipt is only available for paid orders. Order {order.order_code} has not been paid.</Alert>
+        <Alert type="info">Chỉ đơn hàng đã thanh toán mới có biên nhận. Đơn hàng {order.order_code} chưa được thanh toán.</Alert>
       </div>
     );
   }
@@ -93,7 +93,7 @@ export default function Receipt() {
         {backLink}
         <button type="button" className="btn btn-primary btn-sm" onClick={() => window.print()}>
           <Printer size={16} aria-hidden="true" />
-          <span>Print / Save as PDF</span>
+          <span>In / Lưu thành PDF</span>
         </button>
       </div>
 
@@ -104,30 +104,30 @@ export default function Receipt() {
             <span className="brand-logo-text">TuConnector</span>
           </span>
           <div className="receipt-heading">
-            <h1 id="receipt-title" className="receipt-title">Receipt</h1>
+            <h1 id="receipt-title" className="receipt-title">Biên nhận</h1>
             <p className="receipt-code">{order.order_code}</p>
           </div>
         </header>
 
-        <section className="receipt-section" aria-label="Billed to">
-          <h2 className="receipt-section-title">Billed to</h2>
+        <section className="receipt-section" aria-label="Người thanh toán">
+          <h2 className="receipt-section-title">Người thanh toán</h2>
           <p className="receipt-buyer-name">{buyer.full_name}</p>
           <p className="receipt-buyer-email">{buyer.email}</p>
         </section>
 
         <dl className="receipt-rows">
-          <ReceiptRow label="Item" value={getOrderItemLabel(order)} />
-          <ReceiptRow label="Payment method" value={getPaymentMethodLabel(order.payment_method)} />
-          <ReceiptRow label="Order date" value={formatDateTime(order.created_at)} />
-          <ReceiptRow label="Paid at" value={formatDateTime(order.paid_at)} />
+          <ReceiptRow label="Sản phẩm" value={getOrderItemLabel(order)} />
+          <ReceiptRow label="Phương thức thanh toán" value={getPaymentMethodLabel(order.payment_method)} />
+          <ReceiptRow label="Ngày đặt hàng" value={formatDateTime(order.created_at)} />
+          <ReceiptRow label="Thời gian thanh toán" value={formatDateTime(order.paid_at)} />
         </dl>
 
         <dl className="receipt-total">
-          <dt>Total paid</dt>
+          <dt>Tổng tiền đã thanh toán</dt>
           <dd>{formatVnd(order.amount)}</dd>
         </dl>
 
-        <p className="receipt-footer">All amounts are in Vietnamese dong (VND). Thank you for using TuConnector.</p>
+        <p className="receipt-footer">Tất cả số tiền được tính bằng đồng Việt Nam (VND). Cảm ơn bạn đã sử dụng TuConnector.</p>
       </article>
     </div>
   );

@@ -3,13 +3,15 @@ import { TutorInvitation } from '../models/TutorInvitation.js';
 import { ParentRequest } from '../models/ParentRequest.js';
 import { TutorProfile } from '../models/TutorProfile.js';
 import { User } from '../models/User.js';
+import { TutorPost } from '../models/TutorPost.js';
 import { Notification } from '../models/Notification.js';
 import { ENUMS } from '../models/enums.js';
 import { AppError } from '../common/utils/AppError.js';
 import { assertRole } from '../common/utils/assertRole.js';
+import { maskContact } from '../common/utils/contactMask.js';
 import { buildPagination } from '../common/utils/pagination.js';
 import { decimalToNumber, isRequestAvailable } from '../common/utils/requestRules.js';
-import { CREDIT_USAGE_TYPES, spendOneCredit } from './credit.service.js';
+import { CREDIT_USAGE_TYPES, spendCredits } from './credit.service.js';
 import { mapConversationIds, openDirectConversation } from './conversation.service.js';
 import { getTutorProfileOrThrow } from './tutorContext.service.js';
 
@@ -39,6 +41,7 @@ export const toInvitationDto = (invitation, request, tutor, conversationId = nul
     _id: String(invitation._id),
     status: invitation.status,
     message: invitation.message,
+    credits_spent: invitation.credits_spent ?? 1,
     created_at: invitation.created_at,
     conversation_id: conversationId,
     request: requestDto,
@@ -61,13 +64,14 @@ const loadTutors = async (tutorProfileIds) => {
 };
 
 /**
- * Phụ huynh mời gia sư vào một request của mình: trừ 1 credit của phụ huynh,
- * không hoàn lại dù gia sư từ chối hoặc phụ huynh hủy lời mời
+ * Phụ huynh mời gia sư vào một request của mình: trừ `credits` credit (1-10) của phụ huynh,
+ * không hoàn lại dù gia sư từ chối hoặc phụ huynh hủy lời mời.
+ * Dùng nhiều credit hơn thì lời mời được xếp lên đầu danh sách của gia sư
  * @param {Object} user - req.user { id, role }
- * @param {Object} data - { request_id, tutor_profile_id, message }
+ * @param {Object} data - { request_id, tutor_profile_id, message, credits }
  * @returns {Promise<{ invitation: Object, remaining_credits: number }>}
  */
-export const createInvitation = async (user, { request_id, tutor_profile_id, message }) => {
+export const createInvitation = async (user, { request_id, tutor_profile_id, message, credits }) => {
   assertRole(user, ENUMS.UserRole.PARENT);
 
   const request = await ParentRequest.findOne({ _id: request_id, parent_user_id: user.id }).lean();
@@ -101,6 +105,7 @@ export const createInvitation = async (user, { request_id, tutor_profile_id, mes
       tutor_profile_id: tutor.profile._id,
       request_id: request._id,
       message: message,
+      credits_spent: credits,
       status: TutorInvitationsStatus.PENDING,
     });
   } catch (error) {
@@ -112,7 +117,7 @@ export const createInvitation = async (user, { request_id, tutor_profile_id, mes
 
   let remainingCredits;
   try {
-    remainingCredits = await spendOneCredit(user.id, {
+    remainingCredits = await spendCredits(user.id, credits, {
       type: CREDIT_USAGE_TYPES.INVITATION,
       relatedInvitationId: invitation._id,
     });
@@ -174,6 +179,85 @@ export const listMyInvitations = async (user, { status, page, limit }) => {
   return { items: items, pagination: buildPagination(page, limit, total) };
 };
 
+const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/**
+ * Chuyển một gia sư sang dữ liệu trả về cho phụ huynh xem trước khi mời. Không có email, số điện thoại
+ * @param {Object} profile - TutorProfile (lean)
+ * @param {Object} tutorUser - { full_name, avatar_url } của tài khoản gia sư
+ * @param {Object} postSummary - { subjects: string[], minPrice: number|null } từ các bài đăng PUBLISHED
+ * @returns {Object}
+ */
+export const toInvitableTutorDto = (profile, tutorUser, postSummary) => {
+  return {
+    profile_id: String(profile._id),
+    full_name: maskContact(tutorUser.full_name),
+    avatar_url: profile.avatar_url || tutorUser.avatar_url || null,
+    headline: maskContact(profile.headline),
+    average_rating: profile.average_rating ?? null,
+    availability_status: profile.availability_status ?? null,
+    subjects: postSummary.subjects,
+    min_price: postSummary.minPrice,
+  };
+};
+
+/**
+ * Danh sách gia sư đang hoạt động (tài khoản ACTIVE, hồ sơ đã hoàn thiện) để phụ huynh xem và mời. Rating cao trước
+ * @param {Object} user - req.user { id, role }
+ * @param {Object} query - { q?, page, limit } (q: tìm theo tên)
+ * @returns {Promise<{ items: Object[], pagination: Object }>}
+ */
+export const listInvitableTutors = async (user, { q, page, limit }) => {
+  assertRole(user, ENUMS.UserRole.PARENT);
+
+  const userFilter = { role: ENUMS.UserRole.TUTOR, account_status: ENUMS.UserAccountStatus.ACTIVE };
+  if (q) {
+    userFilter.full_name = new RegExp(escapeRegex(q), 'i');
+  }
+  const tutorUsers = await User.find(userFilter).select('full_name avatar_url').lean();
+  const userById = new Map(tutorUsers.map((tutorUser) => [String(tutorUser._id), tutorUser]));
+
+  const profileFilter = { user_id: { $in: tutorUsers.map((tutorUser) => tutorUser._id) }, is_complete: true };
+  const [profiles, total] = await Promise.all([
+    TutorProfile.find(profileFilter)
+      .sort({ average_rating: -1, _id: 1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean(),
+    TutorProfile.countDocuments(profileFilter),
+  ]);
+
+  // Môn dạy và giá thấp nhất lấy từ các bài đăng đang PUBLISHED của từng gia sư
+  const posts = await TutorPost.find({
+    profile_id: { $in: profiles.map((profile) => profile._id) },
+    status: ENUMS.TutorPostsStatus.PUBLISHED,
+  })
+    .select('profile_id subject_name price')
+    .lean();
+  const summaryByProfileId = new Map();
+  for (const post of posts) {
+    const key = String(post.profile_id);
+    if (!summaryByProfileId.has(key)) {
+      summaryByProfileId.set(key, { subjects: [], minPrice: null });
+    }
+    const summary = summaryByProfileId.get(key);
+    if (post.subject_name && !summary.subjects.includes(post.subject_name)) {
+      summary.subjects.push(post.subject_name);
+    }
+    const price = decimalToNumber(post.price);
+    if (price !== null && (summary.minPrice === null || price < summary.minPrice)) {
+      summary.minPrice = price;
+    }
+  }
+
+  const items = profiles.map((profile) => {
+    const tutorUser = userById.get(String(profile.user_id));
+    const postSummary = summaryByProfileId.get(String(profile._id)) || { subjects: [], minPrice: null };
+    return toInvitableTutorDto(profile, tutorUser, postSummary);
+  });
+  return { items: items, pagination: buildPagination(page, limit, total) };
+};
+
 /**
  * Hủy lời mời đang chờ (PENDING → CANCELLED). Credit không được hoàn lại
  * @param {Object} user - req.user { id, role }
@@ -226,6 +310,9 @@ export const toReceivedInvitationDto = (invitation, request, conversationId) => 
       grade_level: request.grade_level,
       teaching_mode: request.teaching_mode,
       budget: decimalToNumber(request.budget),
+      schedule: request.schedule,
+      description: request.description,
+      tutor_requirements: request.tutor_requirements,
       location_address: request.location_address,
       is_available: isRequestAvailable(request),
     };
@@ -235,6 +322,7 @@ export const toReceivedInvitationDto = (invitation, request, conversationId) => 
     parent_user_id: invitation.parent_user_id ? String(invitation.parent_user_id) : null,
     status: invitation.status,
     message: invitation.message,
+    credits_spent: invitation.credits_spent ?? 1,
     created_at: invitation.created_at,
     conversation_id: conversationId,
     request: requestDto,
@@ -260,11 +348,13 @@ export const listReceivedInvitations = async (user, { status, page, limit }) => 
     filter.status = status;
   }
   const [invitations, total] = await Promise.all([
-    TutorInvitation.find(filter)
-      .sort({ created_at: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean(),
+    TutorInvitation.aggregate([
+      { $match: filter },
+      { $addFields: { priority_credits: { $ifNull: ['$credits_spent', 1] } } },
+      { $sort: { priority_credits: -1, created_at: -1 } },
+      { $skip: (page - 1) * limit },
+      { $limit: limit },
+    ]),
     TutorInvitation.countDocuments(filter),
   ]);
 

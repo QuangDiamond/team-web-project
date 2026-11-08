@@ -26,7 +26,7 @@ function NavItem({ item, onNavigate }) {
   if (!item.to) {
     return (
       <li>
-        <span className="dashboard-nav-link is-disabled" aria-disabled="true" title="Coming soon">
+        <span className="dashboard-nav-link is-disabled" aria-disabled="true" title="Sắp ra mắt">
           {Icon && <Icon size={16} aria-hidden="true" />}
           <span>{item.label}</span>
         </span>
@@ -65,7 +65,7 @@ export default function DashboardSidebar({ menu, isOpen, onClose }) {
   }
 
   return (
-    <aside id="dashboard-sidebar" className={sidebarClass} aria-label="Dashboard navigation">
+    <aside id="dashboard-sidebar" className={sidebarClass} aria-label="Điều hướng bảng điều khiển">
       <div className="dashboard-sidebar-brand">
         <Link to="/" className="brand-logo">
           <span className="brand-logo-mark" aria-hidden="true">Tu</span>
@@ -76,7 +76,7 @@ export default function DashboardSidebar({ menu, isOpen, onClose }) {
       <div className="dashboard-user-card">
         <span className="dashboard-avatar" aria-hidden="true">{getInitials(fullName)}</span>
         <div className="dashboard-user-info">
-          <p className="dashboard-user-name">{fullName || 'User'}</p>
+          <p className="dashboard-user-name">{fullName || "Người dùng"}</p>
           <span className="dashboard-role-badge">{menu.roleLabel}</span>
         </div>
       </div>
@@ -96,7 +96,7 @@ export default function DashboardSidebar({ menu, isOpen, onClose }) {
         <div className="dashboard-nav-group">
           <button type="button" className="dashboard-nav-link is-danger" onClick={handleLogout}>
             <LogOut size={16} aria-hidden="true" />
-            <span>Log Out</span>
+            <span>Đăng xuất</span>
           </button>
         </div>
       </nav>

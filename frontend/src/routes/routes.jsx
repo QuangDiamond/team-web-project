@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, useLocation } from 'react-router-dom';
+import { createBrowserRouter, Navigate, useLocation, useParams } from 'react-router-dom';
 import Layout from '../layouts/Layout';
 import GuestRoute from './GuestRoute';
 import PrivateRoute from './PrivateRoute';
@@ -30,7 +30,6 @@ import RoleRoute from './RoleRoute';
 import StudentDashboard from '../pages/student/StudentDashboard';
 import AiTutorSuggestions from '../pages/parent/AiTutorSuggestions';
 import ParentDashboard from '../pages/parent/ParentDashboard';
-import RequestPicker from '../pages/parent/RequestPicker';
 import ChatPage from '../pages/chat/ChatPage';
 import TutorProfile from '../pages/tutor/TutorProfile';
 import TutorPosts from '../pages/tutor/TutorPosts';
@@ -39,8 +38,7 @@ import TutorDashboard from '../pages/tutor/TutorDashboard';
 import TutoringRequests from '../pages/parent/TutoringRequests';
 import TutoringRequestForm from '../pages/parent/TutoringRequestForm';
 import TutoringRequestDetail from '../pages/parent/TutoringRequestDetail';
-import SentInvitations from '../pages/parent/SentInvitations';
-import ApplicationsReview from '../pages/parent/ApplicationsReview';
+import Invitations from '../pages/parent/Invitations';
 import ReceivedInvitations from '../pages/tutor/ReceivedInvitations';
 import BrowseRequests from '../pages/tutor/BrowseRequests';
 import SuggestedRequests from '../pages/tutor/SuggestedRequests';
@@ -62,6 +60,12 @@ function WorkspaceRedirect() {
   const prefix = prefixes[user.role];
   if (!prefix) return <Navigate to="/" replace />;
   return <Navigate to={`${prefix}${location.pathname}${location.search}${location.hash}`} replace />;
+}
+
+// Đường dẫn cũ /parent/requests/:id/applications: đơn ứng tuyển nay nằm trong trang chi tiết request
+function ApplicationsRedirect() {
+  const { id } = useParams();
+  return <Navigate to={`/parent/requests/${id}`} replace />;
 }
 
 export const router = createBrowserRouter([
@@ -119,11 +123,11 @@ export const router = createBrowserRouter([
         path: 'student',
         element: <DashboardLayout menu={STUDENT_MENU} />,
         children: [
-          { path: 'dashboard', element: <StudentDashboard />, handle: { title: 'Overview' } },
+          { path: 'dashboard', element: <StudentDashboard />, handle: { title: "Tổng quan" } },
           { path: 'classes', element: <ClassroomsPage />, handle: { title: 'Lớp học của tôi' } },
           { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
-          { path: 'change-password', element: <ChangePassword />, handle: { title: 'Account Security' } },
-          { path: 'notifications', element: <Notifications />, handle: { title: 'Notifications' } },
+          { path: 'change-password', element: <ChangePassword />, handle: { title: "Bảo mật tài khoản" } },
+          { path: 'notifications', element: <Notifications />, handle: { title: "Thông báo" } },
         ],
       },
     ],
@@ -136,32 +140,33 @@ export const router = createBrowserRouter([
         path: 'parent',
         element: <DashboardLayout menu={PARENT_MENU} />,
         children: [
-          { path: 'credits', element: <CreditsTransactions />, handle: { title: 'Credits & Transactions' } },
-          { path: 'checkout', element: <Checkout />, handle: { title: 'Checkout' } },
-          { path: 'payment/result', element: <PaymentResult />, handle: { title: 'Payment Result' } },
-          { path: 'receipts/:orderCode', element: <Receipt />, handle: { title: 'Receipt' } },
-          { path: 'dashboard', element: <ParentDashboard />, handle: { title: 'Overview' } },
+          { path: 'credits', element: <CreditsTransactions />, handle: { title: "Tín dụng và giao dịch" } },
+          { path: 'checkout', element: <Checkout />, handle: { title: "Thanh toán" } },
+          { path: 'payment/result', element: <PaymentResult />, handle: { title: "Kết quả thanh toán" } },
+          { path: 'receipts/:orderCode', element: <Receipt />, handle: { title: "Biên nhận" } },
+          { path: 'dashboard', element: <ParentDashboard />, handle: { title: "Tổng quan" } },
           { path: 'classes', element: <ClassroomsPage />, handle: { title: 'Lớp học của con' } },
           { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
-          { path: 'change-password', element: <ChangePassword />, handle: { title: 'Account Security' } },
-          { path: 'requests', element: <TutoringRequests />, handle: { title: 'My Tutoring Requests' } },
-          { path: 'requests/new', element: <TutoringRequestForm />, handle: { title: 'Create Tutoring Request' } },
-          { path: 'requests/:id', element: <TutoringRequestDetail />, handle: { title: 'Tutoring Request' } },
-          { path: 'requests/:id/edit', element: <TutoringRequestForm />, handle: { title: 'Edit Tutoring Request' } },
+          { path: 'change-password', element: <ChangePassword />, handle: { title: "Bảo mật tài khoản" } },
+          { path: 'requests', element: <TutoringRequests />, handle: { title: "Yêu cầu tìm gia sư của tôi" } },
+          { path: 'requests/new', element: <TutoringRequestForm />, handle: { title: "Tạo yêu cầu tìm gia sư" } },
+          { path: 'requests/:id', element: <TutoringRequestDetail />, handle: { title: "Yêu cầu tìm gia sư" } },
+          { path: 'requests/:id/edit', element: <TutoringRequestForm />, handle: { title: "Sửa yêu cầu tìm gia sư" } },
           {
             path: 'requests/:requestId/ai-suggestions',
             element: <AiTutorSuggestions />,
-            handle: { title: 'AI Tutor Suggestions' },
+            handle: { title: "Gợi ý gia sư bằng AI" },
           },
-          { path: 'requests/:id/applications', element: <ApplicationsReview />, handle: { title: 'Applications' } },
-          { path: 'applications', element: <RequestPicker mode="applications" />, handle: { title: 'Applications' } },
-          { path: 'ai-suggestions', element: <RequestPicker mode="suggestions" />, handle: { title: 'AI Tutor Suggestions' } },
-          { path: 'invitations', element: <SentInvitations />, handle: { title: 'My Invitations' } },
-          { path: 'messages', element: <ChatPage basePath="/parent/messages" />, handle: { title: 'Messages' } },
-          { path: 'messages/:conversationId', element: <ChatPage basePath="/parent/messages" />, handle: { title: 'Messages' } },
-          { path: 'contracts', element: <MyConnections />, handle: { title: 'Contracts & Connections' } },
-          { path: 'connections', element: <MyConnections />, handle: { title: 'Contracts & Connections' } },
-          { path: 'notifications', element: <Notifications />, handle: { title: 'Notifications' } },
+          // Đơn ứng tuyển nay nằm trong trang chi tiết yêu cầu; giữ đường dẫn cũ để link cũ vẫn dùng được
+          { path: 'requests/:id/applications', element: <ApplicationsRedirect /> },
+          { path: 'applications', element: <Navigate to="/parent/requests" replace /> },
+          { path: 'ai-suggestions', element: <AiTutorSuggestions />, handle: { title: "Gợi ý gia sư bằng AI" } },
+          { path: 'invitations', element: <Invitations />, handle: { title: "Lời mời" } },
+          { path: 'messages', element: <ChatPage basePath="/parent/messages" />, handle: { title: "Tin nhắn" } },
+          { path: 'messages/:conversationId', element: <ChatPage basePath="/parent/messages" />, handle: { title: "Tin nhắn" } },
+          { path: 'contracts', element: <MyConnections />, handle: { title: "Thỏa thuận và kết nối" } },
+          { path: 'connections', element: <MyConnections />, handle: { title: "Thỏa thuận và kết nối" } },
+          { path: 'notifications', element: <Notifications />, handle: { title: "Thông báo" } },
         ],
       },
     ],
@@ -174,29 +179,29 @@ export const router = createBrowserRouter([
         path: 'tutor',
         element: <DashboardLayout menu={TUTOR_MENU} />,
         children: [
-          { path: 'credits', element: <CreditsTransactions />, handle: { title: 'Credits & Transactions' } },
-          { path: 'checkout', element: <Checkout />, handle: { title: 'Checkout' } },
-          { path: 'payment/result', element: <PaymentResult />, handle: { title: 'Payment Result' } },
-          { path: 'receipts/:orderCode', element: <Receipt />, handle: { title: 'Receipt' } },
-          { path: 'dashboard', element: <TutorDashboard />, handle: { title: 'Overview' } },
+          { path: 'credits', element: <CreditsTransactions />, handle: { title: "Tín dụng và giao dịch" } },
+          { path: 'checkout', element: <Checkout />, handle: { title: "Thanh toán" } },
+          { path: 'payment/result', element: <PaymentResult />, handle: { title: "Kết quả thanh toán" } },
+          { path: 'receipts/:orderCode', element: <Receipt />, handle: { title: "Biên nhận" } },
+          { path: 'dashboard', element: <TutorDashboard />, handle: { title: "Tổng quan" } },
           { path: 'classes', element: <ClassroomsPage />, handle: { title: 'Quản lý lớp học' } },
           { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
-          { path: 'change-password', element: <ChangePassword />, handle: { title: 'Account Security' } },
-          { path: 'requests', element: <BrowseRequests />, handle: { title: 'Browse Requests' } },
-          { path: 'requests/suggested', element: <SuggestedRequests />, handle: { title: 'Suggested for You' } },
-          { path: 'requests/saved', element: <SavedRequests />, handle: { title: 'Saved Requests' } },
-          { path: 'requests/:id', element: <TutorRequestDetail />, handle: { title: 'Request Details' } },
-          { path: 'applications', element: <MyApplications />, handle: { title: 'My Applications' } },
-          { path: 'invitations', element: <ReceivedInvitations />, handle: { title: 'Invitations' } },
-          { path: 'messages', element: <ChatPage basePath="/tutor/messages" />, handle: { title: 'Messages' } },
-          { path: 'messages/:conversationId', element: <ChatPage basePath="/tutor/messages" />, handle: { title: 'Messages' } },
-          { path: 'contracts', element: <MyConnections />, handle: { title: 'Contracts & Connections' } },
-          { path: 'connections', element: <MyConnections />, handle: { title: 'Contracts & Connections' } },
-          { path: 'notifications', element: <Notifications />, handle: { title: 'Notifications' } },
-          { path: 'profile', element: <TutorProfile />, handle: { title: 'My Profile' } },
-          { path: 'posts', element: <TutorPosts />, handle: { title: 'My Posts' } },
-          { path: 'posts/new', element: <TutorPostForm />, handle: { title: 'New Post' } },
-          { path: 'posts/:id/edit', element: <TutorPostForm />, handle: { title: 'Edit Post' } },
+          { path: 'change-password', element: <ChangePassword />, handle: { title: "Bảo mật tài khoản" } },
+          { path: 'requests', element: <BrowseRequests />, handle: { title: "Tìm yêu cầu" } },
+          { path: 'requests/suggested', element: <SuggestedRequests />, handle: { title: "Gợi ý dành cho bạn" } },
+          { path: 'requests/saved', element: <SavedRequests />, handle: { title: "Yêu cầu đã lưu" } },
+          { path: 'requests/:id', element: <TutorRequestDetail />, handle: { title: "Chi tiết yêu cầu" } },
+          { path: 'applications', element: <MyApplications />, handle: { title: "Đơn ứng tuyển của tôi" } },
+          { path: 'invitations', element: <ReceivedInvitations />, handle: { title: "Lời mời" } },
+          { path: 'messages', element: <ChatPage basePath="/tutor/messages" />, handle: { title: "Tin nhắn" } },
+          { path: 'messages/:conversationId', element: <ChatPage basePath="/tutor/messages" />, handle: { title: "Tin nhắn" } },
+          { path: 'contracts', element: <MyConnections />, handle: { title: "Thỏa thuận và kết nối" } },
+          { path: 'connections', element: <MyConnections />, handle: { title: "Thỏa thuận và kết nối" } },
+          { path: 'notifications', element: <Notifications />, handle: { title: "Thông báo" } },
+          { path: 'profile', element: <TutorProfile />, handle: { title: "Hồ sơ của tôi" } },
+          { path: 'posts', element: <TutorPosts />, handle: { title: "Bài đăng của tôi" } },
+          { path: 'posts/new', element: <TutorPostForm />, handle: { title: "Bài đăng mới" } },
+          { path: 'posts/:id/edit', element: <TutorPostForm />, handle: { title: "Sửa bài đăng" } },
         ],
       },
     ],
@@ -209,13 +214,13 @@ export const router = createBrowserRouter([
         path: 'admin',
         element: <DashboardLayout menu={ADMIN_MENU} />,
         children: [
-          { path: 'plans', element: <PlansPricing />, handle: { title: 'Plans & Pricing' } },
-          { path: 'users', element: <UserManagement />, handle: { title: 'User Management' } },
-          { path: 'users/:userId', element: <UserDetail />, handle: { title: 'User Details' } },
-          { path: 'dashboard', element: <AdminDashboard />, handle: { title: 'System Statistics' } },
-          { path: 'change-password', element: <ChangePassword />, handle: { title: 'Account Security' } },
-          { path: 'moderation', element: <Moderation />, handle: { title: 'Content Moderation & Reports' } },
-          { path: 'notifications', element: <Notifications />, handle: { title: 'Notifications' } },
+          { path: 'plans', element: <PlansPricing />, handle: { title: "Gói dịch vụ và giá" } },
+          { path: 'users', element: <UserManagement />, handle: { title: "Quản lý người dùng" } },
+          { path: 'users/:userId', element: <UserDetail />, handle: { title: "Chi tiết người dùng" } },
+          { path: 'dashboard', element: <AdminDashboard />, handle: { title: "Thống kê hệ thống" } },
+          { path: 'change-password', element: <ChangePassword />, handle: { title: "Bảo mật tài khoản" } },
+          { path: 'moderation', element: <Moderation />, handle: { title: "Kiểm duyệt nội dung và báo cáo" } },
+          { path: 'notifications', element: <Notifications />, handle: { title: "Thông báo" } },
         ],
       },
     ],

@@ -83,11 +83,11 @@ export default function RegisterComplete() {
   if (!googleProfile || ticketExpired) {
     return (
       <AuthLayout activeStep={2}>
-        <h1 className="auth-title">Session expired</h1>
-        <p className="auth-subtitle">Your Google sign-up session is invalid or has expired. Please continue with Google again.</p>
+        <h1 className="auth-title">Phiên đăng ký đã hết hạn</h1>
+        <p className="auth-subtitle">Phiên đăng ký bằng Google không hợp lệ hoặc đã hết hạn. Vui lòng tiếp tục với Google một lần nữa.</p>
         <GoogleButton href={getGoogleLoginUrl()} />
         <p className="auth-footer-text">
-          Or <Link to="/register" className="link">sign up with email</Link>
+          Hoặc <Link to="/register" className="link">đăng ký bằng email</Link>
         </p>
       </AuthLayout>
     );
@@ -97,7 +97,7 @@ export default function RegisterComplete() {
   if (emailTaken) {
     alert = (
       <Alert type="error">
-        This email is already registered. <Link to="/login" className="link">Login</Link>
+        Email này đã được đăng ký. <Link to="/login" className="link">Đăng nhập</Link>
       </Alert>
     );
   } else if (formError) {

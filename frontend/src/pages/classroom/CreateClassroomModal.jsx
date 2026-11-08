@@ -172,13 +172,13 @@ export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreat
               </div>
               <h3>{createdResult.name}</h3>
               <p>
-                Lớp học đã sẵn sàng hoạt động. Bạn có thể chia sẻ mã tham gia hoặc link mời dưới đây
+                Lớp học đã sẵn sàng hoạt động. Bạn có thể chia sẻ mã tham gia hoặc liên kết mời dưới đây
                 để học sinh và phụ huynh gia nhập lớp:
               </p>
 
               <div className="share-card">
                 <div className="share-field">
-                  <label>Mã tham gia lớp (Join Code)</label>
+                  <label>Mã tham gia lớp</label>
                   <div className="share-input-group">
                     <input type="text" readOnly value={createdResult.join_code} />
                     <button
@@ -194,17 +194,17 @@ export default function CreateClassroomModal({ isOpen, onClose, onClassroomCreat
                 </div>
 
                 <div className="share-field" style={{ marginTop: '16px' }}>
-                  <label>Đường dẫn mời tham gia (Invite Link)</label>
+                  <label>Đường dẫn mời tham gia</label>
                   <div className="share-input-group">
                     <input type="text" readOnly value={createdResult.invite_link} />
                     <button
                       type="button"
                       className="btn-outline-gray"
                       onClick={() =>
-                        handleCopy(createdResult.invite_link, 'Đã sao chép link mời!')
+                        handleCopy(createdResult.invite_link, 'Đã sao chép liên kết mời!')
                       }
                     >
-                      Sao chép Link
+                      Sao chép liên kết
                     </button>
                   </div>
                 </div>

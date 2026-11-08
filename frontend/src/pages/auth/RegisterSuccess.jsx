@@ -18,23 +18,23 @@ export default function RegisterSuccess() {
         <span className="register-success-icon" aria-hidden="true">
           <MailCheck size={32} />
         </span>
-        <h1 className="auth-title">Check your email</h1>
+        <h1 className="auth-title">Kiểm tra email của bạn</h1>
         {email ? (
           <p className="auth-subtitle">
-            We sent a verification link to <strong>{email}</strong>. Click the link to activate your account.
-            The link expires in 24 hours.
+            Chúng tôi đã gửi liên kết xác minh đến <strong>{email}</strong>. Nhấn vào liên kết để kích hoạt tài khoản.
+            Liên kết có hiệu lực trong 24 giờ.
           </p>
         ) : (
           <p className="auth-subtitle">
-            We sent a verification link to your email. Click the link to activate your account.
-            The link expires in 24 hours.
+            Chúng tôi đã gửi liên kết xác minh đến email của bạn. Nhấn vào liên kết để kích hoạt tài khoản.
+            Liên kết có hiệu lực trong 24 giờ.
           </p>
         )}
 
         {email && <ResendVerificationButton email={email} />}
 
         <p className="auth-footer-text">
-          Already verified? <Link to="/login" className="link">Sign in</Link>
+          Bạn đã xác minh tài khoản? <Link to="/login" className="link">Đăng nhập</Link>
         </p>
       </div>
     </AuthLayout>

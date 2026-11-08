@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import { ApplyRequest } from '../models/ApplyRequest.js';
 import { ParentRequest } from '../models/ParentRequest.js';
-import { TutorPost } from '../models/TutorPost.js';
 import { TutorProfile } from '../models/TutorProfile.js';
 import { Notification } from '../models/Notification.js';
 import { ENUMS } from '../models/enums.js';
@@ -9,10 +8,9 @@ import { AppError } from '../common/utils/AppError.js';
 import { assertRole } from '../common/utils/assertRole.js';
 import { buildPagination } from '../common/utils/pagination.js';
 import { isRequestAvailable } from '../common/utils/requestRules.js';
-import { CREDIT_USAGE_TYPES, spendOneCredit } from './credit.service.js';
+import { CREDIT_USAGE_TYPES, spendCredits } from './credit.service.js';
 import { getTutorProfileOrThrow, loadTutorSummaries } from './tutorContext.service.js';
 import { mapConversationIds, openDirectConversation } from './conversation.service.js';
-import { scoreRequestForTutor } from './tutorRequest.service.js';
 
 const { ApplyRequestsStatus } = ENUMS;
 
@@ -37,7 +35,7 @@ export const toApplicationDto = (application, request, conversationId = null) =>
     _id: String(application._id),
     status: application.status,
     note: application.note,
-    match_score: application.match_score,
+    credits_spent: application.credits_spent ?? 1,
     created_at: application.created_at,
     conversation_id: conversationId,
     request: requestDto,
@@ -45,12 +43,14 @@ export const toApplicationDto = (application, request, conversationId = null) =>
 };
 
 /**
- * Gia sư ứng tuyển vào request đang mở: trừ 1 credit, không hoàn lại dù phụ huynh bỏ qua đơn
+ * Gia sư ứng tuyển vào request đang mở: trừ `credits` credit (1-10), không hoàn lại dù phụ huynh bỏ qua đơn.
+ * Đã rút đơn thì được ứng tuyển lại request đó (đơn cũ được kích hoạt lại và trừ credit lần nữa).
+ * Dùng nhiều credit hơn thì đơn được xếp lên đầu danh sách của phụ huynh
  * @param {Object} user - req.user { id, role }
- * @param {Object} data - { request_id, note }
+ * @param {Object} data - { request_id, note, credits }
  * @returns {Promise<{ application: Object, remaining_credits: number }>}
  */
-export const createApplication = async (user, { request_id, note }) => {
+export const createApplication = async (user, { request_id, note, credits }) => {
   const profile = await getTutorProfileOrThrow(user);
 
   const request = await ParentRequest.findById(request_id).lean();
@@ -59,23 +59,41 @@ export const createApplication = async (user, { request_id, note }) => {
   }
 
   const existing = await ApplyRequest.findOne({ request_id: request._id, tutor_profile_id: profile._id }).lean();
-  if (existing) {
+  if (existing && existing.status !== ApplyRequestsStatus.WITHDRAWN) {
     throw new AppError('You have already applied to this request', 409);
   }
 
-  const posts = await TutorPost.find({ profile_id: profile._id, status: ENUMS.TutorPostsStatus.PUBLISHED }).lean();
-  const matchScore = scoreRequestForTutor(request, posts, profile.address);
-
-  // Tạo đơn trước: unique index {request_id, tutor_profile_id} chặn ứng tuyển trùng kể cả khi bấm đồng thời
+  // Tạo đơn trước (hoặc kích hoạt lại đơn đã rút): unique index {request_id, tutor_profile_id} chặn ứng tuyển trùng
+  // kể cả khi bấm đồng thời. rollback đưa dữ liệu về như cũ nếu việc trừ credit thất bại
   let application;
+  let rollback;
   try {
-    application = await ApplyRequest.create({
-      request_id: request._id,
-      tutor_profile_id: profile._id,
-      note: note,
-      match_score: matchScore,
-      status: ApplyRequestsStatus.PENDING,
-    });
+    if (existing) {
+      // Điều kiện status trong filter để hai lần ứng tuyển lại đồng thời không ghi đè nhau
+      application = await ApplyRequest.findOneAndUpdate(
+        { _id: existing._id, status: ApplyRequestsStatus.WITHDRAWN },
+        { $set: { status: ApplyRequestsStatus.PENDING, note: note, credits_spent: credits, created_at: new Date() } },
+        { new: true, overwriteImmutable: true }
+      );
+      if (!application) {
+        throw new AppError('You have already applied to this request', 409);
+      }
+      rollback = () =>
+        ApplyRequest.updateOne(
+          { _id: existing._id },
+          { $set: { status: ApplyRequestsStatus.WITHDRAWN, note: existing.note, credits_spent: existing.credits_spent ?? 1, created_at: existing.created_at } },
+          { overwriteImmutable: true }
+        );
+    } else {
+      application = await ApplyRequest.create({
+        request_id: request._id,
+        tutor_profile_id: profile._id,
+        note: note,
+        credits_spent: credits,
+        status: ApplyRequestsStatus.PENDING,
+      });
+      rollback = () => ApplyRequest.deleteOne({ _id: application._id });
+    }
   } catch (error) {
     if (error.code === 11000) {
       throw new AppError('You have already applied to this request', 409);
@@ -85,13 +103,13 @@ export const createApplication = async (user, { request_id, note }) => {
 
   let remainingCredits;
   try {
-    remainingCredits = await spendOneCredit(user.id, {
+    remainingCredits = await spendCredits(user.id, credits, {
       type: CREDIT_USAGE_TYPES.APPLY,
       relatedApplyId: application._id,
     });
   } catch (error) {
-    // Không đủ credit hoặc lỗi ghi lịch sử: bỏ đơn vừa tạo để không có đơn "miễn phí"
-    await ApplyRequest.deleteOne({ _id: application._id });
+    // Không đủ credit hoặc lỗi ghi lịch sử: bỏ đơn vừa tạo (hoặc trả đơn đã rút về như cũ) để không có đơn "miễn phí"
+    await rollback();
     throw error;
   }
 
@@ -187,7 +205,7 @@ export const toReceivedApplicationDto = (application, tutor, conversationId) => 
     _id: String(application._id),
     status: application.status,
     note: application.note,
-    match_score: application.match_score,
+    credits_spent: application.credits_spent ?? 1,
     created_at: application.created_at,
     conversation_id: conversationId,
     tutor: tutor,
@@ -240,11 +258,13 @@ export const listApplicationsForRequest = async (user, requestId, { page, limit 
 
   const filter = { request_id: request._id, status: { $ne: ApplyRequestsStatus.WITHDRAWN } };
   const [applications, total] = await Promise.all([
-    ApplyRequest.find(filter)
-      .sort({ match_score: -1, created_at: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean(),
+    ApplyRequest.aggregate([
+      { $match: filter },
+      { $addFields: { priority_credits: { $ifNull: ['$credits_spent', 1] } } },
+      { $sort: { priority_credits: -1, created_at: -1 } },
+      { $skip: (page - 1) * limit },
+      { $limit: limit },
+    ]),
     ApplyRequest.countDocuments(filter),
   ]);
 

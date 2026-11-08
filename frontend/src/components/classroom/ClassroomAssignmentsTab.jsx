@@ -43,7 +43,7 @@ export default function ClassroomAssignmentsTab({
             Quản lý bài tập & Chấm điểm
           </h3>
           <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>
-            Tạo bài tập trắc nghiệm, tự luận, nộp file và tự động chấm điểm bài làm của học sinh.
+            Tạo bài tập trắc nghiệm, tự luận, nộp tệp và tự động chấm điểm bài làm của học sinh.
           </p>
         </div>
 
@@ -357,4 +357,3 @@ export default function ClassroomAssignmentsTab({
     </div>
   );
 }
-

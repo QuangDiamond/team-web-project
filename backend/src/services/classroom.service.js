@@ -285,15 +285,21 @@ export const countActiveStudentsInClass = async (classroomId) => {
 };
 
 /**
- * Lấy danh sách lớp học của người dùng hiện tại (Hỗ trợ cả Gia sư chủ lớp, Học viên và Phụ huynh)
+ * Lấy danh sách lớp thuộc quyền truy cập của người dùng hiện tại.
+ * @param {Object} options - { user, tutorProfile, query }
+ * @returns {Promise<Object[]>} Danh sách lớp cùng sĩ số và quyền sở hữu.
  */
 export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
   const { search, status } = query;
-  let filter = {};
+  const filter = {};
+  const userId = user?._id || user?.id;
+  if (!userId) {
+    return [];
+  }
 
   let activeTutorProfile = tutorProfile;
-  if (!activeTutorProfile && user?.role === 'TUTOR' && user?._id) {
-    activeTutorProfile = await TutorProfile.findOne({ user_id: user._id });
+  if (!activeTutorProfile && user?.role === 'TUTOR' && userId) {
+    activeTutorProfile = await TutorProfile.findOne({ user_id: userId });
   }
 
   if (user?.role === 'TUTOR') {
@@ -302,25 +308,18 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
     if (activeTutorProfile?._id) {
       tutorFilterOr.push({ tutor_profile_id: activeTutorProfile._id });
     }
-    if (user._id) {
-      tutorFilterOr.push({ tutor_profile_id: user._id });
+    if (userId) {
+      tutorFilterOr.push({ tutor_profile_id: userId });
     }
 
     if (tutorFilterOr.length > 0) {
       filter.$or = tutorFilterOr;
     }
 
-    // Nếu môi trường dev mà chưa có lớp nào khớp, hiển thị các lớp cho dev test
-    if (env.nodeEnv !== 'production') {
-      const count = await Classroom.countDocuments(filter);
-      if (count === 0) {
-        filter = {};
-      }
-    }
-  } else if (user?.role === 'PARENT' && user?._id) {
+  } else if (user?.role === 'PARENT' && userId) {
     // Với Parent: CHỈ lấy danh sách các lớp mà con của phụ huynh đang thực tế theo học (status: ACTIVE)
     const childLinks = await ParentChildLink.find({
-      parent_user_id: user._id,
+      parent_user_id: userId,
       status: ENUMS.ParentChildLinksStatus.ACCEPTED,
     }).select('student_user_id').lean();
     const studentUserIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
@@ -338,7 +337,7 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
   } else if (user) {
     // Với Student: Lấy danh sách lớp đã tham gia thành công (ACTIVE)
     const memberships = await ClassMember.find({
-      user_id: user._id,
+      user_id: userId,
       status: ENUMS.ClassMembersStatus.ACTIVE,
     }).select('class_id').lean();
     const classIds = memberships.map((m) => m.class_id);
@@ -387,13 +386,11 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
 
       let isOwner = false;
       if (user?.role === 'TUTOR') {
-        if (tutorUserId && tutorUserId === user._id?.toString()) {
+        if (tutorUserId && tutorUserId === userId?.toString()) {
           isOwner = true;
         } else if (activeTutorProfile && tutorProfId === activeTutorProfile._id?.toString()) {
           isOwner = true;
-        } else if (cls.tutor_profile_id?.toString() === user._id?.toString()) {
-          isOwner = true;
-        } else if (env.nodeEnv !== 'production') {
+        } else if (cls.tutor_profile_id?.toString() === userId?.toString()) {
           isOwner = true;
         }
       }
@@ -1868,7 +1865,7 @@ export const submitAssignment = async ({ assignmentId, user, answers = [] }) => 
 /**
  * Lấy danh sách bài nộp của học sinh cho gia sư chấm điểm (UC26)
  */
-export const getSubmissionsForAssignment = async ({ assignmentId, tutorProfile }) => {
+export const getSubmissionsForAssignment = async ({ assignmentId }) => {
   const assignment = await Assignment.findById(assignmentId);
   if (!assignment) {
     throw new AppError('Không tìm thấy bài tập', 404);
@@ -2106,6 +2103,3 @@ export const respondParentChildLink = async ({ studentUserId, linkId, action }) 
 
   return link;
 };
-
-
-

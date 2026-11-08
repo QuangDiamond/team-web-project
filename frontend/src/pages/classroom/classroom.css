@@ -1017,7 +1017,6 @@
 .chat-input-field:focus {
   border-color: #e85a2c;
 }
-
 /* Chat Attachment Preview & Display */
 .chat-preview-files-bar {
   display: flex;
@@ -1095,5 +1094,3 @@
   display: inline-block;
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
-
-

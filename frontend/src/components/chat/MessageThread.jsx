@@ -8,7 +8,7 @@ import { getInitials } from '../../utils/getInitials';
 const MESSAGE_MAX_LENGTH = 2000;
 const NEAR_BOTTOM_PX = 80;
 
-const ROLE_LABELS = { PARENT: 'Parent', TUTOR: 'Tutor' };
+const ROLE_LABELS = { PARENT: "Phụ huynh", TUTOR: "Gia sư" };
 
 // Tin nhắn "danh thiếp" / file do dữ liệu cũ tạo ra vẫn hiển thị nội dung văn bản của nó
 function Bubble({ message }) {
@@ -86,7 +86,7 @@ export default function MessageThread({ thread, basePath }) {
       <div className="chat-thread">
         <div className="chat-thread-state">
           <Alert type="error">{thread.error.message}</Alert>
-          <Link to={basePath} className="link">Back to conversations</Link>
+          <Link to={basePath} className="link">Quay lại danh sách trò chuyện</Link>
         </div>
       </div>
     );
@@ -108,7 +108,7 @@ export default function MessageThread({ thread, basePath }) {
   return (
     <div className="chat-thread">
       <div className="chat-thread-header">
-        <Link to={basePath} className="chat-back dashboard-icon-button" aria-label="Back to conversations">
+        <Link to={basePath} className="chat-back dashboard-icon-button" aria-label="Quay lại danh sách trò chuyện">
           <ChevronLeft size={18} aria-hidden="true" />
         </Link>
         {conversation ? (
@@ -130,36 +130,36 @@ export default function MessageThread({ thread, basePath }) {
       <div className="chat-messages" ref={scrollRef} onScroll={handleScroll} aria-live="polite">
         {thread.hasOlder && (
           <button type="button" className="btn btn-outline btn-sm chat-load-older" disabled={thread.loadingOlder} onClick={thread.loadOlder}>
-            {thread.loadingOlder ? 'Loading...' : 'Load earlier messages'}
+            {thread.loadingOlder ? "Đang tải..." : "Tải tin nhắn cũ hơn"}
           </button>
         )}
         {thread.loading && messages.length === 0 && (
           <div className="page-loading-inline" role="status">
             <LoaderCircle size={22} className="spin" aria-hidden="true" />
-            <span className="visually-hidden">Loading...</span>
+            <span className="visually-hidden">Đang tải...</span>
           </div>
         )}
-        {!thread.loading && messages.length === 0 && <p className="chat-empty">No messages yet. Say hello 👋</p>}
+        {!thread.loading && messages.length === 0 && <p className="chat-empty">Chưa có tin nhắn. Hãy gửi lời chào!</p>}
         {items}
       </div>
 
       {sendError && <div className="chat-send-error"><Alert type="error">{sendError}</Alert></div>}
       {isClosed ? (
-        <p className="chat-closed">This conversation is closed.</p>
+        <p className="chat-closed">Cuộc trò chuyện này đã đóng.</p>
       ) : (
         <form className="chat-composer" onSubmit={handleSubmit}>
-          <label htmlFor="chat-draft" className="visually-hidden">Type a message</label>
+          <label htmlFor="chat-draft" className="visually-hidden">Nhập tin nhắn</label>
           <textarea
             id="chat-draft"
             rows={1}
             value={draft}
             maxLength={MESSAGE_MAX_LENGTH}
-            placeholder="Type a message…"
+            placeholder="Nhập tin nhắn…"
             disabled={thread.sending}
             onChange={(event) => setDraft(event.target.value)}
             onKeyDown={handleKeyDown}
           />
-          <button type="submit" className="btn btn-primary chat-send-button" disabled={thread.sending || draft.trim() === ''} aria-label="Send message">
+          <button type="submit" className="btn btn-primary chat-send-button" disabled={thread.sending || draft.trim() === ''} aria-label="Gửi tin nhắn">
             <Send size={16} aria-hidden="true" />
           </button>
         </form>

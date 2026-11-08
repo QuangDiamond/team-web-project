@@ -4,7 +4,7 @@ import { ChevronLeft, CircleCheck, LoaderCircle } from 'lucide-react';
 import { createPost, getMyPost, updatePost } from '../../services/tutorPostService';
 import Alert from '../../components/common/Alert';
 import SectionCard from '../../components/common/SectionCard';
-import PostForm, { EMPTY_POST_VALUES, toPostFormValues } from '../../components/tutorPosts/PostForm';
+import PostForm, { EMPTY_POST_VALUES, toPostFormValues } from '../../components/tutor/PostForm';
 import { PROFILE_REQUIRED_MESSAGE } from '../../constants/requestLabels';
 import '../../styles/tutorPosts.css';
 
@@ -52,7 +52,7 @@ export default function TutorPostForm() {
     return (
       <div className="page-loading-inline" role="status">
         <LoaderCircle size={26} className="spin" aria-hidden="true" />
-        <span className="visually-hidden">Loading...</span>
+        <span className="visually-hidden">Đang tải...</span>
       </div>
     );
   }
@@ -60,28 +60,28 @@ export default function TutorPostForm() {
   if (state.error) {
     return (
       <div className="page-stack">
-        {state.error.message === PROFILE_REQUIRED_MESSAGE ? (
+        {(state.error.rawMessage || state.error.message) === PROFILE_REQUIRED_MESSAGE ? (
           <Alert type="info">
-            <p>Set up your tutor profile first to manage posts.</p>
-            <Link to="/tutor/profile" className="btn btn-primary btn-sm">Complete my profile</Link>
+            <p>Tạo hồ sơ gia sư trước khi quản lý bài đăng.</p>
+            <Link to="/tutor/profile" className="btn btn-primary btn-sm">Hoàn thiện hồ sơ</Link>
           </Alert>
         ) : (
           <Alert type="error">{state.error.message}</Alert>
         )}
-        <Link to="/tutor/posts" className="link">Back to my posts</Link>
+        <Link to="/tutor/posts" className="link">Quay lại bài đăng của tôi</Link>
       </div>
     );
   }
 
   if (savedPost) {
-    let title = 'Post saved';
-    let description = 'Your changes were saved.';
+    let title = "Đã lưu bài đăng";
+    let description = "Đã lưu thay đổi của bạn.";
     if (!isEdit && savedPost.status === 'PUBLISHED') {
-      title = 'Post published';
-      description = 'Parents can now find you in their tutor suggestions.';
+      title = "Đã xuất bản bài đăng";
+      description = "Phụ huynh có thể tìm thấy bạn trong danh sách gia sư gợi ý.";
     } else if (!isEdit) {
-      title = 'Draft saved';
-      description = 'Publish it from your posts list when you are ready.';
+      title = "Đã lưu bản nháp";
+      description = "Đăng bài từ danh sách bài đăng khi bạn đã sẵn sàng.";
     }
     return (
       <div className="request-success">
@@ -89,7 +89,7 @@ export default function TutorPostForm() {
         <h2 className="request-success-title">{title}</h2>
         <p className="item-meta">{description}</p>
         <button type="button" className="btn btn-primary btn-sm" onClick={() => navigate('/tutor/posts')}>
-          View my posts
+          Xem bài đăng của tôi
         </button>
       </div>
     );
@@ -98,8 +98,8 @@ export default function TutorPostForm() {
   if (isEdit && state.post.is_locked) {
     return (
       <div className="page-stack">
-        <Alert type="info">This post is under moderation and cannot be edited.</Alert>
-        <Link to="/tutor/posts" className="link">Back to my posts</Link>
+        <Alert type="info">Bài đăng đang được kiểm duyệt nên không thể chỉnh sửa.</Alert>
+        <Link to="/tutor/posts" className="link">Quay lại bài đăng của tôi</Link>
       </div>
     );
   }
@@ -113,9 +113,9 @@ export default function TutorPostForm() {
     <div className="post-form-page">
       <Link to="/tutor/posts" className="post-back-link">
         <ChevronLeft size={16} aria-hidden="true" />
-        <span>Back to my posts</span>
+        <span>Quay lại bài đăng của tôi</span>
       </Link>
-      <SectionCard title={isEdit ? 'Edit post' : 'New post'}>
+      <SectionCard title={isEdit ? "Sửa bài đăng" : "Bài đăng mới"}>
         <PostForm initialValues={initialValues} isEdit={isEdit} onSubmit={handleSubmit} />
       </SectionCard>
     </div>

@@ -130,17 +130,17 @@ export default function Register() {
         return;
       }
     }
-    setFormError(error?.message || 'Registration failed');
+    setFormError(error?.message || 'Đăng ký không thành công');
   };
 
   let alert = null;
   if (emailTaken) {
     alert = (
       <Alert type="error">
-        This email is already registered.{' '}
-        <Link to="/login" className="link">Login</Link>
-        {' or '}
-        <Link to="/forgot-password" className="link">Forgot password</Link>?
+        Email này đã được đăng ký.{' '}
+        <Link to="/login" className="link">Đăng nhập</Link>
+        {' hoặc '}
+        <Link to="/forgot-password" className="link">Quên mật khẩu</Link>?
       </Alert>
     );
   } else if (formError) {

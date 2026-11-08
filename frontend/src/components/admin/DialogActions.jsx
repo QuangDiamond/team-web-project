@@ -10,7 +10,7 @@ export default function DialogActions({ submitLabel, submitting, onCancel, dange
   return (
     <div className="modal-actions">
       <button type="button" className="btn btn-outline" onClick={onCancel} disabled={submitting}>
-        Cancel
+        Hủy
       </button>
       <button type="submit" className={submitClass} disabled={submitting}>
         {submitting && <LoaderCircle size={18} className="spin" aria-hidden="true" />}
