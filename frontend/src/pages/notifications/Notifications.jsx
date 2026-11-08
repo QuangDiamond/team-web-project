@@ -412,7 +412,7 @@ export default function Notifications() {
               <div className="noti-modal-header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <SlidersHorizontal size={18} color="#0284c7" />
-                  <h3>Cài đặt kênh nhận thông báo (A1)</h3>
+                  <h3>Cài đặt kênh nhận thông báo</h3>
                 </div>
                 <button
                   className="noti-modal-close"

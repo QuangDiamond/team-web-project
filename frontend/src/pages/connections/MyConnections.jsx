@@ -181,7 +181,7 @@ export default function MyConnections() {
         <div>
           <h2 className="conn-title">Hợp đồng &amp; Thỏa thuận kết nối</h2>
           <p className="conn-subtitle">
-            Quản lý các thỏa thuận dạy kèm đã chốt và xác nhận kết nối hai bên (UC16)
+            Quản lý các thỏa thuận dạy kèm đã chốt và xác nhận kết nối hai bên
           </p>
         </div>
 
@@ -468,11 +468,11 @@ export default function MyConnections() {
                       className="btn-conn rate"
                       onClick={() =>
                         showToast(
-                          `Gợi ý UC19: Bạn có thể tạo lớp học mới cho môn "${conn.agreed_subject}" theo lịch ${conn.agreed_schedule}.`
+                          `Gợi ý: Bạn có thể tạo lớp học mới cho môn "${conn.agreed_subject}" theo lịch ${conn.agreed_schedule}.`
                         )
                       }
                     >
-                      🏫 Tạo lớp học (UC19)
+                      🏫 Tạo lớp học
                     </button>
                   )}
 
