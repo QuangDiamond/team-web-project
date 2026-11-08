@@ -14,6 +14,7 @@ import {
   Link as LinkIcon,
   ArrowRight,
   Sparkles,
+  Archive,
 } from 'lucide-react';
 import { getMyClassrooms } from '../../services/classroomService';
 import { useAuth } from '../../hooks/useAuth.jsx';
@@ -139,7 +140,7 @@ export default function ClassroomsPage() {
             className={`tab-btn ${activeTab === 'ALL' ? 'active' : ''}`}
             onClick={() => setActiveTab('ALL')}
           >
-            Tất cả lớp ({classrooms.length})
+            Tất cả lớp
           </button>
           <button
             type="button"
@@ -189,35 +190,71 @@ export default function ClassroomsPage() {
       ) : classrooms.length === 0 ? (
         /* Empty State */
         <div className="classroom-empty-state">
-          <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center' }}>
-            <BookOpen size={42} style={{ color: '#94a3b8' }} />
-          </div>
-          <h3>Chưa có lớp học nào phù hợp</h3>
-          <p>
-            {isTutor
-              ? 'Bạn chưa có lớp học nào đang hoạt động. Hãy tạo lớp học đầu tiên để chia sẻ mã tham gia và kết nối học sinh ngay hôm nay!'
-              : 'Bạn chưa tham gia lớp học nào. Hãy sử dụng mã tham gia hoặc link mời do gia sư cung cấp để gia nhập lớp học ngay nhé!'}
-          </p>
-          {isTutor ? (
-            <button
-              type="button"
-              className="btn-primary-orange"
-              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-              onClick={() => setIsModalOpen(true)}
-            >
-              <Plus size={16} />
-              <span>Khởi tạo lớp học đầu tiên</span>
-            </button>
+          {searchQuery ? (
+            <>
+              <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center' }}>
+                <Search size={42} style={{ color: '#94a3b8' }} />
+              </div>
+              <h3>Không tìm thấy lớp học phù hợp</h3>
+              <p>Không tìm thấy lớp học nào khớp với từ khóa "{searchQuery}". Vui lòng thử tìm kiếm khác.</p>
+              <button
+                type="button"
+                className="btn-outline-gray"
+                onClick={() => setSearchQuery('')}
+              >
+                Xóa bộ lọc tìm kiếm
+              </button>
+            </>
+          ) : activeTab === 'ARCHIVED' ? (
+            <>
+              <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center' }}>
+                <Archive size={42} style={{ color: '#94a3b8' }} />
+              </div>
+              <h3>Chưa có lớp học nào được lưu trữ</h3>
+              <p>
+                Khi một lớp học kết thúc hoặc tạm ngưng, bạn có thể chuyển lớp sang trạng thái Lưu trữ để lưu lại toàn bộ dữ liệu lịch sử bài tập, điểm số và xem lại bất cứ lúc nào.
+              </p>
+              <button
+                type="button"
+                className="btn-outline-gray"
+                onClick={() => setActiveTab('ACTIVE')}
+              >
+                Xem các lớp đang hoạt động
+              </button>
+            </>
           ) : (
-            <button
-              type="button"
-              className="btn-primary-orange"
-              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-              onClick={() => setIsJoinModalOpen(true)}
-            >
-              <KeyRound size={16} />
-              <span>Tham gia lớp học bằng mã</span>
-            </button>
+            <>
+              <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center' }}>
+                <BookOpen size={42} style={{ color: '#94a3b8' }} />
+              </div>
+              <h3>Chưa có lớp học nào</h3>
+              <p>
+                {isTutor
+                  ? 'Bạn chưa có lớp học nào đang hoạt động. Hãy tạo lớp học đầu tiên để chia sẻ mã tham gia và kết nối học sinh ngay hôm nay!'
+                  : 'Bạn chưa tham gia lớp học nào. Hãy sử dụng mã tham gia hoặc link mời do gia sư cung cấp để gia nhập lớp học ngay nhé!'}
+              </p>
+              {isTutor ? (
+                <button
+                  type="button"
+                  className="btn-primary-orange"
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  <Plus size={16} />
+                  <span>Khởi tạo lớp học đầu tiên</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="btn-primary-orange"
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                  onClick={() => setIsJoinModalOpen(true)}
+                >
+                  <KeyRound size={16} />
+                  <span>Tham gia lớp học bằng mã</span>
+                </button>
+              )}
+            </>
           )}
         </div>
       ) : (
