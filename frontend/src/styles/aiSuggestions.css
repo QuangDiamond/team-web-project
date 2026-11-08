@@ -1,0 +1,253 @@
+/* Màn gợi ý gia sư: /parent/requests/:requestId/ai-suggestions (UC09 – SC18) */
+
+.ai-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.ai-state {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+  color: var(--color-primary-strong);
+}
+
+.ai-error-text {
+  margin: 0 0 8px;
+}
+
+.ai-request-mode,
+.ai-count {
+  color: var(--color-primary-strong);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ai-request-meta {
+  margin: -8px 0 16px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+/* ---------- Bộ chỉnh trọng số (A1 Refine) ---------- */
+.ai-weights {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.ai-weights-hint {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.ai-weights-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.ai-weight-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ai-weight-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ai-weight-value {
+  color: var(--color-primary-strong);
+}
+
+.ai-weight-field input[type='range'] {
+  width: 100%;
+  accent-color: var(--color-primary-strong);
+}
+
+.ai-weights-error {
+  margin: 0;
+  color: var(--color-error);
+  font-size: 12px;
+}
+
+/* ---------- Danh sách gợi ý (Figma: card gia sư) ---------- */
+.ai-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-card {
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+}
+
+.ai-card:first-child {
+  border-color: var(--color-primary);
+}
+
+.ai-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ai-card-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ai-card-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.ai-card-identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.ai-card-name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.ai-card-sub,
+.ai-card-rating {
+  margin: 2px 0 0;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.ai-card-rating {
+  color: var(--color-warning);
+  font-weight: 600;
+}
+
+.ai-card-score {
+  flex-shrink: 0;
+  font-size: 12px;
+}
+
+.ai-card-meta {
+  margin: 12px 0 0;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.ai-card-reason {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.ai-card-reason.is-rule-based {
+  color: var(--color-text-muted);
+}
+
+.ai-breakdown {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 20px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-breakdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.ai-breakdown-label {
+  width: 64px;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+.ai-breakdown-bar {
+  flex: 1;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-border);
+}
+
+.ai-breakdown-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-primary-strong);
+}
+
+.ai-breakdown-percent {
+  width: 32px;
+  text-align: right;
+  font-weight: 700;
+}
+
+.ai-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.ai-footer-link {
+  margin: 0;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+  .ai-weights-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ai-breakdown {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-card-top {
+    flex-wrap: wrap;
+  }
+}
