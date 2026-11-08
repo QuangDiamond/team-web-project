@@ -139,6 +139,7 @@ export const changePassword = async (userId, { current_password, new_password })
   const passwordHash = await bcrypt.hash(new_password, 12);
   const updatedUser = await updatePassword(user, passwordHash);
   const safeUser = updatedUser.toObject();
+  safeUser.id = String(updatedUser._id);
   delete safeUser.password_hash;
   safeUser.has_password = Boolean(updatedUser.password_hash);
   return { user: safeUser, token: issueToken(updatedUser) };

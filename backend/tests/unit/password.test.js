@@ -288,6 +288,7 @@ test('change replaces only current session, returns safe user, invalidates reset
   });
   assert.equal(res.statusCode, 200);
   assert.equal(res.body.data.has_password, true);
+  assert.equal(res.body.data.id, String(state.user._id));
   assert.equal('user' in res.body.data, false, 'data is the user directly');
   assert.equal('password_hash' in res.body.data, false);
   assert.equal('token' in res.body.data, false);
@@ -314,6 +315,7 @@ test('Google-only user sets first password without current password and me deriv
   assert.equal((await authenticate(result.token)).error, undefined);
   state.user.has_password = false;
   const me = await authService.me(String(state.user._id));
+  assert.equal(me.id, String(state.user._id));
   assert.equal(me.has_password, true);
   assert.equal('password_hash' in me, false);
 });
@@ -407,6 +409,7 @@ test('email and Google login retain original hash when login update excludes it'
   const google = await authService.handleGoogleCallback('authorization-code');
   for (const result of [email, google]) {
     assert.equal(jwt.decode(result.token).password_version, passwordVersion(originalHash));
+    assert.equal(result.user.id, String(state.user._id));
     assert.notEqual(jwt.decode(result.token).password_version, passwordVersion(null));
     assert.equal('password_hash' in result.user, false);
     assert.equal((await authenticate(result.token)).error, undefined);

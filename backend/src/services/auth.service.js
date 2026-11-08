@@ -27,6 +27,7 @@ const hashToken = (rawToken) => {
 
 const removePasswordHash = (user) => {
   const safeUser = user.toObject();
+  safeUser.id = String(user._id);
   delete safeUser.password_hash;
   return safeUser;
 };

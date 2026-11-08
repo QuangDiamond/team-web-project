@@ -12,6 +12,7 @@ export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [ownProfile, setOwnProfile] = useState(null);
+  const userId = user?.id || user?._id;
   const activeSection = location.pathname === '/' ? location.hash : null;
 
   useEffect(() => {
@@ -28,22 +29,25 @@ export default function Layout() {
   }, [location.pathname, location.hash, location.key]);
 
   useEffect(() => {
-    if (user?.role !== 'TUTOR') return;
+    if (user?.role !== 'TUTOR' || !userId) return;
     let ignore = false;
     getMyProfile()
       .then((response) => {
-        if (!ignore) setOwnProfile({ userId: user.id, profileId: response.data.profile?._id });
+        if (!ignore) setOwnProfile({ userId, profileId: response.data.profile?._id });
       })
       .catch(() => {
         if (!ignore) setOwnProfile(null);
       });
     return () => { ignore = true; };
-  }, [user?.id, user?.role]);
+  }, [userId, user?.role]);
 
   let profilePath = '/profile';
-  if (user?.role === 'PARENT') profilePath = `/parents/${user.id}`;
+  if (user?.role === 'PARENT' && userId) profilePath = `/parents/${userId}`;
   if (user?.role === 'TUTOR') {
-    profilePath = ownProfile?.userId === user.id && ownProfile.profileId ? `/tutors/${ownProfile.profileId}` : '/tutor/profile';
+    profilePath = '/tutor/profile';
+    if (ownProfile && ownProfile.userId === userId && ownProfile.profileId) {
+      profilePath = `/tutors/${ownProfile.profileId}`;
+    }
   }
 
   let dashboardPath = '/login';
