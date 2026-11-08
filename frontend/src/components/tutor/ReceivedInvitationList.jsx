@@ -5,7 +5,7 @@ import PriorityBadge from '../common/PriorityBadge';
 import { INVITATION_STATUS, formatBudget, getModeLabel, getStatusBadge } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 
-function ReceivedInvitationRow({ invitation, onAccept, onDecline }) {
+function ReceivedInvitationRow({ invitation, onAccept, onDecline, onViewDetails }) {
   const [busyAction, setBusyAction] = useState('');
   const badge = getStatusBadge(INVITATION_STATUS, invitation.status);
   const request = invitation.request;
@@ -17,7 +17,7 @@ function ReceivedInvitationRow({ invitation, onAccept, onDecline }) {
   };
   const isBusy = busyAction !== '';
 
-  let title = 'Request no longer available';
+  let title = 'Yêu cầu không còn khả dụng';
   let metaParts = [];
   let canAccept = false;
   if (request) {
@@ -38,46 +38,55 @@ function ReceivedInvitationRow({ invitation, onAccept, onDecline }) {
           <PriorityBadge credits={invitation.credits_spent} />
         </div>
         <p className="item-meta">{metaParts.join(' · ')}</p>
-        <p className="item-meta">A parent invited you · {formatDate(invitation.created_at)}</p>
-        {invitation.parent_user_id && <Link to={`/parents/${invitation.parent_user_id}`} className="link">View parent profile</Link>}
+        <p className="item-meta">Một phụ huynh đã mời bạn · {formatDate(invitation.created_at)}</p>
+        {invitation.parent_user_id && <Link to={`/parents/${invitation.parent_user_id}`} className="link">Xem hồ sơ phụ huynh</Link>}
         {invitation.message && <p className="item-note">“{invitation.message}”</p>}
         {invitation.status === 'PENDING' && !canAccept && (
-          <p className="received-invitation-warning">This request is no longer open, so the invitation cannot be accepted.</p>
+          <p className="received-invitation-warning">Yêu cầu này không còn mở nên không thể chấp nhận lời mời.</p>
         )}
         {invitation.status === 'ACCEPTED' && (
-          <p className="received-invitation-chat">Conversation opened.</p>
+          <p className="received-invitation-chat">Đã mở hội thoại.</p>
         )}
       </div>
-      {invitation.status === 'ACCEPTED' && invitation.conversation_id && (
-        <div className="item-actions">
+      <div className="item-actions">
+        <button type="button" className="btn btn-outline btn-sm" disabled={isBusy} onClick={() => onViewDetails(invitation)}>
+          Xem chi tiết
+        </button>
+        {invitation.status === 'ACCEPTED' && invitation.conversation_id && (
           <OpenChatLink to={`/tutor/messages/${invitation.conversation_id}`} />
-        </div>
-      )}
-      {invitation.status === 'PENDING' && (
-        <div className="item-actions">
-          <button type="button" className="btn btn-outline btn-sm" disabled={isBusy} onClick={() => runAction('decline', onDecline)}>
-            {busyAction === 'decline' ? 'Declining...' : 'Decline'}
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary btn-sm"
-            disabled={isBusy || !canAccept}
-            onClick={() => runAction('accept', onAccept)}
-          >
-            {busyAction === 'accept' ? 'Accepting...' : 'Accept'}
-          </button>
-        </div>
-      )}
+        )}
+        {invitation.status === 'PENDING' && (
+          <>
+            <button type="button" className="btn btn-outline btn-sm" disabled={isBusy} onClick={() => runAction('decline', onDecline)}>
+              {busyAction === 'decline' ? 'Đang từ chối...' : 'Từ chối'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary btn-sm"
+              disabled={isBusy || !canAccept}
+              onClick={() => runAction('accept', onAccept)}
+            >
+              {busyAction === 'accept' ? 'Đang chấp nhận...' : 'Chấp nhận'}
+            </button>
+          </>
+        )}
+      </div>
     </li>
   );
 }
 
 // Lời mời gia sư nhận được; chỉ liên kết hồ sơ công khai của phụ huynh, không hiển thị thông tin liên hệ.
-export default function ReceivedInvitationList({ invitations, onAccept, onDecline }) {
+export default function ReceivedInvitationList({ invitations, onAccept, onDecline, onViewDetails }) {
   return (
     <ul className="item-list">
       {invitations.map((invitation) => (
-        <ReceivedInvitationRow key={invitation._id} invitation={invitation} onAccept={onAccept} onDecline={onDecline} />
+        <ReceivedInvitationRow
+          key={invitation._id}
+          invitation={invitation}
+          onAccept={onAccept}
+          onDecline={onDecline}
+          onViewDetails={onViewDetails}
+        />
       ))}
     </ul>
   );

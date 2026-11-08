@@ -20,7 +20,7 @@ export default function TutoringRequests() {
   const { loading, error, data, reload } = usePagedList(getMyRequests, { page: page, limit: PAGE_SIZE });
 
   const handleDeleted = async () => {
-    setNotice(`"${requestToDelete.title}" was deleted.`);
+    setNotice(`Đã xóa yêu cầu "${requestToDelete.title}".`);
     setRequestToDelete(null);
     await reload();
   };
@@ -32,10 +32,10 @@ export default function TutoringRequests() {
   return (
     <div className="page-stack">
       <div className="page-toolbar">
-        <p className="item-meta">Manage open requests and compare tutor interest.</p>
+        <p className="item-meta">Quản lý các yêu cầu đang mở và xem gia sư nào quan tâm.</p>
         <button type="button" className="btn btn-primary btn-sm" onClick={goToCreate}>
           <Plus size={14} aria-hidden="true" />
-          <span>Create request</span>
+          <span>Tạo yêu cầu</span>
         </button>
       </div>
 
@@ -44,22 +44,22 @@ export default function TutoringRequests() {
       {loading && !data && (
         <div className="page-loading-inline" role="status">
           <LoaderCircle size={26} className="spin" aria-hidden="true" />
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">Đang tải...</span>
         </div>
       )}
 
       {error && (
         <Alert type="error">
           <p>{error.message}</p>
-          <button type="button" className="btn btn-outline btn-sm" onClick={reload}>Try again</button>
+          <button type="button" className="btn btn-outline btn-sm" onClick={reload}>Thử lại</button>
         </Alert>
       )}
 
       {data && data.items.length === 0 && (
         <EmptyState
           icon={FileText}
-          title="No tutoring requests yet"
-          description="Create your first request and qualified tutors will start applying."
+          title="Chưa có yêu cầu nào"
+          description="Hãy tạo yêu cầu đầu tiên, các gia sư phù hợp sẽ bắt đầu ứng tuyển."
         />
       )}
 

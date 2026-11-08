@@ -15,10 +15,10 @@ export default function ListState({
   // History/admin screens render their tables separately and pass flat state.
   if (!list) {
     if (loading && isEmpty) {
-      return <div className="page-loading-inline" role="status"><LoaderCircle size={26} className="spin" aria-hidden="true" /><span>Loading...</span></div>;
+      return <div className="page-loading-inline" role="status"><LoaderCircle size={26} className="spin" aria-hidden="true" /><span>Đang tải...</span></div>;
     }
     if (loadError) {
-      return <Alert type="error"><p>{loadError}</p><button type="button" className="btn btn-outline btn-sm" onClick={onRetry}>Try again</button></Alert>;
+      return <Alert type="error"><p>{loadError}</p><button type="button" className="btn btn-outline btn-sm" onClick={onRetry}>Thử lại</button></Alert>;
     }
     if (isEmpty) {
       return (
@@ -36,7 +36,7 @@ export default function ListState({
     return (
       <div className="page-loading-inline" role="status">
         <LoaderCircle size={26} className="spin" aria-hidden="true" />
-        <span className="visually-hidden">Loading...</span>
+        <span className="visually-hidden">Đang tải...</span>
       </div>
     );
   }
@@ -55,7 +55,7 @@ export default function ListState({
     return (
       <Alert type="error">
         <p>{list.error.message}</p>
-        <button type="button" className="btn btn-outline btn-sm" onClick={list.reload}>Try again</button>
+        <button type="button" className="btn btn-outline btn-sm" onClick={list.reload}>Thử lại</button>
       </Alert>
     );
   }

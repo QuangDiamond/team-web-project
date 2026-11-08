@@ -15,8 +15,8 @@ function TimeFields({ idPrefix, legend, time, disabled, onChange }) {
         min="1"
         max="12"
         inputMode="numeric"
-        placeholder="hh"
-        aria-label={`${legend} hour`}
+        placeholder="giờ"
+        aria-label={`${legend} - giờ`}
         data-field="hour"
         value={time.hour}
         disabled={disabled}
@@ -29,15 +29,15 @@ function TimeFields({ idPrefix, legend, time, disabled, onChange }) {
         min="0"
         max="59"
         inputMode="numeric"
-        placeholder="mm"
-        aria-label={`${legend} minute`}
+        placeholder="phút"
+        aria-label={`${legend} - phút`}
         data-field="minute"
         value={time.minute}
         disabled={disabled}
         onChange={handleField}
       />
       <select
-        aria-label={`${legend} AM or PM`}
+        aria-label={`${legend} - AM hoặc PM`}
         data-field="period"
         value={time.period}
         disabled={disabled}
@@ -87,7 +87,7 @@ export default function SchedulePicker({ id, label, value, onChange, error, disa
 
   let timeOrderError = '';
   if (isValidTime(start) && isValidTime(end) && toMinutes(end) <= toMinutes(start)) {
-    timeOrderError = 'End time must be after start time';
+    timeOrderError = 'Giờ kết thúc phải sau giờ bắt đầu';
   }
   const message = error || timeOrderError;
 
@@ -117,10 +117,10 @@ export default function SchedulePicker({ id, label, value, onChange, error, disa
         })}
       </div>
       <div className="schedule-times">
-        <TimeFields idPrefix={`${id}-start`} legend="From" time={start} disabled={disabled} onChange={(nextStart) => update(days, nextStart, end)} />
-        <TimeFields idPrefix={`${id}-end`} legend="To" time={end} disabled={disabled} onChange={(nextEnd) => update(days, start, nextEnd)} />
+        <TimeFields idPrefix={`${id}-start`} legend="Từ" time={start} disabled={disabled} onChange={(nextStart) => update(days, nextStart, end)} />
+        <TimeFields idPrefix={`${id}-end`} legend="Đến" time={end} disabled={disabled} onChange={(nextEnd) => update(days, start, nextEnd)} />
       </div>
-      {legacyText && !message && <p className="form-hint-left">Previous schedule: {legacyText}. Pick days and times to replace it.</p>}
+      {legacyText && !message && <p className="form-hint-left">Lịch cũ: {legacyText}. Hãy chọn ngày và giờ để thay thế.</p>}
       {message && <p className="form-error">{message}</p>}
     </div>
   );

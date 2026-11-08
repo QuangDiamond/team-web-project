@@ -310,6 +310,9 @@ export const toReceivedInvitationDto = (invitation, request, conversationId) => 
       grade_level: request.grade_level,
       teaching_mode: request.teaching_mode,
       budget: decimalToNumber(request.budget),
+      schedule: request.schedule,
+      description: request.description,
+      tutor_requirements: request.tutor_requirements,
       location_address: request.location_address,
       is_available: isRequestAvailable(request),
     };

@@ -37,25 +37,25 @@ export default function ApplicationsSection({ requestId }) {
   };
 
   const handleContinue = (application) => {
-    let name = 'the tutor';
+    let name = 'gia sư';
     if (application.tutor) {
       name = application.tutor.full_name;
     }
-    return handleAction(continueApplication, application, `Conversation opened with ${name}.`);
+    return handleAction(continueApplication, application, `Đã mở hội thoại với ${name}.`);
   };
 
-  const handleSkip = (application) => handleAction(skipApplication, application, 'Application skipped.');
+  const handleSkip = (application) => handleAction(skipApplication, application, 'Đã bỏ qua đơn ứng tuyển.');
 
   return (
-    <SectionCard title="Applications">
-      <p className="item-meta">Tutors who applied to this request. Choose Continue to open a conversation, or Skip to pass.</p>
+    <SectionCard title="Đơn ứng tuyển">
+      <p className="item-meta">Các gia sư đã ứng tuyển yêu cầu này. Chọn Trao đổi để mở hội thoại, hoặc Bỏ qua.</p>
 
       {notice && <Alert type="success">{notice}</Alert>}
       {actionError && <Alert type="error">{actionError}</Alert>}
 
       <ListState
         list={list}
-        empty={{ icon: Users, title: 'No applications yet', description: 'Tutors who apply to this request will appear here.' }}
+        empty={{ icon: Users, title: 'Chưa có đơn ứng tuyển', description: 'Gia sư ứng tuyển yêu cầu này sẽ hiện ở đây.' }}
       >
         {list.data && (
           <ul className="review-list">

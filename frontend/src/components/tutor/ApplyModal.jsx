@@ -44,15 +44,15 @@ export default function ApplyModal({ request, onClose, onApplied }) {
     }
   };
 
-  let creditText = 'Checking your credits...';
+  let creditText = 'Đang kiểm tra credit...';
   if (credits.error) {
-    creditText = 'Could not load your credits';
+    creditText = 'Không tải được số credit';
   } else if (!credits.loading) {
-    creditText = `Balance: ${credits.balance}`;
+    creditText = `Số dư: ${credits.balance} credit`;
   }
 
   return (
-    <Modal title="Apply to this request" onClose={onClose}>
+    <Modal title="Ứng tuyển yêu cầu này" onClose={onClose}>
       <form onSubmit={handleSubmit} noValidate>
         <p className="modal-summary">
           <strong>{request.title}</strong>
@@ -61,10 +61,10 @@ export default function ApplyModal({ request, onClose, onApplied }) {
         </p>
 
         <p className="modal-cost">
-          <span>Cost: {amount} {amount === 1 ? 'credit' : 'credits'}</span>
+          <span>Chi phí: {amount} credit</span>
           <span>{creditText}</span>
         </p>
-        <p className="item-meta modal-note">The credit is not refunded if the parent skips your application.</p>
+        <p className="item-meta modal-note">Credit không được hoàn lại nếu phụ huynh bỏ qua đơn của bạn.</p>
 
         <CreditAmountField
           id="apply-credits"
@@ -72,29 +72,28 @@ export default function ApplyModal({ request, onClose, onApplied }) {
           onChange={(event) => setCreditsToSpend(event.target.value)}
           balance={credits.balance}
           disabled={submitting || hasNoCredit}
-          audience="the parent's"
+          audience="phụ huynh"
         />
 
-        {hasNoCredit && <Alert type="error">You need at least 1 credit to apply.</Alert>}
+        {hasNoCredit && <Alert type="error">Bạn cần ít nhất 1 credit để ứng tuyển.</Alert>}
         {error && <Alert type="error">{error}</Alert>}
 
         <FormTextarea
           id="apply-note"
-          label="Short note to the parent"
-          optional
+          label="Lời nhắn gửi phụ huynh (không bắt buộc)"
           rows={4}
           maxLength={NOTE_MAX_LENGTH}
           value={note}
           onChange={(event) => setNote(event.target.value)}
-          placeholder="Introduce your experience and how you would help"
+          placeholder="Giới thiệu kinh nghiệm và cách bạn sẽ giúp học sinh"
           disabled={submitting}
         />
 
         <div className="modal-actions">
-          <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={submitting}>Cancel</button>
+          <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={submitting}>Hủy</button>
           <button type="submit" className="btn btn-primary btn-sm" disabled={!canSubmit}>
             {submitting ? <LoaderCircle size={14} className="spin" aria-hidden="true" /> : null}
-            <span>{submitting ? 'Sending...' : 'Send application'}</span>
+            <span>{submitting ? 'Đang gửi...' : 'Gửi đơn ứng tuyển'}</span>
           </button>
         </div>
       </form>

@@ -11,12 +11,12 @@ export const formatTime = (value) => {
   return new Date(value).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 };
 
-// "28 Oct 2026"
+// "28/10/2026"
 export const formatDate = (value) => {
   if (!value) {
     return '';
   }
-  return new Date(value).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  return new Date(value).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
 };
 
 // "Today", "Tomorrow" hoặc "Thu, 30 Oct"

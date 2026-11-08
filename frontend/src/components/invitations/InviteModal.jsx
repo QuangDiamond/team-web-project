@@ -43,25 +43,25 @@ export default function InviteModal({ requestId, requestTitle, tutorProfileId, t
     }
   };
 
-  let creditText = 'Checking your credits...';
+  let creditText = 'Đang kiểm tra credit...';
   if (credits.error) {
-    creditText = 'Could not load your credits';
+    creditText = 'Không tải được số credit';
   } else if (!credits.loading) {
-    creditText = `Balance: ${credits.balance}`;
+    creditText = `Số dư: ${credits.balance} credit`;
   }
 
   return (
-    <Modal title="Invite tutor" onClose={onClose}>
+    <Modal title="Mời gia sư" onClose={onClose}>
       <form onSubmit={handleSubmit} noValidate>
         <p className="modal-summary">
-          Invite <strong>{tutorName}</strong> to your request <strong>{requestTitle}</strong>.
+          Mời <strong>{tutorName}</strong> tham gia yêu cầu <strong>{requestTitle}</strong>.
         </p>
 
         <p className="modal-cost">
-          <span>Cost: {amount} {amount === 1 ? 'credit' : 'credits'}</span>
+          <span>Chi phí: {amount} credit</span>
           <span>{creditText}</span>
         </p>
-        <p className="item-meta modal-note">The credit is not refunded if the tutor declines or you cancel the invitation.</p>
+        <p className="item-meta modal-note">Credit không được hoàn lại nếu gia sư từ chối hoặc bạn hủy lời mời.</p>
 
         <CreditAmountField
           id="invite-credits"
@@ -69,29 +69,28 @@ export default function InviteModal({ requestId, requestTitle, tutorProfileId, t
           onChange={(event) => setCreditsToSpend(event.target.value)}
           balance={credits.balance}
           disabled={submitting || hasNoCredit}
-          audience="the tutor's"
+          audience="gia sư"
         />
 
-        {hasNoCredit && <Alert type="error">You need at least 1 credit to invite a tutor.</Alert>}
+        {hasNoCredit && <Alert type="error">Bạn cần ít nhất 1 credit để mời gia sư.</Alert>}
         {error && <Alert type="error">{error}</Alert>}
 
         <FormTextarea
           id="invite-message"
-          label="Message to the tutor"
-          optional
+          label="Lời nhắn gửi gia sư (không bắt buộc)"
           rows={3}
           maxLength={MESSAGE_MAX_LENGTH}
           value={message}
           onChange={(event) => setMessage(event.target.value)}
-          placeholder="Tell the tutor why you would like to work with them"
+          placeholder="Cho gia sư biết vì sao bạn muốn học cùng họ"
           disabled={submitting}
         />
 
         <div className="modal-actions">
-          <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={submitting}>Cancel</button>
+          <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={submitting}>Hủy</button>
           <button type="submit" className="btn btn-primary btn-sm" disabled={!canSubmit}>
             {submitting ? <LoaderCircle size={14} className="spin" aria-hidden="true" /> : null}
-            <span>{submitting ? 'Sending...' : 'Send invitation'}</span>
+            <span>{submitting ? 'Đang gửi...' : 'Gửi lời mời'}</span>
           </button>
         </div>
       </form>

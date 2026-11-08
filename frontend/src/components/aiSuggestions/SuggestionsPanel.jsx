@@ -42,7 +42,7 @@ export default function SuggestionsPanel({ requestId }) {
 
   const handleInvited = (result) => {
     setInvitedTutorIds([...invitedTutorIds, invitingSuggestion.tutor.profile_id]);
-    setInviteNotice(`Invitation sent. You have ${result.remaining_credits} credit(s) left.`);
+    setInviteNotice(`Đã gửi lời mời. Bạn còn ${result.remaining_credits} credit.`);
     setInvitingSuggestion(null);
   };
 
@@ -51,10 +51,10 @@ export default function SuggestionsPanel({ requestId }) {
   return (
     <div className="page-stack">
       <div className="page-toolbar">
-        <p className="item-meta">Tutors who teach this subject and grade level.</p>
+        <p className="item-meta">Các gia sư dạy cùng môn học và khối lớp với yêu cầu này.</p>
         <button type="button" className="btn btn-outline btn-sm" disabled={refreshing || loading} onClick={() => refresh()}>
           <RefreshCw size={14} className={refreshing ? 'spin' : ''} aria-hidden="true" />
-          <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
+          <span>{refreshing ? 'Đang làm mới...' : 'Làm mới'}</span>
         </button>
       </div>
 
@@ -63,7 +63,7 @@ export default function SuggestionsPanel({ requestId }) {
 
       <ListState
         list={list}
-        empty={{ icon: SearchX, title: 'No matching tutor yet', description: 'Check back when more tutors publish posts.' }}
+        empty={{ icon: SearchX, title: 'Chưa có gia sư phù hợp', description: 'Hãy quay lại khi có thêm gia sư đăng bài.' }}
       >
         {data && (
           <ul className="ai-list">
@@ -81,7 +81,7 @@ export default function SuggestionsPanel({ requestId }) {
       </ListState>
 
       <p className="ai-footer-link">
-        <Link to="/parent/invitations" className="link">View my invitations</Link>
+        <Link to="/parent/invitations" className="link">Xem lời mời của tôi</Link>
       </p>
 
       {invitingSuggestion && data && (
