@@ -5,6 +5,7 @@ const MAX_PRICE = 1000000000;
 const MAX_CREDITS = 1000000;
 const MAX_AI_QUOTA = 1000000;
 const MAX_CLASSROOMS = 1000;
+const MAX_ANNUAL_DISCOUNT_PERCENT = 99;
 
 const PACK_TARGET_ROLES = ['TUTOR', 'PARENT'];
 
@@ -41,8 +42,16 @@ const creditAmountRule = z
   .min(1, 'Credit amount must be at least 1')
   .max(MAX_CREDITS, 'Credit amount is too large');
 
-export const updatePlanSchema = z.object({
+const planFieldsSchema = z.object({
+  name: packNameRule.optional(),
   monthly_price: planPriceRule,
+  billing_period: z.enum(['MONTHLY', 'YEARLY'], 'Billing period must be MONTHLY or YEARLY').optional(),
+  annual_discount_percent: z
+    .number({ error: 'Annual discount must be a number' })
+    .int('Annual discount must be a whole percentage')
+    .min(0, 'Annual discount cannot be negative')
+    .max(MAX_ANNUAL_DISCOUNT_PERCENT, `Annual discount cannot exceed ${MAX_ANNUAL_DISCOUNT_PERCENT}%`)
+    .optional(),
   // D1: mọi gói (kể cả Free) phải có ít nhất 1 credit/tháng
   monthly_credits: z
     .number({ error: 'Monthly credits must be a number' })
@@ -66,13 +75,52 @@ export const updatePlanSchema = z.object({
   reason: reasonRule,
 });
 
-export const createPlanSchema = updatePlanSchema.extend({
+const validatePlanBilling = (data, context) => {
+  if (data.billing_period === 'MONTHLY' && data.annual_discount_percent > 0) {
+    context.addIssue({
+      code: 'custom',
+      path: ['annual_discount_percent'],
+      message: 'Annual discount is only available for yearly plans',
+    });
+  }
+  if (data.name === 'FREE_DEFAULT' && data.billing_period === 'YEARLY') {
+    context.addIssue({
+      code: 'custom',
+      path: ['billing_period'],
+      message: 'Free plan must use the monthly period',
+    });
+  }
+};
+
+export const updatePlanSchema = planFieldsSchema.superRefine(validatePlanBilling);
+
+export const createPlanSchema = planFieldsSchema.extend({
   target_role: z.enum(PACK_TARGET_ROLES, 'Target role must be TUTOR or PARENT'),
   name: packNameRule,
+  billing_period: z.enum(['MONTHLY', 'YEARLY'], 'Billing period must be MONTHLY or YEARLY').default('MONTHLY'),
+  annual_discount_percent: z
+    .number({ error: 'Annual discount must be a number' })
+    .int('Annual discount must be a whole percentage')
+    .min(0, 'Annual discount cannot be negative')
+    .max(MAX_ANNUAL_DISCOUNT_PERCENT, `Annual discount cannot exceed ${MAX_ANNUAL_DISCOUNT_PERCENT}%`)
+    .default(0),
   is_active: z.boolean({ error: 'Availability must be true or false' }).default(true),
-}).refine((data) => data.name !== 'FREE_DEFAULT' || data.monthly_price === 0, {
-  path: ['monthly_price'],
-  message: 'Free plan price must be 0',
+}).superRefine((data, context) => {
+  validatePlanBilling(data, context);
+  if (data.name === 'FREE_DEFAULT' && data.monthly_price !== 0) {
+    context.addIssue({
+      code: 'custom',
+      path: ['monthly_price'],
+      message: 'Free plan price must be 0',
+    });
+  }
+  if (data.name === 'FREE_DEFAULT' && data.annual_discount_percent > 0) {
+    context.addIssue({
+      code: 'custom',
+      path: ['annual_discount_percent'],
+      message: 'Free plan cannot have an annual discount',
+    });
+  }
 });
 
 export const createCreditPackSchema = z.object({

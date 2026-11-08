@@ -192,11 +192,11 @@ export const toInvitableTutorDto = (profile, tutorUser, postSummary) => {
   return {
     profile_id: String(profile._id),
     full_name: maskContact(tutorUser.full_name),
-    avatar_url: profile.avatar_url || tutorUser.avatar_url || null,
+    avatar_url: tutorUser.avatar_url || profile.avatar_url || null,
     headline: maskContact(profile.headline),
     average_rating: profile.average_rating ?? null,
     availability_status: profile.availability_status ?? null,
-    subjects: postSummary.subjects,
+    subjects: postSummary.subjects.map((subject) => maskContact(subject)),
     min_price: postSummary.minPrice,
   };
 };
@@ -209,15 +209,52 @@ export const toInvitableTutorDto = (profile, tutorUser, postSummary) => {
  */
 export const listInvitableTutors = async (user, { q, page, limit }) => {
   assertRole(user, ENUMS.UserRole.PARENT);
+  return searchPublicTutors({ q, page, limit });
+};
+
+/**
+ * Search complete active tutor profiles using public fields and published posts.
+ * @param {Object} query - Validated search filters and pagination.
+ * @returns {Promise<{items: Object[], pagination: Object}>} Public tutor cards.
+ */
+export const searchPublicTutors = async ({ q, page, limit, subject, grade, area, mode, availability, min_rating, min_price, max_price }) => {
+  const postFilter = { status: ENUMS.TutorPostsStatus.PUBLISHED };
+  if (subject) postFilter.subject_name = new RegExp(`^${escapeRegex(subject)}$`, 'i');
+  if (grade) postFilter.grade_level = new RegExp(`^${escapeRegex(grade)}$`, 'i');
+  if (mode) postFilter.teaching_mode = mode;
+  if (min_price !== undefined || max_price !== undefined) {
+    postFilter.price = {};
+    if (min_price !== undefined) postFilter.price.$gte = min_price;
+    if (max_price !== undefined) postFilter.price.$lte = max_price;
+  }
+  const hasPostFilters = Boolean(subject || grade || mode || min_price !== undefined || max_price !== undefined);
 
   const userFilter = { role: ENUMS.UserRole.TUTOR, account_status: ENUMS.UserAccountStatus.ACTIVE };
-  if (q) {
-    userFilter.full_name = new RegExp(escapeRegex(q), 'i');
-  }
   const tutorUsers = await User.find(userFilter).select('full_name avatar_url').lean();
   const userById = new Map(tutorUsers.map((tutorUser) => [String(tutorUser._id), tutorUser]));
 
   const profileFilter = { user_id: { $in: tutorUsers.map((tutorUser) => tutorUser._id) }, is_complete: true };
+  if (hasPostFilters) {
+    profileFilter._id = { $in: await TutorPost.distinct('profile_id', postFilter) };
+  }
+  if (availability) profileFilter.availability_status = availability;
+  if (min_rating !== undefined) profileFilter.average_rating = { $gte: min_rating };
+  if (area) {
+    profileFilter.is_address_hidden = { $ne: true };
+    profileFilter.address = new RegExp(escapeRegex(area), 'i');
+  }
+  if (q) {
+    const pattern = new RegExp(escapeRegex(q), 'i');
+    const matchingPosts = await TutorPost.distinct('profile_id', {
+      status: ENUMS.TutorPostsStatus.PUBLISHED,
+      $or: [{ subject_name: pattern }, { title: pattern }],
+    });
+    profileFilter.$or = [
+      { user_id: { $in: tutorUsers.filter((item) => pattern.test(item.full_name)).map((item) => item._id) } },
+      { headline: pattern },
+      { _id: { $in: matchingPosts } },
+    ];
+  }
   const [profiles, total] = await Promise.all([
     TutorProfile.find(profileFilter)
       .sort({ average_rating: -1, _id: 1 })
@@ -229,6 +266,7 @@ export const listInvitableTutors = async (user, { q, page, limit }) => {
 
   // Môn dạy và giá thấp nhất lấy từ các bài đăng đang PUBLISHED của từng gia sư
   const posts = await TutorPost.find({
+    ...postFilter,
     profile_id: { $in: profiles.map((profile) => profile._id) },
     status: ENUMS.TutorPostsStatus.PUBLISHED,
   })

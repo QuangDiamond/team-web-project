@@ -8,7 +8,8 @@
     "start": "node src/server.js",
     "test": "node --test",
     "lint": "eslint .",
-    "seed:admin": "node scripts/seed-billing-admin.js"
+    "seed:admin": "node scripts/seed-billing-admin.js",
+    "seed:categories": "node scripts/seed-categories.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

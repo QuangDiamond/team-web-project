@@ -4,7 +4,7 @@ import { validator } from '../common/validator/validator.js';
 import { refreshSuggestionsSchema } from '../common/validator/aiSuggestionSchema.js';
 import { getSuggestions, refreshSuggestions } from '../controllers/aiSuggestion.controller.js';
 
-// UC09 – View AI Tutor Suggestions
+// Profile/category-based suggestions; the old AI-prefixed URL remains an alias.
 export const aiSuggestionRoutes = Router();
 
 aiSuggestionRoutes.get('/requests/:requestId', authentication, authorize('PARENT'), getSuggestions);

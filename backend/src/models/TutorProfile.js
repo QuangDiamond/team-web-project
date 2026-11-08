@@ -7,12 +7,19 @@ import { achievementSchema } from './schemas/Achievement.schema.js';
 import { educationSchema } from './schemas/Education.schema.js';
 const { Schema } = mongoose;
 
+const teachingCategorySchema = new Schema({
+  type: { type: String, enum: ['subjects', 'grades'], required: true },
+  category_id: { type: Schema.Types.ObjectId, required: true },
+  name: { type: String, required: true },
+}, { _id: false, strict: 'throw' });
+
 const tutorProfileSchema = new Schema(
   {
     // Khóa ngoại liên kết 1-1 với bảng USERS. Mỗi tài khoản tương ứng với đúng 1 hồ sơ chi tiết
     user_id:             { type: Schema.Types.ObjectId, ref: 'User', default: null },
     // Câu châm ngôn, chức danh ngắn gọn hiển thị ngay dưới tên (Ví dụ: *"Senior Software Engineer
     headline:            { type: String, default: null },
+    teaching_categories: { type: [teachingCategorySchema], default: [] },
     // Đoạn giới thiệu bản thân chi tiết hơn về kinh nghiệm, phương pháp giảng dạy hoặc sở thích cá nhân
     bio:                 { type: String, default: null },
     // Lưu đường dẫn (URL) trỏ đến file ảnh đại diện của người dùng trên Cloud storage

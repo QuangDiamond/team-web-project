@@ -41,7 +41,7 @@ export const getPublicHomeStats = async () => {
     confirmedAgreements,
   ] = await Promise.all([
     TutorProfile.find({ is_complete: true })
-      .populate({ path: 'user_id', select: 'full_name email account_status' })
+      .populate({ path: 'user_id', select: 'full_name email account_status avatar_url' })
       .sort({ average_rating: -1 })
       .limit(8)
       .lean(),
@@ -103,6 +103,7 @@ export const getPublicHomeStats = async () => {
         price: `${priceNumber.toLocaleString('vi-VN')}đ/buổi`,
         color: AVATAR_COLORS[idx % AVATAR_COLORS.length],
         initials: getInitials(profile.user_id.full_name),
+        avatar_url: profile.user_id.avatar_url || profile.avatar_url || null,
         degree: edu,
       };
     });
