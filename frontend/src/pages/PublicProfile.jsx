@@ -9,7 +9,7 @@ import ProfileBackground from '../components/publicProfile/ProfileBackground';
 import ProfilePosts from '../components/publicProfile/ProfilePosts';
 import ProfileReviews from '../components/publicProfile/ProfileReviews';
 import InviteTutorDialog from '../components/publicProfile/InviteTutorDialog';
-import ApplyModal from '../components/tutorRequests/ApplyModal';
+import ApplyModal from '../components/tutor/ApplyModal';
 import { clearPublicProfileReturn, rememberPublicProfile } from '../utils/publicProfileReturn';
 import '../styles/publicProfile.css';
 

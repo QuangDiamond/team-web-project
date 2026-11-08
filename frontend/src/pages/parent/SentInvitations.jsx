@@ -27,7 +27,7 @@ export default function SentInvitations() {
 
   return (
     <div className="page-stack">
-      <p className="item-meta">Lời mời bạn đã gửi cho gia sư. Mỗi lời mời tốn 1 tín dụng và không được hoàn lại.</p>
+      <p className="item-meta">Lời mời bạn đã gửi cho gia sư. Mỗi lời mời tốn ít nhất 1 tín dụng và không được hoàn lại.</p>
 
       {actionError && <Alert type="error">{actionError}</Alert>}
 
@@ -49,7 +49,7 @@ export default function SentInvitations() {
         <EmptyState
           icon={Mail}
           title="Chưa gửi lời mời nào"
-          description="Mời gia sư từ danh sách gợi ý AI của một yêu cầu."
+          description="Mời gia sư từ tab Tìm gia sư hoặc từ danh sách gợi ý AI của một yêu cầu."
         />
       )}
 

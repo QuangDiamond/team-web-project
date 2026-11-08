@@ -113,6 +113,55 @@
   margin-top: 12px;
 }
 
+.review-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.review-detail-facts {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.review-detail-facts dt {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.review-detail-facts dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 2px 0 0;
+}
+
+.review-detail-heading {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.review-detail-note {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.review-detail-link {
+  margin: 0;
+  font-size: 14px;
+}
+
 .review-card-chat {
   display: flex;
   align-items: center;

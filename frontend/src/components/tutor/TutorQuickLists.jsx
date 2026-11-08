@@ -21,9 +21,6 @@ const toRecommendedItem = (request) => {
     meta: `${request.subject_name} · ${getModeLabel(request.teaching_mode)} · ${formatBudget(request.budget)}`,
     to: `/tutor/requests/${request._id}`,
   };
-  if (request.match_score !== null && request.match_score !== undefined) {
-    item.badge = { label: `${request.match_score}% phù hợp`, tone: 'success' };
-  }
   return item;
 };
 

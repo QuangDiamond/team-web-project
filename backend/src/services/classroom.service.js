@@ -2012,6 +2012,3 @@ export const respondParentChildLink = async ({ studentUserId, linkId, action }) 
 
   return link;
 };
-
-
-

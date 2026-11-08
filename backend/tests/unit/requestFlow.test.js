@@ -9,7 +9,7 @@ import { assertRole } from '../../src/common/utils/assertRole.js';
 import { buildPagination, parseQuery } from '../../src/common/utils/pagination.js';
 import { decimalToNumber, escapeRegex, getRequestCutoff, isRequestAvailable } from '../../src/common/utils/requestRules.js';
 import { toParentRequestDto } from '../../src/services/parentRequest.service.js';
-import { buildBrowseFilter, scoreRequestForTutor, toTutorRequestDto } from '../../src/services/tutorRequest.service.js';
+import { buildBrowseFilter, matchesAnyPost, toTutorRequestDto } from '../../src/services/tutorRequest.service.js';
 
 const newId = () => new mongoose.Types.ObjectId().toString();
 
@@ -74,7 +74,7 @@ test('parseQuery throws a 422 AppError with field errors', () => {
 
 test('application body: optional note, length limit, rejects extra fields', () => {
   const requestId = newId();
-  assert.deepEqual(createApplicationSchema.parse({ request_id: requestId }), { request_id: requestId, note: null });
+  assert.deepEqual(createApplicationSchema.parse({ request_id: requestId }), { request_id: requestId, note: null, credits: 1 });
   assert.equal(createApplicationSchema.parse({ request_id: requestId, note: '  hi  ' }).note, 'hi');
   assert.equal(createApplicationSchema.safeParse({ request_id: requestId, note: 'x'.repeat(501) }).success, false);
   assert.equal(createApplicationSchema.safeParse({ request_id: 'bad' }).success, false);
@@ -88,6 +88,19 @@ test('invitation body: needs both ids, optional message, rejects extra fields', 
   assert.equal(createInvitationSchema.safeParse({ request_id: body.request_id }).success, false);
   assert.equal(createInvitationSchema.safeParse({ ...body, parent_user_id: newId() }).success, false);
   assert.equal(createInvitationSchema.safeParse({ ...body, message: 'x'.repeat(501) }).success, false);
+});
+
+test('credits to spend: default 1, whole number from 1 to 10', () => {
+  const applyBody = { request_id: newId() };
+  const inviteBody = { request_id: newId(), tutor_profile_id: newId() };
+  assert.equal(createApplicationSchema.parse(applyBody).credits, 1);
+  assert.equal(createInvitationSchema.parse(inviteBody).credits, 1);
+  assert.equal(createApplicationSchema.parse({ ...applyBody, credits: 10 }).credits, 10);
+  assert.equal(createInvitationSchema.parse({ ...inviteBody, credits: 5 }).credits, 5);
+  for (const invalid of [0, -1, 11, 1.5, '3', null]) {
+    assert.equal(createApplicationSchema.safeParse({ ...applyBody, credits: invalid }).success, false, 'apply ' + invalid);
+    assert.equal(createInvitationSchema.safeParse({ ...inviteBody, credits: invalid }).success, false, 'invite ' + invalid);
+  }
 });
 
 test('assertRole only lets the required role through', () => {
@@ -128,6 +141,12 @@ test('browse filter: only OPEN + not expired, keyword is escaped, budget range a
   assert.equal(filter.teaching_mode, 'ONLINE');
   assert.deepEqual(filter.budget, { $gte: 100, $lte: 500 });
   assert.equal('budget' in buildBrowseFilter({}, now), false);
+  // Môn / khối chọn từ dropdown nên khớp chính xác: Lớp 1 không khớp Lớp 10
+  const gradeFilter = buildBrowseFilter({ grade: 'Lớp 1', subject: 'Toán' }, now);
+  assert.equal(gradeFilter.grade_level.test('Lớp 1'), true);
+  assert.equal(gradeFilter.grade_level.test('lớp 1'), true);
+  assert.equal(gradeFilter.grade_level.test('Lớp 10'), false);
+  assert.equal(gradeFilter.subject_name.test('Toán nâng cao'), false);
 });
 
 const request = {
@@ -140,18 +159,13 @@ const request = {
 };
 const goodPost = { subject_name: 'Toán', grade_level: 'Lớp 9', teaching_mode: 'OFFLINE', price: mongoose.Types.Decimal128.fromString('150000'), schedule: 'tối thứ 3' };
 
-test('scoreRequestForTutor: null without a matching post, best score among matching posts', () => {
-  assert.equal(scoreRequestForTutor(request, [], 'Cầu Giấy'), null);
-  assert.equal(scoreRequestForTutor(request, [{ ...goodPost, subject_name: 'Tiếng Anh' }], 'Cầu Giấy'), null);
-  assert.equal(scoreRequestForTutor(request, [{ ...goodPost, grade_level: 'Lớp 12' }], 'Cầu Giấy'), null);
-  assert.equal(scoreRequestForTutor(request, [{ ...goodPost, teaching_mode: 'ONLINE' }], 'Cầu Giấy'), null);
-
-  const perfect = scoreRequestForTutor(request, [goodPost], 'Cầu Giấy');
-  assert.equal(perfect, 100);
-  const expensive = { ...goodPost, price: mongoose.Types.Decimal128.fromString('600000') };
-  const best = scoreRequestForTutor(request, [expensive, goodPost], 'Cầu Giấy');
-  assert.equal(best, 100);
-  assert.ok(scoreRequestForTutor(request, [expensive], 'Cầu Giấy') < perfect);
+test('matchesAnyPost: needs a post with the same subject and grade, mode and price do not matter', () => {
+  assert.equal(matchesAnyPost(request, []), false);
+  assert.equal(matchesAnyPost(request, [{ ...goodPost, subject_name: 'Tiếng Anh' }]), false);
+  assert.equal(matchesAnyPost(request, [{ ...goodPost, grade_level: 'Lớp 12' }]), false);
+  assert.equal(matchesAnyPost(request, [goodPost]), true);
+  assert.equal(matchesAnyPost(request, [{ ...goodPost, teaching_mode: 'ONLINE', price: mongoose.Types.Decimal128.fromString('900000') }]), true);
+  assert.equal(matchesAnyPost(request, [{ ...goodPost, subject_name: 'Tiếng Anh' }, goodPost]), true);
 });
 
 test('tutor-facing DTO exposes only the parent navigation ID and excludes private parent/student data', () => {

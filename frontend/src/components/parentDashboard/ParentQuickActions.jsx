@@ -15,7 +15,7 @@ export default function ParentQuickActions() {
         </button>
         <button type="button" className="btn btn-outline btn-block" onClick={() => navigate('/parent/requests')}>
           <ClipboardList size={16} aria-hidden="true" />
-          <span>Xem đơn ứng tuyển</span>
+          <span>Xem yêu cầu và đơn ứng tuyển</span>
         </button>
         <button type="button" className="btn btn-outline btn-block" onClick={() => navigate('/parent/invitations')}>
           <Mail size={16} aria-hidden="true" />

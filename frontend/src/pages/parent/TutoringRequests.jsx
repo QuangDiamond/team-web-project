@@ -6,6 +6,7 @@ import { getMyRequests } from '../../services/parentRequestService';
 import Alert from '../../components/common/Alert';
 import EmptyState from '../../components/common/EmptyState';
 import Pagination from '../../components/common/Pagination';
+import DeleteRequestModal from '../../components/tutoringRequests/DeleteRequestModal';
 import RequestListItem from '../../components/tutoringRequests/RequestListItem';
 
 const PAGE_SIZE = 10;
@@ -14,7 +15,15 @@ const PAGE_SIZE = 10;
 export default function TutoringRequests() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
+  const [requestToDelete, setRequestToDelete] = useState(null);
+  const [notice, setNotice] = useState('');
   const { loading, error, data, reload } = usePagedList(getMyRequests, { page: page, limit: PAGE_SIZE });
+
+  const handleDeleted = async () => {
+    setNotice(`Đã xóa yêu cầu "${requestToDelete.title}".`);
+    setRequestToDelete(null);
+    await reload();
+  };
 
   const goToCreate = () => {
     navigate('/parent/requests/new');
@@ -29,6 +38,8 @@ export default function TutoringRequests() {
           <span>Tạo yêu cầu</span>
         </button>
       </div>
+
+      {notice && <Alert type="success">{notice}</Alert>}
 
       {loading && !data && (
         <div className="page-loading-inline" role="status">
@@ -55,12 +66,16 @@ export default function TutoringRequests() {
       {data && data.items.length > 0 && (
         <ul className="item-list">
           {data.items.map((request) => (
-            <RequestListItem key={request._id} request={request} />
+            <RequestListItem key={request._id} request={request} onDelete={setRequestToDelete} />
           ))}
         </ul>
       )}
 
       {data && <Pagination pagination={data.pagination} onPageChange={setPage} />}
+
+      {requestToDelete && (
+        <DeleteRequestModal request={requestToDelete} onClose={() => setRequestToDelete(null)} onDeleted={handleDeleted} />
+      )}
     </div>
   );
 }

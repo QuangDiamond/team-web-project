@@ -19,7 +19,7 @@ export default function InviteTutorDialog({ profile, onClose, onInvited }) {
 
   return (
     <Modal title="Chọn yêu cầu để mời gia sư" onClose={onClose}>
-      <p className="item-meta">Mỗi lời mời tốn 1 tín dụng. Chọn một yêu cầu đang mở bên dưới.</p>
+      <p className="item-meta">Mỗi lời mời tốn ít nhất 1 tín dụng. Chọn một yêu cầu đang mở bên dưới.</p>
       <ListState list={list} empty={{ title: "Chưa có yêu cầu đang mở", description: "Hãy tạo yêu cầu tìm gia sư trước." }}>
         <ul className="public-profile-list">
           {list.data?.items.map((item) => (

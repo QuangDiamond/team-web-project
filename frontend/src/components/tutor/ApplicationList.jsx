@@ -19,9 +19,7 @@ function ApplicationRow({ application, onWithdraw }) {
     metaParts.push(subject);
   }
   metaParts.push(`Ứng tuyển lúc ${formatDate(application.created_at)}`);
-  if (application.match_score !== null && application.match_score !== undefined) {
-    metaParts.push(`${application.match_score}% phù hợp`);
-  }
+  metaParts.push(`đã dùng ${application.credits_spent} tín dụng`);
 
   const handleWithdraw = async () => {
     setWithdrawing(true);

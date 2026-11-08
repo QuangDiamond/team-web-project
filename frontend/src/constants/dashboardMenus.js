@@ -76,7 +76,7 @@ export const STUDENT_MENU = {
 };
 
 // Parent workspace (menu theo Figma). Các mục chưa có `to` sẽ được thêm khi UC tương ứng hoàn thành.
-// "Applications" và "AI Suggestions" cần một request cụ thể nên mở trang chọn request (RequestPicker)
+// Đơn ứng tuyển xem ngay trong chi tiết request (Tutoring Requests); "AI Suggestions" có dropdown chọn request ngay trên trang
 export const PARENT_MENU = {
   roleLabel: "Phụ huynh",
   groups: [
@@ -86,7 +86,6 @@ export const PARENT_MENU = {
         { label: "Tổng quan", to: '/parent/dashboard', icon: LayoutDashboard, end: true },
         { label: "Lớp học", to: '/parent/classes', icon: BookOpen },
         { label: "Yêu cầu tìm gia sư", to: '/parent/requests', icon: FileText },
-        { label: "Đơn ứng tuyển", to: '/parent/applications', icon: ClipboardList },
         { label: "Gợi ý AI", to: '/parent/ai-suggestions', icon: Sparkles },
         { label: "Lời mời", to: '/parent/invitations', icon: Mail },
         { label: "Tin nhắn", to: '/parent/messages', icon: MessageSquare },

@@ -5,7 +5,7 @@ import { getMyApplications, withdrawApplication } from '../../services/applicati
 import Alert from '../../components/common/Alert';
 import ListState from '../../components/common/ListState';
 import Pagination from '../../components/common/Pagination';
-import ApplicationList from '../../components/applications/ApplicationList';
+import ApplicationList from '../../components/tutor/ApplicationList';
 
 const PAGE_SIZE = 10;
 
@@ -27,7 +27,7 @@ export default function MyApplications() {
 
   return (
     <div className="page-stack">
-      <p className="item-meta">Các đơn bạn đã gửi. Mỗi đơn tốn 1 tín dụng và không được hoàn lại.</p>
+      <p className="item-meta">Các đơn bạn đã gửi. Mỗi đơn tốn ít nhất 1 tín dụng và không được hoàn lại.</p>
 
       {actionError && <Alert type="error">{actionError}</Alert>}
 

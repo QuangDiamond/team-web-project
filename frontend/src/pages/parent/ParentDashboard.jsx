@@ -37,9 +37,8 @@ export default function ParentDashboard() {
 
   let bannerSummary = "Tổng quan các yêu cầu tìm gia sư của bạn.";
   if (summary.data) {
-    const requestText = pluralize(summary.data.open_requests, "yêu cầu đang mở", "yêu cầu đang mở");
-    const applicationText = pluralize(summary.data.pending_applications, 'application', 'applications');
-    bannerSummary = `Bạn có ${requestText} và ${applicationText} đang chờ bạn xem xét.`;
+    const applicationText = pluralize(summary.data.pending_applications, "đơn ứng tuyển", "đơn ứng tuyển");
+    bannerSummary = `Bạn có ${applicationText} đang chờ bạn xem xét.`;
   }
 
   return (
