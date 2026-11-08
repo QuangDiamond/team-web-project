@@ -5,8 +5,8 @@ import { AppError } from '../common/utils/AppError.js';
 import * as pspClient from '../common/utils/pspClient.js';
 import * as paymentService from '../services/payment.service.js';
 import * as transactionService from '../services/transaction.service.js';
-import { getPagination, buildPagination } from '../common/utils/pagination.js';
-import { validateQuery } from '../common/validator/validator.js';
+import { getPagination, buildPagination, parseQuery } from '../common/utils/pagination.js';
+import { escapeHtml } from '../common/utils/html.js';
 import { creditTransactionQuerySchema, orderQuerySchema } from '../common/validator/paymentSchema.js';
 import { buildCsv } from '../common/utils/csv.js';
 import { env } from '../config/environment.js';
@@ -82,7 +82,7 @@ const sendCsv = (res, filePrefix, content) => {
 };
 
 export const getCreditTransactions = asyncHandler(async (req, res) => {
-  const filters = validateQuery(creditTransactionQuerySchema, req.query);
+  const filters = parseQuery(creditTransactionQuerySchema, req.query);
   const { page, limit, skip } = getPagination(req.query);
   const result = await transactionService.findCreditTransactions(req.user.id, filters, skip, limit);
   const data = { items: result.items, pagination: buildPagination(page, limit, result.total) };
@@ -90,7 +90,7 @@ export const getCreditTransactions = asyncHandler(async (req, res) => {
 });
 
 export const exportCreditTransactions = asyncHandler(async (req, res) => {
-  const filters = validateQuery(creditTransactionQuerySchema, req.query);
+  const filters = parseQuery(creditTransactionQuerySchema, req.query);
   const result = await transactionService.findCreditTransactions(req.user.id, filters, 0, EXPORT_MAX_ROWS);
   const rows = result.items.map((item) => {
     let relatedKind = null;
@@ -106,7 +106,7 @@ export const exportCreditTransactions = asyncHandler(async (req, res) => {
 });
 
 export const getOrders = asyncHandler(async (req, res) => {
-  const filters = validateQuery(orderQuerySchema, req.query);
+  const filters = parseQuery(orderQuerySchema, req.query);
   const { page, limit, skip } = getPagination(req.query);
   const result = await transactionService.findOrders(req.user.id, filters, skip, limit);
   const data = { items: result.items, pagination: buildPagination(page, limit, result.total) };
@@ -114,7 +114,7 @@ export const getOrders = asyncHandler(async (req, res) => {
 });
 
 export const exportOrders = asyncHandler(async (req, res) => {
-  const filters = validateQuery(orderQuerySchema, req.query);
+  const filters = parseQuery(orderQuerySchema, req.query);
   const result = await transactionService.findOrders(req.user.id, filters, 0, EXPORT_MAX_ROWS);
   const rows = result.items.map((item) => {
     let itemName = item.item_name;
@@ -150,15 +150,6 @@ export const requireMockCheckout = (_req, _res, next) => {
     return next(new AppError('Route not found', 404));
   }
   return next();
-};
-
-// Escape để mã đơn trong URL không chèn được HTML vào trang
-const escapeHtml = (text) => {
-  return String(text)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
 };
 
 const renderMockCheckoutPage = (order) => {

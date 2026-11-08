@@ -11,18 +11,10 @@ import { env } from '../config/environment.js';
 import { createUser } from './user.service.js';
 import { buildDateRange } from './transaction.service.js';
 import { FREE_PLAN_NAME } from './plan.service.js';
+import { escapeRegex } from '../common/utils/requestRules.js';
 
 const LIST_FIELDS = 'full_name email role account_status email_verify_status created_at last_login_at';
 const AUDIT_LOG_LIMIT = 20;
-
-/**
- * Escape ký tự đặc biệt của regex để chuỗi tìm kiếm được so khớp nguyên văn
- * @param {string} text - chuỗi người dùng nhập
- * @returns {string} chuỗi an toàn để đưa vào RegExp
- */
-const escapeRegex = (text) => {
-  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-};
 
 /**
  * Đổi User document sang dạng trả về của danh sách

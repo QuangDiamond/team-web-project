@@ -8,6 +8,7 @@ import { TutorProfile } from '../models/TutorProfile.js';
 import { User } from '../models/User.js';
 import { ENUMS } from '../models/enums.js';
 import { AppError } from '../common/utils/AppError.js';
+import { buildPagination } from '../common/utils/pagination.js';
 
 const UPCOMING_WINDOW_DAYS = 7;
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
@@ -28,22 +29,6 @@ export const assertStudent = (user) => {
   if (user.role !== ENUMS.UserRole.STUDENT) {
     throw new AppError('Only student accounts can view the student dashboard', 403);
   }
-};
-
-/**
- * Tạo object pagination theo chuẩn AGENTS.md
- * @param {number} page
- * @param {number} limit
- * @param {number} total
- * @returns {{ page: number, limit: number, total: number, totalPages: number }}
- */
-export const buildPagination = (page, limit, total) => {
-  return {
-    page: page,
-    limit: limit,
-    total: total,
-    totalPages: Math.ceil(total / limit),
-  };
 };
 
 /**
