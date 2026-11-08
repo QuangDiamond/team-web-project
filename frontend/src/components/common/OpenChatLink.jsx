@@ -6,7 +6,7 @@ export default function OpenChatLink({ to }) {
   return (
     <Link to={to} className="btn btn-primary btn-sm">
       <MessageSquare size={14} aria-hidden="true" />
-      <span>Open chat</span>
+      <span>Mở cuộc trò chuyện</span>
     </Link>
   );
 }

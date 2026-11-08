@@ -12,22 +12,22 @@ const PAGE_SIZE = 10;
 // Cấu hình theo chế độ: mục menu nào đang mở trang này và bấm vào một request thì đi đâu
 const PICKER_MODES = {
   suggestions: {
-    intro: 'Choose an open request to see the tutors that fit it best.',
-    actionLabel: 'View suggestions',
+    intro: "Chọn yêu cầu đang mở để xem gia sư phù hợp nhất.",
+    actionLabel: "Xem gợi ý",
     status: 'OPEN',
-    emptyTitle: 'No open requests',
-    emptyDescription: 'Create a request first, then come back to see matching tutors.',
+    emptyTitle: "Chưa có yêu cầu đang mở",
+    emptyDescription: "Tạo yêu cầu trước, sau đó quay lại để xem gia sư phù hợp.",
     buildPath: (requestId) => `/parent/requests/${requestId}/ai-suggestions`,
     // Gợi ý chỉ có với request đang mở và chưa quá 30 ngày
     isAvailable: (request) => request.status === 'OPEN' && !request.is_expired,
-    unavailableNote: 'Expired',
+    unavailableNote: "Đã hết hạn",
   },
   applications: {
-    intro: 'Choose a request to review the tutors who applied to it.',
-    actionLabel: 'Review applications',
+    intro: "Chọn yêu cầu để xem các gia sư đã ứng tuyển.",
+    actionLabel: "Xem đơn ứng tuyển",
     status: undefined,
-    emptyTitle: 'No requests yet',
-    emptyDescription: 'Create a request and tutors will start applying.',
+    emptyTitle: "Chưa có yêu cầu",
+    emptyDescription: "Tạo yêu cầu để gia sư bắt đầu ứng tuyển.",
     buildPath: (requestId) => `/parent/requests/${requestId}/applications`,
     isAvailable: () => true,
     unavailableNote: '',
@@ -36,9 +36,9 @@ const PICKER_MODES = {
 
 const pluralize = (count) => {
   if (count === 1) {
-    return '1 application';
+    return "1 đơn ứng tuyển";
   }
-  return `${count} applications`;
+  return `${count} đơn ứng tuyển`;
 };
 
 function PickerRow({ request, mode }) {
@@ -46,7 +46,7 @@ function PickerRow({ request, mode }) {
   const badge = getStatusBadge(REQUEST_STATUS, request.status);
   const available = mode.isAvailable(request);
 
-  let learner = 'no specific learner';
+  let learner = "không chỉ định học sinh";
   if (request.student) {
     learner = request.student.full_name;
   }
@@ -59,10 +59,10 @@ function PickerRow({ request, mode }) {
             {request.title}
           </button>
           <span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>
-          {request.is_expired && <span className="status-badge tone-error">Expired</span>}
+          {request.is_expired && <span className="status-badge tone-error">Đã hết hạn</span>}
         </div>
         <p className="item-meta">
-          {request.subject_name} · {request.grade_level} · {getModeLabel(request.teaching_mode)} · {formatBudget(request.budget)} · For {learner}
+          {request.subject_name} · {request.grade_level} · {getModeLabel(request.teaching_mode)} · {formatBudget(request.budget)} · Cho {learner}
         </p>
       </div>
       <span className="item-count">{pluralize(request.application_count)}</span>
@@ -96,7 +96,7 @@ export default function RequestPicker({ mode: modeName }) {
         <p className="item-meta">{mode.intro}</p>
         <button type="button" className="btn btn-outline btn-sm" onClick={() => navigate('/parent/requests/new')}>
           <Plus size={14} aria-hidden="true" />
-          <span>Create request</span>
+          <span>Tạo yêu cầu</span>
         </button>
       </div>
 

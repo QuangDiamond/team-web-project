@@ -57,7 +57,7 @@ function SessionRow({ session }) {
       </div>
       {hasJoinLink && (
         <a className="btn btn-primary btn-sm" href={session.meeting_link} target="_blank" rel="noopener noreferrer">
-          Join
+          Tham gia
         </a>
       )}
     </li>
@@ -67,13 +67,13 @@ function SessionRow({ session }) {
 // Khối "Upcoming Sessions" (Figma: Upcoming Classes)
 export default function UpcomingSessionList({ section, onRetry }) {
   return (
-    <SectionCard title="Upcoming Sessions" action={<SectionCount section={section} label="Next 7 days" />}>
+    <SectionCard title="Buổi học sắp tới" action={<SectionCount section={section} label="Trong 7 ngày tới" />}>
       <SectionContent
         section={section}
         onRetry={onRetry}
         emptyIcon={CalendarClock}
-        emptyTitle="No sessions in the next 7 days"
-        emptyDescription="Scheduled sessions of your classes will appear here."
+        emptyTitle="Không có buổi học trong 7 ngày tới"
+        emptyDescription="Lịch học của các lớp bạn tham gia sẽ hiển thị ở đây."
       >
         <ul className="student-list">
           {section.items.map((session) => (

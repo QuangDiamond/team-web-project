@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 
 const BREAKDOWN_LABELS = {
-  budget: 'Price fit',
-  rating: 'Rating',
-  schedule: 'Schedule',
-  area: 'Area',
+  budget: "Mức phù hợp học phí",
+  rating: "Đánh giá",
+  schedule: "Lịch học",
+  area: "Khu vực",
 };
 
-const MODE_LABELS = { ONLINE: 'Online', OFFLINE: 'In person', HYBRID: 'Hybrid' };
+const MODE_LABELS = { ONLINE: "Trực tuyến", OFFLINE: "Trực tiếp", HYBRID: "Kết hợp" };
 
 const getInitials = (fullName) => {
   const words = (fullName || '').trim().split(/\s+/).filter(Boolean);
@@ -19,14 +19,14 @@ const getInitials = (fullName) => {
 
 const formatPrice = (price) => {
   if (price === null || price === undefined) {
-    return 'Price not set';
+    return "Chưa có học phí";
   }
-  return `${Number(price).toLocaleString('vi-VN')} ₫/session`;
+  return `${Number(price).toLocaleString('vi-VN')} ₫/buổi`;
 };
 
 function RatingText({ rating }) {
   if (rating === null || rating === undefined) {
-    return <span>No reviews yet</span>;
+    return <span>Chưa có đánh giá</span>;
   }
   return <span>★ {Number(rating).toFixed(1)}</span>;
 }
@@ -43,14 +43,14 @@ export default function SuggestionCard({ suggestion, rank, isInvited, onInvite }
   return (
     <li className="ai-card">
       <div className="ai-card-top">
-        <span className="ai-card-rank" aria-label={`Rank ${rank}`}>{rank}</span>
+        <span className="ai-card-rank" aria-label={`Thứ hạng ${rank}`}>{rank}</span>
         <span className="ai-card-avatar" aria-hidden="true">{getInitials(tutor.full_name)}</span>
         <div className="ai-card-identity">
           <Link className="ai-card-name" to={`/tutors/${tutor.profile_id}`}>{tutor.full_name}</Link>
           <p className="ai-card-sub">{post.subject_name} · {post.grade_level}</p>
           <p className="ai-card-rating"><RatingText rating={tutor.average_rating} /></p>
         </div>
-        <span className="status-badge tone-primary ai-card-score">{suggestion.match_score}% match</span>
+        <span className="status-badge tone-primary ai-card-score">{suggestion.match_score}% phù hợp</span>
       </div>
 
       <p className="ai-card-meta">
@@ -63,7 +63,7 @@ export default function SuggestionCard({ suggestion, rank, isInvited, onInvite }
       {suggestion.ai_reason ? (
         <p className="ai-card-reason">{suggestion.ai_reason}</p>
       ) : (
-        <p className="ai-card-reason is-rule-based">Ranked by price, rating, schedule and area match.</p>
+        <p className="ai-card-reason is-rule-based">Xếp hạng theo mức phù hợp học phí, đánh giá, lịch học và khu vực.</p>
       )}
 
       {breakdown && (
@@ -95,7 +95,7 @@ export default function SuggestionCard({ suggestion, rank, isInvited, onInvite }
           disabled={isInvited}
           onClick={() => onInvite(suggestion)}
         >
-          {isInvited ? 'Invited' : 'Invite'}
+          {isInvited ? "Đã mời" : "Mời"}
         </button>
       </div>
     </li>

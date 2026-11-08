@@ -23,32 +23,32 @@ export default function TutoringRequests() {
   return (
     <div className="page-stack">
       <div className="page-toolbar">
-        <p className="item-meta">Manage open requests and compare tutor interest.</p>
+        <p className="item-meta">Quản lý yêu cầu đang mở và xem gia sư quan tâm.</p>
         <button type="button" className="btn btn-primary btn-sm" onClick={goToCreate}>
           <Plus size={14} aria-hidden="true" />
-          <span>Create request</span>
+          <span>Tạo yêu cầu</span>
         </button>
       </div>
 
       {loading && !data && (
         <div className="page-loading-inline" role="status">
           <LoaderCircle size={26} className="spin" aria-hidden="true" />
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">Đang tải...</span>
         </div>
       )}
 
       {error && (
         <Alert type="error">
           <p>{error.message}</p>
-          <button type="button" className="btn btn-outline btn-sm" onClick={reload}>Try again</button>
+          <button type="button" className="btn btn-outline btn-sm" onClick={reload}>Thử lại</button>
         </Alert>
       )}
 
       {data && data.items.length === 0 && (
         <EmptyState
           icon={FileText}
-          title="No tutoring requests yet"
-          description="Create your first request and qualified tutors will start applying."
+          title="Chưa có yêu cầu tìm gia sư"
+          description="Tạo yêu cầu đầu tiên để các gia sư phù hợp ứng tuyển."
         />
       )}
 

@@ -7,7 +7,7 @@ function ApplicationRow({ application, onWithdraw }) {
   const [withdrawing, setWithdrawing] = useState(false);
   const badge = getStatusBadge(APPLICATION_STATUS, application.status);
 
-  let requestTitle = 'Request no longer available';
+  let requestTitle = "Yêu cầu không còn khả dụng";
   let subject = '';
   if (application.request) {
     requestTitle = application.request.title;
@@ -18,9 +18,9 @@ function ApplicationRow({ application, onWithdraw }) {
   if (subject) {
     metaParts.push(subject);
   }
-  metaParts.push(`Applied ${formatDate(application.created_at)}`);
+  metaParts.push(`Ứng tuyển lúc ${formatDate(application.created_at)}`);
   if (application.match_score !== null && application.match_score !== undefined) {
-    metaParts.push(`${application.match_score}% match`);
+    metaParts.push(`${application.match_score}% phù hợp`);
   }
 
   const handleWithdraw = async () => {
@@ -39,13 +39,13 @@ function ApplicationRow({ application, onWithdraw }) {
         <p className="item-meta">{metaParts.join(' · ')}</p>
         {application.note && <p className="item-note">“{application.note}”</p>}
         {application.status === 'CONTINUED' && (
-          <p className="item-meta">The parent continued with you. A conversation has been opened.</p>
+          <p className="item-meta">Phụ huynh đã đồng ý trao đổi với bạn. Cuộc trò chuyện đã được mở.</p>
         )}
       </div>
       {application.status === 'PENDING' && (
         <div className="item-actions">
           <button type="button" className="btn btn-outline btn-sm" disabled={withdrawing} onClick={handleWithdraw}>
-            {withdrawing ? 'Withdrawing...' : 'Withdraw'}
+            {withdrawing ? "Đang rút..." : "Rút đơn"}
           </button>
         </div>
       )}

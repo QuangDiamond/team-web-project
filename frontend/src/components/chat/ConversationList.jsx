@@ -31,7 +31,7 @@ const getAvatarBg = (name) => {
 
 const getPreview = (lastMessage) => {
   if (!lastMessage) {
-    return 'Chưa có tin nhắn nào';
+    return 'Chưa có tin nhắn';
   }
   let content = lastMessage.content || '';
   if (lastMessage.sender_is_me) {
@@ -55,8 +55,8 @@ export default function ConversationList({ conversations, selectedId, basePath }
     return (
       <EmptyState
         icon={MessageSquare}
-        title="Chưa có cuộc trò chuyện nào"
-        description="Hội thoại sẽ tự động mở khi phụ huynh duyệt đơn ứng tuyển của gia sư hoặc gia sư chấp nhận lời mời dạy kèm."
+        title="Chưa có cuộc trò chuyện"
+        description="Cuộc trò chuyện được mở khi phụ huynh đồng ý trao đổi với gia sư ứng tuyển hoặc gia sư chấp nhận lời mời."
       />
     );
   }

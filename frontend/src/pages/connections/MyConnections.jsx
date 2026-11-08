@@ -231,7 +231,7 @@ export default function MyConnections() {
           </div>
           <div>
             <div className="conn-kpi-val">{pendingCount}</div>
-            <div className="conn-kpi-lbl">Chờ xác nhận (Pending)</div>
+            <div className="conn-kpi-lbl">Chờ xác nhận</div>
           </div>
         </div>
 
@@ -440,7 +440,7 @@ export default function MyConnections() {
                       onClick={() => handleConfirmAction(conn, 'CANCEL')}
                       disabled={processingId === conn._id}
                     >
-                      {processingId === conn._id ? 'Đang hủy...' : 'Hủy đề xuất (Cancel)'}
+                      {processingId === conn._id ? 'Đang hủy...' : 'Hủy đề xuất'}
                     </button>
                   )}
 
@@ -624,7 +624,7 @@ export default function MyConnections() {
                     ratingModalTarget.tutor?.avatar_url ||
                     'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
                   }
-                  alt="Tutor"
+                  alt="Gia sư"
                   style={{ width: '3.5rem', height: '3.5rem', borderRadius: '50%', objectFit: 'cover' }}
                 />
                 <div>

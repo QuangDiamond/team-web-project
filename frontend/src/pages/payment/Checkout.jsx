@@ -42,9 +42,9 @@ export default function Checkout() {
 
   const header = (
     <PageHeader
-      eyebrow="BILLING"
-      title="Upgrade / Buy credits"
-      description="Upgrade to Pro for more monthly credits and AI quota, or top up with a credit pack."
+      eyebrow="THANH TOÁN"
+      title="Nâng cấp / Mua tín dụng"
+      description="Nâng cấp lên Pro để có thêm tín dụng và lượt dùng AI hằng tháng, hoặc mua thêm gói tín dụng."
     />
   );
 
@@ -54,7 +54,7 @@ export default function Checkout() {
         {header}
         <div className="card checkout-loading" role="status">
           <LoaderCircle size={24} className="spin" aria-hidden="true" />
-          <span>Loading plans and credit packs...</span>
+          <span>Đang tải gói dịch vụ và gói tín dụng...</span>
         </div>
       </>
     );
@@ -64,10 +64,10 @@ export default function Checkout() {
     return (
       <>
         {header}
-        <Alert type="error">Could not load plans and credit packs: {loadError}</Alert>
+        <Alert type="error">Không thể tải gói dịch vụ và gói tín dụng: {loadError}</Alert>
         <button type="button" className="btn btn-outline btn-sm" onClick={reload}>
           <RotateCw size={16} aria-hidden="true" />
-          <span>Try again</span>
+          <span>Thử lại</span>
         </button>
       </>
     );
@@ -80,9 +80,9 @@ export default function Checkout() {
         {header}
         <div className="card empty-state">
           <PackageOpen size={36} className="empty-state-icon" aria-hidden="true" />
-          <p className="empty-state-title">Nothing to buy right now</p>
-          <p className="empty-state-text">There are no plans or credit packs available for your account. Please check back later.</p>
-          <Link to="/credits" className="btn btn-outline">Back to Credits & Transactions</Link>
+          <p className="empty-state-title">Hiện chưa có gói để mua</p>
+          <p className="empty-state-text">Hiện chưa có gói dịch vụ hoặc gói tín dụng dành cho tài khoản của bạn. Vui lòng quay lại sau.</p>
+          <Link to="/credits" className="btn btn-outline">Quay lại Tín dụng và giao dịch</Link>
         </div>
       </>
     );
@@ -103,7 +103,7 @@ export default function Checkout() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!selection) {
-      setFormError('Please choose a plan or a credit pack.');
+      setFormError('Vui lòng chọn gói dịch vụ hoặc gói tín dụng.');
       return;
     }
 

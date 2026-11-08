@@ -13,10 +13,10 @@ function ClassRow({ classroom }) {
     metaParts.push(classroom.grade);
   }
   if (classroom.tutor_name) {
-    metaParts.push(`Tutor: ${classroom.tutor_name}`);
+    metaParts.push(`Gia sư: ${classroom.tutor_name}`);
   }
   if (classroom.joined_at) {
-    metaParts.push(`Joined ${formatDate(classroom.joined_at)}`);
+    metaParts.push(`Tham gia lúc ${formatDate(classroom.joined_at)}`);
   }
 
   return (
@@ -27,7 +27,7 @@ function ClassRow({ classroom }) {
       <div className="student-row-body">
         <div className="student-row-heading">
           <p className="student-row-title">{classroom.name}</p>
-          <span className="status-badge tone-success">Active</span>
+          <span className="status-badge tone-success">Đang hoạt động</span>
         </div>
         <p className="student-row-meta">{metaParts.join(' · ')}</p>
       </div>
@@ -38,13 +38,13 @@ function ClassRow({ classroom }) {
 // Khối "Joined Classes" (Figma: SectionClasses)
 export default function JoinedClassList({ section, onRetry }) {
   return (
-    <SectionCard title="Joined Classes" action={<SectionCount section={section} label="Active" />}>
+    <SectionCard title="Lớp đã tham gia" action={<SectionCount section={section} label="Đang hoạt động" />}>
       <SectionContent
         section={section}
         onRetry={onRetry}
         emptyIcon={School}
-        emptyTitle="You have not joined any class yet"
-        emptyDescription="Classes you join with a code or invite link will appear here."
+        emptyTitle="Bạn chưa tham gia lớp nào"
+        emptyDescription="Các lớp bạn tham gia bằng mã hoặc liên kết mời sẽ hiển thị ở đây."
       >
         <ul className="student-list">
           {section.items.map((classroom) => (

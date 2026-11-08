@@ -51,7 +51,7 @@ function TargetRoleField({ value, onChange, error, disabled }) {
 
   return (
     <fieldset className="form-field segmented-field" aria-describedby={describedBy}>
-      <legend className="form-label">Available to</legend>
+      <legend className="form-label">Dành cho</legend>
       <div className="segmented">
         {PACK_ROLE_OPTIONS.map((option, index) => {
           let optionId;
@@ -106,10 +106,10 @@ export default function CreditPackDialog({ pack, onClose, onSaved }) {
     if (isCreating) {
       payload.target_role = values.target_role;
       await createCreditPack(payload);
-      return `Credit pack "${payload.name}" was added.`;
+      return `Gói tín dụng "${payload.name}" đã được thêm.`;
     }
     await updateCreditPack(pack._id, payload);
-    return `Credit pack "${payload.name}" was updated.`;
+    return `Gói tín dụng "${payload.name}" đã được cập nhật.`;
   };
 
   const handleSubmit = async (event) => {
@@ -136,13 +136,13 @@ export default function CreditPackDialog({ pack, onClose, onSaved }) {
     }
   };
 
-  let title = 'Edit credit pack';
-  let description = `Available to: ${getTargetRoleLabel(values.target_role)}. Changes apply to new purchases only.`;
-  let submitLabel = 'Save changes';
+  let title = 'Sửa gói tín dụng';
+  let description = `Dành cho: ${getTargetRoleLabel(values.target_role)}. Các thay đổi chỉ áp dụng cho lượt mua mới.`;
+  let submitLabel = 'Lưu thay đổi';
   if (isCreating) {
-    title = 'Add credit pack';
-    description = 'The new pack is shown to users of the selected role right away.';
-    submitLabel = 'Add pack';
+    title = 'Thêm gói tín dụng';
+    description = 'Gói mới sẽ hiển thị ngay cho người dùng thuộc vai trò đã chọn.';
+    submitLabel = 'Thêm gói tín dụng';
   }
 
   return (
@@ -161,19 +161,19 @@ export default function CreditPackDialog({ pack, onClose, onSaved }) {
 
         <FormInput
           id="name"
-          label="Pack name"
+          label="Tên gói tín dụng"
           value={values.name}
           onChange={handleChange}
           error={errors.name}
-          placeholder="e.g. 30 credits"
+          placeholder="Ví dụ: 30 tín dụng"
           disabled={submitting}
-          belowControl={<p className="form-field-hint">Up to {PACK_NAME_MAX_LENGTH} characters.</p>}
+          belowControl={<p className="form-field-hint">Tối đa {PACK_NAME_MAX_LENGTH} ký tự.</p>}
         />
 
         <div className="form-grid">
           <FormInput
             id="credit_amount"
-            label="Credits"
+            label="Tín dụng"
             type="number"
             value={values.credit_amount}
             onChange={handleChange}
@@ -182,7 +182,7 @@ export default function CreditPackDialog({ pack, onClose, onSaved }) {
           />
           <FormInput
             id="price"
-            label="Price (VND)"
+            label="Giá (VND)"
             type="number"
             value={values.price}
             onChange={handleChange}

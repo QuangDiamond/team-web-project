@@ -12,8 +12,8 @@ import { toNumber } from '../../utils/formatCurrency';
 import '../../styles/plansPricing.css';
 
 const PLAN_GROUPS = [
-  { role: 'TUTOR', title: 'Tutor plans', description: 'Plans tutors can subscribe to.' },
-  { role: 'PARENT', title: 'Parent plans', description: 'Plans parents can subscribe to.' },
+  { role: 'TUTOR', title: 'Gói dịch vụ cho gia sư', description: 'Các gói dịch vụ dành cho gia sư đăng ký.' },
+  { role: 'PARENT', title: 'Gói dịch vụ cho phụ huynh', description: 'Các gói dịch vụ dành cho phụ huynh đăng ký.' },
 ];
 
 // Plan của 1 role, gói rẻ nhất (Free) đứng trước
@@ -48,7 +48,7 @@ export default function PlansPricing() {
   const addPackButton = (
     <button type="button" className="btn btn-primary btn-sm" onClick={() => openDialog('pack', null)}>
       <Plus size={18} aria-hidden="true" />
-      <span>Add credit pack</span>
+      <span>Thêm gói tín dụng</span>
     </button>
   );
 
@@ -57,7 +57,7 @@ export default function PlansPricing() {
       return (
         <div className="card plans-loading" role="status">
           <LoaderCircle size={24} className="spin" aria-hidden="true" />
-          <span>Loading plans and credit packs...</span>
+          <span>Đang tải gói dịch vụ và gói tín dụng...</span>
         </div>
       );
     }
@@ -65,10 +65,10 @@ export default function PlansPricing() {
     if (loadError) {
       return (
         <div className="plans-load-error">
-          <Alert type="error">Could not load plans and credit packs: {loadError}</Alert>
+          <Alert type="error">Không thể tải gói dịch vụ và gói tín dụng: {loadError}</Alert>
           <button type="button" className="btn btn-outline btn-sm" onClick={reload}>
             <RotateCw size={16} aria-hidden="true" />
-            <span>Try again</span>
+            <span>Thử lại</span>
           </button>
         </div>
       );
@@ -78,10 +78,10 @@ export default function PlansPricing() {
       <>
         <section className="pricing-section" aria-labelledby="plans-heading">
           <div className="section-header">
-            <h2 id="plans-heading" className="section-title">Subscription plans</h2>
+            <h2 id="plans-heading" className="section-title">Gói dịch vụ</h2>
             <button type="button" className="btn btn-primary btn-sm" onClick={() => openDialog('plan', null)}>
               <Plus size={18} aria-hidden="true" />
-              <span>Add plan</span>
+              <span>Thêm gói dịch vụ</span>
             </button>
           </div>
           <div className="plan-groups">
@@ -94,7 +94,7 @@ export default function PlansPricing() {
                     <h3 id={headingId} className="plan-group-title">{group.title}</h3>
                     <p className="plan-group-description">{group.description}</p>
                   </div>
-                  {rolePlans.length === 0 && <p className="plan-group-empty">No plans configured for this role.</p>}
+                  {rolePlans.length === 0 && <p className="plan-group-empty">Chưa có gói dịch vụ cho vai trò này.</p>}
                   <div className="plan-grid">
                     {rolePlans.map((plan) => (
                       <PlanCard key={plan._id} plan={plan} onEdit={(item) => openDialog('plan', item)} />
@@ -109,8 +109,8 @@ export default function PlansPricing() {
         <section className="pricing-section" aria-labelledby="packs-heading">
           <div className="section-header">
             <div>
-              <h2 id="packs-heading" className="section-title">Credit packs</h2>
-              <p className="section-description">One-off credit top-ups. Disabled packs are hidden from users.</p>
+              <h2 id="packs-heading" className="section-title">Gói tín dụng</h2>
+              <p className="section-description">Nạp thêm tín dụng theo từng lần mua. Người dùng không thấy các gói đã tắt.</p>
             </div>
             {addPackButton}
           </div>
@@ -127,9 +127,9 @@ export default function PlansPricing() {
   return (
     <div className="plans-pricing">
       <PageHeader
-        eyebrow="ADMIN · BILLING"
-        title="Plans & Pricing"
-        description="Configure subscription plans for tutors and parents, and the credit packs users can buy."
+        eyebrow="QUẢN TRỊ VIÊN · THANH TOÁN"
+        title="Gói dịch vụ và bảng giá"
+        description="Thiết lập gói dịch vụ cho gia sư, phụ huynh và các gói tín dụng có thể mua."
       />
 
       {successMessage && <Alert type="success">{successMessage}</Alert>}

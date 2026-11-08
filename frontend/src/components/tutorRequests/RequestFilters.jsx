@@ -28,21 +28,21 @@ export default function RequestFilters({ options, onApply }) {
 
   return (
     <form className="request-filters" onSubmit={handleSubmit} role="search">
-      <FormInput id="q" label="Keyword" value={values.q} onChange={handleChange} placeholder="Search by title, subject or description" />
+      <FormInput id="q" label="Từ khóa" value={values.q} onChange={handleChange} placeholder="Tìm theo tiêu đề, môn học hoặc mô tả" />
       <div className="request-filters-grid">
-        <FormSelect id="subject" label="Subject" value={values.subject} onChange={handleChange} options={toOptions(options.subjects)} placeholder="All subjects" />
-        <FormSelect id="grade" label="Grade level" value={values.grade} onChange={handleChange} options={toOptions(options.grades)} placeholder="All grades" />
-        <FormSelect id="mode" label="Session mode" value={values.mode} onChange={handleChange} options={TEACHING_MODES} placeholder="Any mode" />
-        <FormInput id="area" label="Area" value={values.area} onChange={handleChange} placeholder="e.g. Cầu Giấy" />
-        <FormInput id="minBudget" label="Min budget (₫)" type="number" value={values.minBudget} onChange={handleChange} placeholder="0" />
-        <FormInput id="maxBudget" label="Max budget (₫)" type="number" value={values.maxBudget} onChange={handleChange} placeholder="Any" />
+        <FormSelect id="subject" label="Môn học" value={values.subject} onChange={handleChange} options={toOptions(options.subjects)} placeholder="Tất cả môn học" />
+        <FormSelect id="grade" label="Khối lớp" value={values.grade} onChange={handleChange} options={toOptions(options.grades)} placeholder="Tất cả khối lớp" />
+        <FormSelect id="mode" label="Hình thức học" value={values.mode} onChange={handleChange} options={TEACHING_MODES} placeholder="Mọi hình thức" />
+        <FormInput id="area" label="Khu vực" value={values.area} onChange={handleChange} placeholder="e.g. Cầu Giấy" />
+        <FormInput id="minBudget" label="Ngân sách tối thiểu (₫)" type="number" value={values.minBudget} onChange={handleChange} placeholder="0" />
+        <FormInput id="maxBudget" label="Ngân sách tối đa (₫)" type="number" value={values.maxBudget} onChange={handleChange} placeholder="Tất cả" />
       </div>
       <div className="item-actions">
         <button type="submit" className="btn btn-primary btn-sm">
           <Search size={14} aria-hidden="true" />
-          <span>Search</span>
+          <span>Tìm kiếm</span>
         </button>
-        <button type="button" className="btn btn-outline btn-sm" onClick={handleClear}>Clear</button>
+        <button type="button" className="btn btn-outline btn-sm" onClick={handleClear}>Xóa bộ lọc</button>
       </div>
     </form>
   );
