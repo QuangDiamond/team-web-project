@@ -50,6 +50,11 @@ function setup(t, overrides = {}) {
     }),
     record: null, mails: [], writes: [], failWrite: false, failCleanup: false,
   };
+  // Link khôi phục lấy gốc URL từ env.corsOrigin. Cố định giá trị này để test không phụ thuộc CORS_ORIGIN / backend/.env
+  // của máy chạy (mặc định khi thiếu biến là mảng 2 origin, `new URL` sẽ lỗi và mail không được gửi)
+  const originalCorsOrigin = env.corsOrigin;
+  env.corsOrigin = 'https://trusted.example';
+  t.after(() => { env.corsOrigin = originalCorsOrigin; });
   t.mock.method(transport, 'sendMail', async (mail) => { state.mails.push(mail); });
   t.mock.method(User, 'findOne', async (filter) => {
     if (matches(state.user, filter)) return new User(state.user.toObject());
