@@ -1,0 +1,27 @@
+.audit-logs-page {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+
+.audit-logs-page .mod-meta {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.audit-logs-page .mod-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.audit-logs-page .mod-table-wrap table {
+  min-width: 620px;
+}
+
+.audit-logs-page .mod-audit-detail {
+  max-width: 320px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}

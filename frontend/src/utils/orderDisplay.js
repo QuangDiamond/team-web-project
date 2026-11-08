@@ -72,7 +72,7 @@ export const getRetryLink = (order) => {
 
 // Tiêu đề + mô tả cho từng trạng thái thất bại
 export const FAILURE_TEXT = {
-  FAILED: { title: 'Thanh toán thất bại', description: 'Cổng thanh toán đã từ chối giao dịch. Bạn không bị trừ tiền; gói dịch vụ và tín dụng vẫn được giữ nguyên.' },
-  CANCELLED: { title: 'Đã hủy thanh toán', description: 'Bạn đã hủy thanh toán. Bạn không bị trừ tiền; gói dịch vụ và tín dụng vẫn được giữ nguyên.' },
-  EXPIRED: { title: 'Thanh toán đã hết hạn', description: 'Đơn hàng chưa được thanh toán trong vòng 15 phút. Bạn không bị trừ tiền; gói dịch vụ và tín dụng vẫn được giữ nguyên.' },
+  FAILED: { title: 'Thanh toán thất bại', description: 'Cổng thanh toán đã từ chối giao dịch. Bạn không bị trừ tiền; gói dịch vụ và credits vẫn được giữ nguyên.' },
+  CANCELLED: { title: 'Đã hủy thanh toán', description: 'Bạn đã hủy thanh toán. Bạn không bị trừ tiền; gói dịch vụ và credits vẫn được giữ nguyên.' },
+  EXPIRED: { title: 'Thanh toán đã hết hạn', description: 'Đơn hàng chưa được thanh toán trong vòng 15 phút. Bạn không bị trừ tiền; gói dịch vụ và credits vẫn được giữ nguyên.' },
 };

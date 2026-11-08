@@ -15,12 +15,58 @@ import {
   Send,
   Settings,
   ShieldAlert,
-  Sparkles,
   TrendingUp,
   User,
   Users,
   Video,
 } from 'lucide-react';
+
+const createOverviewGroup = (role) => ({
+  label: 'MENU CHÍNH',
+  items: [{ label: 'Tổng quan', to: `/${role}/dashboard`, icon: LayoutDashboard, end: true }],
+});
+
+const createAccountGroup = (role, extraItems = []) => {
+  let profilePath = '/profile';
+  if (role === 'tutor') {
+    profilePath = '/tutor/profile';
+  }
+  if (role === 'parent') {
+    profilePath = (user) => {
+      if (!user) return null;
+      const userId = user.id || user._id;
+      if (!userId) return null;
+      return `/parents/${userId}`;
+    };
+  }
+  const items = [];
+  if (role !== 'admin') {
+    items.push({ label: 'Hồ sơ của tôi', to: profilePath, icon: User });
+  }
+  return {
+    label: 'TÀI KHOẢN',
+    items: [
+      ...items,
+      { label: 'Đổi mật khẩu', to: `/${role}/change-password`, icon: KeyRound },
+      ...extraItems,
+    ],
+  };
+};
+
+const createPaymentGroup = (role) => ({
+  label: 'THANH TOÁN',
+  items: [
+    { label: 'Credits và giao dịch', to: `/${role}/credits`, icon: History },
+    { label: 'Nâng cấp / Mua credits', to: `/${role}/checkout`, icon: CreditCard },
+  ],
+});
+
+const createWorkItems = (role) => [
+  { label: 'Lớp học', to: `/${role}/classes`, icon: BookOpen },
+  { label: 'Tin nhắn', to: `/${role}/messages`, icon: MessageSquare },
+  { label: 'Thỏa thuận', to: `/${role}/contracts`, icon: BookOpen },
+  { label: 'Thông báo', to: `/${role}/notifications`, icon: Bell },
+];
 
 /*
  * Cấu hình menu cho DashboardLayout, mỗi role một export.
@@ -43,10 +89,14 @@ import {
 export const STUDENT_MENU = {
   roleLabel: "Học sinh",
   groups: [
+    createOverviewGroup('student'),
+    createAccountGroup('student', [
+      { label: 'Giao dịch', icon: CreditCard },
+      { label: 'Cài đặt', icon: Settings },
+    ]),
     {
-      label: "MENU CHÍNH",
+      label: "CÔNG VIỆC",
       items: [
-        { label: "Tổng quan", to: '/student/dashboard', icon: LayoutDashboard, end: true },
         { label: "Lớp học", to: '/student/classes', icon: BookOpen },
         { label: "Buổi học của tôi", icon: Video },
         { label: "Tin nhắn", icon: MessageSquare },
@@ -63,45 +113,33 @@ export const STUDENT_MENU = {
         { label: "Lịch học", icon: CalendarDays },
       ],
     },
-    {
-      label: "TÀI KHOẢN",
-      items: [
-        { label: "Giao dịch", icon: CreditCard },
-        { label: "Đổi mật khẩu", to: '/student/change-password', icon: KeyRound },
-        { label: "Cài đặt", icon: Settings },
-      ],
-    },
   ],
   headerActions: [{ label: "Trang chủ", to: '/' }],
 };
 
 // Parent workspace (menu theo Figma). Các mục chưa có `to` sẽ được thêm khi UC tương ứng hoàn thành.
-// Đơn ứng tuyển xem ngay trong chi tiết request (Tutoring Requests); "AI Suggestions" có dropdown chọn request ngay trên trang
+// Đơn ứng tuyển xem trong chi tiết request; mục Gợi ý có dropdown chọn request ngay trên trang.
 export const PARENT_MENU = {
   roleLabel: "Phụ huynh",
   groups: [
+    createOverviewGroup('parent'),
+    createAccountGroup('parent'),
     {
-      label: 'PHỤ HUYNH',
+      label: 'TÌM CƠ HỘI',
       items: [
-        { label: "Tổng quan", to: '/parent/dashboard', icon: LayoutDashboard, end: true },
-        { label: "Lớp học", to: '/parent/classes', icon: BookOpen },
         { label: "Yêu cầu tìm gia sư", to: '/parent/requests', icon: FileText },
-        { label: "Gợi ý AI", to: '/parent/ai-suggestions', icon: Sparkles },
+        { label: 'Gợi ý', to: '/parent/suggestions', icon: Users },
         { label: "Lời mời", to: '/parent/invitations', icon: Mail },
-        { label: "Tin nhắn", to: '/parent/messages', icon: MessageSquare },
-        { label: "Thỏa thuận", to: '/parent/contracts', icon: BookOpen },
-        { label: "Thông báo", to: '/parent/notifications', icon: Bell },
-        { label: "Con và tiến độ học tập", icon: Users },
       ],
     },
     {
-      label: "THANH TOÁN",
+      label: 'CÔNG VIỆC',
       items: [
-        { label: "Tín dụng và giao dịch", to: '/parent/credits', icon: History },
-        { label: "Nâng cấp / Mua tín dụng", to: '/parent/checkout', icon: CreditCard },
+        ...createWorkItems('parent'),
+        { label: 'Con và tiến độ học tập', icon: Users },
       ],
     },
-    { label: "TÀI KHOẢN", items: [{ label: "Đổi mật khẩu", to: '/parent/change-password', icon: KeyRound }] },
+    createPaymentGroup('parent'),
   ],
   headerActions: [{ label: "Trang chủ", to: '/' }],
 };
@@ -110,15 +148,13 @@ export const PARENT_MENU = {
 export const TUTOR_MENU = {
   roleLabel: "Gia sư",
   groups: [
-    {
-      label: "MENU CHÍNH",
-      items: [{ label: "Tổng quan", to: '/tutor/dashboard', icon: LayoutDashboard, end: true }],
-    },
+    createOverviewGroup('tutor'),
+    createAccountGroup('tutor'),
     {
       label: "TÌM CƠ HỘI",
       items: [
         { label: "Tìm yêu cầu", to: '/tutor/requests', icon: Search, end: true },
-        { label: "Gợi ý dành cho bạn", to: '/tutor/requests/suggested', icon: Sparkles },
+        { label: 'Gợi ý', to: '/tutor/requests/suggested', icon: Search },
         { label: "Yêu cầu đã lưu", to: '/tutor/requests/saved', icon: Bookmark },
         { label: "Đơn ứng tuyển của tôi", to: '/tutor/applications', icon: Send },
         { label: "Lời mời", to: '/tutor/invitations', icon: Mail },
@@ -127,23 +163,12 @@ export const TUTOR_MENU = {
     {
       label: "CÔNG VIỆC",
       items: [
-        { label: "Lớp học", to: '/tutor/classes', icon: BookOpen },
-        { label: "Tin nhắn", to: '/tutor/messages', icon: MessageSquare },
-        { label: "Thỏa thuận", to: '/tutor/contracts', icon: BookOpen },
-        { label: "Thông báo", to: '/tutor/notifications', icon: Bell },
-        { label: "Hồ sơ của tôi", to: '/tutor/profile', icon: User },
+        ...createWorkItems('tutor'),
         { label: "Bài đăng của tôi", to: '/tutor/posts', icon: FileText },
         { label: "Lịch của tôi", to: '/tutor/schedule', icon: CalendarDays },
       ],
     },
-    {
-      label: "THANH TOÁN",
-      items: [
-        { label: "Tín dụng và giao dịch", to: '/tutor/credits', icon: History },
-        { label: "Nâng cấp / Mua tín dụng", to: '/tutor/checkout', icon: CreditCard },
-      ],
-    },
-    { label: "TÀI KHOẢN", items: [{ label: "Đổi mật khẩu", to: '/tutor/change-password', icon: KeyRound }] },
+    createPaymentGroup('tutor'),
   ],
   headerActions: [{ label: "Trang chủ", to: '/' }],
 };
@@ -152,17 +177,19 @@ export const TUTOR_MENU = {
 export const ADMIN_MENU = {
   roleLabel: "Quản trị viên",
   groups: [
+    createOverviewGroup('admin'),
+    createAccountGroup('admin'),
     {
       label: "QUẢN TRỊ",
       items: [
-        { label: "Thống kê hệ thống", to: '/admin/dashboard', icon: LayoutDashboard, end: true },
         { label: "Người dùng", to: '/admin/users', icon: Users },
         { label: "Gói dịch vụ và giá", to: '/admin/plans', icon: CreditCard },
+        { label: 'Danh mục', to: '/admin/categories', icon: BookOpen },
         { label: "Kiểm duyệt nội dung", to: '/admin/moderation', icon: ShieldAlert },
+        { label: "Nhật ký kiểm duyệt", to: '/admin/audit-logs', icon: ClipboardList },
         { label: "Thông báo", to: '/admin/notifications', icon: Bell },
       ],
     },
-    { label: "TÀI KHOẢN", items: [{ label: "Đổi mật khẩu", to: '/admin/change-password', icon: KeyRound }] },
   ],
   headerActions: [{ label: "Trang chủ", to: '/' }],
 };

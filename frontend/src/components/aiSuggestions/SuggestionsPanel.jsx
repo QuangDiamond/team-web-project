@@ -5,6 +5,7 @@ import { useAiSuggestions } from '../../hooks/useAiSuggestions';
 import { getMyInvitations } from '../../services/invitationService';
 import Alert from '../common/Alert';
 import ListState from '../common/ListState';
+import Pagination from '../common/Pagination';
 import InviteModal from '../invitations/InviteModal';
 import SuggestionCard from './SuggestionCard';
 
@@ -13,7 +14,7 @@ import SuggestionCard from './SuggestionCard';
  * Trang cha dùng key={requestId} để đổi request thì panel dựng lại từ đầu.
  */
 export default function SuggestionsPanel({ requestId }) {
-  const { data, loading, refreshing, error, refreshError, reload, refresh } = useAiSuggestions(requestId);
+  const { data, loading, refreshing, error, refreshError, reload, refresh, page, setPage } = useAiSuggestions(requestId);
   // UC14: gia sư đang được mời (mở hộp thoại), các gia sư đã mời và thông báo kết quả
   const [invitingSuggestion, setInvitingSuggestion] = useState(null);
   const [invitedTutorIds, setInvitedTutorIds] = useState([]);
@@ -42,7 +43,7 @@ export default function SuggestionsPanel({ requestId }) {
 
   const handleInvited = (result) => {
     setInvitedTutorIds([...invitedTutorIds, invitingSuggestion.tutor.profile_id]);
-    setInviteNotice(`Đã gửi lời mời. Bạn còn ${result.remaining_credits} tín dụng.`);
+    setInviteNotice(`Đã gửi lời mời. Bạn còn ${result.remaining_credits} credits.`);
     setInvitingSuggestion(null);
   };
 
@@ -51,7 +52,7 @@ export default function SuggestionsPanel({ requestId }) {
   return (
     <div className="page-stack">
       <div className="page-toolbar">
-        <p className="item-meta">Các gia sư dạy cùng môn học và khối lớp với yêu cầu này.</p>
+        <p className="item-meta">Gia sư đã chọn cả môn học và cấp học / trình độ phù hợp trong hồ sơ. Danh sách sắp theo đánh giá.</p>
         <button type="button" className="btn btn-outline btn-sm" disabled={refreshing || loading} onClick={() => refresh()}>
           <RefreshCw size={14} className={refreshing ? 'spin' : ''} aria-hidden="true" />
           <span>{refreshing ? 'Đang làm mới...' : 'Làm mới'}</span>
@@ -63,7 +64,7 @@ export default function SuggestionsPanel({ requestId }) {
 
       <ListState
         list={list}
-        empty={{ icon: SearchX, title: 'Chưa có gia sư phù hợp', description: 'Hãy quay lại khi có thêm gia sư đăng bài.' }}
+        empty={{ icon: SearchX, title: 'Chưa có gia sư phù hợp', description: 'Chưa có gia sư đăng ký giảng dạy cả môn học và trình độ này trong hồ sơ.' }}
       >
         {data && (
           <ul className="ai-list">
@@ -71,7 +72,7 @@ export default function SuggestionsPanel({ requestId }) {
               <SuggestionCard
                 key={suggestion._id}
                 suggestion={suggestion}
-                rank={index + 1}
+                rank={(page - 1) * data.pagination.limit + index + 1}
                 isInvited={invitedTutorIds.includes(suggestion.tutor.profile_id)}
                 onInvite={setInvitingSuggestion}
               />
@@ -79,6 +80,7 @@ export default function SuggestionsPanel({ requestId }) {
           </ul>
         )}
       </ListState>
+      {data && <Pagination pagination={data.pagination} onPageChange={setPage} disabled={loading} />}
 
       <p className="ai-footer-link">
         <Link to="/parent/invitations" className="link">Xem lời mời của tôi</Link>

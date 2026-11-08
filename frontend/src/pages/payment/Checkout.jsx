@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { LoaderCircle, PackageOpen, RotateCw } from 'lucide-react';
 import { useCheckoutData } from '../../hooks/useCheckoutData';
 import { createOrder } from '../../services/paymentService';
@@ -7,9 +7,6 @@ import PageHeader from '../../components/common/PageHeader';
 import Alert from '../../components/common/Alert';
 import CurrentPlanBanner from '../../components/checkout/CurrentPlanBanner';
 import PurchaseItemSelector from '../../components/checkout/PurchaseItemSelector';
-import PaymentMethodSelector from '../../components/checkout/PaymentMethodSelector';
-import OrderSummary from '../../components/checkout/OrderSummary';
-import { findSelection, getDefaultValue, getInitialCount, getInitialPaymentMethod } from '../../utils/checkoutSelection';
 import '../../styles/checkout.css';
 
 // Lỗi 422 có dạng { field: [msg] } -> gộp thành 1 câu để hiện trong Alert
@@ -29,22 +26,17 @@ const toErrorMessage = (error) => {
   return messages.join(' ');
 };
 
-// SC20 – Checkout (UC17): chọn gói Pro hoặc credit pack, phương thức thanh toán rồi chuyển sang cổng thanh toán
+// UC17: chọn chu kỳ đã được cấu hình trong gói và mua trực tiếp từ thẻ.
 export default function Checkout() {
-  const [searchParams] = useSearchParams();
   const { catalog, billing, loading, loadError, reload } = useCheckoutData();
-  // null = chưa chọn gì, dùng mục mặc định
-  const [chosenValue, setChosenValue] = useState(null);
-  const [count, setCount] = useState(() => getInitialCount(searchParams));
-  const [paymentMethod, setPaymentMethod] = useState(() => getInitialPaymentMethod(searchParams));
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
 
   const header = (
     <PageHeader
       eyebrow="THANH TOÁN"
-      title="Nâng cấp / Mua tín dụng"
-      description="Nâng cấp lên Pro để có thêm tín dụng và lượt dùng AI hằng tháng, hoặc mua thêm gói tín dụng."
+      title="Nâng cấp / Mua credits"
+      description="Chọn gói dịch vụ theo chu kỳ đã thiết lập hoặc mua thêm gói credits."
     />
   );
 
@@ -54,7 +46,7 @@ export default function Checkout() {
         {header}
         <div className="card checkout-loading" role="status">
           <LoaderCircle size={24} className="spin" aria-hidden="true" />
-          <span>Đang tải gói dịch vụ và gói tín dụng...</span>
+          <span>Đang tải gói dịch vụ và gói credits...</span>
         </div>
       </>
     );
@@ -64,7 +56,7 @@ export default function Checkout() {
     return (
       <>
         {header}
-        <Alert type="error">Không thể tải gói dịch vụ và gói tín dụng: {loadError}</Alert>
+        <Alert type="error">Không thể tải gói dịch vụ và gói credits: {loadError}</Alert>
         <button type="button" className="btn btn-outline btn-sm" onClick={reload}>
           <RotateCw size={16} aria-hidden="true" />
           <span>Thử lại</span>
@@ -81,47 +73,17 @@ export default function Checkout() {
         <div className="card empty-state">
           <PackageOpen size={36} className="empty-state-icon" aria-hidden="true" />
           <p className="empty-state-title">Hiện chưa có gói để mua</p>
-          <p className="empty-state-text">Hiện chưa có gói dịch vụ hoặc gói tín dụng dành cho tài khoản của bạn. Vui lòng quay lại sau.</p>
-          <Link to="/credits" className="btn btn-outline">Quay lại Tín dụng và giao dịch</Link>
+          <p className="empty-state-text">Hiện chưa có gói dịch vụ hoặc gói credits dành cho tài khoản của bạn. Vui lòng quay lại sau.</p>
+          <Link to="/credits" className="btn btn-outline">Quay lại Credits và giao dịch</Link>
         </div>
       </>
     );
   }
 
-  let selectedValue = chosenValue;
-  if (selectedValue === null) {
-    selectedValue = getDefaultValue(catalog, searchParams);
-  }
-  const selection = findSelection(catalog, selectedValue);
-
-  const handleSelectItem = (event) => {
-    setChosenValue(event.target.value);
-    setCount(1);
-    setFormError('');
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (!selection) {
-      setFormError('Vui lòng chọn gói dịch vụ hoặc gói tín dụng.');
-      return;
-    }
-
-    let payload = {
-      item_type: 'CREDIT_PACK',
-      pack_id: selection.item._id,
-      quantity: count,
-      payment_method: paymentMethod,
-    };
-    if (selection.type === 'PLAN') {
-      payload = {
-        item_type: 'PLAN_UPGRADE',
-        plan_id: selection.item._id,
-        duration_months: count,
-        payment_method: paymentMethod,
-      };
-    }
-
+  const handlePurchase = async (selection) => {
+    const payload = selection.type === 'PLAN'
+      ? { item_type: 'PLAN_UPGRADE', plan_id: selection.item._id, payment_method: 'VIETQR' }
+      : { item_type: 'CREDIT_PACK', pack_id: selection.item._id, quantity: selection.quantity, payment_method: 'VIETQR' };
     setFormError('');
     setSubmitting(true);
     try {
@@ -141,32 +103,17 @@ export default function Checkout() {
       {header}
       <CurrentPlanBanner billing={billing} />
 
-      <form className="checkout-layout" onSubmit={handleSubmit} noValidate>
-        <div className="checkout-main">
-          <section className="card checkout-section">
-            <PurchaseItemSelector
-              catalog={catalog}
-              selectedValue={selectedValue}
-              currentPlanId={currentPlanId}
-              onChange={handleSelectItem}
-              disabled={submitting}
-            />
-          </section>
-
-          <section className="card checkout-section">
-            <PaymentMethodSelector value={paymentMethod} onChange={setPaymentMethod} disabled={submitting} />
-          </section>
-        </div>
-
-        <OrderSummary
-          selection={selection}
-          count={count}
-          onCountChange={setCount}
-          billing={billing}
-          submitting={submitting}
-          formError={formError}
-        />
-      </form>
+      {formError && <Alert type="error">{formError}</Alert>}
+      <div className="checkout-layout">
+        <section className="card checkout-section">
+          <PurchaseItemSelector
+            catalog={catalog}
+            currentPlanId={currentPlanId}
+            onPurchase={handlePurchase}
+            submitting={submitting}
+          />
+        </section>
+      </div>
     </>
   );
 }

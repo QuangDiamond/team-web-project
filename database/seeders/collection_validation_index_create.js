@@ -418,6 +418,19 @@ ensureCollection("TUTOR_PROFILES", {
         "null"
       ]
     },
+    "teaching_categories": {
+      "bsonType": "array",
+      "maxItems": 50,
+      "items": {
+        "bsonType": "object",
+        "required": ["type", "category_id", "name"],
+        "properties": {
+          "type": { "enum": ["subjects", "grades"] },
+          "category_id": { "bsonType": "objectId" },
+          "name": { "bsonType": "string" }
+        }
+      }
+    },
     "bio": {
       "bsonType": [
         "string",
@@ -1545,6 +1558,15 @@ ensureCollection("PLANS", {
         "decimal",
         "null"
       ]
+    },
+    "billing_period": {
+      "bsonType": "string",
+      "enum": ["MONTHLY", "YEARLY"]
+    },
+    "annual_discount_percent": {
+      "bsonType": "int",
+      "minimum": 0,
+      "maximum": 99
     },
     "monthly_credits": {
       "bsonType": [
@@ -3248,6 +3270,19 @@ ensureCollection("SUBJECTS", {
   ]
 });
 ensureIndex("SUBJECTS", {"name":1}, {"unique":true});
+
+// Education levels include Lớp 1–12 and admin-defined levels such as IELTS/TOEIC.
+ensureCollection("GRADE_LEVELS", {
+  bsonType: "object",
+  required: ["_id", "name"],
+  properties: {
+    _id: { bsonType: "objectId" },
+    name: { bsonType: "string", maxLength: 50 },
+    sort_order: { bsonType: ["int", "null"] },
+    is_active: { bsonType: ["bool", "null"] }
+  }
+});
+ensureIndex("GRADE_LEVELS", {name: 1}, {unique: true});
 
 // ---------- Index bổ sung (field nhúng, truy vấn chính) ----------
 ensureIndex("User", {"google_account.google_id":1}, {"unique":true,"partialFilterExpression":{"google_account.google_id":{"$type":"string"}}});

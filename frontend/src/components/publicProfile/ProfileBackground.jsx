@@ -13,6 +13,13 @@ export default function ProfileBackground({ profile }) {
       <SectionCard title={<><UserRound size={19} aria-hidden="true" />Giới thiệu</>}>
         <p className="public-profile-text">{profile.bio || 'Gia sư chưa thêm phần giới thiệu.'}</p>
       </SectionCard>
+      <SectionCard title={<><GraduationCap size={19} aria-hidden="true" />Môn học và trình độ giảng dạy</>}>
+        {profile.teaching_categories?.length > 0 ? (
+          <ul className="public-profile-teaching-tags">
+            {profile.teaching_categories.map((item) => <li key={`${item.type}:${item.category_id}`}>{item.name}</li>)}
+          </ul>
+        ) : <p className="item-meta">Gia sư chưa cập nhật môn học và trình độ giảng dạy.</p>}
+      </SectionCard>
       {SECTIONS.map(({ field, title, name, subtitle, Icon }) => (
         <SectionCard key={field} title={<><Icon size={19} aria-hidden="true" />{title}</>}>
           {profile[field].length === 0 && <p className="item-meta">Chưa có thông tin.</p>}

@@ -37,7 +37,7 @@ export default function RequestListItem({ request, onDelete }) {
             className="btn btn-outline btn-sm btn-icon"
             title="Gợi ý gia sư"
             aria-label="Gợi ý gia sư"
-            onClick={() => navigate(`/parent/requests/${request._id}/ai-suggestions`)}
+            onClick={() => navigate(`/parent/requests/${request._id}/suggestions`)}
           >
             <Sparkles size={16} aria-hidden="true" />
           </button>

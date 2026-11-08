@@ -9,7 +9,7 @@ Trừ webhook, mọi endpoint cần đăng nhập và role `TUTOR` hoặc `PAREN
 Demo VNPay cũ `GET /get-payment-url` đã bỏ (D11), thanh toán đi qua PSP (`backend/src/common/utils/pspClient.js`).
 
 ## Luồng
-1. `GET /catalog` → user chọn gói Pro (số tháng) hoặc credit pack (số lượng).
+1. `GET /catalog` → user chọn gói Pro đã được cấu hình theo tháng/năm hoặc credit pack.
 2. `POST /orders` → nhận `checkout_url`, frontend chuyển trình duyệt sang đó (`window.location.href`).
 3. User thanh toán. Kết quả về backend qua webhook PSP (hoặc trang thanh toán giả khi dev).
 4. Trình duyệt quay về `{CORS_ORIGIN}/payment/result?order=<order_code>`; frontend gọi `GET /orders/:orderCode`.
@@ -21,9 +21,9 @@ Danh mục theo role của user (D10, không phân trang). Chỉ mục đang b�
 {
   "role": "TUTOR",
   "plans": [
-    { "_id": "...", "target_role": "TUTOR", "name": "FREE_DEFAULT", "monthly_price": 0, "monthly_credits": 5, "ai_quota": 10,
+    { "_id": "...", "target_role": "TUTOR", "name": "FREE_DEFAULT", "monthly_price": 0, "billing_period": "MONTHLY", "annual_discount_percent": 0, "monthly_credits": 5, "ai_quota": 10,
       "max_classrooms": 1, "sms_reminders_enabled": false, "is_active": true, "is_free": true },
-    { "_id": "...", "target_role": "TUTOR", "name": "PRO", "monthly_price": 199000, "monthly_credits": 30, "ai_quota": 100,
+    { "_id": "...", "target_role": "TUTOR", "name": "PRO", "monthly_price": 199000, "billing_period": "YEARLY", "annual_discount_percent": 15, "monthly_credits": 30, "ai_quota": 100,
       "max_classrooms": null, "sms_reminders_enabled": true, "is_active": true, "is_free": false }
   ],
   "packs": [
@@ -54,10 +54,12 @@ Tạo đơn `PENDING` (BR-06), hết hạn sau 15 phút. **Số tiền do server
 
 Body (một trong hai):
 ```json
-{ "item_type": "PLAN_UPGRADE", "plan_id": "<id>", "duration_months": 3, "payment_method": "VIETQR" }
+{ "item_type": "PLAN_UPGRADE", "plan_id": "<id>", "payment_method": "VIETQR" }
 { "item_type": "CREDIT_PACK", "pack_id": "<id>", "quantity": 2, "payment_method": "ATM_CARD" }
 ```
-- `duration_months`: 1–12; `quantity`: 1–10 (D9)
+- Plan order duration is derived from the selected plan: `MONTHLY` → 1 month; `YEARLY` → 12 months. The server calculates the annual discount from the saved Plan and does not accept a client-supplied amount. `duration_months` remains optional for older clients and is ignored.
+- Annual amount: `round(monthly_price × 12 × (100 - annual_discount_percent) / 100)`; monthly amount is `monthly_price`.
+- `quantity`: 1–10 (D9)
 - `payment_method`: `VIETQR` | `ATM_CARD` | `CREDIT_CARD`
 
 201:

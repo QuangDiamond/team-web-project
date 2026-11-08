@@ -5,6 +5,7 @@ import PrivateRoute from './PrivateRoute';
 import { useAuth } from '../hooks/useAuth';
 import DashboardLayout from '../layouts/DashboardLayout';
 import Home from '../pages/Home';
+import TutorSearch from '../pages/TutorSearch';
 import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
 import RegisterSuccess from '../pages/auth/RegisterSuccess';
@@ -26,6 +27,7 @@ import ClassroomsPage from '../pages/classroom/ClassroomsPage';
 import ClassroomDetail from '../pages/classroom/ClassroomDetail';
 import JoinClassPage from '../pages/classroom/JoinClassPage';
 import PlansPricing from '../pages/admin/PlansPricing';
+import Categories from '../pages/admin/Categories';
 import RoleRoute from './RoleRoute';
 import StudentDashboard from '../pages/student/StudentDashboard';
 import AiTutorSuggestions from '../pages/parent/AiTutorSuggestions';
@@ -49,6 +51,7 @@ import MySchedule from '../pages/tutor/MySchedule';
  import MyConnections from '../pages/connections/MyConnections';
 import Notifications from '../pages/notifications/Notifications';
 import Moderation from '../pages/admin/Moderation';
+import AuditLogs from '../pages/admin/AuditLogs';
 import AdminDashboard from '../pages/admin/AdminDashboard';
 import { ADMIN_MENU, PARENT_MENU, STUDENT_MENU, TUTOR_MENU } from '../constants/dashboardMenus';
 
@@ -69,12 +72,19 @@ function ApplicationsRedirect() {
   return <Navigate to={`/parent/requests/${id}`} replace />;
 }
 
+function SuggestionsRedirect() {
+  const { requestId } = useParams();
+  if (requestId) return <Navigate to={`/parent/requests/${requestId}/suggestions`} replace />;
+  return <Navigate to="/parent/suggestions" replace />;
+}
+
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
     children: [
       { index: true, element: <Home /> },
+      { path: 'tutors', element: <TutorSearch /> },
       { path: 'profile', element: <Profile /> },
       { path: 'join-class', element: <JoinClassPage /> },
       { path: 'join-class/:code', element: <JoinClassPage /> },
@@ -141,7 +151,7 @@ export const router = createBrowserRouter([
         path: 'parent',
         element: <DashboardLayout menu={PARENT_MENU} />,
         children: [
-          { path: 'credits', element: <CreditsTransactions />, handle: { title: "Tín dụng và giao dịch" } },
+          { path: 'credits', element: <CreditsTransactions />, handle: { title: "Credits và giao dịch" } },
           { path: 'checkout', element: <Checkout />, handle: { title: "Thanh toán" } },
           { path: 'payment/result', element: <PaymentResult />, handle: { title: "Kết quả thanh toán" } },
           { path: 'receipts/:orderCode', element: <Receipt />, handle: { title: "Biên nhận" } },
@@ -154,14 +164,16 @@ export const router = createBrowserRouter([
           { path: 'requests/:id', element: <TutoringRequestDetail />, handle: { title: "Yêu cầu tìm gia sư" } },
           { path: 'requests/:id/edit', element: <TutoringRequestForm />, handle: { title: "Sửa yêu cầu tìm gia sư" } },
           {
-            path: 'requests/:requestId/ai-suggestions',
+            path: 'requests/:requestId/suggestions',
             element: <AiTutorSuggestions />,
-            handle: { title: "Gợi ý gia sư bằng AI" },
+            handle: { title: 'Gợi ý' },
           },
+          { path: 'requests/:requestId/ai-suggestions', element: <SuggestionsRedirect /> },
           // Đơn ứng tuyển nay nằm trong trang chi tiết yêu cầu; giữ đường dẫn cũ để link cũ vẫn dùng được
           { path: 'requests/:id/applications', element: <ApplicationsRedirect /> },
           { path: 'applications', element: <Navigate to="/parent/requests" replace /> },
-          { path: 'ai-suggestions', element: <AiTutorSuggestions />, handle: { title: "Gợi ý gia sư bằng AI" } },
+          { path: 'suggestions', element: <AiTutorSuggestions />, handle: { title: 'Gợi ý' } },
+          { path: 'ai-suggestions', element: <SuggestionsRedirect /> },
           { path: 'invitations', element: <Invitations />, handle: { title: "Lời mời" } },
           { path: 'messages', element: <ChatPage basePath="/parent/messages" />, handle: { title: "Tin nhắn" } },
           { path: 'messages/:conversationId', element: <ChatPage basePath="/parent/messages" />, handle: { title: "Tin nhắn" } },
@@ -181,7 +193,7 @@ export const router = createBrowserRouter([
         element: <DashboardLayout menu={TUTOR_MENU} />,
         children: [
           { path: 'schedule', element: <MySchedule />, handle: { title: 'My Schedule' } },
-          { path: 'credits', element: <CreditsTransactions />, handle: { title: "Tín dụng và giao dịch" } },
+          { path: 'credits', element: <CreditsTransactions />, handle: { title: "Credits và giao dịch" } },
           { path: 'checkout', element: <Checkout />, handle: { title: "Thanh toán" } },
           { path: 'payment/result', element: <PaymentResult />, handle: { title: "Kết quả thanh toán" } },
           { path: 'receipts/:orderCode', element: <Receipt />, handle: { title: "Biên nhận" } },
@@ -190,7 +202,7 @@ export const router = createBrowserRouter([
           { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
           { path: 'change-password', element: <ChangePassword />, handle: { title: "Bảo mật tài khoản" } },
           { path: 'requests', element: <BrowseRequests />, handle: { title: "Tìm yêu cầu" } },
-          { path: 'requests/suggested', element: <SuggestedRequests />, handle: { title: "Gợi ý dành cho bạn" } },
+          { path: 'requests/suggested', element: <SuggestedRequests />, handle: { title: 'Gợi ý' } },
           { path: 'requests/saved', element: <SavedRequests />, handle: { title: "Yêu cầu đã lưu" } },
           { path: 'requests/:id', element: <TutorRequestDetail />, handle: { title: "Chi tiết yêu cầu" } },
           { path: 'applications', element: <MyApplications />, handle: { title: "Đơn ứng tuyển của tôi" } },
@@ -217,11 +229,13 @@ export const router = createBrowserRouter([
         element: <DashboardLayout menu={ADMIN_MENU} />,
         children: [
           { path: 'plans', element: <PlansPricing />, handle: { title: "Gói dịch vụ và giá" } },
+          { path: 'categories', element: <Categories />, handle: { title: 'Quản lý danh mục' } },
           { path: 'users', element: <UserManagement />, handle: { title: "Quản lý người dùng" } },
           { path: 'users/:userId', element: <UserDetail />, handle: { title: "Chi tiết người dùng" } },
           { path: 'dashboard', element: <AdminDashboard />, handle: { title: "Thống kê hệ thống" } },
           { path: 'change-password', element: <ChangePassword />, handle: { title: "Bảo mật tài khoản" } },
           { path: 'moderation', element: <Moderation />, handle: { title: "Kiểm duyệt nội dung và báo cáo" } },
+          { path: 'audit-logs', element: <AuditLogs />, handle: { title: "Nhật ký kiểm duyệt" } },
           { path: 'notifications', element: <Notifications />, handle: { title: "Thông báo" } },
         ],
       },

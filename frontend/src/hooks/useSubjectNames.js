@@ -1,25 +1,24 @@
 import { useEffect, useState } from 'react';
-import { getSubjects } from '../services/subjectService';
+import { getPublicCategoryNames } from '../services/categoryService';
 
 /*
- * Tải danh sách tên môn học một lần cho ô chọn môn.
- * Trả về { subjectNames, loading, error }; lỗi thì subjectNames rỗng và error là thông báo.
+ * Tải danh mục môn học và cấp học/trình độ từ cùng API công khai.
+ * Trả về { subjectNames, gradeNames, loading, error }; không dùng dữ liệu viết cứng khi lỗi.
  */
 export function useSubjectNames() {
-  const [state, setState] = useState({ subjectNames: [], loading: true, error: '' });
+  const [state, setState] = useState({ subjectNames: [], gradeNames: [], loading: true, error: '' });
 
   useEffect(() => {
     let ignore = false;
-    getSubjects()
-      .then((response) => {
+    Promise.all([getPublicCategoryNames('subjects'), getPublicCategoryNames('grades')])
+      .then(([subjectNames, gradeNames]) => {
         if (!ignore) {
-          const names = response.data.items.map((subject) => subject.name);
-          setState({ subjectNames: names, loading: false, error: '' });
+          setState({ subjectNames, gradeNames, loading: false, error: '' });
         }
       })
       .catch((error) => {
         if (!ignore) {
-          setState({ subjectNames: [], loading: false, error: error.message });
+          setState({ subjectNames: [], gradeNames: [], loading: false, error: error.message });
         }
       });
     return () => {

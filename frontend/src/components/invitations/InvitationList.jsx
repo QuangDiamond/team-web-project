@@ -31,7 +31,7 @@ function InvitationRow({ invitation, onCancel }) {
           <span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>
         </div>
         <p className="item-meta">
-          Cho yêu cầu {requestTitle} · Đã gửi {formatDate(invitation.created_at)} · đã dùng {invitation.credits_spent} tín dụng
+          Cho yêu cầu {requestTitle} · Đã gửi {formatDate(invitation.created_at)} · đã dùng {invitation.credits_spent} credits
         </p>
         {invitation.message && <p className="item-note">“{invitation.message}”</p>}
         {invitation.status === 'ACCEPTED' && (

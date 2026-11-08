@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Search } from 'lucide-react';
 import FormInput from '../common/FormInput';
 import FormSelect from '../common/FormSelect';
-import { GRADE_LEVELS } from '../../constants/gradeLevels';
 import { TEACHING_MODES } from '../../constants/requestLabels';
 import { useSubjectNames } from '../../hooks/useSubjectNames';
 
@@ -34,7 +33,7 @@ export default function RequestFilters({ onApply }) {
       <FormInput id="q" label="Từ khóa" value={values.q} onChange={handleChange} placeholder="Tìm theo tiêu đề, môn học hoặc mô tả" />
       <div className="request-filters-grid">
         <FormSelect id="subject" label="Môn học" value={values.subject} onChange={handleChange} options={toOptions(subjects.subjectNames)} placeholder="Tất cả môn học" />
-        <FormSelect id="grade" label="Khối lớp" value={values.grade} onChange={handleChange} options={toOptions(GRADE_LEVELS)} placeholder="Tất cả khối lớp" />
+        <FormSelect id="grade" label="Cấp học / Trình độ" value={values.grade} onChange={handleChange} options={toOptions(subjects.gradeNames)} placeholder="Tất cả trình độ" />
         <FormSelect id="mode" label="Hình thức học" value={values.mode} onChange={handleChange} options={TEACHING_MODES} placeholder="Mọi hình thức" />
         <FormInput id="area" label="Khu vực" value={values.area} onChange={handleChange} placeholder="Ví dụ: Cầu Giấy" />
         <FormInput id="minBudget" label="Ngân sách tối thiểu (₫)" type="number" value={values.minBudget} onChange={handleChange} placeholder="0" />

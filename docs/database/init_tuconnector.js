@@ -418,6 +418,19 @@ ensureCollection("TUTOR_PROFILES", {
         "null"
       ]
     },
+    "teaching_categories": {
+      "bsonType": "array",
+      "maxItems": 50,
+      "items": {
+        "bsonType": "object",
+        "required": ["type", "category_id", "name"],
+        "properties": {
+          "type": { "enum": ["subjects", "grades"] },
+          "category_id": { "bsonType": "objectId" },
+          "name": { "bsonType": "string" }
+        }
+      }
+    },
     "bio": {
       "bsonType": [
         "string",
@@ -1533,6 +1546,15 @@ ensureCollection("PLANS", {
         "decimal",
         "null"
       ]
+    },
+    "billing_period": {
+      "bsonType": "string",
+      "enum": ["MONTHLY", "YEARLY"]
+    },
+    "annual_discount_percent": {
+      "bsonType": "int",
+      "minimum": 0,
+      "maximum": 99
     },
     "monthly_credits": {
       "bsonType": [

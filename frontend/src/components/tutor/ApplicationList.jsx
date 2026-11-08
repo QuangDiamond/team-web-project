@@ -19,7 +19,7 @@ function ApplicationRow({ application, onWithdraw }) {
     metaParts.push(subject);
   }
   metaParts.push(`Ứng tuyển lúc ${formatDate(application.created_at)}`);
-  metaParts.push(`đã dùng ${application.credits_spent} tín dụng`);
+  metaParts.push(`đã dùng ${application.credits_spent} credits`);
 
   const handleWithdraw = async () => {
     setWithdrawing(true);

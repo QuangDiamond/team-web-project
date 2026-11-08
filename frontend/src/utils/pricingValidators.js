@@ -37,7 +37,7 @@ const validateWholeNumber = (rawValue, label, minimum, maximum) => {
 export const validatePlanPrice = (rawValue) => validateWholeNumber(rawValue, 'Giá', 0, MAX_PRICE);
 
 // D1: mọi plan (kể cả Free) phải có ít nhất 1 credit/tháng
-export const validatePlanCredits = (rawValue) => validateWholeNumber(rawValue, 'Số tín dụng mỗi tháng', 1, MAX_CREDITS);
+export const validatePlanCredits = (rawValue) => validateWholeNumber(rawValue, 'Số credits mỗi tháng', 1, MAX_CREDITS);
 
 export const validateAiQuota = (rawValue) => validateWholeNumber(rawValue, 'Hạn mức AI', 0, MAX_CREDITS);
 
@@ -52,7 +52,7 @@ export const validateClassLimit = (rawValue, isUnlimited) => {
 // ----- Credit pack (E1: giá phải > 0, 0 credit không hợp lệ) -----
 export const validatePackPrice = (rawValue) => validateWholeNumber(rawValue, 'Giá', 1, MAX_PRICE);
 
-export const validatePackCredits = (rawValue) => validateWholeNumber(rawValue, 'Số tín dụng', 1, MAX_CREDITS);
+export const validatePackCredits = (rawValue) => validateWholeNumber(rawValue, 'Số credits', 1, MAX_CREDITS);
 
 export const validatePackName = (rawValue) => {
   const text = rawValue.trim();

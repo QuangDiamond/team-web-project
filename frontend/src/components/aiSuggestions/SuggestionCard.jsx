@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
-
-const MODE_LABELS = { ONLINE: "Trực tuyến", OFFLINE: "Trực tiếp", HYBRID: "Kết hợp" };
+import { Star } from 'lucide-react';
 
 const getInitials = (fullName) => {
   const words = (fullName || '').trim().split(/\s+/).filter(Boolean);
@@ -10,37 +9,25 @@ const getInitials = (fullName) => {
   return words.map((word) => word[0]).join('').slice(0, 2).toUpperCase();
 };
 
-const formatPrice = (price) => {
-  if (price === null || price === undefined) {
-    return "Chưa có học phí";
-  }
-  return `${Number(price).toLocaleString('vi-VN')} ₫/buổi`;
-};
-
 function RatingText({ rating }) {
   if (rating === null || rating === undefined) {
     return <span>Chưa có đánh giá</span>;
   }
-  return <span>★ {Number(rating).toFixed(1)}</span>;
+  return <span className="suggestion-rating"><Star size={14} aria-hidden="true" />{Number(rating).toFixed(1)}</span>;
 }
 
 // Một gia sư được gợi ý (Figma: Applications ai). Nút Mời mở hộp thoại mời gia sư (UC14), Xem chi tiết mở hồ sơ công khai
 export default function SuggestionCard({ suggestion, rank, isInvited, onInvite }) {
-  const { tutor, post } = suggestion;
-
-  let modeText = '';
-  if (post.teaching_mode) {
-    modeText = MODE_LABELS[post.teaching_mode];
-  }
+  const { tutor, matching_categories } = suggestion;
 
   return (
     <li className="ai-card">
       <div className="ai-card-top">
         <span className="ai-card-rank" aria-label={`Thứ hạng ${rank}`}>{rank}</span>
-        <span className="ai-card-avatar" aria-hidden="true">{getInitials(tutor.full_name)}</span>
+        <span className="ai-card-avatar" aria-hidden="true">{tutor.avatar_url ? <img src={tutor.avatar_url} alt="" /> : getInitials(tutor.full_name)}</span>
         <div className="ai-card-identity">
           <p className="ai-card-name">{tutor.full_name}</p>
-          <p className="ai-card-sub">{post.subject_name} · {post.grade_level}</p>
+          {tutor.headline && <p className="ai-card-sub">{tutor.headline}</p>}
           <p className="ai-card-rating"><RatingText rating={tutor.average_rating} /></p>
         </div>
         {tutor.availability_status === 'NOT_AVAILABLE' && (
@@ -50,14 +37,10 @@ export default function SuggestionCard({ suggestion, rank, isInvited, onInvite }
         )}
       </div>
 
-      <p className="ai-card-meta">
-        <span>{post.title}</span>
-        {modeText ? ` · ${modeText}` : ''}
-        {' · '}
-        <strong>{formatPrice(post.price)}</strong>
-      </p>
-
-      {suggestion.ai_reason && <p className="ai-card-reason">{suggestion.ai_reason}</p>}
+      <ul className="suggestion-category-tags" aria-label="Danh mục phù hợp">
+        {matching_categories.map((item) => <li key={`${item.type}:${item.category_id}`}>{item.name}</li>)}
+      </ul>
+      <p className="ai-card-reason">{suggestion.reason}</p>
 
       <div className="ai-card-actions">
         <Link to={`/tutors/${tutor.profile_id}`} className="btn btn-outline btn-sm">Xem chi tiết</Link>

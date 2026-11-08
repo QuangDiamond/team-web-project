@@ -3,5 +3,5 @@ export default function PriorityBadge({ credits }) {
   if (!credits || credits <= 1) {
     return null;
   }
-  return <span className="status-badge tone-warning">Ưu tiên · {credits} tín dụng</span>;
+  return <span className="status-badge tone-warning">Ưu tiên · {credits} credits</span>;
 }

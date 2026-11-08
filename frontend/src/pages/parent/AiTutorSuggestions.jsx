@@ -9,8 +9,8 @@ import ListState from '../../components/common/ListState';
 import SuggestionsPanel from '../../components/aiSuggestions/SuggestionsPanel';
 import '../../styles/aiSuggestions.css';
 
-// UC09 – View AI Tutor Suggestions. Chọn request bằng dropdown, gợi ý đổi theo request đang chọn.
-// Dùng cho /parent/ai-suggestions và /parent/requests/:requestId/ai-suggestions (request trên URL được chọn sẵn)
+// Chọn yêu cầu để xem gợi ý theo danh mục giảng dạy trong hồ sơ tutor.
+// Legacy component name retained; public routes are /parent/suggestions and request-specific suggestions.
 export default function AiTutorSuggestions() {
   const { requestId: requestIdFromUrl } = useParams();
   const navigate = useNavigate();

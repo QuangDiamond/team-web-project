@@ -22,8 +22,8 @@ export const DASHBOARD_NAV = [
     label: 'BILLING',
     roles: ['TUTOR', 'PARENT'],
     items: [
-      { label: "Tín dụng và giao dịch", path: '/credits', Icon: Coins },
-      { label: "Nâng cấp / Mua tín dụng", path: '/checkout', Icon: Sparkles },
+      { label: "Credits và giao dịch", path: '/credits', Icon: Coins },
+      { label: "Nâng cấp / Mua credits", path: '/checkout', Icon: Sparkles },
     ],
   },
 ];

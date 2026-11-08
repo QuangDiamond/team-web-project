@@ -60,6 +60,25 @@ PSP client HMAC, tạo / tra cứu / hủy payment và xác thực webhook đã 
       sai thì dùng mặc định.
 - [x] Gói credit seed cũ có `target_role = null`: hiển thị cho cả Tutor và Parent (D4).
 
+## SC05 — Public tutor discovery (09/11/2026)
+
+- [ ] Tutor suggestions now share active profile-category matching with Parent suggestions, without posts or AI cache. Old AI_POST_SUGGESTIONS records remain untouched; verify live data after Tutors save both teaching-category types.
+
+- [ ] Parent suggestions now use both profile teaching-category types without AI/cache. Legacy AI model/cache records and source filenames remain for compatibility; no database cleanup was run.
+- [ ] Suggestions match subjects and levels independently (all selected combinations), because profile tags do not store subject-level pairs.
+
+- [ ] Verify live avatar upload with existing Cloudinary configuration; unit tests mock the provider. Older avatar assets remain in Cloudinary; an ownership-checked cleanup job is deferred.
+- [ ] Profile teaching category tags use category IDs and snapshots. They drive Parent suggestions, but do not automatically generate tutor posts or change the public post-based discovery filters.
+
+- [ ] Deploy category APIs and run `npm run seed:categories` from backend to initialize missing subjects/levels and unique indexes. No DB initialization was executed by the agent.
+- [ ] Existing posts/requests keep string names. Referenced category names cannot be renamed/deleted; disable them instead. A future ID-based migration needs a separate plan.
+- [ ] Old free-text grade ranges (for example “Lớp 8–9”) are not converted into multiple catalog entries by this change.
+
+- [ ] UC06 saved searches and matching-tutor alerts are not included in this move from the Parent dashboard.
+- [ ] Additional sorting by price/newest is not included; results currently use rating descending, then profile ID.
+- [ ] Grade filters now use exact catalog names; legacy free-text/range labels still need a separate migration if they should match individual levels.
+- [ ] Verify the public search and invitation flow against a running backend/database; unit checks and frontend build do not cover live data.
+
 ## UC39 – Plans & Pricing (frontend)
 
 - [ ] Màn `/admin/plans` lấy 1 trang `limit=100` cho plan và credit pack, chưa có phân trang trên UI

@@ -39,7 +39,7 @@ export default function ReceivedInvitations() {
 
   return (
     <div className="page-stack">
-      <p className="item-meta">Lời mời từ phụ huynh. Chấp nhận để mở cuộc trò chuyện. Lời mời dùng nhiều tín dụng hơn nằm trên cùng.</p>
+      <p className="item-meta">Lời mời từ phụ huynh. Chấp nhận để mở cuộc trò chuyện. Lời mời dùng nhiều credits hơn nằm trên cùng.</p>
 
       {notice && <Alert type="success">{notice}</Alert>}
       {actionError && <Alert type="error">{actionError}</Alert>}

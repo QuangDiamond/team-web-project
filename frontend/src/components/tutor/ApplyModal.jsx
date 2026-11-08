@@ -44,9 +44,9 @@ export default function ApplyModal({ request, onClose, onApplied }) {
     }
   };
 
-  let creditText = "Đang kiểm tra tín dụng...";
+  let creditText = "Đang kiểm tra credits...";
   if (credits.error) {
-    creditText = "Không thể tải số dư tín dụng";
+    creditText = "Không thể tải số dư credits";
   } else if (!credits.loading) {
     creditText = `Số dư: ${credits.balance}`;
   }
@@ -61,10 +61,10 @@ export default function ApplyModal({ request, onClose, onApplied }) {
         </p>
 
         <p className="modal-cost">
-          <span>Chi phí: {amount} tín dụng</span>
+          <span>Chi phí: {amount} credits</span>
           <span>{creditText}</span>
         </p>
-        <p className="item-meta modal-note">Tín dụng không được hoàn lại nếu phụ huynh bỏ qua đơn ứng tuyển.</p>
+        <p className="item-meta modal-note">Credits không được hoàn lại nếu phụ huynh bỏ qua đơn ứng tuyển.</p>
 
         <CreditAmountField
           id="apply-credits"
@@ -75,7 +75,7 @@ export default function ApplyModal({ request, onClose, onApplied }) {
           audience="phụ huynh"
         />
 
-        {hasNoCredit && <Alert type="error">Bạn cần ít nhất 1 tín dụng để ứng tuyển.</Alert>}
+        {hasNoCredit && <Alert type="error">Bạn cần ít nhất 1 credits để ứng tuyển.</Alert>}
         {error && <Alert type="error">{error}</Alert>}
 
         <FormTextarea

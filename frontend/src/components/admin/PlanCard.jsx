@@ -1,12 +1,16 @@
 import { Pencil } from 'lucide-react';
 import { formatVnd } from '../../utils/formatCurrency';
 import { getClassLimitLabel, getPlanTitle, getTargetRoleLabel } from '../../utils/planDisplay';
+import { getPlanBasePrice, getPlanPeriod, getPlanPeriodLabel, getPlanPrice } from '../../utils/planPricing';
 
 // Thẻ hiển thị 1 plan (Free / Pro) với giá, quyền lợi và nút sửa
 export default function PlanCard({ plan, onEdit }) {
   const planTitle = getPlanTitle(plan.name);
   const roleLabel = getTargetRoleLabel(plan.target_role);
   const isPro = plan.name === 'PRO';
+  const periodLabel = getPlanPeriodLabel(plan);
+  const planPrice = getPlanPrice(plan);
+  const isYearly = getPlanPeriod(plan) === 'YEARLY';
 
   let cardClass = 'card plan-card';
   if (isPro) {
@@ -26,13 +30,19 @@ export default function PlanCard({ plan, onEdit }) {
       </div>
 
       <p className="plan-card-price">
-        <span className="plan-card-amount">{formatVnd(plan.monthly_price)}</span>
-        <span className="plan-card-period"> / tháng</span>
+        {isYearly && plan.annual_discount_percent > 0 && (
+          <span className="plan-card-old-price">{formatVnd(getPlanBasePrice(plan))}</span>
+        )}
+        <span className="plan-card-amount">{formatVnd(planPrice)}</span>
+        <span className="plan-card-period"> / {periodLabel}</span>
       </p>
+      {isYearly && plan.annual_discount_percent > 0 && (
+        <p className="plan-card-discount">Giảm {plan.annual_discount_percent}% khi đăng ký năm</p>
+      )}
 
       <dl className="plan-card-features">
         <div>
-          <dt>Tín dụng mỗi tháng</dt>
+          <dt>Credits mỗi tháng</dt>
           <dd>{plan.monthly_credits.toLocaleString('vi-VN')}</dd>
         </div>
         <div>

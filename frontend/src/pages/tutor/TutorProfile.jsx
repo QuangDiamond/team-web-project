@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { LoaderCircle } from 'lucide-react';
 import { getMyProfile, saveMyProfile } from '../../services/tutorProfileService';
 import Alert from '../../components/common/Alert';
+import AvatarUpload from '../../components/common/AvatarUpload';
 import SectionCard from '../../components/common/SectionCard';
 import TutorProfileForm, { EMPTY_PROFILE_VALUES, toProfileFormValues } from '../../components/tutor/TutorProfileForm';
 import '../../styles/tutorProfile.css';
@@ -89,6 +90,7 @@ export default function TutorProfile() {
       <SectionCard title="Hồ sơ gia sư của tôi" action={state.profile && (
         <Link to={`/tutors/${state.profile._id}`} className="btn btn-outline btn-sm">Tổng quan</Link>
       )}>
+        <AvatarUpload fallbackUrl={state.profile?.avatar_url} />
         <TutorProfileForm key={formVersion} initialValues={initialValues} submitLabel={submitLabel} onSubmit={handleSubmit} />
       </SectionCard>
     </div>

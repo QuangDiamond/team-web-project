@@ -27,7 +27,7 @@ export default function MyApplications() {
 
   return (
     <div className="page-stack">
-      <p className="item-meta">Các đơn bạn đã gửi. Mỗi đơn tốn ít nhất 1 tín dụng và không được hoàn lại.</p>
+      <p className="item-meta">Các đơn bạn đã gửi. Mỗi đơn tốn ít nhất 1 credits và không được hoàn lại.</p>
 
       {actionError && <Alert type="error">{actionError}</Alert>}
 

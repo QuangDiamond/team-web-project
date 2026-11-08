@@ -66,7 +66,7 @@ export default function UserProfileCard({ user }) {
         <ProfileRow label="Ngày tạo" value={formatDate(user.created_at)} />
         <ProfileRow label="Lần đăng nhập gần nhất" value={lastLogin} />
         {hasBilling && <ProfileRow label="Gói dịch vụ" value={planLabel} />}
-        {hasBilling && <ProfileRow label="Số dư tín dụng" value={creditLabel} />}
+        {hasBilling && <ProfileRow label="Số dư credits" value={creditLabel} />}
       </dl>
     </section>
   );

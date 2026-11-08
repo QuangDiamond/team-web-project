@@ -4,7 +4,6 @@ import FormInput from '../common/FormInput';
 import FormSelect from '../common/FormSelect';
 import FormTextarea from '../common/FormTextarea';
 import SchedulePicker from '../common/SchedulePicker';
-import { GRADE_LEVELS } from '../../constants/gradeLevels';
 import { useSubjectNames } from '../../hooks/useSubjectNames';
 import { toSelectOptions } from '../../utils/selectOptions';
 import { TEACHING_MODES, formatBudget } from '../../constants/requestLabels';
@@ -14,7 +13,7 @@ const FIELD_ORDER = ['title', 'subject_name', 'grade_level', 'price', 'schedule'
 const REQUIRED_FIELDS = [
   { name: 'title', label: 'Tiêu đề' },
   { name: 'subject_name', label: 'Môn học' },
-  { name: 'grade_level', label: 'Khối lớp' },
+  { name: 'grade_level', label: 'Cấp học / Trình độ' },
   { name: 'schedule', label: 'Lịch có thể dạy' },
   { name: 'description', label: 'Mô tả' },
 ];
@@ -90,7 +89,7 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
   const [submitting, setSubmitting] = useState(false);
   const subjects = useSubjectNames();
   const subjectOptions = toSelectOptions(subjects.subjectNames, values.subject_name);
-  const gradeOptions = toSelectOptions(GRADE_LEVELS, values.grade_level);
+  const gradeOptions = toSelectOptions(subjects.gradeNames, values.grade_level);
 
   const handleScheduleChange = (schedule) => {
     setValues((previousValues) => ({ ...previousValues, schedule: schedule }));
@@ -165,16 +164,16 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
           options={subjectOptions}
           placeholder={subjects.loading ? 'Đang tải môn học...' : 'Chọn môn học'}
           error={errors.subject_name}
-          hint={subjects.error ? 'Không tải được danh sách môn học. Hãy tải lại trang.' : undefined}
+          hint={subjects.error ? 'Không tải được danh mục môn học/cấp học. Hãy tải lại trang.' : undefined}
           disabled={submitting}
         />
         <FormSelect
           id="grade_level"
-          label="Khối lớp"
+          label="Cấp học / Trình độ"
           value={values.grade_level}
           onChange={handleChange}
           options={gradeOptions}
-          placeholder="Chọn khối lớp"
+          placeholder="Chọn cấp học / trình độ"
           error={errors.grade_level}
           disabled={submitting}
         />

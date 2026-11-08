@@ -4,6 +4,7 @@ import FormInput from '../common/FormInput';
 import FormSelect from '../common/FormSelect';
 import FormTextarea from '../common/FormTextarea';
 import ProfileListEditor from './ProfileListEditor';
+import TeachingCategoryPicker from './TeachingCategoryPicker';
 import { AVAILABILITY_OPTIONS } from '../../constants/requestLabels';
 import { focusFirstInvalidField, toFieldErrors } from '../../utils/authValidators';
 
@@ -19,6 +20,7 @@ export const EMPTY_PROFILE_VALUES = {
   experiences: [],
   educations: [],
   achievements: [],
+  teaching_categories: [],
 };
 
 const EMPTY_EXPERIENCE = { title: '', company: '', start_date: '', end_date: '' };
@@ -123,6 +125,7 @@ const emptyToNull = (text) => {
 };
 
 const toPayload = (values) => ({
+  teaching_categories: values.teaching_categories.map((item) => ({ type: item.type, category_id: item.category_id })),
   headline: values.headline.trim(),
   bio: values.bio.trim(),
   address: values.address.trim(),
@@ -154,6 +157,7 @@ const toPayload = (values) => ({
 
 // Chuyển hồ sơ từ API (null → chuỗi rỗng) về giá trị form
 export const toProfileFormValues = (profile) => ({
+  teaching_categories: profile.teaching_categories || [],
   headline: profile.headline || '',
   bio: profile.bio || '',
   address: profile.address || '',
@@ -290,6 +294,12 @@ export default function TutorProfileForm({ initialValues, submitLabel, onSubmit 
         />
         <span>Ẩn địa chỉ của tôi với người dùng khác</span>
       </label>
+
+      <TeachingCategoryPicker value={values.teaching_categories} disabled={submitting} error={errors.top.teaching_categories}
+        onChange={(items) => {
+          setValues({ ...values, teaching_categories: items });
+          setErrors({ ...errors, top: { ...errors.top, teaching_categories: '' } });
+        }} />
 
       <ProfileListEditor
         sectionId="experiences"

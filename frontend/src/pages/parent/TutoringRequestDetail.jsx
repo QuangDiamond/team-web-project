@@ -105,10 +105,10 @@ export default function TutoringRequestDetail() {
               <button
                 type="button"
                 className="btn btn-outline btn-block"
-                onClick={() => navigate(`/parent/requests/${request._id}/ai-suggestions`)}
+                onClick={() => navigate(`/parent/requests/${request._id}/suggestions`)}
               >
                 <Sparkles size={16} aria-hidden="true" />
-                <span>Gợi ý gia sư bằng AI</span>
+                <span>Gợi ý gia sư</span>
               </button>
             )}
             <button type="button" className="btn btn-outline btn-block" onClick={() => setDeleting(true)}>

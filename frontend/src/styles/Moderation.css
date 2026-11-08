@@ -178,22 +178,6 @@
   font-size: 14px;
 }
 
-.mod-table-wrap {
-  max-width: 100%;
-  overflow-x: auto;
-}
-
-.mod-table-wrap table {
-  min-width: 620px;
-}
-
-.mod-audit-detail {
-  max-width: 320px;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  font-size: 12px;
-}
-
 .mod-resolution-options {
   display: grid;
   gap: 10px;
