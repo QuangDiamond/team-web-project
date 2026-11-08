@@ -28,7 +28,7 @@ export const requireTutorAuth = async (req, res, next) => {
       if (userId) {
         user = await User.findById(userId);
       }
-    } catch (err) {
+    } catch {
       return next(new AppError('Phiên đăng nhập không hợp lệ hoặc đã hết hạn', 401));
     }
 
@@ -92,7 +92,7 @@ export const requireUserAuth = async (req, res, next) => {
       if (userId) {
         user = await User.findById(userId);
       }
-    } catch (err) {
+    } catch {
       return next(new AppError('Phiên đăng nhập không hợp lệ hoặc đã hết hạn', 401));
     }
 
