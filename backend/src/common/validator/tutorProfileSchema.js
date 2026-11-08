@@ -16,22 +16,21 @@ const optionalText = (label, max) =>
     .nullish()
     .transform((value) => (value ? value : null));
 
-// Ngày dạng chuỗi "YYYY-MM-DD" hoặc ISO; rỗng / null coi như không có
-const optionalDate = (label) =>
+// Required date string, accepted in YYYY-MM-DD or ISO format.
+const requiredDate = (label) =>
   z
-    .string()
+    .string(`${label} is required`)
     .trim()
-    .nullish()
-    .transform((value) => (value ? value : null))
-    .refine((value) => value === null || !Number.isNaN(new Date(value).getTime()), `${label} is not a valid date`)
-    .transform((value) => (value === null ? null : new Date(value)));
+    .min(1, `${label} is required`)
+    .refine((value) => !Number.isNaN(new Date(value).getTime()), `${label} is not a valid date`)
+    .transform((value) => new Date(value));
 
 const experienceSchema = z
   .strictObject({
     title: requiredText('Experience title', 100),
-    company: optionalText('Company', 100),
-    start_date: optionalDate('Start date'),
-    end_date: optionalDate('End date'),
+    company: requiredText('Company', 100),
+    start_date: requiredDate('Start date'),
+    end_date: requiredDate('End date').nullable(),
   })
   .refine((item) => !item.start_date || !item.end_date || item.end_date >= item.start_date, {
     path: ['end_date'],
@@ -40,14 +39,12 @@ const experienceSchema = z
 
 const educationSchema = z.strictObject({
   school: requiredText('School', 150),
-  degree: optionalText('Degree', 100),
+  degree: requiredText('Degree', 100),
   graduation_year: z.coerce
     .number('Graduation year must be a number')
     .int('Graduation year must be an integer')
     .min(1950, 'Graduation year is too early')
-    .max(2100, 'Graduation year is too late')
-    .nullish()
-    .transform((value) => value ?? null),
+    .max(2100, 'Graduation year is too late'),
   description: optionalText('Education description', 500),
 });
 
@@ -61,7 +58,7 @@ const MAX_ITEMS = 10;
 // Body lưu hồ sơ gia sư (UC hồ sơ). strictObject chặn user_id, is_complete, average_rating, avatar_url...
 export const tutorProfileBodySchema = z.strictObject({
   headline: requiredText('Headline', 120),
-  bio: requiredText('Bio', 2000),
+  bio: requiredText('About you', 2000).refine((value) => value.split(/\s+/u).length <= 50, 'About you must be at most 50 words'),
   address: requiredText('Address', 255),
   is_address_hidden: z.boolean('Address visibility must be true or false').default(false),
   availability_status: z

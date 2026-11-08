@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import * as authService from '../services/authService.js';
+import { setAccountLockedHandler, setSessionExpiredHandler } from '../services/api.js';
 
 const AuthContext = createContext(null);
 
@@ -14,6 +15,24 @@ export function AuthProvider({ children }) {
   });
   // true cho đến khi biết user đã đăng nhập hay chưa (gọi /me lúc mở app)
   const [initializing, setInitializing] = useState(true);
+  // true sau khi user tự bấm Log out: PrivateRoute không ghi nhớ trang cũ, lần đăng nhập sau về /dashboard
+  const [loggedOutByUser, setLoggedOutByUser] = useState(false);
+  // true khi API báo tài khoản bị khóa (lúc mở app hoặc đang dùng, UC37, D19):
+  // màn /login hiện thông báo khóa và PrivateRoute không nhớ trang cũ
+  const [accountLockedOnStart, setAccountLockedOnStart] = useState(false);
+
+  // Bất kỳ request nào trả 403 "tài khoản bị khóa" -> xóa user, PrivateRoute tự đưa về /login (UC37-B3)
+  useEffect(() => {
+    setAccountLockedHandler(() => {
+      setAccountLockedOnStart(true);
+      setUser(null);
+    });
+    setSessionExpiredHandler(() => setUser(null));
+    return () => {
+      setAccountLockedHandler(null);
+      setSessionExpiredHandler(null);
+    };
+  }, []);
 
   // Lấy lại user từ cookie khi F5 trang
   useEffect(() => {
@@ -25,6 +44,7 @@ export function AuthProvider({ children }) {
         } catch {}
       })
       .catch(() => {
+        // 403 tài khoản bị khóa đã được handler ở trên xử lý
         setUser(null);
         try {
           localStorage.removeItem('user');
@@ -39,6 +59,8 @@ export function AuthProvider({ children }) {
   const login = useCallback(async (credentials) => {
     try {
       const response = await authService.login(credentials);
+      setLoggedOutByUser(false);
+      setAccountLockedOnStart(false);
       const userData = response.data;
       setUser(userData);
       try {
@@ -70,6 +92,7 @@ export function AuthProvider({ children }) {
   const completeGoogleRegister = useCallback(async (data) => {
     try {
       const response = await authService.completeGoogleRegister(data);
+      setLoggedOutByUser(false);
       const userData = response.data;
       setUser(userData);
       try {
@@ -85,6 +108,7 @@ export function AuthProvider({ children }) {
     try {
       await authService.logout();
     } finally {
+      setLoggedOutByUser(true);
       setUser(null);
       try {
         localStorage.removeItem('user');
@@ -92,7 +116,25 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const value = { user, initializing, login, register, completeGoogleRegister, logout };
+  // Gọi khi màn /login đã hiện (sau Log out hoặc bị khóa): chỉ lần chuyển trang đó mới không nhớ trang cũ (D2-B2).
+  // Màn /login đã đọc accountLockedOnStart lúc mở nên xóa được luôn
+  const clearLoggedOutByUser = useCallback(() => {
+    setLoggedOutByUser(false);
+    setAccountLockedOnStart(false);
+  }, []);
+
+  const resetPassword = useCallback(async (data) => {
+    await authService.resetPassword(data);
+    setLoggedOutByUser(true);
+    setUser(null);
+  }, []);
+
+  const changePassword = useCallback(async (data) => {
+    const response = await authService.changePassword(data);
+    setUser(response.data);
+  }, []);
+
+  const value = { user, initializing, loggedOutByUser, clearLoggedOutByUser, accountLockedOnStart, login, register, completeGoogleRegister, logout, resetPassword, changePassword };
 
   return (
     <AuthContext.Provider value={value}>

@@ -356,8 +356,8 @@ export default function Home() {
 
                 <div className="tutor-card-footer">
                   <div className="tutor-price">{t.price}</div>
-                  <Link to={targetDashboardPath} className="btn-view-profile">
-                    Kết nối ngay
+                  <Link to={`/tutors/${t._id}`} className="btn-view-profile">
+                    Xem hồ sơ
                   </Link>
                 </div>
               </div>

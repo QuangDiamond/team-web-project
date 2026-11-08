@@ -9,7 +9,7 @@
       "$numberDecimal": "0"
     },
     "monthly_credits": {
-      "$numberInt": "5"
+      "$numberInt": "20"
     },
     "ai_quota": {
       "$numberInt": "10"
@@ -49,7 +49,7 @@
       "$numberDecimal": "0"
     },
     "monthly_credits": {
-      "$numberInt": "3"
+      "$numberInt": "20"
     },
     "ai_quota": {
       "$numberInt": "5"

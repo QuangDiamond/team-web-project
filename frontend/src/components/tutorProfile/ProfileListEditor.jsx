@@ -46,6 +46,7 @@ export default function ProfileListEditor({ sectionId, title, items, fields, emp
                       id={fieldId}
                       label={field.label}
                       optional={field.optional}
+                      required={!field.optional}
                       rows={2}
                       value={item[field.name]}
                       onChange={(event) => updateItem(index, field.name, event.target.value)}
@@ -58,8 +59,17 @@ export default function ProfileListEditor({ sectionId, title, items, fields, emp
                     key={field.name}
                     id={fieldId}
                     label={field.optional ? `${field.label} (optional)` : field.label}
+                    required={!field.optional}
                     type={field.type}
-                    value={item[field.name]}
+                    value={field.allowNow && item[field.name] === 'NOW' ? '' : item[field.name]}
+                    disabled={field.allowNow && item[field.name] === 'NOW'}
+                    belowControl={field.allowNow && (
+                      <label className="checkbox form-inline-checkbox">
+                        <input type="checkbox" checked={item[field.name] === 'NOW'}
+                          onChange={(event) => updateItem(index, field.name, event.target.checked ? 'NOW' : '')} />
+                        <span>Now</span>
+                      </label>
+                    )}
                     onChange={(event) => updateItem(index, field.name, event.target.value)}
                     error={itemErrors[field.name]}
                   />

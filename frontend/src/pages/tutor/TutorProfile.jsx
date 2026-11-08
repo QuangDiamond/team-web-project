@@ -86,7 +86,9 @@ export default function TutorProfile() {
         </Alert>
       )}
 
-      <SectionCard title="My tutor profile">
+      <SectionCard title="My tutor profile" action={state.profile && (
+        <Link to={`/tutors/${state.profile._id}`} className="btn btn-outline btn-sm">Overview</Link>
+      )}>
         <TutorProfileForm key={formVersion} initialValues={initialValues} submitLabel={submitLabel} onSubmit={handleSubmit} />
       </SectionCard>
     </div>

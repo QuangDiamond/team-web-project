@@ -99,6 +99,7 @@ export default function TutorRequestDetail() {
         <div className="tutor-detail-main">
           <SectionCard title={request.title}>
             <p className="item-meta">Posted {formatDate(request.created_at)} by a parent · {request.application_count} tutors applied</p>
+            {request.parent_user_id && <Link to={`/parents/${request.parent_user_id}`} className="link">View parent profile</Link>}
             <p className="tutor-detail-text">{request.description}</p>
             <dl className="tutor-facts">
               {facts.map((fact) => (
