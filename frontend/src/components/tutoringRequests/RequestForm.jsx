@@ -19,11 +19,11 @@ const FIELD_ORDER = [
 ];
 
 const REQUIRED_FIELDS = [
-  { name: 'title', label: 'Request title' },
-  { name: 'subject_name', label: 'Subject' },
-  { name: 'grade_level', label: 'Grade level' },
-  { name: 'description', label: 'Learning goal' },
-  { name: 'schedule', label: 'Preferred schedule' },
+  { name: 'title', label: "Tiêu đề yêu cầu" },
+  { name: 'subject_name', label: "Môn học" },
+  { name: 'grade_level', label: "Khối lớp" },
+  { name: 'description', label: "Mục tiêu học tập" },
+  { name: 'schedule', label: "Lịch học mong muốn" },
 ];
 
 const MAX_LENGTHS = {
@@ -54,26 +54,26 @@ const validate = (values) => {
   const errors = {};
   REQUIRED_FIELDS.forEach((field) => {
     if (!values[field.name].trim()) {
-      errors[field.name] = `${field.label} is required`;
+      errors[field.name] = `${field.label} là bắt buộc`;
     }
   });
   Object.keys(MAX_LENGTHS).forEach((name) => {
     if (values[name].trim().length > MAX_LENGTHS[name]) {
-      errors[name] = `Must be at most ${MAX_LENGTHS[name]} characters`;
+      errors[name] = `Tối đa ${MAX_LENGTHS[name]} ký tự`;
     }
   });
 
   const budget = Number(values.budget);
   if (values.budget === '' || Number.isNaN(budget)) {
-    errors.budget = 'Budget is required';
+    errors.budget = "Vui lòng nhập ngân sách";
   } else if (budget <= 0) {
-    errors.budget = 'Budget must be greater than 0';
+    errors.budget = "Ngân sách phải lớn hơn 0";
   } else if (budget > 100000000) {
-    errors.budget = 'Budget is too large';
+    errors.budget = "Ngân sách quá lớn";
   }
 
   if (values.teaching_mode !== 'ONLINE' && !values.location_address.trim()) {
-    errors.location_address = 'Location is required for in-person or hybrid sessions';
+    errors.location_address = "Vui lòng nhập địa điểm cho hình thức trực tiếp hoặc kết hợp";
   }
   return errors;
 };
@@ -172,66 +172,66 @@ export default function RequestForm({ initialValues, students, submitLabel, subm
 
       <FormInput
         id="title"
-        label="Request title"
+        label="Tiêu đề yêu cầu"
         value={values.title}
         onChange={handleChange}
         error={errors.title}
-        placeholder="e.g. Tìm gia sư Toán lớp 9 ôn thi vào 10"
+        placeholder="Ví dụ: Tìm gia sư Toán lớp 9 ôn thi vào 10"
         disabled={submitting}
       />
 
       <div className="form-grid">
         <FormSelect
           id="student_id"
-          label="Child / Student"
+          label="Con / Học sinh"
           optional
           value={values.student_id}
           onChange={handleChange}
           options={studentOptions}
-          placeholder="Select learner"
+          placeholder="Chọn học sinh"
           error={errors.student_id}
           disabled={submitting}
-          hint={students.length === 0 ? 'No linked students yet. You can still publish this request.' : undefined}
+          hint={students.length === 0 ? "Chưa liên kết học sinh. Bạn vẫn có thể đăng yêu cầu này." : undefined}
         />
         <FormInput
           id="subject_name"
-          label="Subject"
+          label="Môn học"
           value={values.subject_name}
           onChange={handleChange}
           error={errors.subject_name}
-          placeholder="e.g. Python"
+          placeholder="Ví dụ: Lập trình Python"
           disabled={submitting}
         />
       </div>
 
       <FormTextarea
         id="description"
-        label="Learning goal"
+        label="Mục tiêu học tập"
         value={values.description}
         onChange={handleChange}
         error={errors.description}
-        placeholder="Describe the outcome you want"
+        placeholder="Mô tả kết quả học tập mong muốn"
         disabled={submitting}
       />
 
       <div className="form-grid">
         <FormInput
           id="schedule"
-          label="Preferred schedule"
+          label="Lịch học mong muốn"
           value={values.schedule}
           onChange={handleChange}
           error={errors.schedule}
-          placeholder="Weekdays after 4 PM"
+          placeholder="Các ngày trong tuần sau 16 giờ"
           disabled={submitting}
         />
         <FormInput
           id="budget"
-          label="Budget (VND / session)"
+          label="Ngân sách (VND / buổi)"
           type="number"
           value={values.budget}
           onChange={handleChange}
           error={errors.budget}
-          placeholder="e.g. 250000"
+          placeholder="Ví dụ: 250000"
           disabled={submitting}
           belowControl={budgetHint ? <p className="form-hint-left">{budgetHint}</p> : null}
         />
@@ -240,26 +240,26 @@ export default function RequestForm({ initialValues, students, submitLabel, subm
       <div className="form-grid">
         <FormInput
           id="grade_level"
-          label="Grade level"
+          label="Khối lớp"
           value={values.grade_level}
           onChange={handleChange}
           error={errors.grade_level}
-          placeholder="e.g. Lớp 9"
+          placeholder="Ví dụ: Lớp 9"
           disabled={submitting}
         />
         <FormInput
           id="location_address"
-          label={isOnline ? 'Location / Address (optional)' : 'Location / Address'}
+          label={isOnline ? "Địa điểm / Địa chỉ (không bắt buộc)" : "Địa điểm / Địa chỉ"}
           value={values.location_address}
           onChange={handleChange}
           error={errors.location_address}
-          placeholder="e.g. Cầu Giấy, Hà Nội"
+          placeholder="Ví dụ: Cầu Giấy, Hà Nội"
           disabled={submitting}
         />
       </div>
 
       <div className="form-field">
-        <p className="form-label" id="mode-label">Session mode</p>
+        <p className="form-label" id="mode-label">Hình thức học</p>
         <div className="mode-toggle" role="group" aria-labelledby="mode-label">
           {TEACHING_MODES.map((mode) => (
             <button
@@ -278,13 +278,13 @@ export default function RequestForm({ initialValues, students, submitLabel, subm
 
       <FormTextarea
         id="tutor_requirements"
-        label="Tutor requirements"
+        label="Yêu cầu đối với gia sư"
         optional
         rows={3}
         value={values.tutor_requirements}
         onChange={handleChange}
         error={errors.tutor_requirements}
-        placeholder="Gender, experience, school… anything tutors should know"
+        placeholder="Giới tính, kinh nghiệm, trường học… hoặc yêu cầu khác dành cho gia sư"
         disabled={submitting}
       />
 

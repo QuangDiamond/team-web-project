@@ -30,19 +30,19 @@ export default function ReceivedInvitations() {
     await list.reload();
   };
 
-  const handleAccept = (invitation) => handleAction(acceptInvitation, invitation, 'Invitation accepted. A conversation has been opened.');
-  const handleDecline = (invitation) => handleAction(declineInvitation, invitation, 'Invitation declined.');
+  const handleAccept = (invitation) => handleAction(acceptInvitation, invitation, "Đã chấp nhận lời mời và mở cuộc trò chuyện.");
+  const handleDecline = (invitation) => handleAction(declineInvitation, invitation, "Đã từ chối lời mời.");
 
   return (
     <div className="page-stack">
-      <p className="item-meta">Invitations from parents. Accepting opens a conversation with them.</p>
+      <p className="item-meta">Lời mời từ phụ huynh. Chấp nhận để mở cuộc trò chuyện.</p>
 
       {notice && <Alert type="success">{notice}</Alert>}
       {actionError && <Alert type="error">{actionError}</Alert>}
 
       <ListState
         list={list}
-        empty={{ icon: Mail, title: 'No invitations yet', description: 'When a parent invites you to a request, it will appear here.' }}
+        empty={{ icon: Mail, title: "Chưa có lời mời", description: "Lời mời từ phụ huynh sẽ hiển thị ở đây." }}
       >
         {list.data && <ReceivedInvitationList invitations={list.data.items} onAccept={handleAccept} onDecline={handleDecline} />}
       </ListState>

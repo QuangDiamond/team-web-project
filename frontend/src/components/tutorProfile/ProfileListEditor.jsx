@@ -30,7 +30,7 @@ export default function ProfileListEditor({ sectionId, title, items, fields, emp
     <fieldset className="profile-section" disabled={disabled}>
       <legend className="profile-section-title">{title}</legend>
 
-      {items.length === 0 && <p className="item-meta">Nothing added yet.</p>}
+      {items.length === 0 && <p className="item-meta">Chưa thêm mục nào.</p>}
 
       {items.map((item, index) => {
         const itemErrors = errors[index] || {};
@@ -58,7 +58,7 @@ export default function ProfileListEditor({ sectionId, title, items, fields, emp
                   <FormInput
                     key={field.name}
                     id={fieldId}
-                    label={field.optional ? `${field.label} (optional)` : field.label}
+                    label={field.optional ? `${field.label} (không bắt buộc)` : field.label}
                     required={!field.optional}
                     type={field.type}
                     value={field.allowNow && item[field.name] === 'NOW' ? '' : item[field.name]}
@@ -67,7 +67,7 @@ export default function ProfileListEditor({ sectionId, title, items, fields, emp
                       <label className="checkbox form-inline-checkbox">
                         <input type="checkbox" checked={item[field.name] === 'NOW'}
                           onChange={(event) => updateItem(index, field.name, event.target.checked ? 'NOW' : '')} />
-                        <span>Now</span>
+                        <span>Hiện tại</span>
                       </label>
                     )}
                     onChange={(event) => updateItem(index, field.name, event.target.value)}
@@ -79,7 +79,7 @@ export default function ProfileListEditor({ sectionId, title, items, fields, emp
             <button
               type="button"
               className="dashboard-icon-button profile-item-remove"
-              aria-label={`Remove ${title} item ${index + 1}`}
+              aria-label={`Xóa ${title} mục ${index + 1}`}
               onClick={() => removeItem(index)}
             >
               <Trash2 size={16} aria-hidden="true" />

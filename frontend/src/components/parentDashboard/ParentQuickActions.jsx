@@ -7,23 +7,23 @@ export default function ParentQuickActions() {
   const navigate = useNavigate();
 
   return (
-    <SectionCard title="Quick actions">
+    <SectionCard title="Thao tác nhanh">
       <div className="quick-actions">
         <button type="button" className="btn btn-primary btn-block" onClick={() => navigate('/parent/requests/new')}>
           <Plus size={16} aria-hidden="true" />
-          <span>Create tutoring request</span>
+          <span>Tạo yêu cầu tìm gia sư</span>
         </button>
         <button type="button" className="btn btn-outline btn-block" onClick={() => navigate('/parent/requests')}>
           <ClipboardList size={16} aria-hidden="true" />
-          <span>Review applications</span>
+          <span>Xem đơn ứng tuyển</span>
         </button>
         <button type="button" className="btn btn-outline btn-block" onClick={() => navigate('/parent/invitations')}>
           <Mail size={16} aria-hidden="true" />
-          <span>View my invitations</span>
+          <span>Xem lời mời đã gửi</span>
         </button>
         <button type="button" className="btn btn-outline btn-block" onClick={() => navigate('/parent/messages')}>
           <MessageSquare size={16} aria-hidden="true" />
-          <span>Open messages</span>
+          <span>Mở tin nhắn</span>
         </button>
       </div>
     </SectionCard>

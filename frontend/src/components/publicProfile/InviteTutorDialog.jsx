@@ -18,22 +18,22 @@ export default function InviteTutorDialog({ profile, onClose, onInvited }) {
   }
 
   return (
-    <Modal title="Choose a request to invite this tutor" onClose={onClose}>
-      <p className="item-meta">An invitation costs 1 credit. Choose an open request below.</p>
-      <ListState list={list} empty={{ title: 'No open requests', description: 'Create a tutoring request first.' }}>
+    <Modal title="Chọn yêu cầu để mời gia sư" onClose={onClose}>
+      <p className="item-meta">Mỗi lời mời tốn 1 tín dụng. Chọn một yêu cầu đang mở bên dưới.</p>
+      <ListState list={list} empty={{ title: "Chưa có yêu cầu đang mở", description: "Hãy tạo yêu cầu tìm gia sư trước." }}>
         <ul className="public-profile-list">
           {list.data?.items.map((item) => (
             <li key={item._id}>
               <h3>{item.title}</h3>
               <p className="item-meta">{item.subject_name} · {item.grade_level}</p>
               <button type="button" className="btn btn-outline btn-sm" disabled={item.is_expired}
-                onClick={() => setRequest(item)}>{item.is_expired ? 'Expired' : 'Select request'}</button>
+                onClick={() => setRequest(item)}>{item.is_expired ? "Đã hết hạn" : "Chọn yêu cầu"}</button>
             </li>
           ))}
         </ul>
       </ListState>
       <Pagination pagination={list.pagination} onPageChange={setPage} disabled={list.loading} />
-      <Link to="/parent/requests/new" className="link">Create a new request</Link>
+      <Link to="/parent/requests/new" className="link">Tạo yêu cầu mới</Link>
     </Modal>
   );
 }

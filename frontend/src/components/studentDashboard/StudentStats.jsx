@@ -12,10 +12,10 @@ const getTotal = (section) => {
 export default function StudentStats({ classes, sessions, assignments, grades }) {
   return (
     <div className="student-stats">
-      <StatCard label="Joined Classes" value={getTotal(classes)} detail="Active classes" tone="primary" />
-      <StatCard label="Upcoming Sessions" value={getTotal(sessions)} detail="Next 7 days" tone="info" />
-      <StatCard label="Pending Assignments" value={getTotal(assignments)} detail="Not submitted yet" tone="warning" />
-      <StatCard label="Published Grades" value={getTotal(grades)} detail="With tutor feedback" tone="success" />
+      <StatCard label="Lớp đã tham gia" value={getTotal(classes)} detail="Lớp đang hoạt động" tone="primary" />
+      <StatCard label="Buổi học sắp tới" value={getTotal(sessions)} detail="Trong 7 ngày tới" tone="info" />
+      <StatCard label="Bài tập chưa hoàn thành" value={getTotal(assignments)} detail="Chưa nộp" tone="warning" />
+      <StatCard label="Điểm đã công bố" value={getTotal(grades)} detail="Kèm nhận xét của gia sư" tone="success" />
     </div>
   );
 }

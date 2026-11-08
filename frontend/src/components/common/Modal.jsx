@@ -33,7 +33,7 @@ export default function Modal({ title, onClose, children }) {
       >
         <div className="modal-header">
           <h2 id="modal-title" className="modal-title">{title}</h2>
-          <button type="button" className="dashboard-icon-button" aria-label="Close" onClick={onClose}>
+          <button type="button" className="dashboard-icon-button" aria-label="Đóng" onClick={onClose}>
             <X size={18} aria-hidden="true" />
           </button>
         </div>

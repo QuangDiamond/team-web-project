@@ -77,7 +77,7 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const planLabel = plan ? `${getTargetRoleLabel(plan.target_role)} ${getPlanTitle(plan.name)}` : '';
+  const planLabel = plan ? `gói ${getPlanTitle(plan.name)} dành cho ${getTargetRoleLabel(plan.target_role)}` : '';
   const isFreePlan = plan?.name === FREE_PLAN_NAME;
 
   const handleChange = (event) => {
@@ -107,10 +107,10 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
     if (isCreating) {
       const name = values.name.trim();
       if (!name || name.length > 100) {
-        newErrors.name = 'Plan name must be between 1 and 100 characters';
+        newErrors.name = 'Tên gói dịch vụ phải có từ 1 đến 100 ký tự';
       }
       if (name === FREE_PLAN_NAME && Number(values.monthly_price) !== 0) {
-        newErrors.monthly_price = 'Free plan price must be 0';
+        newErrors.monthly_price = 'Giá gói Miễn phí phải bằng 0';
       }
     }
     setErrors(newErrors);
@@ -133,10 +133,10 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
     try {
       if (isCreating) {
         await createPlan({ ...payload, name: values.name.trim(), target_role: values.target_role });
-        onSaved(`Plan "${values.name.trim()}" was added.`);
+        onSaved(`Gói dịch vụ "${values.name.trim()}" đã được thêm.`);
       } else {
         await updatePlan(plan._id, payload);
-        onSaved(`${planLabel} plan was updated.`);
+        onSaved(`Đã cập nhật ${planLabel}.`);
       }
     } catch (error) {
       const fieldErrors = toFieldErrors(error.errors);
@@ -150,8 +150,8 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
   return (
     <Modal
       id="plan-edit"
-      title={isCreating ? 'Add subscription plan' : `Edit ${planLabel} plan`}
-      description="Unavailable plans are hidden from checkout. Existing subscriptions are kept."
+      title={isCreating ? 'Thêm gói dịch vụ' : `Sửa ${planLabel}`}
+      description="Gói ngừng cung cấp sẽ không hiển thị khi thanh toán. Các đăng ký hiện có vẫn được giữ nguyên."
       onClose={onClose}
     >
       <form onSubmit={handleSubmit} noValidate>
@@ -160,26 +160,26 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
         <div className="form-grid">
           {isCreating && (
             <>
-              <FormInput id="name" label="Plan name" value={values.name} onChange={handleChange}
+              <FormInput id="name" label="Tên gói dịch vụ" value={values.name} onChange={handleChange}
                 error={errors.name} disabled={submitting} />
-              <FormSelect id="target_role" label="Available to" value={values.target_role}
+              <FormSelect id="target_role" label="Dành cho" value={values.target_role}
                 onChange={handleChange} options={PACK_ROLE_OPTIONS} error={errors.target_role} disabled={submitting} />
             </>
           )}
           <FormInput
             id="monthly_price"
-            label="Monthly price (VND)"
+            label="Giá mỗi tháng (VND)"
             type="number"
             value={values.monthly_price}
             onChange={handleChange}
             error={errors.monthly_price}
             disabled={submitting || isFreePlan}
             endAdornment={<span className="form-control-suffix" aria-hidden="true">₫</span>}
-            belowControl={isFreePlan && <p className="form-field-hint">The Free plan is always 0 ₫.</p>}
+            belowControl={isFreePlan && <p className="form-field-hint">Gói Miễn phí luôn có giá 0 ₫.</p>}
           />
           <FormInput
             id="monthly_credits"
-            label="Credits per month"
+            label="Tín dụng mỗi tháng"
             type="number"
             value={values.monthly_credits}
             onChange={handleChange}
@@ -188,7 +188,7 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
           />
           <FormInput
             id="ai_quota"
-            label="AI quota per month"
+            label="Lượt dùng AI mỗi tháng"
             type="number"
             value={values.ai_quota}
             onChange={handleChange}
@@ -197,12 +197,12 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
           />
           <FormInput
             id="max_classrooms"
-            label="Class limit"
+            label="Giới hạn số lớp"
             type="number"
             value={values.max_classrooms}
             onChange={handleChange}
             error={errors.max_classrooms}
-            placeholder="Unlimited"
+            placeholder="Không giới hạn"
             disabled={submitting || values.unlimited_classes}
             belowControl={(
               <label className="checkbox form-inline-checkbox">
@@ -213,7 +213,7 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
                   onChange={handleUnlimitedChange}
                   disabled={submitting}
                 />
-                <span>Unlimited classes</span>
+                <span>Không giới hạn số lớp</span>
               </label>
             )}
           />
@@ -221,8 +221,8 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
 
         <ToggleSwitch
           id="sms_reminders_enabled"
-          label="SMS reminders"
-          description="Send session reminders by SMS in addition to email."
+          label="Nhắc lịch qua SMS"
+          description="Gửi nhắc lịch học qua SMS bên cạnh thư điện tử."
           checked={values.sms_reminders_enabled}
           onChange={handleSmsChange}
           disabled={submitting}
@@ -230,8 +230,8 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
 
         <ToggleSwitch
           id="is_active"
-          label="Available"
-          description="Allow users with the selected role to purchase this plan."
+          label="Đang cung cấp"
+          description="Cho phép người dùng thuộc vai trò đã chọn mua gói dịch vụ này."
           checked={values.is_active}
           onChange={(checked) => setValues({ ...values, is_active: checked })}
           disabled={submitting}
@@ -240,7 +240,7 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
 
         <ReasonField value={values.reason} onChange={handleChange} error={errors.reason} disabled={submitting} />
 
-        <DialogActions submitLabel={isCreating ? 'Add plan' : 'Save changes'} submitting={submitting} onCancel={onClose} />
+        <DialogActions submitLabel={isCreating ? 'Thêm gói dịch vụ' : 'Lưu thay đổi'} submitting={submitting} onCancel={onClose} />
       </form>
     </Modal>
   );

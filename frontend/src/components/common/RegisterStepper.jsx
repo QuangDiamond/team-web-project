@@ -1,11 +1,11 @@
 import { Check } from 'lucide-react';
 
-const STEPS = ['Your Info', 'Confirm'];
+const STEPS = ['Thông tin cá nhân', 'Xác nhận'];
 
 // Thanh tiến trình 2 bước của màn đăng ký: currentStep = 1 | 2
 export default function RegisterStepper({ currentStep }) {
   return (
-    <ol className="register-stepper" aria-label="Registration progress">
+    <ol className="register-stepper" aria-label="Tiến trình đăng ký">
       {STEPS.map((label, index) => {
         const stepNumber = index + 1;
         const isDone = stepNumber < currentStep;

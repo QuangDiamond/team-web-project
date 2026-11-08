@@ -255,7 +255,7 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                     <div style={{ fontWeight: 700, fontSize: '15px', color: '#0f172a', marginBottom: '10px' }}>
                       Câu {idx + 1}: {q.content}{' '}
                       <span style={{ fontWeight: 400, color: '#64748b', fontSize: '13px' }}>
-                        ({q.points || 1} điểm - {q.question_type === 'MULTIPLE_CHOICE' ? 'Trắc nghiệm' : q.question_type === 'SHORT_ANSWER' ? 'Tự luận ngắn' : 'Nộp file/link'})
+                        ({q.points || 1} điểm - {q.question_type === 'MULTIPLE_CHOICE' ? 'Trắc nghiệm' : q.question_type === 'SHORT_ANSWER' ? 'Tự luận ngắn' : 'Nộp tệp/link'})
                       </span>
                     </div>
 
@@ -319,7 +319,7 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                       </div>
                     )}
 
-                    {/* Nộp file / đính kèm URL (FILE_UPLOAD) */}
+                    {/* Nộp tệp / đính kèm URL (FILE_UPLOAD) */}
                     {q.question_type === 'FILE_UPLOAD' && (
                       <div>
                         <input
@@ -338,7 +338,7 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                           }}
                         />
                         <div style={{ fontSize: '12px', color: '#64748b', marginTop: '4px' }}>
-                          💡 Hãy đảm bảo đường link được đặt ở chế độ công khai (Anyone with the link can view) để gia sư chấm điểm.
+                          💡 Hãy đảm bảo liên kết được đặt ở chế độ công khai (bất kỳ ai có liên kết đều có thể xem) để gia sư chấm điểm.
                         </div>
                       </div>
                     )}

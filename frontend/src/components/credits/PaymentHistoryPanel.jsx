@@ -15,7 +15,7 @@ const EMPTY_FILTERS = { status: '', from: '', to: '' };
 // Gói thì hiện tên thân thiện ("PRO" -> "Pro plan"), credit pack giữ nguyên tên
 const getOrderItemName = (order) => {
   if (order.item_type === 'PLAN_UPGRADE') {
-    return `${getPlanTitle(order.item_name)} plan`;
+    return `Gói ${getPlanTitle(order.item_name)}`;
   }
   return order.item_name;
 };
@@ -24,15 +24,15 @@ const getOrderItemName = (order) => {
 function OrderAction({ order }) {
   if (order.status === 'SUCCESS' && order.has_receipt) {
     return (
-      <Link to={`/receipts/${encodeURIComponent(order.order_code)}`} className="link" aria-label={`Receipt for order ${order.order_code}`}>
-        Receipt
+      <Link to={`/receipts/${encodeURIComponent(order.order_code)}`} className="link" aria-label={`Biên nhận cho đơn hàng ${order.order_code}`}>
+        Biên nhận
       </Link>
     );
   }
   if (order.status === 'PENDING') {
     return (
-      <Link to={`/payment/result?order=${encodeURIComponent(order.order_code)}`} className="link" aria-label={`Check status of order ${order.order_code}`}>
-        Check status
+      <Link to={`/payment/result?order=${encodeURIComponent(order.order_code)}`} className="link" aria-label={`Kiểm tra trạng thái đơn hàng ${order.order_code}`}>
+        Kiểm tra trạng thái
       </Link>
     );
   }
@@ -50,8 +50,8 @@ export default function PaymentHistoryPanel() {
       <HistoryFilters
         idPrefix="payment"
         filterField="status"
-        filterLabel="Status"
-        allLabel="All statuses"
+        filterLabel="Trạng thái"
+        allLabel="Tất cả trạng thái"
         options={ORDER_STATUS_OPTIONS}
         filters={history.filters}
         onChange={history.changeFilter}
@@ -66,23 +66,23 @@ export default function PaymentHistoryPanel() {
         isEmpty={list.items.length === 0}
         filtersActive={history.filtersActive}
         onClearFilters={history.clearFilters}
-        emptyTitle="No payments yet"
-        emptyText="Upgrade to Pro or buy a credit pack to get started."
-        emptyAction={<Link to="/checkout" className="btn btn-primary btn-sm">Upgrade / Buy credits</Link>}
+        emptyTitle="Chưa có thanh toán"
+        emptyText="Nâng cấp lên Pro hoặc mua gói tín dụng để bắt đầu."
+        emptyAction={<Link to="/checkout" className="btn btn-primary btn-sm">Nâng cấp / Mua tín dụng</Link>}
       />
 
       {!list.loadError && list.items.length > 0 && (
         <table className="data-table history-table">
-          <caption className="visually-hidden">Payments</caption>
+          <caption className="visually-hidden">Thanh toán</caption>
           <thead>
             <tr>
-              <th scope="col">Date</th>
-              <th scope="col">Item</th>
-              <th scope="col">Order code</th>
-              <th scope="col">Method</th>
-              <th scope="col" className="cell-number">Amount</th>
-              <th scope="col">Status</th>
-              <th scope="col" className="cell-actions">Receipt</th>
+              <th scope="col">Ngày</th>
+              <th scope="col">Sản phẩm</th>
+              <th scope="col">Mã đơn hàng</th>
+              <th scope="col">Phương thức</th>
+              <th scope="col" className="cell-number">Số tiền</th>
+              <th scope="col">Trạng thái</th>
+              <th scope="col" className="cell-actions">Biên nhận</th>
             </tr>
           </thead>
           <tbody>
@@ -90,18 +90,18 @@ export default function PaymentHistoryPanel() {
               const status = getOrderStatusOption(order.status);
               return (
                 <tr key={order.order_code}>
-                  <td data-label="Date">{formatDateTime(order.created_at)}</td>
-                  <td data-label="Item">
+                  <td data-label="Ngày">{formatDateTime(order.created_at)}</td>
+                  <td data-label="Sản phẩm">
                     <span className="cell-stack">
                       <span className="cell-title">{getOrderItemName(order)}</span>
                       <span className="cell-subtitle">{getOrderItemTypeLabel(order.item_type)}</span>
                     </span>
                   </td>
-                  <td data-label="Order code" className="cell-code">{order.order_code}</td>
-                  <td data-label="Method">{getPaymentMethodLabel(order.payment_method)}</td>
-                  <td data-label="Amount" className="cell-number">{formatVnd(order.amount)}</td>
-                  <td data-label="Status"><span className={`badge badge-${status.tone}`}>{status.label}</span></td>
-                  <td data-label="Receipt" className="cell-actions"><OrderAction order={order} /></td>
+                  <td data-label="Mã đơn hàng" className="cell-code">{order.order_code}</td>
+                  <td data-label="Phương thức">{getPaymentMethodLabel(order.payment_method)}</td>
+                  <td data-label="Số tiền" className="cell-number">{formatVnd(order.amount)}</td>
+                  <td data-label="Trạng thái"><span className={`badge badge-${status.tone}`}>{status.label}</span></td>
+                  <td data-label="Biên nhận" className="cell-actions"><OrderAction order={order} /></td>
                 </tr>
               );
             })}
@@ -113,7 +113,7 @@ export default function PaymentHistoryPanel() {
         pagination={list.pagination}
         onPageChange={history.setPage}
         disabled={list.loading}
-        label="Payment pages"
+        label="Phân trang lịch sử thanh toán"
       />
     </>
   );

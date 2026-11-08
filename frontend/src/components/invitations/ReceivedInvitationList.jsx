@@ -16,7 +16,7 @@ function ReceivedInvitationRow({ invitation, onAccept, onDecline }) {
   };
   const isBusy = busyAction !== '';
 
-  let title = 'Request no longer available';
+  let title = "Yêu cầu không còn khả dụng";
   let metaParts = [];
   let canAccept = false;
   if (request) {
@@ -36,14 +36,14 @@ function ReceivedInvitationRow({ invitation, onAccept, onDecline }) {
           <span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>
         </div>
         <p className="item-meta">{metaParts.join(' · ')}</p>
-        <p className="item-meta">A parent invited you · {formatDate(invitation.created_at)}</p>
-        {invitation.parent_user_id && <Link to={`/parents/${invitation.parent_user_id}`} className="link">View parent profile</Link>}
+        <p className="item-meta">Phụ huynh đã mời bạn · {formatDate(invitation.created_at)}</p>
+        {invitation.parent_user_id && <Link to={`/parents/${invitation.parent_user_id}`} className="link">Xem hồ sơ phụ huynh</Link>}
         {invitation.message && <p className="item-note">“{invitation.message}”</p>}
         {invitation.status === 'PENDING' && !canAccept && (
-          <p className="received-invitation-warning">This request is no longer open, so the invitation cannot be accepted.</p>
+          <p className="received-invitation-warning">Yêu cầu này đã đóng nên không thể chấp nhận lời mời.</p>
         )}
         {invitation.status === 'ACCEPTED' && (
-          <p className="received-invitation-chat">Conversation opened.</p>
+          <p className="received-invitation-chat">Đã mở cuộc trò chuyện.</p>
         )}
       </div>
       {invitation.status === 'ACCEPTED' && invitation.conversation_id && (
@@ -54,7 +54,7 @@ function ReceivedInvitationRow({ invitation, onAccept, onDecline }) {
       {invitation.status === 'PENDING' && (
         <div className="item-actions">
           <button type="button" className="btn btn-outline btn-sm" disabled={isBusy} onClick={() => runAction('decline', onDecline)}>
-            {busyAction === 'decline' ? 'Declining...' : 'Decline'}
+            {busyAction === 'decline' ? "Đang từ chối..." : "Từ chối"}
           </button>
           <button
             type="button"
@@ -62,7 +62,7 @@ function ReceivedInvitationRow({ invitation, onAccept, onDecline }) {
             disabled={isBusy || !canAccept}
             onClick={() => runAction('accept', onAccept)}
           >
-            {busyAction === 'accept' ? 'Accepting...' : 'Accept'}
+            {busyAction === 'accept' ? "Đang chấp nhận..." : "Chấp nhận"}
           </button>
         </div>
       )}

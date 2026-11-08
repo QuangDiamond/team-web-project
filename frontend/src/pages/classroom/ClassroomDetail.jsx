@@ -207,7 +207,7 @@ export default function ClassroomDetail() {
         join_code: res?.data?.join_code,
         invite_link: res?.data?.invite_link,
       }));
-      showToast('Đã cấp mã tham gia và link mời mới thành công!');
+      showToast('Đã cấp mã tham gia và liên kết mời mới thành công!');
     } catch (err) {
       alert(err?.response?.data?.message || err.message || 'Lỗi khi cấp lại mã');
     }
@@ -439,7 +439,7 @@ export default function ClassroomDetail() {
             minWidth: '260px',
           }}
         >
-          <div className="join-code-label">Mã tham gia lớp học (Join Code)</div>
+          <div className="join-code-label">Mã tham gia lớp học</div>
           <div
             className="join-code-value"
             style={{ fontSize: '22px', margin: '6px 0 12px 0', letterSpacing: '1.5px' }}
@@ -463,11 +463,11 @@ export default function ClassroomDetail() {
               onClick={() =>
                 handleCopy(
                   classroom.invite_link || `${window.location.origin}/join-class/${classroom.join_code}`,
-                  'link mời tham gia'
+                  'liên kết mời tham gia'
                 )
               }
             >
-              🔗 Link mời
+              🔗 Liên kết mời
             </button>
           </div>
         </div>

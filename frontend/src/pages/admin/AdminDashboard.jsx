@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { statsService } from '../../services/statsService';
+import { getUserRoleLabel } from '../../utils/userDisplay';
 import '../../styles/AdminDashboard.css';
 
 export default function AdminDashboard() {
@@ -151,10 +152,10 @@ export default function AdminDashboard() {
               <div className="kpi-icon-pill pill-revenue">💰</div>
             </div>
             <div className="kpi-value">
-              {kpis.totalGmv ? `${(kpis.totalGmv / 1000000).toFixed(1)}M đ` : '0 đ'}
+              {kpis.totalGmv ? `${(kpis.totalGmv / 1000000).toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} triệu đ` : '0 đ'}
             </div>
             <div className="kpi-subtext">
-              <strong>+18.4%</strong> so với kỳ trước · Gói Pro & Credit
+              <strong>+18,4%</strong> so với kỳ trước · Gói Pro và tín dụng
             </div>
           </div>
 
@@ -238,7 +239,7 @@ export default function AdminDashboard() {
                           display: 'inline-block'
                         }}
                       />
-                      {r.role}
+                      {getUserRoleLabel(r.role)}
                     </span>
                     <span className="role-dist-val">
                       {r.count} ({r.percent}%)
@@ -269,7 +270,7 @@ export default function AdminDashboard() {
               }}
             >
               💡 <strong>Nhận định:</strong> Lượng phụ huynh đăng ký chiếm tỷ trọng
-              lớn nhất (50.7%), tương ứng với nhu cầu cao tìm gia sư ôn thi học kỳ
+              lớn nhất (50,7%), tương ứng với nhu cầu cao tìm gia sư ôn thi học kỳ
               và tuyển sinh vào 10.
             </div>
           </div>
@@ -290,7 +291,7 @@ export default function AdminDashboard() {
                 <span className="funnel-step-val">{kpis.totalRequests ?? 0}</span>
               </div>
               <div className="funnel-step-box">
-                <span className="funnel-step-title">2. Ứng tuyển &amp; Lời mời ({kpis.conversationsOpened ?? 0} phòng chat mở)</span>
+                <span className="funnel-step-title">2. Ứng tuyển &amp; Lời mời ({kpis.conversationsOpened ?? 0} cuộc trò chuyện đang mở)</span>
                 <span className="funnel-step-val">
                   {(kpis.totalApplications || 0) + (kpis.totalInvitations || 0)} lượt
                 </span>
@@ -325,7 +326,7 @@ export default function AdminDashboard() {
                 </span>
               </div>
               <div className="quick-metric-item">
-                <span className="quick-metric-label">Gói nạp Credit</span>
+                <span className="quick-metric-label">Gói nạp tín dụng</span>
                 <span className="quick-metric-val">
                   {(kpis.creditPackRevenue || 0).toLocaleString('vi-VN')} đ (
                   {kpis.totalGmv > 0
@@ -356,11 +357,11 @@ export default function AdminDashboard() {
                 </span>
               </div>
               <div className="quick-metric-item">
-                <span className="quick-metric-label">Tổng nhật ký Audit Logs (BR-16)</span>
+                <span className="quick-metric-label">Tổng số bản ghi nhật ký quản trị</span>
                 <span className="quick-metric-val">{kpis.totalAuditLogs ?? 0} bản ghi</span>
               </div>
               <div className="quick-metric-item">
-                <span className="quick-metric-label">Audit Logs lưu trữ (BR-16)</span>
+                <span className="quick-metric-label">Nhật ký quản trị đã lưu</span>
                 <span className="quick-metric-val">100% đầy đủ</span>
               </div>
             </div>

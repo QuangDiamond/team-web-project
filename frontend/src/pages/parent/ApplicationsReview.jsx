@@ -35,13 +35,13 @@ export default function ApplicationsReview() {
   };
 
   const handleContinue = (application) => {
-    const name = application.tutor ? application.tutor.full_name : 'the tutor';
-    return handleAction(continueApplication, application, `Conversation opened with ${name}.`);
+    const name = application.tutor ? application.tutor.full_name : "gia sư";
+    return handleAction(continueApplication, application, `Đã mở cuộc trò chuyện với ${name}.`);
   };
 
-  const handleSkip = (application) => handleAction(skipApplication, application, 'Application skipped.');
+  const handleSkip = (application) => handleAction(skipApplication, application, "Đã bỏ qua đơn ứng tuyển.");
 
-  let requestTitle = 'Applications';
+  let requestTitle = "Đơn ứng tuyển";
   if (list.data && list.data.request) {
     requestTitle = list.data.request.title;
   }
@@ -50,21 +50,21 @@ export default function ApplicationsReview() {
     <div className="review-page">
       <Link to={`/parent/requests/${id}`} className="review-back-link">
         <ChevronLeft size={16} aria-hidden="true" />
-        <span>Back to request</span>
+        <span>Quay lại yêu cầu</span>
       </Link>
 
       <div className="page-toolbar">
         <h2 className="review-title">{requestTitle}</h2>
-        <Link to={`/parent/requests/${id}/ai-suggestions`} className="link">See AI tutor suggestions</Link>
+        <Link to={`/parent/requests/${id}/ai-suggestions`} className="link">Xem gia sư do AI gợi ý</Link>
       </div>
-      <p className="item-meta">Tutors who applied to your request. Choose Continue to open a conversation, or Skip to pass.</p>
+      <p className="item-meta">Danh sách gia sư ứng tuyển. Chọn Tiếp tục để mở trò chuyện hoặc Bỏ qua để từ chối.</p>
 
       {notice && <Alert type="success">{notice}</Alert>}
       {actionError && <Alert type="error">{actionError}</Alert>}
 
       <ListState
         list={list}
-        empty={{ icon: Users, title: 'No applications yet', description: 'Tutors who apply to this request will appear here.' }}
+        empty={{ icon: Users, title: "Chưa có đơn ứng tuyển", description: "Gia sư ứng tuyển vào yêu cầu này sẽ hiển thị ở đây." }}
       >
         {list.data && (
           <ul className="review-list">

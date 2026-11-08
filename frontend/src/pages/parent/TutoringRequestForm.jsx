@@ -74,7 +74,7 @@ export default function TutoringRequestForm() {
     return (
       <div className="page-loading-inline" role="status">
         <LoaderCircle size={26} className="spin" aria-hidden="true" />
-        <span className="visually-hidden">Loading...</span>
+        <span className="visually-hidden">Đang tải...</span>
       </div>
     );
   }
@@ -83,7 +83,7 @@ export default function TutoringRequestForm() {
     return (
       <div className="page-stack">
         <Alert type="error">{state.error.message}</Alert>
-        <Link to="/parent/requests" className="link">Back to requests</Link>
+        <Link to="/parent/requests" className="link">Quay lại danh sách yêu cầu</Link>
       </div>
     );
   }
@@ -92,13 +92,13 @@ export default function TutoringRequestForm() {
     return (
       <div className="request-success">
         <span className="request-success-icon" aria-hidden="true"><CircleCheck size={32} /></span>
-        <h2 className="request-success-title">{isEdit ? 'Request updated' : 'Request published'}</h2>
+        <h2 className="request-success-title">{isEdit ? "Đã cập nhật yêu cầu" : "Đã đăng yêu cầu"}</h2>
         <p className="item-meta">
-          {isEdit ? 'Your changes are now visible to tutors.' : 'Tutors can now see and apply to your request.'}
+          {isEdit ? "Gia sư có thể xem các thay đổi của bạn." : "Gia sư có thể xem và ứng tuyển vào yêu cầu."}
         </p>
         <div className="item-actions">
           <button type="button" className="btn btn-primary btn-sm" onClick={() => navigate('/parent/requests')}>
-            View my requests
+            Xem yêu cầu của tôi
           </button>
           {!isEdit && (
             <button
@@ -106,7 +106,7 @@ export default function TutoringRequestForm() {
               className="btn btn-outline btn-sm"
               onClick={() => navigate(`/parent/requests/${savedRequest._id}/ai-suggestions`)}
             >
-              See AI tutor suggestions
+              Xem gia sư do AI gợi ý
             </button>
           )}
         </div>
@@ -118,9 +118,9 @@ export default function TutoringRequestForm() {
     return (
       <div className="page-stack">
         <Alert type="info">
-          This request can no longer be edited (status: {state.request.status}).
+          Không thể sửa yêu cầu này (trạng thái: {state.request.status}).
         </Alert>
-        <Link to={`/parent/requests/${id}`} className="link">View request</Link>
+        <Link to={`/parent/requests/${id}`} className="link">Xem yêu cầu</Link>
       </div>
     );
   }
@@ -140,14 +140,14 @@ export default function TutoringRequestForm() {
     <div className="request-form-page">
       <Link to="/parent/requests" className="link-back">
         <ChevronLeft size={16} aria-hidden="true" />
-        <span>Back to requests</span>
+        <span>Quay lại danh sách yêu cầu</span>
       </Link>
-      <SectionCard title={isEdit ? 'Edit request' : 'New request'}>
+      <SectionCard title={isEdit ? "Sửa yêu cầu" : "Yêu cầu mới"}>
         <RequestForm
           initialValues={initialValues}
           students={students}
-          submitLabel={isEdit ? 'Save changes' : 'Publish request'}
-          submittingLabel={isEdit ? 'Saving...' : 'Publishing...'}
+          submitLabel={isEdit ? "Lưu thay đổi" : "Đăng yêu cầu"}
+          submittingLabel={isEdit ? "Đang lưu..." : "Đang đăng..."}
           onSubmit={handleSubmit}
         />
       </SectionCard>
