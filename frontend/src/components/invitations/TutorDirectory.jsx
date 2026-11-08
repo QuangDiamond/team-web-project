@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { MapPin, Search, Star, Users } from 'lucide-react';
+import { Search, Star, Users } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { usePagedList } from '../../hooks/usePagedList';
 import { searchTutors } from '../../services/discoveryService';
@@ -12,7 +12,7 @@ import Pagination from '../common/Pagination';
 import InviteTutorDialog from '../publicProfile/InviteTutorDialog';
 import TutorSearchFilters from './TutorSearchFilters';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 12;
 
 function RatingText({ rating }) {
   if (rating === null || rating === undefined) {
@@ -22,9 +22,9 @@ function RatingText({ rating }) {
 }
 
 function TutorRow({ tutor, onInvite }) {
-  let subjectText = 'Chưa có bài đăng nào';
-  if (tutor.subjects.length > 0) {
-    subjectText = tutor.subjects.join(', ');
+  let categories = tutor.teaching_categories || [];
+  if (categories.length === 0) {
+    categories = tutor.subjects.map((name) => ({ type: 'subjects', category_id: name, name }));
   }
   let priceText = '';
   if (tutor.min_price !== null && tutor.min_price !== undefined) {
@@ -39,9 +39,15 @@ function TutorRow({ tutor, onInvite }) {
           : <span className="tutor-row-avatar" aria-hidden="true">{getInitials(tutor.full_name)}</span>}
         <div className="directory-card-name">
           <h2 className="directory-card-title">{tutor.full_name}</h2>
-          <p className="directory-card-subject">{subjectText}</p>
         </div>
       </div>
+      {categories.length > 0 ? (
+        <ul className="directory-category-tags" aria-label="Môn học và trình độ giảng dạy">
+          {categories.slice(0, 4).map((item) => (
+            <li key={`${item.type}:${item.category_id}`}>{item.name}</li>
+          ))}
+        </ul>
+      ) : <p className="directory-card-subject">Chưa cập nhật danh mục giảng dạy</p>}
       <div className="directory-card-meta">
         <RatingText rating={tutor.average_rating} />
         {tutor.availability_status === 'AVAILABLE' && <span>Đang nhận lớp</span>}
@@ -67,13 +73,14 @@ export default function TutorDirectory() {
   const [noticeType, setNoticeType] = useState('success');
 
   const params = { ...Object.fromEntries(searchParams), limit: PAGE_SIZE };
+  delete params.area;
   const list = usePagedList(searchTutors, params);
 
   const handleSearch = (event) => {
     event.preventDefault();
     const query = {};
     for (const [key, value] of Object.entries(filters)) {
-      if (key !== 'page' && value.trim()) query[key] = value.trim();
+      if (key !== 'page' && key !== 'area' && value.trim()) query[key] = value.trim();
     }
     setSearchParams(query);
   };
@@ -123,11 +130,6 @@ export default function TutorDirectory() {
             aria-label="Tìm gia sư theo tên, môn học hoặc kỹ năng"
             maxLength={100}
           />
-          </div>
-          <div className="directory-location">
-            <MapPin size={18} aria-hidden="true" />
-            <input name="area" value={filters.area || ''} onChange={(event) => setFilters({ ...filters, area: event.target.value })}
-              placeholder="Khu vực (tùy chọn)" aria-label="Khu vực tìm gia sư" maxLength={100} />
           </div>
           <button type="submit" className="btn btn-primary">
             <span>Tìm kiếm</span>

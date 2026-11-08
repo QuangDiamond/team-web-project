@@ -26,7 +26,7 @@ export default function SuggestedRequests() {
     <div className="page-stack">
       <div className="page-toolbar">
         <div>
-          <p className="item-meta">Yêu cầu đang mở phù hợp với môn học và cấp học / trình độ trong hồ sơ của bạn, mới nhất trước.</p>
+          <p className="item-meta">Yêu cầu đang mở khớp ít nhất một môn học hoặc cấp học / trình độ trong hồ sơ của bạn, mới nhất trước.</p>
           <Link to="/tutor/profile" className="link">Cập nhật danh mục giảng dạy trong hồ sơ</Link>
         </div>
         <button type="button" className="btn btn-outline btn-sm" disabled={list.loading} onClick={handleRefresh}>
@@ -37,7 +37,7 @@ export default function SuggestedRequests() {
 
       <ListState
         list={list}
-        empty={{ icon: Search, title: 'Chưa có gợi ý', description: 'Hãy cập nhật môn học và trình độ trong hồ sơ, hoặc quay lại khi có yêu cầu mới.' }}
+        empty={{ icon: Search, title: 'Chưa có gợi ý', description: 'Hãy chọn môn học hoặc trình độ trong hồ sơ, hoặc quay lại khi có yêu cầu mới.' }}
       >
         {list.data && <RequestGrid items={list.data.items} actions={actions} />}
       </ListState>

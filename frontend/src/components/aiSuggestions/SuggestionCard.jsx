@@ -1,13 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Star } from 'lucide-react';
-
-const getInitials = (fullName) => {
-  const words = (fullName || '').trim().split(/\s+/).filter(Boolean);
-  if (words.length === 0) {
-    return 'GS';
-  }
-  return words.map((word) => word[0]).join('').slice(0, 2).toUpperCase();
-};
+import { Star, CheckCircle2, Send, UserRound } from 'lucide-react';
+import { getInitials } from '../../utils/getInitials';
 
 function RatingText({ rating }) {
   if (rating === null || rating === undefined) {
@@ -23,34 +16,38 @@ export default function SuggestionCard({ suggestion, rank, isInvited, onInvite }
   return (
     <li className="ai-card">
       <div className="ai-card-top">
-        <span className="ai-card-rank" aria-label={`Thứ hạng ${rank}`}>{rank}</span>
-        <span className="ai-card-avatar" aria-hidden="true">{tutor.avatar_url ? <img src={tutor.avatar_url} alt="" /> : getInitials(tutor.full_name)}</span>
+        <span className="ai-card-rank" aria-label={`Thứ hạng ${rank}`}>#{rank}</span>
+        <span className="ai-card-avatar" aria-hidden="true">{tutor.avatar_url ? <img src={tutor.avatar_url} alt="" loading="lazy" /> : getInitials(tutor.full_name)}</span>
         <div className="ai-card-identity">
-          <p className="ai-card-name">{tutor.full_name}</p>
+          <h3 className="ai-card-name"><Link to={`/tutors/${tutor.profile_id}`}>{tutor.full_name}</Link></h3>
           {tutor.headline && <p className="ai-card-sub">{tutor.headline}</p>}
           <p className="ai-card-rating"><RatingText rating={tutor.average_rating} /></p>
         </div>
-        {tutor.availability_status === 'NOT_AVAILABLE' && (
-          <div className="ai-card-badges">
-            <span className="status-badge tone-warning">Tạm không nhận</span>
-          </div>
-        )}
       </div>
 
-      <ul className="suggestion-category-tags" aria-label="Danh mục phù hợp">
-        {matching_categories.map((item) => <li key={`${item.type}:${item.category_id}`}>{item.name}</li>)}
-      </ul>
-      <p className="ai-card-reason">{suggestion.reason}</p>
+      <div className="ai-card-badges">
+        {tutor.availability_status === 'AVAILABLE' && <span className="status-badge tone-success">Đang nhận lớp</span>}
+        {tutor.availability_status === 'NOT_AVAILABLE' && <span className="status-badge tone-warning">Tạm không nhận lớp</span>}
+      </div>
+
+      <div className="suggestion-match">
+        <p className="suggestion-match-title"><CheckCircle2 size={16} aria-hidden="true" />Phù hợp với yêu cầu</p>
+        <ul className="suggestion-category-tags" aria-label="Danh mục phù hợp">
+          {matching_categories.map((item) => <li key={`${item.type}:${item.category_id}`}>{item.name}</li>)}
+        </ul>
+        <p className="ai-card-reason">{suggestion.reason}</p>
+      </div>
 
       <div className="ai-card-actions">
-        <Link to={`/tutors/${tutor.profile_id}`} className="btn btn-outline btn-sm">Xem chi tiết</Link>
+        <Link to={`/tutors/${tutor.profile_id}`} className="btn btn-outline"><UserRound size={16} aria-hidden="true" />Xem hồ sơ</Link>
         <button
           type="button"
-          className="btn btn-primary btn-sm"
+          className="btn btn-primary"
           disabled={isInvited}
           onClick={() => onInvite(suggestion)}
         >
-          {isInvited ? "Đã mời" : "Mời"}
+          <Send size={16} aria-hidden="true" />
+          {isInvited ? 'Đã gửi lời mời' : 'Mời gia sư'}
         </button>
       </div>
     </li>

@@ -51,8 +51,14 @@ export default function SuggestionsPanel({ requestId }) {
 
   return (
     <div className="page-stack">
-      <div className="page-toolbar">
-        <p className="item-meta">Gia sư đã chọn cả môn học và cấp học / trình độ phù hợp trong hồ sơ. Danh sách sắp theo đánh giá.</p>
+      <div className="page-toolbar suggestions-toolbar">
+        <div>
+          <div className="suggestions-heading">
+            <h2>Gia sư phù hợp</h2>
+            {data && <span className="suggestions-count">{data.pagination.total} gia sư</span>}
+          </div>
+          <p className="item-meta">Khớp môn học và trình độ của yêu cầu, sắp xếp theo đánh giá.</p>
+        </div>
         <button type="button" className="btn btn-outline btn-sm" disabled={refreshing || loading} onClick={() => refresh()}>
           <RefreshCw size={14} className={refreshing ? 'spin' : ''} aria-hidden="true" />
           <span>{refreshing ? 'Đang làm mới...' : 'Làm mới'}</span>

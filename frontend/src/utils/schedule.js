@@ -59,7 +59,7 @@ export const formatSchedule = (days, start, end) => {
 export const parseSchedule = (text) => {
   const match = SCHEDULE_REGEX.exec(text || '');
   if (!match) {
-    return null;
+    return parseVietnameseSchedule(text);
   }
   const days = match[1].split(', ').map((day) => ENGLISH_DAY_TO_VIETNAMESE[day] || day);
   return {
@@ -68,3 +68,28 @@ export const parseSchedule = (text) => {
     end: { hour: match[5], minute: match[6], period: match[7] },
   };
 };
+
+// Older requests store a 24-hour range, e.g. "Thứ 3, 5 — 19:30 đến 21:00".
+function parseVietnameseSchedule(text) {
+  const match = /^(.*?)\s+[—–·-]\s+(\d{1,2}):(\d{2})\s+(?:đến|[—–-])\s+(\d{1,2}):(\d{2})$/i.exec(text || '');
+  if (!match) return null;
+  const days = [];
+  for (const value of match[1].split(/,\s*/)) {
+    const token = value.trim().toLowerCase();
+    if (token === 'chủ nhật' || token === 'cn') days.push('CN');
+    else {
+      const day = /^(?:thứ\s*|t)?([2-7])$/.exec(token);
+      if (!day) return null;
+      days.push('T' + day[1]);
+    }
+  }
+  const toTime = (hour, minute) => {
+    const hours = Number(hour);
+    return { hour: String(hours % 12 || 12), minute, period: hours >= 12 ? 'PM' : 'AM' };
+  };
+  if (Number(match[2]) > 23 || Number(match[4]) > 23) return null;
+  const start = toTime(match[2], match[3]);
+  const end = toTime(match[4], match[5]);
+  if (!isValidTime(start) || !isValidTime(end) || toMinutes(end) <= toMinutes(start)) return null;
+  return { days: WEEK_DAYS.filter((day) => days.includes(day)), start, end };
+}

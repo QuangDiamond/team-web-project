@@ -42,7 +42,9 @@ export default function ReceivedApplicationCard({ application, onContinue, onSki
   return (
     <li className="review-card">
       <div className="review-card-top">
-        <span className="review-card-avatar" aria-hidden="true">{avatarText}</span>
+        <span className="review-card-avatar" aria-hidden="true">
+          {tutor?.avatar_url ? <img src={tutor.avatar_url} alt="" loading="lazy" /> : avatarText}
+        </span>
         <div className="review-card-identity">
           <p className="review-card-name">{tutorName}</p>
           {headline && <p className="item-meta">{headline}</p>}

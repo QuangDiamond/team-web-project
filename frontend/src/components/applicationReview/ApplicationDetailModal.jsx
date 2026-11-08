@@ -46,7 +46,9 @@ export default function ApplicationDetailModal({ application, request, onClose, 
     <Modal title="Chi tiết đơn ứng tuyển" onClose={onClose}>
       <div className="review-detail">
         <div className="review-card-top">
-          <span className="review-card-avatar" aria-hidden="true">{avatarText}</span>
+          <span className="review-card-avatar" aria-hidden="true">
+            {tutor?.avatar_url ? <img src={tutor.avatar_url} alt="" /> : avatarText}
+          </span>
           <div className="review-card-identity">
             <p className="review-card-name">{tutorName}</p>
             {tutor && tutor.headline && <p className="item-meta">{tutor.headline}</p>}

@@ -37,6 +37,17 @@ test('schedule helpers format, parse and reject invalid times', async () => {
       // Lịch đã lưu bằng tên ngày tiếng Anh vẫn đọc được và được đổi sang tiếng Việt
       assert.deepEqual(parseSchedule('Mon, Sun · 4:00 PM - 6:30 PM').days, ['T2', 'CN']);
 
+      const vietnamese = parseSchedule('Thứ 3, 5 — 19:30 đến 21:00');
+      assert.deepEqual(vietnamese.days, ['T3', 'T5']);
+      assert.deepEqual(vietnamese.start, time('7', '30', 'PM'));
+      assert.deepEqual(vietnamese.end, time('9', '00', 'PM'));
+      assert.deepEqual(parseSchedule('Thứ 7, Chủ nhật — 08:00 đến 10:00').days, ['T7', 'CN']);
+      assert.deepEqual(parseSchedule('Thứ 2, 4 — 00:00 đến 12:00').start, time('12', '00', 'AM'));
+      assert.equal(parseSchedule('Thứ 3 — 25:00 đến 26:00'), null);
+      assert.equal(parseSchedule('Thứ 3 — 19:60 đến 21:00'), null);
+      assert.equal(parseSchedule('Thứ 3 — 21:00 đến 19:30'), null);
+      assert.equal(parseSchedule('Thứ 8 — 19:00 đến 21:00'), null);
+
       // Lịch nhập tay kiểu cũ không đọc được
       assert.equal(parseSchedule('Tối thứ 3, thứ 5'), null);
       assert.equal(parseSchedule(''), null);

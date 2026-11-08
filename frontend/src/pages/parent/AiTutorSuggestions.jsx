@@ -40,7 +40,7 @@ export default function AiTutorSuggestions() {
   const noOpenRequests = requests.data && openRequests.length === 0 && !requestIdFromUrl;
 
   return (
-    <div className="page-stack">
+    <div className="page-stack parent-suggestions-page">
       <ListState
         list={requests}
         empty={{ icon: FileText, title: 'Chưa có yêu cầu đang mở', description: 'Hãy tạo yêu cầu trước, sau đó quay lại để xem gia sư phù hợp.' }}
@@ -52,7 +52,7 @@ export default function AiTutorSuggestions() {
             description="Hãy tạo yêu cầu trước, sau đó quay lại để xem gia sư phù hợp."
           />
         ) : (
-          <div className="page-toolbar">
+          <div className="page-toolbar ai-request-toolbar">
             <div className="ai-request-select">
               <FormSelect
                 id="request"

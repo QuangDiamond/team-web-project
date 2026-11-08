@@ -8,7 +8,7 @@ import { buildPagination } from '../common/utils/pagination.js';
 import { decimalToNumber, escapeRegex, getRequestCutoff, isRequestAvailable } from '../common/utils/requestRules.js';
 import { countApplications } from './parentRequest.service.js';
 import { getTutorProfileOrThrow } from './tutorContext.service.js';
-import { matchesSubjectAndGrade, matchTeachingCategories } from './tutorMatching.service.js';
+import { matchesSubjectAndGrade, matchesAnyTeachingCategory } from './tutorMatching.service.js';
 import { loadActiveTeachingCatalog } from './category.service.js';
 
 
@@ -286,15 +286,13 @@ export const listBookmarks = async (user, { page, limit }) => {
 export const getSuggestions = async (user, { page, limit }) => {
   const profile = await getTutorProfileOrThrow(user);
   const selections = profile.teaching_categories || [];
-  const profileHint = 'Chọn môn học và cấp học / trình độ giảng dạy trong hồ sơ để nhận gợi ý.';
+  const profileHint = 'Hoàn thiện hồ sơ và chọn ít nhất một môn học hoặc cấp học / trình độ giảng dạy để nhận gợi ý.';
   const empty = { items: [], pagination: buildPagination(page, limit, 0), hint: profileHint };
-  if (profile.is_complete !== true || !selections.some((item) => item.type === 'subjects') ||
-      !selections.some((item) => item.type === 'grades')) return empty;
+  if (profile.is_complete !== true || selections.length === 0) return empty;
 
   const { catalog } = await loadActiveTeachingCatalog();
   const activeSelections = selections.filter((item) => catalog.has(item.type + ':' + item.category_id));
-  if (!activeSelections.some((item) => item.type === 'subjects') ||
-      !activeSelections.some((item) => item.type === 'grades')) return empty;
+  if (activeSelections.length === 0) return empty;
 
   const appliedRequestIds = await ApplyRequest.distinct('request_id', {
     tutor_profile_id: profile._id,
@@ -305,7 +303,7 @@ export const getSuggestions = async (user, { page, limit }) => {
     _id: { $nin: appliedRequestIds },
   }).sort({ created_at: -1, _id: -1 }).lean();
   const matches = requests.filter((request) =>
-    isRequestAvailable(request) && matchTeachingCategories(request, activeSelections, catalog).length === 2);
+    isRequestAvailable(request) && matchesAnyTeachingCategory(request, activeSelections, catalog));
   matches.sort((first, second) => {
     const dateOrder = new Date(second.created_at).getTime() - new Date(first.created_at).getTime();
     if (dateOrder !== 0) return dateOrder;
@@ -315,7 +313,7 @@ export const getSuggestions = async (user, { page, limit }) => {
   return {
     items,
     pagination: buildPagination(page, limit, matches.length),
-    hint: matches.length === 0 ? 'Chưa có yêu cầu đang mở phù hợp với môn học và trình độ trong hồ sơ của bạn.' : null,
+    hint: matches.length === 0 ? 'Chưa có yêu cầu đang mở phù hợp với môn học hoặc trình độ trong hồ sơ của bạn.' : null,
   };
 };
 
