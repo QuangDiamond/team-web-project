@@ -45,7 +45,9 @@ Tạo hồ sơ lần đầu hoặc **ghi đè** toàn bộ nội dung hồ sơ (
   "achievements": [{ "title": "Giải Nhất HSG", "description": "2018" }]
 }
 ```
-- Bắt buộc: `headline` (≤ 120), `bio` (≤ 2000), `address` (≤ 255). Mỗi mảng tối đa 10 mục.
+- Bắt buộc: `headline` (≤ 120 ký tự), `bio` / About you (≤ 50 từ, đồng thời ≤ 2000 ký tự), `address` (≤ 255 ký tự). Từ được đếm theo khoảng trắng, xuống dòng hoặc tab. Mỗi mảng tối đa 10 mục, có thể để mảng rỗng.
+- Khi thêm một mục: mọi field bắt buộc, trừ `description` (Details). Experience bắt buộc `title`, `company`, `start_date`, `end_date`; Education bắt buộc `school`, `degree`, `graduation_year`; Achievement bắt buộc `title`.
 - `experiences[].end_date` không được trước `start_date`; `educations[].graduation_year` từ 1950 đến 2100.
+- Experience cho phép chọn **Now** thay cho End date: gửi `end_date: null` để biểu thị công việc hiện tại. Không chọn Now thì phải gửi ngày kết thúc hợp lệ; không được bỏ field `end_date`.
 - Body dùng `strictObject`: gửi `user_id`, `is_complete`, `average_rating`, `avatar_url`... bị từ chối (422). `user_id` lấy từ JWT, `average_rating` giữ nguyên, `is_complete` luôn là `true` sau khi lưu.
 - Chưa hỗ trợ tải ảnh đại diện / ảnh bìa.

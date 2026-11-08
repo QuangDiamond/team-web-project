@@ -9,6 +9,8 @@ import * as userService from '../services/user.service.js';
 import { AppError } from '../common/utils/AppError.js';
 import { sendVerificationEmail } from '../common/utils/mailer.js';
 import { env } from '../config/environment.js';
+import { ACCOUNT_LOCKED_MESSAGE } from '../common/middlewares/auth.middleware.js';
+import { issueToken } from '../common/utils/authSession.js';
 
 const VERIFY_TOKEN_TTL_MS = 24 * 60 * 60 * 1000;
 const RESEND_COOLDOWN_MS = 60 * 1000;
@@ -17,25 +19,13 @@ const GOOGLE_TICKET_TYPE = 'GOOGLE_REGISTER';
 
 const oauthClient = new OAuth2Client(env.oauthClientId, env.oauthClientSecret, env.oauthRedirectUri);
 
-const issueToken = (user) => {
-  const userId = user._id ? user._id.toString() : user.id;
-  return jwt.sign(
-    {
-      sub: userId,
-      id: userId,
-      role: user.role,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '12h' }
-  );
-};
-
 const hashToken = (rawToken) => {
   return crypto.createHash('sha256').update(rawToken).digest('hex');
 };
 
 const removePasswordHash = (user) => {
   const safeUser = user.toObject ? user.toObject() : { ...user };
+  safeUser.id = String(user._id || user.id);
   delete safeUser.password_hash;
   delete safeUser.password;
   return safeUser;
@@ -159,75 +149,18 @@ export const login = async (userLogin) => {
   const cleanEmail = (email || userLogin.identifier || userLogin.username)?.trim()?.toLowerCase();
   let user = await User.findOne({ email: cleanEmail }).select('+password_hash');
 
-  // Nếu là môi trường dev và tài khoản chưa có trong DB, tự động tạo tài khoản test tiện lợi
-  if (!user && (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV)) {
-    const hashed = await bcrypt.hash('12345678', 10);
-    if (cleanEmail === 'binh.student@gmail.com') {
-      user = await User.create({
-        full_name: 'Đỗ Gia Bình',
-        email: 'binh.student@gmail.com',
-        password_hash: hashed,
-        role: 'STUDENT',
-        account_status: 'ACTIVE',
-        email_verify_status: true,
-        has_password: true,
-        is_onboarded: true,
-      });
-    } else if (cleanEmail === 'an.student@gmail.com') {
-      user = await User.create({
-        full_name: 'Trần Văn An',
-        email: 'an.student@gmail.com',
-        password_hash: hashed,
-        role: 'STUDENT',
-        account_status: 'ACTIVE',
-        email_verify_status: true,
-        has_password: true,
-        is_onboarded: true,
-      });
-    } else if (cleanEmail === 'ha.parent@gmail.com') {
-      user = await User.create({
-        full_name: 'Phạm Thu Hà',
-        email: 'ha.parent@gmail.com',
-        password_hash: hashed,
-        role: 'PARENT',
-        account_status: 'ACTIVE',
-        email_verify_status: true,
-        has_password: true,
-        is_onboarded: true,
-      });
-    } else if (cleanEmail === 'minh.tutor@gmail.com') {
-      user = await User.create({
-        full_name: 'Nguyễn Văn Minh',
-        email: 'minh.tutor@gmail.com',
-        password_hash: hashed,
-        role: 'TUTOR',
-        account_status: 'ACTIVE',
-        email_verify_status: true,
-        has_password: true,
-        is_onboarded: true,
-      });
-    }
-  }
-
   // Tài khoản tạo bằng Google chưa có mật khẩu
   if (!user || !user.password_hash) {
     throw new AppError('Invalid username or password', 401);
   }
-
-  let isPasswordCorrect = await bcrypt.compare(password, user.password_hash);
-
-  // Fallback cho môi trường development: tự động đồng bộ và chấp nhận mật khẩu kiểm thử
-  if (!isPasswordCorrect && (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV)) {
-    const newHash = await bcrypt.hash(password || '12345678', 10);
-    user.password_hash = newHash;
-    await user.save();
-    isPasswordCorrect = true;
-  }
-
+  const isPasswordCorrect = await bcrypt.compare(password, user.password_hash);
   if (!isPasswordCorrect) {
     throw new AppError('Invalid username or password', 401);
   }
-
+  // Kiểm tra sau khi đúng mật khẩu để không lộ trạng thái tài khoản (UC37, D18)
+  if (user.account_status !== 'ACTIVE') {
+    throw new AppError(ACCOUNT_LOCKED_MESSAGE, 403);
+  }
   if (!user.email_verify_status && process.env.NODE_ENV === 'production') {
     throw new AppError('Account not verified', 403);
   }
@@ -246,19 +179,20 @@ export const login = async (userLogin) => {
     }
   }
 
+  const passwordHash = user.password_hash;
   user = await userService.updateUserLogin(user._id);
-  return { user: removePasswordHash(user), token: issueToken(user) };
+  return { user: removePasswordHash(user), token: issueToken(user, passwordHash) };
 };
 
 /**
  * Lấy thông tin user đang đăng nhập
  * @param {string} userId - id lấy từ JWT
- * @returns {Promise<Object>} user (không có password_hash, has_password)
+ * @returns {Promise<Object>} Safe user without password_hash, with derived has_password boolean
  */
 export const me = async (userId) => {
-  const me = await User.findById(userId).select('-password_hash -has_password');
+  const me = await User.findById(userId).select('+password_hash');
   if (!me) throw new AppError('User not found', 404);
-  return me;
+  return { ...removePasswordHash(me), has_password: Boolean(me.password_hash) };
 };
 
 /**
@@ -311,8 +245,11 @@ export const handleGoogleCallback = async (code) => {
   }
 
   if (user) {
+    if (user.account_status !== 'ACTIVE') {
+      throw new AppError(ACCOUNT_LOCKED_MESSAGE, 403);
+    }
     const loggedInUser = await userService.updateUserLogin(user._id);
-    return { user: removePasswordHash(loggedInUser), token: issueToken(loggedInUser) };
+    return { user: removePasswordHash(loggedInUser), token: issueToken(loggedInUser, user.password_hash) };
   }
 
   const registerTicket = jwt.sign(

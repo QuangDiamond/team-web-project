@@ -3,6 +3,7 @@ import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { getHomePathByRole } from '../utils/getHomePathByRole';
 import { getUnreadCount } from '../services/notificationService';
+import { getMyProfile } from '../services/tutorProfileService';
 
 export default function Layout() {
   const { user, logout } = useAuth();
@@ -10,6 +11,44 @@ export default function Layout() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [ownProfile, setOwnProfile] = useState(null);
+  const userId = user?.id || user?._id;
+  const activeSection = location.pathname === '/' ? location.hash : null;
+
+  useEffect(() => {
+    if (location.pathname !== '/') return;
+    const frame = requestAnimationFrame(() => {
+      const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+      if (location.hash) {
+        document.getElementById(location.hash.slice(1))?.scrollIntoView({ behavior });
+      } else {
+        window.scrollTo({ top: 0, behavior });
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [location.pathname, location.hash, location.key]);
+
+  useEffect(() => {
+    if (user?.role !== 'TUTOR' || !userId) return;
+    let ignore = false;
+    getMyProfile()
+      .then((response) => {
+        if (!ignore) setOwnProfile({ userId, profileId: response.data.profile?._id });
+      })
+      .catch(() => {
+        if (!ignore) setOwnProfile(null);
+      });
+    return () => { ignore = true; };
+  }, [userId, user?.role]);
+
+  let profilePath = '/profile';
+  if (user?.role === 'PARENT' && userId) profilePath = `/parents/${userId}`;
+  if (user?.role === 'TUTOR') {
+    profilePath = '/tutor/profile';
+    if (ownProfile && ownProfile.userId === userId && ownProfile.profileId) {
+      profilePath = `/tutors/${ownProfile.profileId}`;
+    }
+  }
 
   let dashboardPath = '/login';
   let notificationsPath = '/login';
@@ -49,19 +88,20 @@ export default function Layout() {
           <div className="nav-links">
             <Link
               to="/"
-              className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
+              className={`nav-link ${activeSection === '' ? 'active' : ''}`}
+              aria-current={activeSection === '' ? 'page' : undefined}
             >
               Trang chủ
             </Link>
-            <a href="/#features" className="nav-link">
+            <Link to="/#features" className={`nav-link ${activeSection === '#features' ? 'active' : ''}`} aria-current={activeSection === '#features' ? 'location' : undefined}>
               Tính năng
-            </a>
-            <a href="/#featured-tutors" className="nav-link">
+            </Link>
+            <Link to="/#featured-tutors" className={`nav-link ${activeSection === '#featured-tutors' ? 'active' : ''}`} aria-current={activeSection === '#featured-tutors' ? 'location' : undefined}>
               Gia sư tiêu biểu
-            </a>
-            <a href="/#how-it-works" className="nav-link">
+            </Link>
+            <Link to="/#how-it-works" className={`nav-link ${activeSection === '#how-it-works' ? 'active' : ''}`} aria-current={activeSection === '#how-it-works' ? 'location' : undefined}>
               Cách hoạt động
-            </a>
+            </Link>
           </div>
 
           <div className="nav-actions">
@@ -94,7 +134,7 @@ export default function Layout() {
                 <Link to={dashboardPath} className="btn btn-primary">
                   Dashboard
                 </Link>
-                <Link to="/profile" className="btn btn-outline">
+                <Link to={profilePath} className="btn btn-outline">
                   {user.full_name || user.email || 'Tài khoản'}
                 </Link>
                 <button
@@ -156,32 +196,36 @@ export default function Layout() {
               <div className="mobile-nav-group">
                 <Link
                   to="/"
-                  className={`mobile-nav-item ${location.pathname === '/' ? 'active' : ''}`}
+                  className={`mobile-nav-item ${activeSection === '' ? 'active' : ''}`}
+                  aria-current={activeSection === '' ? 'page' : undefined}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span>Trang chủ</span>
                 </Link>
-                <a
-                  href="/#features"
-                  className="mobile-nav-item"
+                <Link
+                  to="/#features"
+                  className={`mobile-nav-item ${activeSection === '#features' ? 'active' : ''}`}
+                  aria-current={activeSection === '#features' ? 'location' : undefined}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span>Tính năng</span>
-                </a>
-                <a
-                  href="/#featured-tutors"
-                  className="mobile-nav-item"
+                </Link>
+                <Link
+                  to="/#featured-tutors"
+                  className={`mobile-nav-item ${activeSection === '#featured-tutors' ? 'active' : ''}`}
+                  aria-current={activeSection === '#featured-tutors' ? 'location' : undefined}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span>Gia sư tiêu biểu</span>
-                </a>
-                <a
-                  href="/#how-it-works"
-                  className="mobile-nav-item"
+                </Link>
+                <Link
+                  to="/#how-it-works"
+                  className={`mobile-nav-item ${activeSection === '#how-it-works' ? 'active' : ''}`}
+                  aria-current={activeSection === '#how-it-works' ? 'location' : undefined}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span>Cách hoạt động</span>
-                </a>
+                </Link>
               </div>
             </div>
 

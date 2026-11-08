@@ -8,6 +8,7 @@ import {
   FileText,
   History,
   LayoutDashboard,
+  KeyRound,
   Mail,
   MessageSquare,
   Search,
@@ -66,6 +67,7 @@ export const STUDENT_MENU = {
       label: 'ACCOUNT',
       items: [
         { label: 'Transactions', icon: CreditCard },
+        { label: 'Change password', to: '/student/change-password', icon: KeyRound },
         { label: 'Settings', icon: Settings },
       ],
     },
@@ -93,6 +95,14 @@ export const PARENT_MENU = {
         { label: 'Children & Progress', icon: Users },
       ],
     },
+    {
+      label: 'PAYMENTS',
+      items: [
+        { label: 'Credits & Transactions', to: '/parent/credits', icon: History },
+        { label: 'Upgrade / Buy Credits', to: '/parent/checkout', icon: CreditCard },
+      ],
+    },
+    { label: 'ACCOUNT', items: [{ label: 'Change password', to: '/parent/change-password', icon: KeyRound }] },
   ],
   headerActions: [{ label: 'Public Site', to: '/' }],
 };
@@ -126,6 +136,14 @@ export const TUTOR_MENU = {
         { label: 'My Posts', to: '/tutor/posts', icon: FileText },
       ],
     },
+    {
+      label: 'PAYMENTS',
+      items: [
+        { label: 'Credits & Transactions', to: '/tutor/credits', icon: History },
+        { label: 'Upgrade / Buy Credits', to: '/tutor/checkout', icon: CreditCard },
+      ],
+    },
+    { label: 'ACCOUNT', items: [{ label: 'Change password', to: '/tutor/change-password', icon: KeyRound }] },
   ],
   headerActions: [{ label: 'Public Site', to: '/' }],
 };
@@ -138,10 +156,13 @@ export const ADMIN_MENU = {
       label: 'ADMINISTRATION',
       items: [
         { label: 'System Statistics', to: '/admin/dashboard', icon: LayoutDashboard, end: true },
+        { label: 'Users', to: '/admin/users', icon: Users },
+        { label: 'Plans & Pricing', to: '/admin/plans', icon: CreditCard },
         { label: 'Content Moderation', to: '/admin/moderation', icon: ShieldAlert },
         { label: 'Notifications', to: '/admin/notifications', icon: Bell },
       ],
     },
+    { label: 'ACCOUNT', items: [{ label: 'Change password', to: '/admin/change-password', icon: KeyRound }] },
   ],
   headerActions: [{ label: 'Public Site', to: '/' }],
 };
