@@ -234,17 +234,19 @@ export default function ClassroomDetail() {
   };
 
   // Send chat message
-  const handleSendChat = async (e) => {
-    e.preventDefault();
-    if (!chatInput.trim()) return;
+  const handleSendChat = async (e, attachments = []) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (!chatInput.trim() && attachments.length === 0) return false;
 
     try {
       setSendingChat(true);
-      const res = await sendClassChatMessage(id, chatInput.trim());
+      const res = await sendClassChatMessage(id, chatInput.trim(), attachments);
       setChatMessages((prev) => [...prev, res?.data]);
       setChatInput('');
+      return true;
     } catch (err) {
       alert(err?.response?.data?.message || err.message || 'Lỗi gửi tin nhắn');
+      return false;
     } finally {
       setSendingChat(false);
     }

@@ -115,8 +115,8 @@ export const getClassGroupChat = async (classroomId) => {
   return await api.get(`/classroom/v1/${classroomId}/chat`);
 };
 
-export const sendClassChatMessage = async (classroomId, content) => {
-  return await api.post(`/classroom/v1/${classroomId}/chat`, { content });
+export const sendClassChatMessage = async (classroomId, content, attachments = []) => {
+  return await api.post(`/classroom/v1/${classroomId}/chat`, { content, attachments });
 };
 
 /**
