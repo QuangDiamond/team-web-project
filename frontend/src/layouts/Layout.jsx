@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   Bell,
-  MessageSquare,
   CheckCheck,
   Inbox,
   Clock,
@@ -18,9 +17,9 @@ import {
 import { useAuth } from '../hooks/useAuth';
 import { getHomePathByRole } from '../utils/getHomePathByRole';
 import { getUnreadCount, notificationService } from '../services/notificationService';
-import { getConversations } from '../services/chatService';
 import { getMyProfile } from '../services/tutorProfileService';
 import { getInitials } from '../utils/getInitials';
+import FloatingChatWidget from '../components/chat/FloatingChatWidget';
 
 const AVATAR_PALETTE = ['#0284C7', '#6366F1', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#0D9488'];
 
@@ -57,19 +56,14 @@ export default function Layout() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [chatUnreadCount, setChatUnreadCount] = useState(0);
   const [ownProfile, setOwnProfile] = useState(null);
 
-  // Popover Dropdowns state
+  // Notifications Popover Dropdown state
   const [notiDropdownOpen, setNotiDropdownOpen] = useState(false);
-  const [chatDropdownOpen, setChatDropdownOpen] = useState(false);
   const [recentNotis, setRecentNotis] = useState([]);
   const [loadingNotis, setLoadingNotis] = useState(false);
-  const [recentChats, setRecentChats] = useState([]);
-  const [loadingChats, setLoadingChats] = useState(false);
 
   const notiRef = useRef(null);
-  const chatRef = useRef(null);
 
   const userId = user?.id || user?._id;
   const activeSection = location.pathname === '/' ? location.hash : null;
@@ -87,14 +81,11 @@ export default function Layout() {
     return () => cancelAnimationFrame(frame);
   }, [location.pathname, location.hash, location.key]);
 
-  // Click outside listener for dropdown popovers
+  // Click outside listener for notification dropdown
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (notiRef.current && !notiRef.current.contains(e.target)) {
         setNotiDropdownOpen(false);
-      }
-      if (chatRef.current && !chatRef.current.contains(e.target)) {
-        setChatDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -155,32 +146,10 @@ export default function Layout() {
     return () => clearInterval(timer);
   }, [user, location.pathname]);
 
-  // Fetch Chat unread count periodically
-  useEffect(() => {
-    if (!user || (user.role !== 'PARENT' && user.role !== 'TUTOR')) {
-      setChatUnreadCount(0);
-      return;
-    }
-    const fetchChatUnread = () => {
-      getConversations({ page: 1, limit: 10 })
-        .then((res) => {
-          const items = res?.data?.items || [];
-          const unread = items.reduce((sum, item) => sum + (item.unread_count || 0), 0);
-          setChatUnreadCount(unread);
-        })
-        .catch(() => {});
-    };
-
-    fetchChatUnread();
-    const timer = setInterval(fetchChatUnread, 6000);
-    return () => clearInterval(timer);
-  }, [user, location.pathname]);
-
   // Handle opening notification dropdown
   const handleToggleNotiDropdown = async () => {
     const nextState = !notiDropdownOpen;
     setNotiDropdownOpen(nextState);
-    setChatDropdownOpen(false);
 
     if (nextState) {
       setLoadingNotis(true);
@@ -194,28 +163,6 @@ export default function Layout() {
         console.error('Failed to load recent notifications:', err);
       } finally {
         setLoadingNotis(false);
-      }
-    }
-  };
-
-  // Handle opening chat dropdown
-  const handleToggleChatDropdown = async () => {
-    const nextState = !chatDropdownOpen;
-    setChatDropdownOpen(nextState);
-    setNotiDropdownOpen(false);
-
-    if (nextState) {
-      setLoadingChats(true);
-      try {
-        const res = await getConversations({ page: 1, limit: 5 });
-        const items = res?.data?.items || [];
-        setRecentChats(items);
-        const unread = items.reduce((sum, item) => sum + (item.unread_count || 0), 0);
-        setChatUnreadCount(unread);
-      } catch (err) {
-        console.error('Failed to load recent chats:', err);
-      } finally {
-        setLoadingChats(false);
       }
     }
   };
@@ -247,11 +194,6 @@ export default function Layout() {
     } else {
       navigate(notificationsPath);
     }
-  };
-
-  const handleChatItemClick = (conversationId) => {
-    setChatDropdownOpen(false);
-    navigate(`${messagesPath}/${conversationId}`);
   };
 
   const handleLogout = async () => {
@@ -302,112 +244,6 @@ export default function Layout() {
           <div className="nav-actions">
             {user ? (
               <>
-                {/* Chat Popover Dropdown (Homepage Experience) */}
-                {(user.role === 'PARENT' || user.role === 'TUTOR') && (
-                  <div className="nav-dropdown-wrap" ref={chatRef}>
-                    <button
-                      type="button"
-                      className={`nav-noti-btn ${chatDropdownOpen ? 'active' : ''}`}
-                      onClick={handleToggleChatDropdown}
-                      title="Tin nhắn & Trò chuyện"
-                      aria-label="Tin nhắn & Trò chuyện"
-                      aria-expanded={chatDropdownOpen}
-                    >
-                      <MessageSquare size={19} />
-                      {chatUnreadCount > 0 && (
-                        <span className="nav-noti-badge">
-                          {chatUnreadCount > 9 ? '9+' : chatUnreadCount}
-                        </span>
-                      )}
-                    </button>
-
-                    {chatDropdownOpen && (
-                      <div className="nav-popover">
-                        <div className="nav-popover-header">
-                          <div className="nav-popover-title">
-                            <span>Tin nhắn</span>
-                            {chatUnreadCount > 0 && (
-                              <span className="nav-popover-count-tag">
-                                {chatUnreadCount} mới
-                              </span>
-                            )}
-                          </div>
-                          <Link
-                            to={messagesPath}
-                            className="nav-popover-action"
-                            onClick={() => setChatDropdownOpen(false)}
-                          >
-                            <span>Soạn tin</span>
-                          </Link>
-                        </div>
-
-                        {loadingChats ? (
-                          <div className="nav-popover-empty">
-                            <LoaderCircle size={22} className="spin" color="#0284c7" />
-                            <span>Đang tải tin nhắn...</span>
-                          </div>
-                        ) : recentChats.length === 0 ? (
-                          <div className="nav-popover-empty">
-                            <MessageSquare size={32} strokeWidth={1.5} color="#94a3b8" />
-                            <span>Chưa có cuộc trò chuyện nào</span>
-                          </div>
-                        ) : (
-                          <ul className="nav-popover-list">
-                            {recentChats.map((c) => {
-                              const otherName = c.other?.name || 'Người dùng';
-                              const hasUnread = c.unread_count > 0;
-                              const lastMsg = c.last_message?.content || 'Bắt đầu cuộc trò chuyện...';
-                              const isMine = c.last_message?.sender_is_me;
-                              const preview = isMine ? `Bạn: ${lastMsg}` : lastMsg;
-                              const time = getRelativeTime(
-                                c.last_message?.created_at || c.updated_at
-                              );
-
-                              return (
-                                <li
-                                  key={c._id}
-                                  className={`nav-popover-item ${hasUnread ? 'unread' : ''}`}
-                                  onClick={() => handleChatItemClick(c._id)}
-                                >
-                                  <div
-                                    className="nav-chat-avatar"
-                                    style={{ background: getAvatarBg(otherName) }}
-                                  >
-                                    {getInitials(otherName)}
-                                  </div>
-                                  <div className="nav-popover-content">
-                                    <div className="nav-popover-heading">
-                                      <span>{otherName}</span>
-                                      <span className="nav-popover-time">{time}</span>
-                                    </div>
-                                    <p className="nav-popover-desc">{preview}</p>
-                                  </div>
-                                  {hasUnread && (
-                                    <span
-                                      className="nav-noti-badge"
-                                      style={{ position: 'static' }}
-                                    >
-                                      {c.unread_count}
-                                    </span>
-                                  )}
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        )}
-
-                        <Link
-                          to={messagesPath}
-                          className="nav-popover-footer"
-                          onClick={() => setChatDropdownOpen(false)}
-                        >
-                          Xem tất cả tin nhắn trong Dashboard →
-                        </Link>
-                      </div>
-                    )}
-                  </div>
-                )}
-
                 {/* Notifications Popover Dropdown (Homepage Experience) */}
                 <div className="nav-dropdown-wrap" ref={notiRef}>
                   <button
@@ -619,7 +455,7 @@ export default function Layout() {
                     className="btn btn-outline"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Tin nhắn {chatUnreadCount > 0 ? `(${chatUnreadCount})` : ''}
+                    Tin nhắn
                   </Link>
                   <Link
                     to={notificationsPath}
@@ -713,6 +549,9 @@ export default function Layout() {
           </div>
         </div>
       </footer>
+
+      {/* Draggable Floating Messenger Chat Widget */}
+      <FloatingChatWidget />
     </div>
   );
 }
