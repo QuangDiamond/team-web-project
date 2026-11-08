@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import Modal from '../common/Modal';
 import FormInput from '../common/FormInput';
+import FormSelect from '../common/FormSelect';
 import ToggleSwitch from '../common/ToggleSwitch';
 import Alert from '../common/Alert';
 import ReasonField from './ReasonField';
 import DialogActions from './DialogActions';
-import { updatePlan } from '../../services/adminService';
+import { createPlan, updatePlan } from '../../services/adminService';
 import { toNumber } from '../../utils/formatCurrency';
-import { getPlanTitle, getTargetRoleLabel } from '../../utils/planDisplay';
+import { PACK_ROLE_OPTIONS, getPlanTitle, getTargetRoleLabel } from '../../utils/planDisplay';
 import { focusFirstInvalidField, toFieldErrors } from '../../utils/authValidators';
 import {
   hasErrors,
@@ -18,7 +19,7 @@ import {
   validateReason,
 } from '../../utils/pricingValidators';
 
-const PLAN_FIELDS = ['monthly_price', 'monthly_credits', 'ai_quota', 'max_classrooms', 'reason'];
+const PLAN_FIELDS = ['name', 'target_role', 'monthly_price', 'monthly_credits', 'ai_quota', 'max_classrooms', 'is_active', 'reason'];
 
 // Gói Free luôn có giá 0 (backend trả 422 nếu khác 0) nên khóa ô giá
 const FREE_PLAN_NAME = 'FREE_DEFAULT';
@@ -26,6 +27,13 @@ const FREE_PLAN_NAME = 'FREE_DEFAULT';
 // Giá trị ban đầu của form lấy từ plan (ô nhập luôn giữ chuỗi).
 // max_classrooms = null nghĩa là không giới hạn số lớp
 const getInitialValues = (plan) => {
+  if (!plan) {
+    return {
+      name: '', target_role: 'TUTOR', monthly_price: '', monthly_credits: '', ai_quota: '0',
+      max_classrooms: '', unlimited_classes: true, sms_reminders_enabled: false,
+      is_active: true, reason: '',
+    };
+  }
   let classLimit = '';
   let unlimitedClasses = true;
   if (plan.max_classrooms !== null && plan.max_classrooms !== undefined) {
@@ -39,6 +47,7 @@ const getInitialValues = (plan) => {
     max_classrooms: classLimit,
     unlimited_classes: unlimitedClasses,
     sms_reminders_enabled: Boolean(plan.sms_reminders_enabled),
+    is_active: Boolean(plan.is_active),
     reason: '',
   };
 };
@@ -62,13 +71,14 @@ const toClassLimitPayload = (values) => {
 
 // Hộp thoại sửa plan: giá, credit/tháng, AI quota, giới hạn lớp, SMS reminder + lý do (UC39)
 export default function PlanEditDialog({ plan, onClose, onSaved }) {
+  const isCreating = !plan;
   const [values, setValues] = useState(() => getInitialValues(plan));
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const planLabel = `${getTargetRoleLabel(plan.target_role)} ${getPlanTitle(plan.name)}`;
-  const isFreePlan = plan.name === FREE_PLAN_NAME;
+  const planLabel = plan ? `${getTargetRoleLabel(plan.target_role)} ${getPlanTitle(plan.name)}` : '';
+  const isFreePlan = plan?.name === FREE_PLAN_NAME;
 
   const handleChange = (event) => {
     const field = event.target.name;
@@ -94,6 +104,15 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
     setFormError('');
 
     const newErrors = validatePlanForm(values);
+    if (isCreating) {
+      const name = values.name.trim();
+      if (!name || name.length > 100) {
+        newErrors.name = 'Plan name must be between 1 and 100 characters';
+      }
+      if (name === FREE_PLAN_NAME && Number(values.monthly_price) !== 0) {
+        newErrors.monthly_price = 'Free plan price must be 0';
+      }
+    }
     setErrors(newErrors);
     if (hasErrors(newErrors)) {
       focusFirstInvalidField(PLAN_FIELDS, newErrors);
@@ -106,13 +125,19 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
       ai_quota: Number(values.ai_quota),
       max_classrooms: toClassLimitPayload(values),
       sms_reminders_enabled: values.sms_reminders_enabled,
+      is_active: values.is_active,
       reason: values.reason.trim(),
     };
 
     setSubmitting(true);
     try {
-      await updatePlan(plan._id, payload);
-      onSaved(`${planLabel} plan was updated.`);
+      if (isCreating) {
+        await createPlan({ ...payload, name: values.name.trim(), target_role: values.target_role });
+        onSaved(`Plan "${values.name.trim()}" was added.`);
+      } else {
+        await updatePlan(plan._id, payload);
+        onSaved(`${planLabel} plan was updated.`);
+      }
     } catch (error) {
       const fieldErrors = toFieldErrors(error.errors);
       setErrors(fieldErrors);
@@ -125,14 +150,22 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
   return (
     <Modal
       id="plan-edit"
-      title={`Edit ${planLabel} plan`}
-      description="New values apply to new purchases and the next monthly credit grant."
+      title={isCreating ? 'Add subscription plan' : `Edit ${planLabel} plan`}
+      description="Unavailable plans are hidden from checkout. Existing subscriptions are kept."
       onClose={onClose}
     >
       <form onSubmit={handleSubmit} noValidate>
         {formError && <Alert type="error">{formError}</Alert>}
 
         <div className="form-grid">
+          {isCreating && (
+            <>
+              <FormInput id="name" label="Plan name" value={values.name} onChange={handleChange}
+                error={errors.name} disabled={submitting} />
+              <FormSelect id="target_role" label="Available to" value={values.target_role}
+                onChange={handleChange} options={PACK_ROLE_OPTIONS} error={errors.target_role} disabled={submitting} />
+            </>
+          )}
           <FormInput
             id="monthly_price"
             label="Monthly price (VND)"
@@ -195,9 +228,19 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
           disabled={submitting}
         />
 
+        <ToggleSwitch
+          id="is_active"
+          label="Available"
+          description="Allow users with the selected role to purchase this plan."
+          checked={values.is_active}
+          onChange={(checked) => setValues({ ...values, is_active: checked })}
+          disabled={submitting}
+        />
+        {errors.is_active && <Alert type="error">{errors.is_active}</Alert>}
+
         <ReasonField value={values.reason} onChange={handleChange} error={errors.reason} disabled={submitting} />
 
-        <DialogActions submitLabel="Save changes" submitting={submitting} onCancel={onClose} />
+        <DialogActions submitLabel={isCreating ? 'Add plan' : 'Save changes'} submitting={submitting} onCancel={onClose} />
       </form>
     </Modal>
   );

@@ -8,7 +8,30 @@ import { PROFILE_REQUIRED_MESSAGE } from '../../constants/requestLabels';
  * Hiển thị trạng thái của một danh sách tải từ API: đang tải, lỗi (có nút thử lại), rỗng, hoặc nội dung (children).
  * list: kết quả của usePagedList. empty: { icon, title, description }
  */
-export default function ListState({ list, empty, children }) {
+export default function ListState({
+  list, empty, children, loading, loadError, onRetry, isEmpty,
+  filtersActive, onClearFilters, emptyTitle, emptyText, emptyAction,
+}) {
+  // History/admin screens render their tables separately and pass flat state.
+  if (!list) {
+    if (loading && isEmpty) {
+      return <div className="page-loading-inline" role="status"><LoaderCircle size={26} className="spin" aria-hidden="true" /><span>Loading...</span></div>;
+    }
+    if (loadError) {
+      return <Alert type="error"><p>{loadError}</p><button type="button" className="btn btn-outline btn-sm" onClick={onRetry}>Try again</button></Alert>;
+    }
+    if (isEmpty) {
+      return (
+        <div className="history-state">
+          <EmptyState title={emptyTitle} description={emptyText} />
+          {filtersActive && onClearFilters ? (
+            <button type="button" className="btn btn-outline btn-sm" onClick={onClearFilters}>Clear filters</button>
+          ) : emptyAction}
+        </div>
+      );
+    }
+    return null;
+  }
   if (list.loading && !list.data) {
     return (
       <div className="page-loading-inline" role="status">

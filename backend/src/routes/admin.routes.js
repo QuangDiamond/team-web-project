@@ -3,6 +3,7 @@ import { authentication, authorize } from '../common/middlewares/auth.middleware
 import { validator } from '../common/validator/validator.js';
 import {
     updatePlanSchema,
+    createPlanSchema,
     createCreditPackSchema,
     updateCreditPackSchema,
     updateCreditPackStatusSchema,
@@ -10,6 +11,7 @@ import {
 import {
     getPlans,
     updatePlan,
+    createPlan,
     getCreditPacks,
     createCreditPack,
     updateCreditPack,
@@ -21,6 +23,7 @@ export const adminRoutes = Router();
 
 // UC39 Manage Plans & Pricing: chỉ ADMIN
 adminRoutes.get('/plans', authentication, authorize('ADMIN'), getPlans)
+adminRoutes.post('/plans', authentication, authorize('ADMIN'), validator(createPlanSchema), createPlan)
 adminRoutes.put('/plans/:id', authentication, authorize('ADMIN'), validator(updatePlanSchema), updatePlan)
 adminRoutes.get('/credit-packs', authentication, authorize('ADMIN'), getCreditPacks)
 adminRoutes.post('/credit-packs', authentication, authorize('ADMIN'), validator(createCreditPackSchema), createCreditPack)

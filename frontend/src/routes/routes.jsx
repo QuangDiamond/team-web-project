@@ -1,8 +1,9 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter, Navigate, useLocation } from 'react-router-dom';
 import Layout from '../layouts/Layout';
 import GuestRoute from './GuestRoute';
 import PrivateRoute from './PrivateRoute';
-import DashboardLayout from '../components/layout/DashboardLayout';
+import { useAuth } from '../hooks/useAuth';
+import DashboardLayout from '../layouts/DashboardLayout';
 import Home from '../pages/Home';
 import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
@@ -16,10 +17,8 @@ import UserManagement from '../pages/admin/UserManagement';
 import UserDetail from '../pages/admin/UserDetail';
 import Profile from '../pages/Profile';
 import NotFound from '../pages/NotFound';
-import DashboardHome from '../pages/dashboard/DashboardHome';
 import PlansPricing from '../pages/admin/PlansPricing';
 import RoleRoute from './RoleRoute';
-import WorkspaceDashboardLayout from '../layouts/DashboardLayout';
 import StudentDashboard from '../pages/student/StudentDashboard';
 import AiTutorSuggestions from '../pages/parent/AiTutorSuggestions';
 import ParentDashboard from '../pages/parent/ParentDashboard';
@@ -46,6 +45,15 @@ import Moderation from '../pages/admin/Moderation';
 import AdminDashboard from '../pages/admin/AdminDashboard';
 import { ADMIN_MENU, PARENT_MENU, STUDENT_MENU, TUTOR_MENU } from '../constants/dashboardMenus';
 
+function WorkspaceRedirect() {
+  const { user } = useAuth();
+  const location = useLocation();
+  const prefixes = { STUDENT: '/student', PARENT: '/parent', TUTOR: '/tutor', ADMIN: '/admin' };
+  const prefix = prefixes[user.role];
+  if (!prefix) return <Navigate to="/" replace />;
+  return <Navigate to={`${prefix}${location.pathname}${location.search}${location.hash}`} replace />;
+}
+
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -67,31 +75,18 @@ export const router = createBrowserRouter([
       { path: 'register/complete', element: <RegisterComplete /> },
     ],
   },
-  // Khu vực đã đăng nhập: sidebar + top bar (DashboardLayout), giới hạn thêm theo role
+  // Preserve shared login targets, payment callbacks and existing bookmarks.
   {
     element: <PrivateRoute />,
     children: [
+      { path: 'dashboard', element: <WorkspaceRedirect /> },
       {
-        element: <DashboardLayout />,
+        element: <PrivateRoute roles={['TUTOR', 'PARENT']} />,
         children: [
-          { path: 'dashboard', element: <DashboardHome /> },
-          {
-            element: <PrivateRoute roles={['ADMIN']} />,
-            children: [
-              { path: 'admin/plans', element: <PlansPricing /> },
-              { path: 'admin/users', element: <UserManagement /> },
-              { path: 'admin/users/:userId', element: <UserDetail /> },
-            ],
-          },
-          {
-            element: <PrivateRoute roles={['TUTOR', 'PARENT']} />,
-            children: [
-              { path: 'credits', element: <CreditsTransactions /> },
-              { path: 'checkout', element: <Checkout /> },
-              { path: 'payment/result', element: <PaymentResult /> },
-              { path: 'receipts/:orderCode', element: <Receipt /> },
-            ],
-          },
+          { path: 'credits', element: <WorkspaceRedirect /> },
+          { path: 'checkout', element: <WorkspaceRedirect /> },
+          { path: 'payment/result', element: <WorkspaceRedirect /> },
+          { path: 'receipts/:orderCode', element: <WorkspaceRedirect /> },
         ],
       },
     ],
@@ -102,7 +97,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: 'student',
-        element: <WorkspaceDashboardLayout menu={STUDENT_MENU} />,
+        element: <DashboardLayout menu={STUDENT_MENU} />,
         children: [
           { path: 'dashboard', element: <StudentDashboard />, handle: { title: 'Overview' } },
           { path: 'notifications', element: <Notifications />, handle: { title: 'Notifications' } },
@@ -116,8 +111,12 @@ export const router = createBrowserRouter([
     children: [
       {
         path: 'parent',
-        element: <WorkspaceDashboardLayout menu={PARENT_MENU} />,
+        element: <DashboardLayout menu={PARENT_MENU} />,
         children: [
+          { path: 'credits', element: <CreditsTransactions />, handle: { title: 'Credits & Transactions' } },
+          { path: 'checkout', element: <Checkout />, handle: { title: 'Checkout' } },
+          { path: 'payment/result', element: <PaymentResult />, handle: { title: 'Payment Result' } },
+          { path: 'receipts/:orderCode', element: <Receipt />, handle: { title: 'Receipt' } },
           { path: 'dashboard', element: <ParentDashboard />, handle: { title: 'Overview' } },
           { path: 'requests', element: <TutoringRequests />, handle: { title: 'My Tutoring Requests' } },
           { path: 'requests/new', element: <TutoringRequestForm />, handle: { title: 'Create Tutoring Request' } },
@@ -147,8 +146,12 @@ export const router = createBrowserRouter([
     children: [
       {
         path: 'tutor',
-        element: <WorkspaceDashboardLayout menu={TUTOR_MENU} />,
+        element: <DashboardLayout menu={TUTOR_MENU} />,
         children: [
+          { path: 'credits', element: <CreditsTransactions />, handle: { title: 'Credits & Transactions' } },
+          { path: 'checkout', element: <Checkout />, handle: { title: 'Checkout' } },
+          { path: 'payment/result', element: <PaymentResult />, handle: { title: 'Payment Result' } },
+          { path: 'receipts/:orderCode', element: <Receipt />, handle: { title: 'Receipt' } },
           { path: 'dashboard', element: <TutorDashboard />, handle: { title: 'Overview' } },
           { path: 'requests', element: <BrowseRequests />, handle: { title: 'Browse Requests' } },
           { path: 'requests/suggested', element: <SuggestedRequests />, handle: { title: 'Suggested for You' } },
@@ -175,8 +178,11 @@ export const router = createBrowserRouter([
     children: [
       {
         path: 'admin',
-        element: <WorkspaceDashboardLayout menu={ADMIN_MENU} />,
+        element: <DashboardLayout menu={ADMIN_MENU} />,
         children: [
+          { path: 'plans', element: <PlansPricing />, handle: { title: 'Plans & Pricing' } },
+          { path: 'users', element: <UserManagement />, handle: { title: 'User Management' } },
+          { path: 'users/:userId', element: <UserDetail />, handle: { title: 'User Details' } },
           { path: 'dashboard', element: <AdminDashboard />, handle: { title: 'System Statistics' } },
           { path: 'moderation', element: <Moderation />, handle: { title: 'Content Moderation & Reports' } },
           { path: 'notifications', element: <Notifications />, handle: { title: 'Notifications' } },
