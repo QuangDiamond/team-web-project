@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { env } from '../../config/environment.js';
+import { escapeHtml } from './html.js';
 
 // Gửi mail qua Gmail SMTP, SMTP_PASS là App Password của Gmail
 const transporter = nodemailer.createTransport({
@@ -9,15 +10,6 @@ const transporter = nodemailer.createTransport({
     pass: env.smtpPass,
   },
 });
-
-// Escape ký tự HTML để tên người dùng không chèn được HTML vào email
-const escapeHtml = (text) => {
-  return String(text)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
-};
 
 /**
  * Gửi email chứa link kích hoạt tài khoản

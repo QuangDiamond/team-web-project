@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { paginationQuerySchema } from '../../src/common/validator/studentDashboardSchema.js';
 import {
   assertStudent,
-  buildPagination,
   getAssignmentProgress,
 } from '../../src/services/studentDashboard.service.js';
+import { buildPagination } from '../../src/common/utils/pagination.js';
 
 test('pagination query uses defaults and coerces strings', () => {
   assert.deepEqual(paginationQuerySchema.parse({}), { page: 1, limit: 10 });
