@@ -6,13 +6,13 @@ const getPlanDetail = (billing) => {
   const subscription = billing.subscription;
   if (billing.plan && billing.plan.is_free) {
     if (subscription && subscription.status === 'EXPIRED') {
-      return `Pro expired on ${formatDate(subscription.expires_at)}`;
+      return `Gói Pro đã hết hạn vào ${formatDate(subscription.expires_at)}`;
     }
-    return 'Free plan, no renewal';
+    return 'Gói Miễn phí, không cần gia hạn';
   }
   if (subscription && subscription.expires_at) {
     // D17: chưa có tự gia hạn nên ghi "Expires on"
-    return `Expires on ${formatDate(subscription.expires_at)}`;
+    return `Hết hạn vào ${formatDate(subscription.expires_at)}`;
   }
   return '—';
 };
@@ -21,7 +21,7 @@ function StatCard({ label, value, detail, tone }) {
   return (
     <div className="card stat-card">
       <dt className="stat-label">{label}</dt>
-      <dd className={`stat-value stat-${tone}`}>{value}</dd>
+      <dd className={`stat-value stat-${tone}`}>{value?.toLocaleString('vi-VN')}</dd>
       <dd className="stat-detail">{detail}</dd>
     </div>
   );
@@ -36,9 +36,9 @@ export default function CreditStats({ billing }) {
 
   return (
     <dl className="stat-grid">
-      <StatCard label="Current plan" value={planTitle} detail={getPlanDetail(billing)} tone="primary" />
-      <StatCard label="Credit balance" value={billing.credit_balance} detail="1 credit per application or invitation" tone="success" />
-      <StatCard label="AI quota left" value={billing.ai_quota_left} detail="Left in this plan period" tone="info" />
+      <StatCard label="Gói hiện tại" value={planTitle} detail={getPlanDetail(billing)} tone="primary" />
+      <StatCard label="Số dư tín dụng" value={billing.credit_balance} detail="1 tín dụng cho mỗi lượt ứng tuyển hoặc lời mời" tone="success" />
+      <StatCard label="Lượt dùng AI còn lại" value={billing.ai_quota_left} detail="Còn lại trong kỳ dịch vụ này" tone="info" />
     </dl>
   );
 }

@@ -43,7 +43,7 @@ function GradeRow({ grade }) {
     metaParts.push(grade.class.name);
   }
   if (grade.graded_at) {
-    metaParts.push(`Graded ${formatDate(grade.graded_at)}`);
+    metaParts.push(`Chấm lúc ${formatDate(grade.graded_at)}`);
   }
 
   return (
@@ -61,7 +61,7 @@ function GradeRow({ grade }) {
               aria-valuenow={percent}
               aria-valuemin={0}
               aria-valuemax={100}
-              aria-label={`Score ${percent}%`}
+              aria-label={`Điểm ${percent}%`}
             >
               {/* width là giá trị động nên dùng inline style */}
               <span className={`student-score-bar-fill tone-${getScoreTone(percent)}`} style={{ width: `${percent}%` }} />
@@ -72,11 +72,11 @@ function GradeRow({ grade }) {
 
         {grade.overall_feedback ? (
           <p className="student-feedback">
-            <span className="student-feedback-label">Tutor feedback: </span>
+            <span className="student-feedback-label">Nhận xét của gia sư: </span>
             {grade.overall_feedback}
           </p>
         ) : (
-          <p className="student-feedback is-empty">No feedback from tutor.</p>
+          <p className="student-feedback is-empty">Chưa có nhận xét từ gia sư.</p>
         )}
       </div>
     </li>
@@ -86,13 +86,13 @@ function GradeRow({ grade }) {
 // Khối "Scores & Feedback": chỉ điểm tutor đã công bố (Figma: Quiz History)
 export default function GradeFeedbackList({ section, onRetry }) {
   return (
-    <SectionCard title="Scores & Feedback" action={<SectionCount section={section} label="Latest results" />}>
+    <SectionCard title="Điểm số và nhận xét" action={<SectionCount section={section} label="Kết quả mới nhất" />}>
       <SectionContent
         section={section}
         onRetry={onRetry}
         emptyIcon={Award}
-        emptyTitle="No published grades yet"
-        emptyDescription="Scores and feedback appear here after your tutor publishes the results."
+        emptyTitle="Chưa có điểm được công bố"
+        emptyDescription="Điểm số và nhận xét sẽ hiển thị khi gia sư công bố kết quả."
       >
         <ul className="student-list">
           {section.items.map((grade) => (

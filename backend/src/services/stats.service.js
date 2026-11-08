@@ -10,7 +10,6 @@ import { Conversation } from '../models/Conversation.js';
 import { TutoringAgreement } from '../models/TutoringAgreement.js';
 import { PaymentOrder } from '../models/PaymentOrder.js';
 import { Classroom } from '../models/Classroom.js';
-import { AiSuggestion } from '../models/AiSuggestion.js';
 import { Review } from '../models/Review.js';
 import { ContentReport } from '../models/ContentReport.js';
 import { AdminAuditLog } from '../models/AdminAuditLog.js';
@@ -160,7 +159,6 @@ export const getDashboardStats = async (adminUser, period = '30d') => {
     confirmedConnections,
     pendingConnections,
     activeClassrooms,
-    aiSuggestionsCount,
     pendingReportsCount,
     totalAuditLogs,
     paymentOrders,
@@ -179,7 +177,6 @@ export const getDashboardStats = async (adminUser, period = '30d') => {
     TutoringAgreement.countDocuments({ status: ENUMS.TutoringAgreementsStatus.CONFIRMED }),
     TutoringAgreement.countDocuments({ status: ENUMS.TutoringAgreementsStatus.PENDING }),
     Classroom.countDocuments({ status: ENUMS.ClassroomsStatus.ACTIVE }),
-    AiSuggestion.countDocuments({}),
     ContentReport.countDocuments({ status: ENUMS.ContentReportsStatus.PENDING }),
     AdminAuditLog.countDocuments({}),
     PaymentOrder.find({ status: ENUMS.PaymentOrdersStatus.SUCCESS }).lean(),
@@ -191,7 +188,7 @@ export const getDashboardStats = async (adminUser, period = '30d') => {
     (sum, u) => sum + Number(u.subscription?.ai_quota_used || 0),
     0
   );
-  const totalAiUsage = Math.max(userAiUsed, aiSuggestionsCount);
+  const totalAiUsage = userAiUsed;
 
   let totalGmv = 0;
   let planUpgradeRevenue = 0;
@@ -208,56 +205,51 @@ export const getDashboardStats = async (adminUser, period = '30d') => {
   }
 
   const pointsCount = period === '7d' ? 7 : period === '30d' ? 6 : 12;
-  const stepDays = Math.max(1, Math.floor(days / pointsCount));
+  const windowEnd = Date.now();
+  const windowStart = windowEnd - days * 24 * 60 * 60 * 1000;
+  const bucketLength = (windowEnd - windowStart) / pointsCount;
 
   const trendLabels = [];
   const revenueTrend = [];
   const userGrowthTrend = [];
   const connectionTrend = [];
 
-  const now = new Date();
-  for (let i = pointsCount - 1; i >= 0; i--) {
-    const bucketEnd = new Date(now);
-    bucketEnd.setDate(now.getDate() - i * stepDays);
-    const bucketStart = new Date(bucketEnd);
-    bucketStart.setDate(bucketEnd.getDate() - stepDays);
-
-    trendLabels.push(`${bucketEnd.getDate()}/${bucketEnd.getMonth() + 1}`);
+  for (let index = 0; index < pointsCount; index++) {
+    const bucketStart = windowStart + index * bucketLength;
+    const bucketEnd = windowStart + (index + 1) * bucketLength;
+    const isInBucket = (value) => {
+      if (!value) return false;
+      const timestamp = new Date(value).getTime();
+      if (index === pointsCount - 1) return timestamp >= bucketStart && timestamp <= bucketEnd;
+      return timestamp >= bucketStart && timestamp < bucketEnd;
+    };
+    trendLabels.push(new Date(bucketEnd).toLocaleDateString('vi-VN', {
+      timeZone: 'Asia/Ho_Chi_Minh', day: '2-digit', month: '2-digit',
+    }));
 
     const bucketRevenue = paymentOrders
-      .filter((o) => {
-        const d = o.paid_at || o.created_at;
-        return d && new Date(d) > bucketStart && new Date(d) <= bucketEnd;
-      })
+      .filter((order) => isInBucket(order.paid_at))
       .reduce((sum, o) => sum + (o.amount != null ? Number(o.amount.toString()) : 0), 0);
 
-    const bucketUsers = usersList.filter((u) => {
-      const d = u.created_at;
-      return d && new Date(d) > bucketStart && new Date(d) <= bucketEnd;
-    }).length;
+    const bucketUsers = usersList.filter((user) => isInBucket(user.created_at)).length;
 
-    const bucketConnections = agreementsList.filter((a) => {
-      const d = a.created_at;
-      return d && new Date(d) > bucketStart && new Date(d) <= bucketEnd;
-    }).length;
+    const bucketConnections = agreementsList.filter((agreement) => isInBucket(agreement.created_at)).length;
 
     revenueTrend.push(bucketRevenue);
     userGrowthTrend.push(bucketUsers);
     connectionTrend.push(bucketConnections);
   }
 
-  // Nếu dữ liệu seed nằm ở mốc thời gian khác hiện tại, phân bổ tổng thực tế vào cột cuối để biểu đồ phản ánh đúng DB
-  if (revenueTrend.every((v) => v === 0) && totalGmv > 0) {
-    revenueTrend[revenueTrend.length - 1] = totalGmv;
-  }
-  if (userGrowthTrend.every((v) => v === 0) && totalUsers > 0) {
-    userGrowthTrend[userGrowthTrend.length - 1] = totalUsers;
-  }
-  if (connectionTrend.every((v) => v === 0) && confirmedConnections > 0) {
-    connectionTrend[connectionTrend.length - 1] = confirmedConnections;
-  }
-
-  const nonAdminTotal = Math.max(1, activeParents + activeTutors + activeStudents);
+  const roleDistribution = [
+    { role: 'Phụ huynh', value: ENUMS.UserRole.PARENT, color: '#0284c7' },
+    { role: 'Gia sư', value: ENUMS.UserRole.TUTOR, color: '#059669' },
+    { role: 'Học sinh', value: ENUMS.UserRole.STUDENT, color: '#d97706' },
+    { role: 'Quản trị viên', value: ENUMS.UserRole.ADMIN, color: '#c9441a' },
+  ].map(({ role, value, color }) => {
+    const count = usersList.filter((user) => user.role === value).length;
+    const percent = usersList.length === 0 ? 0 : Number((count / usersList.length * 100).toFixed(1));
+    return { role, count, percent, color };
+  });
   const conversionRate =
     totalRequests > 0
       ? Number(((confirmedConnections / totalRequests) * 100).toFixed(1))
@@ -292,26 +284,7 @@ export const getDashboardStats = async (adminUser, period = '30d') => {
       userGrowth: userGrowthTrend,
       connections: connectionTrend,
     },
-    roleDistribution: [
-      {
-        role: 'Phụ huynh',
-        count: activeParents,
-        percent: Number(((activeParents / nonAdminTotal) * 100).toFixed(1)),
-        color: '#0284c7',
-      },
-      {
-        role: 'Gia sư',
-        count: activeTutors,
-        percent: Number(((activeTutors / nonAdminTotal) * 100).toFixed(1)),
-        color: '#059669',
-      },
-      {
-        role: 'Học sinh',
-        count: activeStudents,
-        percent: Number(((activeStudents / nonAdminTotal) * 100).toFixed(1)),
-        color: '#d97706',
-      },
-    ],
+    roleDistribution,
   };
 };
 

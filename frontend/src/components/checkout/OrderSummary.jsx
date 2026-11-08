@@ -32,17 +32,17 @@ function SummaryRow({ label, value }) {
 
 // Các dòng quyền lợi của plan (SC20 field 2: credits, AI quota, SMS reminders)
 function PlanSummaryRows({ plan }) {
-  let smsLabel = 'Not included';
+  let smsLabel = 'Không bao gồm';
   if (plan.sms_reminders_enabled) {
-    smsLabel = 'Included';
+    smsLabel = 'Có bao gồm';
   }
   return (
     <>
-      <SummaryRow label="Price" value={`${formatVnd(plan.monthly_price)} / month`} />
-      <SummaryRow label="Credits" value={`${plan.monthly_credits} per month`} />
-      <SummaryRow label="AI quota" value={`${plan.ai_quota} per month`} />
-      <SummaryRow label="Class limit" value={getClassLimitLabel(plan.max_classrooms)} />
-      <SummaryRow label="SMS reminders" value={smsLabel} />
+      <SummaryRow label="Giá" value={`${formatVnd(plan.monthly_price)} / tháng`} />
+      <SummaryRow label="Tín dụng" value={`${plan.monthly_credits.toLocaleString('vi-VN')} mỗi tháng`} />
+      <SummaryRow label="Lượt dùng AI" value={`${plan.ai_quota.toLocaleString('vi-VN')} mỗi tháng`} />
+      <SummaryRow label="Giới hạn số lớp" value={getClassLimitLabel(plan.max_classrooms)} />
+      <SummaryRow label="Nhắc lịch qua SMS" value={smsLabel} />
     </>
   );
 }
@@ -51,8 +51,8 @@ function PackSummaryRows({ pack, quantity }) {
   const totalCredits = pack.credit_amount * quantity;
   return (
     <>
-      <SummaryRow label="Price" value={`${formatVnd(pack.price)} / pack`} />
-      <SummaryRow label="Credits added" value={String(totalCredits)} />
+      <SummaryRow label="Giá" value={`${formatVnd(pack.price)} / gói`} />
+      <SummaryRow label="Tín dụng được cộng" value={totalCredits.toLocaleString('vi-VN')} />
     </>
   );
 }
@@ -65,7 +65,7 @@ function ExtendNote({ billing, plan }) {
   }
   return (
     <p className="summary-note">
-      Your {getPlanTitle(plan.name)} plan runs until {formatDate(billing.subscription.expires_at)}. The new months are added on top.
+      Gói {getPlanTitle(plan.name)} của bạn có hiệu lực đến {formatDate(billing.subscription.expires_at)}. Thời gian mua thêm sẽ được cộng vào thời hạn hiện tại.
     </p>
   );
 }
@@ -74,9 +74,9 @@ function ExtendNote({ billing, plan }) {
 export default function OrderSummary({ selection, count, onCountChange, billing, submitting, formError }) {
   if (!selection) {
     return (
-      <aside className="card order-summary" aria-label="Order summary">
-        <h2 className="order-summary-title">Order summary</h2>
-        <p className="summary-empty">Choose a plan or a credit pack to continue.</p>
+      <aside className="card order-summary" aria-label="Tóm tắt đơn hàng">
+        <h2 className="order-summary-title">Tóm tắt đơn hàng</h2>
+        <p className="summary-empty">Chọn gói dịch vụ hoặc gói tín dụng để tiếp tục.</p>
       </aside>
     );
   }
@@ -87,35 +87,35 @@ export default function OrderSummary({ selection, count, onCountChange, billing,
   let itemTitle = item.name;
   if (isPlan) {
     unitPrice = toNumber(item.monthly_price);
-    itemTitle = `${getPlanTitle(item.name)} plan`;
+    itemTitle = `Gói ${getPlanTitle(item.name)}`;
   }
   const total = unitPrice * count;
 
   return (
-    <aside className="card order-summary" aria-label="Order summary">
-      <h2 className="order-summary-title">Order summary</h2>
+    <aside className="card order-summary" aria-label="Tóm tắt đơn hàng">
+      <h2 className="order-summary-title">Tóm tắt đơn hàng</h2>
       <p className="summary-item-title">{itemTitle}</p>
 
       {isPlan && (
         <CountSelect
           id="duration_months"
-          label="Duration"
+          label="Thời hạn"
           options={DURATION_OPTIONS}
           value={count}
           onChange={onCountChange}
           disabled={submitting}
-          formatOption={(option) => pluralize(option, 'month')}
+          formatOption={(option) => pluralize(option, 'tháng')}
         />
       )}
       {!isPlan && (
         <CountSelect
           id="quantity"
-          label="Quantity"
+          label="Số lượng"
           options={QUANTITY_OPTIONS}
           value={count}
           onChange={onCountChange}
           disabled={submitting}
-          formatOption={(option) => pluralize(option, 'pack')}
+          formatOption={(option) => pluralize(option, 'gói')}
         />
       )}
 
@@ -127,7 +127,7 @@ export default function OrderSummary({ selection, count, onCountChange, billing,
       {isPlan && <ExtendNote billing={billing} plan={item} />}
 
       <dl className="summary-total">
-        <dt>Total</dt>
+        <dt>Tổng cộng</dt>
         <dd>{formatVnd(total)}</dd>
       </dl>
 
@@ -135,13 +135,13 @@ export default function OrderSummary({ selection, count, onCountChange, billing,
 
       <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
         {submitting && <LoaderCircle size={18} className="spin" aria-hidden="true" />}
-        <span>{submitting ? 'Creating order...' : `Pay ${formatVnd(total)}`}</span>
+        <span>{submitting ? 'Đang tạo đơn hàng...' : `Thanh toán ${formatVnd(total)}`}</span>
       </button>
-      <Link to="/credits" className="btn btn-outline btn-block summary-cancel">Cancel</Link>
+      <Link to="/credits" className="btn btn-outline btn-block summary-cancel">Hủy</Link>
 
       <p className="summary-secure">
         <Lock size={14} aria-hidden="true" />
-        <span>You will be redirected to a secure payment page. The order expires after 15 minutes.</span>
+        <span>Bạn sẽ được chuyển đến trang thanh toán an toàn. Đơn hàng hết hạn sau 15 phút.</span>
       </p>
     </aside>
   );

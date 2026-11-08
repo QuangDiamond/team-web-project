@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeft, CircleCheck, LoaderCircle } from 'lucide-react';
-import { createRequest, getMyChildren, getMyRequest, updateRequest } from '../../services/parentRequestService';
+import { createRequest, getMyRequest, updateRequest } from '../../services/parentRequestService';
 import Alert from '../../components/common/Alert';
 import SectionCard from '../../components/common/SectionCard';
 import RequestForm, { EMPTY_REQUEST_VALUES } from '../../components/tutoringRequests/RequestForm';
+import { REQUEST_STATUS } from '../../constants/requestLabels';
 import '../../styles/tutoringRequests.css';
 
 const toFormValues = (request) => {
@@ -14,14 +15,13 @@ const toFormValues = (request) => {
   }
   return {
     title: request.title || '',
-    student_id: request.student_id || '',
     subject_name: request.subject_name || '',
     grade_level: request.grade_level || '',
-    description: request.description || '',
-    schedule: request.schedule || '',
     budget: budget,
+    schedule: request.schedule || '',
     teaching_mode: request.teaching_mode || 'ONLINE',
     location_address: request.location_address || '',
+    description: request.description || '',
     tutor_requirements: request.tutor_requirements || '',
   };
 };
@@ -32,29 +32,25 @@ export default function TutoringRequestForm() {
   const isEdit = Boolean(id);
   const navigate = useNavigate();
 
-  const [state, setState] = useState({ loading: true, error: null, students: [], request: null });
+  const [state, setState] = useState({ loading: isEdit, error: null, request: null });
   const [savedRequest, setSavedRequest] = useState(null);
 
   useEffect(() => {
+    if (!isEdit) {
+      return undefined;
+    }
     let ignore = false;
-    const load = async () => {
-      try {
-        const childrenResponse = await getMyChildren();
-        let request = null;
-        if (isEdit) {
-          const requestResponse = await getMyRequest(id);
-          request = requestResponse.data;
-        }
+    getMyRequest(id)
+      .then((response) => {
         if (!ignore) {
-          setState({ loading: false, error: null, students: childrenResponse.data, request: request });
+          setState({ loading: false, error: null, request: response.data });
         }
-      } catch (error) {
+      })
+      .catch((error) => {
         if (!ignore) {
-          setState({ loading: false, error: error, students: [], request: null });
+          setState({ loading: false, error: error, request: null });
         }
-      }
-    };
-    load();
+      });
     return () => {
       ignore = true;
     };
@@ -74,7 +70,7 @@ export default function TutoringRequestForm() {
     return (
       <div className="page-loading-inline" role="status">
         <LoaderCircle size={26} className="spin" aria-hidden="true" />
-        <span className="visually-hidden">Loading...</span>
+        <span className="visually-hidden">Đang tải...</span>
       </div>
     );
   }
@@ -83,22 +79,26 @@ export default function TutoringRequestForm() {
     return (
       <div className="page-stack">
         <Alert type="error">{state.error.message}</Alert>
-        <Link to="/parent/requests" className="link">Back to requests</Link>
+        <Link to="/parent/requests" className="link">Quay lại danh sách yêu cầu</Link>
       </div>
     );
   }
 
   if (savedRequest) {
+    let successTitle = 'Đã đăng yêu cầu';
+    let successText = 'Gia sư có thể xem và ứng tuyển vào yêu cầu.';
+    if (isEdit) {
+      successTitle = 'Đã cập nhật yêu cầu';
+      successText = 'Gia sư có thể xem các thay đổi của bạn.';
+    }
     return (
       <div className="request-success">
         <span className="request-success-icon" aria-hidden="true"><CircleCheck size={32} /></span>
-        <h2 className="request-success-title">{isEdit ? 'Request updated' : 'Request published'}</h2>
-        <p className="item-meta">
-          {isEdit ? 'Your changes are now visible to tutors.' : 'Tutors can now see and apply to your request.'}
-        </p>
+        <h2 className="request-success-title">{successTitle}</h2>
+        <p className="item-meta">{successText}</p>
         <div className="item-actions">
           <button type="button" className="btn btn-primary btn-sm" onClick={() => navigate('/parent/requests')}>
-            View my requests
+            Xem yêu cầu của tôi
           </button>
           {!isEdit && (
             <button
@@ -106,7 +106,7 @@ export default function TutoringRequestForm() {
               className="btn btn-outline btn-sm"
               onClick={() => navigate(`/parent/requests/${savedRequest._id}/ai-suggestions`)}
             >
-              See AI tutor suggestions
+              Xem gia sư do AI gợi ý
             </button>
           )}
         </div>
@@ -115,12 +115,16 @@ export default function TutoringRequestForm() {
   }
 
   if (isEdit && !state.request.can_edit) {
+    let statusLabel = state.request.status;
+    if (REQUEST_STATUS[state.request.status]) {
+      statusLabel = REQUEST_STATUS[state.request.status].label;
+    }
     return (
       <div className="page-stack">
         <Alert type="info">
-          This request can no longer be edited (status: {state.request.status}).
+          Không thể sửa yêu cầu này (trạng thái: {statusLabel}).
         </Alert>
-        <Link to={`/parent/requests/${id}`} className="link">View request</Link>
+        <Link to={`/parent/requests/${id}`} className="link">Xem yêu cầu</Link>
       </div>
     );
   }
@@ -130,24 +134,26 @@ export default function TutoringRequestForm() {
     initialValues = toFormValues(state.request);
   }
 
-  // Học sinh đang gán cho request nhưng không còn liên kết thì vẫn hiện trong danh sách chọn
-  const students = [...state.students];
-  if (state.request && state.request.student && !students.some((student) => student._id === state.request.student._id)) {
-    students.push(state.request.student);
+  let submitLabel = 'Đăng yêu cầu';
+  let submittingLabel = 'Đang đăng...';
+  let cardTitle = 'Yêu cầu mới';
+  if (isEdit) {
+    submitLabel = 'Lưu thay đổi';
+    submittingLabel = 'Đang lưu...';
+    cardTitle = 'Chỉnh sửa yêu cầu';
   }
 
   return (
     <div className="request-form-page">
       <Link to="/parent/requests" className="link-back">
         <ChevronLeft size={16} aria-hidden="true" />
-        <span>Back to requests</span>
+        <span>Quay lại danh sách yêu cầu</span>
       </Link>
-      <SectionCard title={isEdit ? 'Edit request' : 'New request'}>
+      <SectionCard title={cardTitle}>
         <RequestForm
           initialValues={initialValues}
-          students={students}
-          submitLabel={isEdit ? 'Save changes' : 'Publish request'}
-          submittingLabel={isEdit ? 'Saving...' : 'Publishing...'}
+          submitLabel={submitLabel}
+          submittingLabel={submittingLabel}
           onSubmit={handleSubmit}
         />
       </SectionCard>

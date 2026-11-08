@@ -155,4 +155,3 @@ export const getSubmissionsForAssignment = async (assignmentId) => {
 export const gradeSubmission = async (submissionId, data) => {
   return await api.post(`/classroom/v1/submissions/${submissionId}/grade`, data);
 };
-

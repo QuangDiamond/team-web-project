@@ -1,13 +1,13 @@
-# System Statistics API (`/api/stats/v1`) – UC40 View System Statistics
+# Admin statistics
 
-## GET `/public`
-API công khai (không cần đăng nhập) phục vụ trang chủ (`Home.jsx`): trả về danh sách gia sư tiêu biểu (`featuredTutors`), đánh giá đã duyệt (`testimonials`) và số liệu tổng quan (`platformStats`).
+- `GET /api/stats/v1?period=30d` returns the existing `{ success, message, data }` envelope.
+- `GET /api/stats/v1/export?period=30d` returns `{ exportedAt, filename, summaryText, data }` inside the envelope. The frontend downloads `data` as JSON.
+- Both endpoints require authentication and ADMIN authorization. `period` accepts `7d`, `30d`, `90d`, `1y` (365 days); default `30d`. Invalid queries return 422.
+- `data.kpis` contains cumulative database counts and successful payment totals. `aiQuotaUtilized` is the sum of current subscription AI quota usage, not a lifetime usage estimate.
+- `data.trends` covers the complete rolling period up to the request timestamp, without overlapping buckets or synthetic fallback values. Labels use Vietnam time. Revenue uses successful orders with `paid_at`; old successful orders lacking this timestamp remain in cumulative totals but cannot be assigned to a chart bucket. User growth and new agreements use their stored creation timestamps.
+- `data.roleDistribution` includes all account statuses and all four roles. Existing Vietnamese role labels are retained.
+- No schema, stored payment data or public homepage contract is changed.
 
-## GET `/`
-Chỉ dành cho role `ADMIN` (`authentication` + `assertRole`).
-Query: `period` (`7d` | `30d` | `90d` | `1y`).
-Trả về `{ period, kpis, trends, roleDistribution }` tổng hợp trực tiếp từ các collection `USERS`, `TUTOR_PROFILES`, `PARENT_REQUESTS`, `TUTORING_AGREEMENTS`, `PAYMENT_ORDERS`, `CLASSROOMS`, `AI_SUGGESTIONS`.
+## Frontend organization
 
-## GET `/export`
-Chỉ dành cho role `ADMIN`. Xuất dữ liệu báo cáo thống kê định dạng JSON theo kỳ `period`.
-
+The admin screens reuse PageHeader, StatCard, SectionCard, Alert, EmptyState and Modal. Their CSS stays in `frontend/src/styles/{AdminDashboard,Moderation,Notifications}.css`; feature components and data hooks are split into their existing frontend layers. Icons use lucide-react. No new dependency is introduced. Notification settings correspond directly to the existing six backend preference flags.

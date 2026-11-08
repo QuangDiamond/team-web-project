@@ -28,16 +28,16 @@ test('password forms validate BR-01 and render recovery, regular and Google-only
       globalThis.__passwordTestUser = { id: 'user1', role: 'TUTOR', has_password: false };
       const google = render(<ChangePassword />);
       assert.doesNotMatch(google, /id="current_password"/);
-      assert.match(google, /Set password/);
+      assert.match(google, /Đặt mật khẩu/);
       const missing = render(<ResetPassword />, '/reset-password');
-      assert.match(missing, /invalid or expired/);
+      assert.match(missing, /không hợp lệ hoặc đã hết hạn/);
       assert.doesNotMatch(missing, /id="new_password"/);
       const reset = render(<ResetPassword />, '/reset-password?token=' + 'a'.repeat(64));
       assert.match(reset, /id="new_password"/);
       assert.match(reset, /id="confirm_password"/);
       const forgot = render(<ForgotPassword />);
       assert.match(forgot, /id="email"/);
-      assert.match(forgot, /Send reset link/);
+      assert.match(forgot, /Gửi liên kết đặt lại mật khẩu/);
       for (const [role, menu] of Object.entries({ admin: ADMIN_MENU, student: STUDENT_MENU, parent: PARENT_MENU, tutor: TUTOR_MENU })) {
         assert.ok(menu.groups.some((group) => group.items.some((item) => item.to === '/' + role + '/change-password')));
       }

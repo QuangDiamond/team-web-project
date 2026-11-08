@@ -7,32 +7,32 @@ export const DASHBOARD_NAV = [
     label: 'GENERAL',
     roles: ['ADMIN', 'TUTOR', 'PARENT', 'STUDENT'],
     items: [
-      { label: 'Overview', path: '/dashboard', Icon: LayoutDashboard },
+      { label: "Tổng quan", path: '/dashboard', Icon: LayoutDashboard },
     ],
   },
   {
     label: 'ADMIN',
     roles: ['ADMIN'],
     items: [
-      { label: 'Plans & Pricing', path: '/admin/plans', Icon: Tags },
-      { label: 'Users', path: '/admin/users', Icon: Users },
+      { label: "Gói dịch vụ và giá", path: '/admin/plans', Icon: Tags },
+      { label: "Người dùng", path: '/admin/users', Icon: Users },
     ],
   },
   {
     label: 'BILLING',
     roles: ['TUTOR', 'PARENT'],
     items: [
-      { label: 'Credits & Transactions', path: '/credits', Icon: Coins },
-      { label: 'Upgrade / Buy credits', path: '/checkout', Icon: Sparkles },
+      { label: "Tín dụng và giao dịch", path: '/credits', Icon: Coins },
+      { label: "Nâng cấp / Mua tín dụng", path: '/checkout', Icon: Sparkles },
     ],
   },
 ];
 
 export const ROLE_LABELS = {
-  ADMIN: 'Admin',
-  TUTOR: 'Tutor',
-  PARENT: 'Parent',
-  STUDENT: 'Student',
+  ADMIN: "Quản trị viên",
+  TUTOR: "Gia sư",
+  PARENT: "Phụ huynh",
+  STUDENT: "Học sinh",
 };
 
 // Các nhóm menu mà role này được thấy
@@ -42,7 +42,7 @@ export const getNavGroupsForRole = (role) => {
 
 // Tên các trang không có trong sidebar
 const EXTRA_PAGE_LABELS = {
-  '/payment/result': 'Payment result',
+  '/payment/result': "Kết quả thanh toán",
 };
 
 // Tên trang hiện tại (hiện ở top bar), dựa vào đường dẫn
@@ -51,10 +51,10 @@ export const getNavLabelForPath = (pathname) => {
     return EXTRA_PAGE_LABELS[pathname];
   }
   if (pathname.startsWith('/receipts/')) {
-    return 'Receipt';
+    return "Biên nhận";
   }
   if (pathname.startsWith('/admin/users/')) {
-    return 'User details';
+    return "Chi tiết người dùng";
   }
   for (const group of DASHBOARD_NAV) {
     for (const item of group.items) {
@@ -63,7 +63,7 @@ export const getNavLabelForPath = (pathname) => {
       }
     }
   }
-  return 'Dashboard';
+  return "Bảng điều khiển";
 };
 
 export const getRoleLabel = (role) => {

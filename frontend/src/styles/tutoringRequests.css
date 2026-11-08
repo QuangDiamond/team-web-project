@@ -9,6 +9,18 @@
   margin: 0 auto;
 }
 
+/* Cùng độ rộng và nút gửi với form tạo bài đăng của gia sư */
+.request-form-page {
+  max-width: 800px;
+}
+
+.request-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
 .request-form-page .link-back,
 .request-detail .link-back {
   display: inline-flex;

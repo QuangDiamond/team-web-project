@@ -11,7 +11,7 @@ const getPageTitle = (matches) => {
       return handle.title;
     }
   }
-  return 'Dashboard';
+  return "Bảng điều khiển";
 };
 
 /*

@@ -11,7 +11,7 @@ export default function PasswordInput(props) {
       type="button"
       className="form-control-action"
       onClick={() => setVisible(!visible)}
-      aria-label={visible ? 'Hide password' : 'Show password'}
+      aria-label={visible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
       aria-pressed={visible}
     >
       {visible ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}

@@ -231,7 +231,7 @@ export default function ClassroomsPage() {
               <p>
                 {isTutor
                   ? 'Bạn chưa có lớp học nào đang hoạt động. Hãy tạo lớp học đầu tiên để chia sẻ mã tham gia và kết nối học sinh ngay hôm nay!'
-                  : 'Bạn chưa tham gia lớp học nào. Hãy sử dụng mã tham gia hoặc link mời do gia sư cung cấp để gia nhập lớp học ngay nhé!'}
+                  : 'Bạn chưa tham gia lớp học nào. Hãy sử dụng mã tham gia hoặc liên kết mời do gia sư cung cấp để gia nhập lớp học ngay nhé!'}
               </p>
               {isTutor ? (
                 <button
@@ -294,7 +294,7 @@ export default function ClassroomsPage() {
                 </div>
 
                 <div>
-                  {/* Mã tham gia lớp (Join Code) */}
+                  {/* Mã tham gia lớp */}
                   <div className="join-code-box">
                     <div>
                       <div className="join-code-label">Mã tham gia lớp</div>
@@ -340,7 +340,7 @@ export default function ClassroomsPage() {
                       }
                     >
                       <LinkIcon size={13} />
-                      <span>Link mời</span>
+                      <span>Liên kết mời</span>
                     </button>
                     <Link
                       to={getClassroomDetailUrl(cls._id)}

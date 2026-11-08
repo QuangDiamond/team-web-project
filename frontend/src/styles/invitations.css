@@ -1,0 +1,79 @@
+/* Invitations của phụ huynh: /parent/invitations (tab Find tutors và Sent invitations) */
+
+.invite-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.invite-tab {
+  padding: 10px 16px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.invite-tab:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.invite-tab.is-active {
+  border-bottom-color: var(--color-primary);
+  color: var(--color-primary-strong);
+}
+
+.tutor-search {
+  display: flex;
+  gap: 8px;
+}
+
+.tutor-search input {
+  width: 220px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  font: inherit;
+  font-size: 14px;
+}
+
+.tutor-search input:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.tutor-row-avatar {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.item-actions .btn + .btn {
+  margin-left: 8px;
+}
+
+@media (max-width: 640px) {
+  .tutor-search {
+    width: 100%;
+  }
+
+  .tutor-search input {
+    flex: 1;
+    width: auto;
+  }
+}

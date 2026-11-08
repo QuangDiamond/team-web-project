@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authentication } from '../common/middlewares/auth.middleware.js';
+import { authentication, authorize } from '../common/middlewares/auth.middleware.js';
 import * as statsController from '../controllers/stats.controller.js';
 
 export const statsRoutes = Router();
@@ -8,6 +8,5 @@ export const statsRoutes = Router();
 statsRoutes.get('/public', statsController.getPublicHomeStats);
 
 // UC40 / UC42 – View System Statistics (role ADMIN)
-// TODO: authorize('ADMIN') — middleware chưa có (AGENTS.md: Planned); service kiểm tra bằng assertRole
-statsRoutes.get('/', authentication, statsController.getDashboardStats);
-statsRoutes.get('/export', authentication, statsController.exportStatsReport);
+statsRoutes.get('/', authentication, authorize('ADMIN'), statsController.getDashboardStats);
+statsRoutes.get('/export', authentication, authorize('ADMIN'), statsController.exportStatsReport);

@@ -5,16 +5,20 @@ import { acceptInvitation, declineInvitation, getReceivedInvitations } from '../
 import Alert from '../../components/common/Alert';
 import ListState from '../../components/common/ListState';
 import Pagination from '../../components/common/Pagination';
-import ReceivedInvitationList from '../../components/invitations/ReceivedInvitationList';
+import InvitationDetailModal from '../../components/tutor/InvitationDetailModal';
+import ReceivedInvitationList from '../../components/tutor/ReceivedInvitationList';
+import '../../styles/applicationReview.css';
+import '../../styles/tutoringRequests.css';
 import '../../styles/tutorRequests.css';
 
 const PAGE_SIZE = 10;
 
-// Gia sư xem và phản hồi lời mời của phụ huynh: Accept mở hội thoại 1-1, Decline từ chối
+// Gia sư xem và phản hồi lời mời của phụ huynh: Chấp nhận mở hội thoại 1-1, Từ chối để bỏ qua
 export default function ReceivedInvitations() {
   const [page, setPage] = useState(1);
   const [notice, setNotice] = useState('');
   const [actionError, setActionError] = useState('');
+  const [detailInvitation, setDetailInvitation] = useState(null);
   const list = usePagedList(getReceivedInvitations, { page: page, limit: PAGE_SIZE });
 
   const handleAction = async (action, invitation, successMessage) => {
@@ -30,24 +34,40 @@ export default function ReceivedInvitations() {
     await list.reload();
   };
 
-  const handleAccept = (invitation) => handleAction(acceptInvitation, invitation, 'Invitation accepted. A conversation has been opened.');
-  const handleDecline = (invitation) => handleAction(declineInvitation, invitation, 'Invitation declined.');
+  const handleAccept = (invitation) => handleAction(acceptInvitation, invitation, "Đã chấp nhận lời mời và mở cuộc trò chuyện.");
+  const handleDecline = (invitation) => handleAction(declineInvitation, invitation, "Đã từ chối lời mời.");
 
   return (
     <div className="page-stack">
-      <p className="item-meta">Invitations from parents. Accepting opens a conversation with them.</p>
+      <p className="item-meta">Lời mời từ phụ huynh. Chấp nhận để mở cuộc trò chuyện. Lời mời dùng nhiều tín dụng hơn nằm trên cùng.</p>
 
       {notice && <Alert type="success">{notice}</Alert>}
       {actionError && <Alert type="error">{actionError}</Alert>}
 
       <ListState
         list={list}
-        empty={{ icon: Mail, title: 'No invitations yet', description: 'When a parent invites you to a request, it will appear here.' }}
+        empty={{ icon: Mail, title: "Chưa có lời mời", description: "Lời mời từ phụ huynh sẽ hiển thị ở đây." }}
       >
-        {list.data && <ReceivedInvitationList invitations={list.data.items} onAccept={handleAccept} onDecline={handleDecline} />}
+        {list.data && (
+          <ReceivedInvitationList
+            invitations={list.data.items}
+            onAccept={handleAccept}
+            onDecline={handleDecline}
+            onViewDetails={setDetailInvitation}
+          />
+        )}
       </ListState>
 
       {list.data && <Pagination pagination={list.data.pagination} onPageChange={setPage} />}
+
+      {detailInvitation && (
+        <InvitationDetailModal
+          invitation={detailInvitation}
+          onClose={() => setDetailInvitation(null)}
+          onAccept={handleAccept}
+          onDecline={handleDecline}
+        />
+      )}
     </div>
   );
 }

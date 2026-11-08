@@ -237,7 +237,7 @@ export default function CreateAssignmentModal({
           },
           {
             question_type: 'FILE_UPLOAD',
-            content: `Làm bài thu hoạch tổng quan về chuyên đề "${subject}" và đính kèm link tài liệu.`,
+            content: `Làm bài thu hoạch tổng quan về chuyên đề "${subject}" và đính kèm liên kết tài liệu.`,
             options: [],
             correct_answer: '',
             points: 4,
@@ -356,7 +356,7 @@ export default function CreateAssignmentModal({
                     <span>Trợ lý AI tạo đề bài thông minh</span>
                   </div>
                   <div style={{ fontSize: '12px', color: '#64748b' }}>
-                    Tự động tạo trắc nghiệm, trả lời ngắn và nộp file theo môn học. (Trừ vào hạn mức AI gói gia sư)
+                    Tự động tạo trắc nghiệm, trả lời ngắn và nộp tệp theo môn học. (Trừ vào hạn mức AI gói gia sư)
                   </div>
                 </div>
                 <button
@@ -521,7 +521,7 @@ export default function CreateAssignmentModal({
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                 <div>
                   <h4 style={{ margin: 0, color: '#0f172a' }}>Danh sách câu hỏi ({questions.length})</h4>
-                  <div style={{ fontSize: '12px', color: '#64748b' }}>Hỗ trợ Trắc nghiệm, Tự luận ngắn và Nộp file</div>
+                  <div style={{ fontSize: '12px', color: '#64748b' }}>Hỗ trợ Trắc nghiệm, Tự luận ngắn và Nộp tệp</div>
                 </div>
 
                 {!isQuestionLocked && (
@@ -548,7 +548,7 @@ export default function CreateAssignmentModal({
                       onClick={() => handleAddQuestion('FILE_UPLOAD')}
                       style={{ fontSize: '12px', padding: '5px 8px' }}
                     >
-                      + Nộp file
+                      + Nộp tệp
                     </button>
                   </div>
                 )}
@@ -576,7 +576,7 @@ export default function CreateAssignmentModal({
                       >
                         <option value="MULTIPLE_CHOICE">Trắc nghiệm</option>
                         <option value="SHORT_ANSWER">Trả lời ngắn</option>
-                        <option value="FILE_UPLOAD">Nộp file</option>
+                        <option value="FILE_UPLOAD">Nộp tệp</option>
                       </select>
                     </div>
 
@@ -643,7 +643,7 @@ export default function CreateAssignmentModal({
                     </div>
                   )}
 
-                  {/* Nộp file */}
+                  {/* Nộp tệp */}
                   {q.question_type === 'FILE_UPLOAD' && (
                     <div style={{ marginBottom: '8px', fontSize: '12px', color: '#64748b', fontStyle: 'italic' }}>
                       Học sinh sẽ được yêu cầu tải lên tệp bài làm hoặc dán liên kết Google Drive / Figma / Github khi làm bài.

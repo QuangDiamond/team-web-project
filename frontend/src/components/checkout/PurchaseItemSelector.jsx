@@ -5,22 +5,22 @@ import { toPackValue, toPlanValue } from '../../utils/checkoutSelection';
 
 const getPlanFeatures = (plan) => {
   const features = [
-    `${plan.monthly_credits} credits / month`,
-    `${plan.ai_quota} AI requests / month`,
-    `Classes: ${getClassLimitLabel(plan.max_classrooms)}`,
+    `${plan.monthly_credits.toLocaleString('vi-VN')} tín dụng / tháng`,
+    `${plan.ai_quota.toLocaleString('vi-VN')} lượt dùng AI / tháng`,
+    `Số lớp: ${getClassLimitLabel(plan.max_classrooms)}`,
   ];
   if (plan.sms_reminders_enabled) {
-    features.push('SMS reminders');
+    features.push('Nhắc lịch qua SMS');
   }
   return features;
 };
 
 const getPlanBadge = (plan, currentPlanId) => {
   if (plan._id === currentPlanId) {
-    return 'Current plan';
+    return 'Gói hiện tại';
   }
   if (plan.is_free) {
-    return 'Free';
+    return 'Miễn phí';
   }
   return '';
 };
@@ -29,11 +29,11 @@ const getPlanBadge = (plan, currentPlanId) => {
 export default function PurchaseItemSelector({ catalog, selectedValue, currentPlanId, onChange, disabled }) {
   return (
     <fieldset className="checkout-fieldset" disabled={disabled}>
-      <legend className="checkout-legend">Choose a plan or credit pack</legend>
+      <legend className="checkout-legend">Chọn gói dịch vụ hoặc gói tín dụng</legend>
 
       {catalog.plans.length > 0 && (
         <>
-          <h2 className="checkout-group-title">Plans</h2>
+          <h2 className="checkout-group-title">Gói dịch vụ</h2>
           <div className="option-grid">
             {catalog.plans.map((plan) => (
               <PurchaseOptionCard
@@ -42,9 +42,9 @@ export default function PurchaseItemSelector({ catalog, selectedValue, currentPl
                 checked={selectedValue === toPlanValue(plan._id)}
                 onChange={onChange}
                 disabled={plan.is_free}
-                title={`${getPlanTitle(plan.name)} plan`}
+                title={`Gói ${getPlanTitle(plan.name)}`}
                 priceLabel={formatVnd(plan.monthly_price)}
-                priceNote=" / month"
+                priceNote=" / tháng"
                 badge={getPlanBadge(plan, currentPlanId)}
                 features={getPlanFeatures(plan)}
               />
@@ -55,7 +55,7 @@ export default function PurchaseItemSelector({ catalog, selectedValue, currentPl
 
       {catalog.packs.length > 0 && (
         <>
-          <h2 className="checkout-group-title">Credit packs</h2>
+          <h2 className="checkout-group-title">Gói tín dụng</h2>
           <div className="option-grid">
             {catalog.packs.map((pack) => (
               <PurchaseOptionCard
@@ -65,7 +65,7 @@ export default function PurchaseItemSelector({ catalog, selectedValue, currentPl
                 onChange={onChange}
                 title={pack.name}
                 priceLabel={formatVnd(pack.price)}
-                features={[`${pack.credit_amount} credits`]}
+                features={[`${pack.credit_amount.toLocaleString('vi-VN')} tín dụng`]}
               />
             ))}
           </div>
