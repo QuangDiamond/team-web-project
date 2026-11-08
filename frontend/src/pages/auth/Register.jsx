@@ -140,8 +140,7 @@ export default function Register() {
         This email is already registered.{' '}
         <Link to="/login" className="link">Login</Link>
         {' or '}
-        {/* TODO: đổi "#" thành trang Forgot password khi có */}
-        <a href="#" className="link">Forgot password</a>?
+        <Link to="/forgot-password" className="link">Forgot password</Link>?
       </Alert>
     );
   } else if (formError) {

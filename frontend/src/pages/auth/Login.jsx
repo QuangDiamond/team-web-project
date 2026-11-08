@@ -17,6 +17,9 @@ const LOCKED_MESSAGE = 'Your account has been suspended or banned. Please contac
 
 // Thông báo theo query backend gắn khi redirect về /login
 const getRedirectNotice = (searchParams) => {
+  if (searchParams.get('password') === 'reset') {
+    return { type: 'success', message: 'Password reset successfully. Please sign in with your new password.' };
+  }
   if (searchParams.get('verify') === 'success') {
     return { type: 'success', message: 'Your account has been verified. Please sign in.' };
   }
@@ -166,8 +169,7 @@ export default function Login() {
         />
 
         <div className="login-options">
-          {/* TODO: đổi "#" thành trang Forgot password khi có */}
-          <a href="#" className="link">Forgot password?</a>
+          <Link to="/forgot-password" className="link">Forgot password?</Link>
         </div>
 
         <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>

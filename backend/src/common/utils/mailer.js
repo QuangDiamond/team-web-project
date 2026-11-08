@@ -37,6 +37,24 @@ const STATUS_LABELS = {
   BANNED: 'banned',
 };
 
+export const sendPasswordResetEmail = async (toEmail, fullName, resetLink) => {
+  await transporter.sendMail({
+    from: env.smtpUser, to: toEmail, subject: 'Reset your TuConnector password',
+    html: `<p>Hello ${escapeHtml(fullName)},</p>
+      <p>This single-use reset link expires in 15 minutes. If you did not request it, ignore this email.</p>
+      <p><a href="${escapeHtml(resetLink)}">Reset password</a></p>`,
+  });
+};
+
+export const sendPasswordChangedEmail = async (toEmail, fullName) => {
+  await transporter.sendMail({
+    from: env.smtpUser, to: toEmail, subject: 'Your TuConnector password was changed',
+    html: `<p>Hello ${escapeHtml(fullName)},</p>
+      <p>Your password was changed. Other sessions have been signed out.</p>
+      <p>If this was not you, reset your password immediately and contact support.</p>`,
+  });
+};
+
 /**
  * Báo cho user biết tài khoản vừa bị khóa / mở lại (UC37)
  * @param {string} toEmail - email người nhận
