@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Nút Previous / Next theo object pagination của API ({ page, limit, total, totalPages })
-export default function Pagination({ pagination, onPageChange, disabled = false, label = 'Pagination' }) {
+export default function Pagination({ pagination, onPageChange, disabled = false, label = 'Phân trang' }) {
   if (!pagination || pagination.totalPages <= 1) {
     return null;
   }
@@ -9,7 +9,7 @@ export default function Pagination({ pagination, onPageChange, disabled = false,
   return (
     <nav className="pagination" aria-label={label}>
       <span className="pagination-info">
-        Page {pagination.page} of {pagination.totalPages} · {pagination.total} items
+        Trang {pagination.page} / {pagination.totalPages} · {pagination.total} mục
       </span>
       <div className="pagination-buttons">
         <button
@@ -19,7 +19,7 @@ export default function Pagination({ pagination, onPageChange, disabled = false,
           onClick={() => onPageChange(pagination.page - 1)}
         >
           <ChevronLeft size={14} aria-hidden="true" />
-          <span>Previous</span>
+          <span>Trước</span>
         </button>
         <button
           type="button"
@@ -27,7 +27,7 @@ export default function Pagination({ pagination, onPageChange, disabled = false,
           disabled={disabled || pagination.page >= pagination.totalPages}
           onClick={() => onPageChange(pagination.page + 1)}
         >
-          <span>Next</span>
+          <span>Sau</span>
           <ChevronRight size={14} aria-hidden="true" />
         </button>
       </div>

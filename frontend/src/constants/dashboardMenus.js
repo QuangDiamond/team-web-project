@@ -82,9 +82,9 @@ export const PARENT_MENU = {
       label: 'PARENT',
       items: [
         { label: 'Overview', to: '/parent/dashboard', icon: LayoutDashboard, end: true },
-        { label: 'Tutoring Requests', to: '/parent/requests', icon: FileText },
-        { label: 'AI Suggestions', to: '/parent/ai-suggestions', icon: Sparkles },
-        { label: 'Invitations', to: '/parent/invitations', icon: Mail },
+        { label: 'Yêu cầu tìm gia sư', to: '/parent/requests', icon: FileText },
+        { label: 'Gợi ý gia sư', to: '/parent/ai-suggestions', icon: Sparkles },
+        { label: 'Lời mời', to: '/parent/invitations', icon: Mail },
         { label: 'Messages', to: '/parent/messages', icon: MessageSquare },
         { label: 'Contracts', to: '/parent/contracts', icon: BookOpen },
         { label: 'Notifications', to: '/parent/notifications', icon: Bell },
@@ -117,7 +117,7 @@ export const TUTOR_MENU = {
         { label: 'Suggested for You', to: '/tutor/requests/suggested', icon: Sparkles },
         { label: 'Saved Requests', to: '/tutor/requests/saved', icon: Bookmark },
         { label: 'My Applications', to: '/tutor/applications', icon: Send },
-        { label: 'Invitations', to: '/tutor/invitations', icon: Mail },
+        { label: 'Lời mời', to: '/tutor/invitations', icon: Mail },
       ],
     },
     {

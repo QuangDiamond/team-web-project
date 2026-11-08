@@ -51,6 +51,19 @@ test('received invitation DTO exposes only its parent navigation ID and excludes
   assert.equal(dto.conversation_id, null);
 });
 
+test('received invitation DTO carries the request details the tutor needs to decide', () => {
+  const request = {
+    _id: newId(), title: 'T', subject_name: 'Toán', grade_level: 'Lớp 9', teaching_mode: 'ONLINE', budget: null,
+    schedule: 'T2, T4 · 4:00 PM - 6:00 PM', description: 'Ôn thi vào 10', tutor_requirements: 'Có kinh nghiệm', location_address: null,
+    status: 'OPEN', created_at: new Date(),
+  };
+  const dto = toReceivedInvitationDto({ _id: newId(), status: 'PENDING', credits_spent: 3 }, request, null);
+  assert.equal(dto.request.schedule, 'T2, T4 · 4:00 PM - 6:00 PM');
+  assert.equal(dto.request.description, 'Ôn thi vào 10');
+  assert.equal(dto.request.tutor_requirements, 'Có kinh nghiệm');
+  assert.equal(dto.credits_spent, 3);
+});
+
 test('received invitation DTO marks an old or closed request as unavailable', () => {
   const oldRequest = { _id: newId(), status: 'OPEN', created_at: new Date('2020-01-01'), budget: null };
   assert.equal(toReceivedInvitationDto({ _id: newId(), status: 'PENDING' }, oldRequest, null).request.is_available, false);

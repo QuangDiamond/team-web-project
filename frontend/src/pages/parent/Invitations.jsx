@@ -4,8 +4,8 @@ import SentInvitations from './SentInvitations';
 import '../../styles/invitations.css';
 
 const TABS = [
-  { value: 'tutors', label: 'Find tutors' },
-  { value: 'sent', label: 'Sent invitations' },
+  { value: 'tutors', label: 'Tìm gia sư' },
+  { value: 'sent', label: 'Lời mời đã gửi' },
 ];
 
 // UC14 – Invitations của phụ huynh: xem tất cả gia sư đang hoạt động để mời, hoặc xem lại lời mời đã gửi
@@ -14,7 +14,7 @@ export default function Invitations() {
 
   return (
     <div className="page-stack">
-      <div className="invite-tabs" role="tablist" aria-label="Invitations">
+      <div className="invite-tabs" role="tablist" aria-label="Lời mời">
         {TABS.map((tab) => (
           <button
             key={tab.value}

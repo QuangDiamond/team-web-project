@@ -2,22 +2,12 @@ import { useNavigate } from 'react-router-dom';
 import { Eye, Pencil, Sparkles, Trash2 } from 'lucide-react';
 import { REQUEST_STATUS, formatBudget, getModeLabel, getStatusBadge } from '../../constants/requestLabels';
 
-const pluralize = (count) => {
-  if (count === 1) {
-    return '1 application';
-  }
-  return `${count} applications`;
-};
+const formatApplicationCount = (count) => `${count} đơn ứng tuyển`;
 
 // Một dòng trong danh sách request của phụ huynh (Figma: RequestsScreen)
 export default function RequestListItem({ request, onDelete }) {
   const navigate = useNavigate();
   const badge = getStatusBadge(REQUEST_STATUS, request.status);
-
-  let learner = 'no specific learner';
-  if (request.student) {
-    learner = request.student.full_name;
-  }
 
   const canSuggest = request.status === 'OPEN' && !request.is_expired;
 
@@ -29,24 +19,24 @@ export default function RequestListItem({ request, onDelete }) {
             {request.title}
           </button>
           <span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>
-          {request.is_expired && <span className="status-badge tone-error">Expired</span>}
+          {request.is_expired && <span className="status-badge tone-error">Hết hạn</span>}
         </div>
         <p className="item-meta">
-          For {learner} · {getModeLabel(request.teaching_mode)} · {formatBudget(request.budget)}
+          {request.subject_name} · {request.grade_level} · {getModeLabel(request.teaching_mode)} · {formatBudget(request.budget)}
         </p>
       </div>
-      <span className="item-count">{pluralize(request.application_count)}</span>
+      <span className="item-count">{formatApplicationCount(request.application_count)}</span>
       <div className="item-actions">
         <button type="button" className="btn btn-primary btn-sm" onClick={() => navigate(`/parent/requests/${request._id}`)}>
           <Eye size={14} aria-hidden="true" />
-          <span>View details</span>
+          <span>Xem chi tiết</span>
         </button>
         {canSuggest && (
           <button
             type="button"
             className="btn btn-outline btn-sm btn-icon"
-            title="AI tutor suggestions"
-            aria-label="AI tutor suggestions"
+            title="Gợi ý gia sư"
+            aria-label="Gợi ý gia sư"
             onClick={() => navigate(`/parent/requests/${request._id}/ai-suggestions`)}
           >
             <Sparkles size={16} aria-hidden="true" />
@@ -56,8 +46,8 @@ export default function RequestListItem({ request, onDelete }) {
           <button
             type="button"
             className="btn btn-outline btn-sm btn-icon"
-            title="Edit request"
-            aria-label="Edit request"
+            title="Chỉnh sửa yêu cầu"
+            aria-label="Chỉnh sửa yêu cầu"
             onClick={() => navigate(`/parent/requests/${request._id}/edit`)}
           >
             <Pencil size={16} aria-hidden="true" />
@@ -66,8 +56,8 @@ export default function RequestListItem({ request, onDelete }) {
         <button
           type="button"
           className="btn btn-outline btn-sm btn-icon"
-          title="Delete request"
-          aria-label="Delete request"
+          title="Xóa yêu cầu"
+          aria-label="Xóa yêu cầu"
           onClick={() => onDelete(request)}
         >
           <Trash2 size={16} aria-hidden="true" />

@@ -1,36 +1,36 @@
 // Nhãn và định dạng hiển thị dùng chung cho request, đơn ứng tuyển, lời mời (UC10, UC11, UC12, UC14)
 
 export const TEACHING_MODES = [
-  { value: 'ONLINE', label: 'Online' },
-  { value: 'OFFLINE', label: 'In person' },
-  { value: 'HYBRID', label: 'Hybrid' },
+  { value: 'ONLINE', label: 'Học online' },
+  { value: 'OFFLINE', label: 'Học trực tiếp' },
+  { value: 'HYBRID', label: 'Kết hợp' },
 ];
 
 export const REQUEST_STATUS = {
-  DRAFT: { label: 'Draft', tone: 'warning' },
-  PENDING_MODERATION: { label: 'Under review', tone: 'warning' },
-  OPEN: { label: 'Open', tone: 'success' },
-  IN_PROGRESS: { label: 'In progress', tone: 'info' },
-  CLOSED: { label: 'Closed', tone: 'info' },
-  CANCELLED: { label: 'Cancelled', tone: 'error' },
-  EXPIRED: { label: 'Expired', tone: 'error' },
+  DRAFT: { label: 'Nháp', tone: 'warning' },
+  PENDING_MODERATION: { label: 'Đang kiểm duyệt', tone: 'warning' },
+  OPEN: { label: 'Đang mở', tone: 'success' },
+  IN_PROGRESS: { label: 'Đang thực hiện', tone: 'info' },
+  CLOSED: { label: 'Đã đóng', tone: 'info' },
+  CANCELLED: { label: 'Đã hủy', tone: 'error' },
+  EXPIRED: { label: 'Hết hạn', tone: 'error' },
 };
 
 export const APPLICATION_STATUS = {
-  PENDING: { label: 'Pending', tone: 'warning' },
-  CONTINUED: { label: 'Accepted', tone: 'success' },
-  SKIPPED: { label: 'Skipped', tone: 'error' },
-  WITHDRAWN: { label: 'Withdrawn', tone: 'info' },
+  PENDING: { label: 'Đang chờ', tone: 'warning' },
+  CONTINUED: { label: 'Đã chấp nhận', tone: 'success' },
+  SKIPPED: { label: 'Đã bỏ qua', tone: 'error' },
+  WITHDRAWN: { label: 'Đã rút', tone: 'info' },
 };
 
 export const INVITATION_STATUS = {
-  PENDING: { label: 'Pending', tone: 'warning' },
-  ACCEPTED: { label: 'Accepted', tone: 'success' },
-  DECLINED: { label: 'Declined', tone: 'error' },
-  CANCELLED: { label: 'Cancelled', tone: 'info' },
+  PENDING: { label: 'Đang chờ', tone: 'warning' },
+  ACCEPTED: { label: 'Đã chấp nhận', tone: 'success' },
+  DECLINED: { label: 'Đã từ chối', tone: 'error' },
+  CANCELLED: { label: 'Đã hủy', tone: 'info' },
 };
 
-const UNKNOWN_STATUS = { label: 'Unknown', tone: 'info' };
+const UNKNOWN_STATUS = { label: 'Không rõ', tone: 'info' };
 
 export const getStatusBadge = (statusMap, status) => {
   if (statusMap[status]) {
@@ -51,7 +51,7 @@ export const formatBudget = (value) => {
   if (value === null || value === undefined || value === '') {
     return '—';
   }
-  return `${Number(value).toLocaleString('vi-VN')} ₫/session`;
+  return `${Number(value).toLocaleString('vi-VN')} ₫/buổi`;
 };
 
 export const POST_STATUS = {

@@ -43,29 +43,29 @@ export default function AiTutorSuggestions() {
     <div className="page-stack">
       <ListState
         list={requests}
-        empty={{ icon: FileText, title: 'No open requests', description: 'Create a request first, then come back to see matching tutors.' }}
+        empty={{ icon: FileText, title: 'Chưa có yêu cầu đang mở', description: 'Hãy tạo yêu cầu trước, sau đó quay lại để xem gia sư phù hợp.' }}
       >
         {noOpenRequests ? (
           <EmptyState
             icon={FileText}
-            title="No open requests"
-            description="Create a request first, then come back to see matching tutors."
+            title="Chưa có yêu cầu đang mở"
+            description="Hãy tạo yêu cầu trước, sau đó quay lại để xem gia sư phù hợp."
           />
         ) : (
           <div className="page-toolbar">
             <div className="ai-request-select">
               <FormSelect
                 id="request"
-                label="Request"
+                label="Yêu cầu"
                 value={selectedRequestId}
                 onChange={handleRequestChange}
                 options={requestOptions}
-                placeholder="Select a request"
+                placeholder="Chọn một yêu cầu"
               />
             </div>
             <button type="button" className="btn btn-outline btn-sm" onClick={() => navigate('/parent/requests/new')}>
               <Plus size={14} aria-hidden="true" />
-              <span>Create request</span>
+              <span>Tạo yêu cầu</span>
             </button>
           </div>
         )}

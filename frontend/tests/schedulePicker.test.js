@@ -13,26 +13,29 @@ test('schedule helpers format, parse and reject invalid times', async () => {
       const time = (hour, minute, period) => ({ hour, minute, period });
 
       // Ngày luôn theo thứ tự trong tuần, phút luôn 2 chữ số
-      const text = formatSchedule(['Fri', 'Mon', 'Wed'], time('4', '0', 'PM'), time('6', '30', 'PM'));
-      assert.equal(text, 'Mon, Wed, Fri · 4:00 PM - 6:30 PM');
+      const text = formatSchedule(['T6', 'T2', 'T4'], time('4', '0', 'PM'), time('6', '30', 'PM'));
+      assert.equal(text, 'T2, T4, T6 · 4:00 PM - 6:30 PM');
       assert.deepEqual(parseSchedule(text), {
-        days: ['Mon', 'Wed', 'Fri'],
+        days: ['T2', 'T4', 'T6'],
         start: time('4', '00', 'PM'),
         end: time('6', '30', 'PM'),
       });
 
       // Chưa đủ hoặc không hợp lệ thì trả chuỗi rỗng
       assert.equal(formatSchedule([], time('4', '0', 'PM'), time('6', '0', 'PM')), '');
-      assert.equal(formatSchedule(['Mon'], time('', '', 'PM'), time('6', '0', 'PM')), '');
-      assert.equal(formatSchedule(['Mon'], time('13', '0', 'AM'), time('2', '0', 'PM')), '');
-      assert.equal(formatSchedule(['Mon'], time('4', '60', 'AM'), time('5', '0', 'AM')), '');
-      assert.equal(formatSchedule(['Mon'], time('6', '0', 'PM'), time('6', '0', 'PM')), '');
-      assert.equal(formatSchedule(['Mon'], time('7', '0', 'PM'), time('6', '0', 'PM')), '');
+      assert.equal(formatSchedule(['T2'], time('', '', 'PM'), time('6', '0', 'PM')), '');
+      assert.equal(formatSchedule(['T2'], time('13', '0', 'AM'), time('2', '0', 'PM')), '');
+      assert.equal(formatSchedule(['T2'], time('4', '60', 'AM'), time('5', '0', 'AM')), '');
+      assert.equal(formatSchedule(['T2'], time('6', '0', 'PM'), time('6', '0', 'PM')), '');
+      assert.equal(formatSchedule(['T2'], time('7', '0', 'PM'), time('6', '0', 'PM')), '');
 
       // 12 AM là nửa đêm, 12 PM là buổi trưa
-      assert.equal(formatSchedule(['Sun'], time('12', '0', 'AM'), time('1', '5', 'AM')), 'Sun · 12:00 AM - 1:05 AM');
-      assert.equal(formatSchedule(['Sun'], time('12', '0', 'PM'), time('1', '0', 'PM')), 'Sun · 12:00 PM - 1:00 PM');
-      assert.equal(formatSchedule(['Sun'], time('11', '0', 'AM'), time('12', '0', 'PM')), 'Sun · 11:00 AM - 12:00 PM');
+      assert.equal(formatSchedule(['CN'], time('12', '0', 'AM'), time('1', '5', 'AM')), 'CN · 12:00 AM - 1:05 AM');
+      assert.equal(formatSchedule(['CN'], time('12', '0', 'PM'), time('1', '0', 'PM')), 'CN · 12:00 PM - 1:00 PM');
+      assert.equal(formatSchedule(['CN'], time('11', '0', 'AM'), time('12', '0', 'PM')), 'CN · 11:00 AM - 12:00 PM');
+
+      // Lịch đã lưu bằng tên ngày tiếng Anh vẫn đọc được và được đổi sang tiếng Việt
+      assert.deepEqual(parseSchedule('Mon, Sun · 4:00 PM - 6:30 PM').days, ['T2', 'CN']);
 
       // Lịch nhập tay kiểu cũ không đọc được
       assert.equal(parseSchedule('Tối thứ 3, thứ 5'), null);
@@ -67,13 +70,13 @@ test('schedule picker shows the saved schedule and explains an old free-text one
       assert.match(saved, /id="schedule"/);
       assert.match(saved, /value="4"/);
       assert.match(saved, /value="30"/);
-      assert.doesNotMatch(saved, /Previous schedule/);
+      assert.doesNotMatch(saved, /Lịch cũ/);
 
       const legacy = renderToStaticMarkup(
         <SchedulePicker id="schedule" label="Schedule" value="Tối thứ 3, thứ 5" onChange={() => {}} />
       );
       assert.equal((legacy.match(/is-selected/g) || []).length, 0);
-      assert.match(legacy, /Previous schedule: Tối thứ 3, thứ 5/);
+      assert.match(legacy, /Lịch cũ: Tối thứ 3, thứ 5/);
 
       const withError = renderToStaticMarkup(
         <SchedulePicker id="schedule" label="Schedule" value="" error="Pick a day" onChange={() => {}} />
@@ -83,7 +86,7 @@ test('schedule picker shows the saved schedule and explains an old free-text one
       const wrongOrder = renderToStaticMarkup(
         <SchedulePicker id="schedule" label="Schedule" value="" onChange={() => {}} />
       );
-      assert.doesNotMatch(wrongOrder, /End time must be after start time/);
+      assert.doesNotMatch(wrongOrder, /Giờ kết thúc phải sau giờ bắt đầu/);
     ` },
     bundle: true, platform: 'node', format: 'cjs', jsx: 'automatic', write: false,
   });

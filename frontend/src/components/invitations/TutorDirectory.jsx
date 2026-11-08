@@ -14,19 +14,19 @@ const PAGE_SIZE = 10;
 
 function RatingText({ rating }) {
   if (rating === null || rating === undefined) {
-    return <span>No reviews yet</span>;
+    return <span>Chưa có đánh giá</span>;
   }
   return <span>★ {Number(rating).toFixed(1)}</span>;
 }
 
 function TutorRow({ tutor, onInvite }) {
-  let subjectText = 'No published posts yet';
+  let subjectText = 'Chưa có bài đăng nào';
   if (tutor.subjects.length > 0) {
     subjectText = tutor.subjects.join(', ');
   }
   let priceText = '';
   if (tutor.min_price !== null) {
-    priceText = ` · From ${formatBudget(tutor.min_price)}`;
+    priceText = ` · Từ ${formatBudget(tutor.min_price)}`;
   }
 
   return (
@@ -34,15 +34,15 @@ function TutorRow({ tutor, onInvite }) {
       <span className="tutor-row-avatar" aria-hidden="true">{getInitials(tutor.full_name)}</span>
       <div className="item-row-body">
         <div className="item-row-heading">
-          <Link to={`/tutors/${tutor.profile_id}`} className="item-title">{tutor.full_name}</Link>
+          <p className="item-title">{tutor.full_name}</p>
           <span className="item-meta"><RatingText rating={tutor.average_rating} /></span>
         </div>
         {tutor.headline && <p className="item-meta">{tutor.headline}</p>}
         <p className="item-meta">{subjectText}{priceText}</p>
       </div>
       <div className="item-actions">
-        <Link to={`/tutors/${tutor.profile_id}`} className="btn btn-outline btn-sm">View details</Link>
-        <button type="button" className="btn btn-primary btn-sm" onClick={() => onInvite(tutor)}>Invite</button>
+        <Link to={`/tutors/${tutor.profile_id}`} className="btn btn-outline btn-sm">Xem chi tiết</Link>
+        <button type="button" className="btn btn-primary btn-sm" onClick={() => onInvite(tutor)}>Mời</button>
       </div>
     </li>
   );
@@ -69,26 +69,26 @@ export default function TutorDirectory() {
   };
 
   const handleInvited = (result) => {
-    setNotice(`Invitation sent to ${invitingTutor.full_name}. You have ${result.remaining_credits} credit(s) left.`);
+    setNotice(`Đã gửi lời mời tới ${invitingTutor.full_name}. Bạn còn ${result.remaining_credits} credit.`);
     setInvitingTutor(null);
   };
 
   return (
     <div className="page-stack">
       <div className="page-toolbar">
-        <p className="item-meta">Active tutors on TuConnector. Open a profile to see more, or invite a tutor to one of your requests (1 credit).</p>
+        <p className="item-meta">Các gia sư đang hoạt động trên TuConnector. Xem chi tiết để biết thêm, hoặc mời gia sư vào một yêu cầu của bạn (tốn credit).</p>
         <form className="tutor-search" role="search" onSubmit={handleSearch}>
           <input
             type="search"
             value={searchText}
             onChange={(event) => setSearchText(event.target.value)}
-            placeholder="Search by name"
-            aria-label="Search tutors by name"
+            placeholder="Tìm theo tên"
+            aria-label="Tìm gia sư theo tên"
             maxLength={100}
           />
           <button type="submit" className="btn btn-outline btn-sm">
             <Search size={14} aria-hidden="true" />
-            <span>Search</span>
+            <span>Tìm</span>
           </button>
         </form>
       </div>
@@ -97,7 +97,7 @@ export default function TutorDirectory() {
 
       <ListState
         list={list}
-        empty={{ icon: Users, title: 'No tutors found', description: 'Try a different name.' }}
+        empty={{ icon: Users, title: 'Không tìm thấy gia sư', description: 'Hãy thử một tên khác.' }}
       >
         {list.data && (
           <ul className="item-list">

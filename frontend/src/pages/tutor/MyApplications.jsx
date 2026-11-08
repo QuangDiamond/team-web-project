@@ -27,13 +27,13 @@ export default function MyApplications() {
 
   return (
     <div className="page-stack">
-      <p className="item-meta">Applications you sent. Each application costs 1 credit, which is not refunded.</p>
+      <p className="item-meta">Các đơn ứng tuyển bạn đã gửi. Mỗi đơn dùng ít nhất 1 credit và không được hoàn lại.</p>
 
       {actionError && <Alert type="error">{actionError}</Alert>}
 
       <ListState
         list={list}
-        empty={{ icon: Send, title: 'No applications yet', description: 'Browse open requests and apply to the ones that fit you.' }}
+        empty={{ icon: Send, title: 'Chưa có đơn ứng tuyển', description: 'Hãy xem các yêu cầu đang mở và ứng tuyển yêu cầu phù hợp với bạn.' }}
       >
         {list.data && <ApplicationList applications={list.data.items} onWithdraw={handleWithdraw} />}
       </ListState>

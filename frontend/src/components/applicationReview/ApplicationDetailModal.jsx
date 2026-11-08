@@ -8,7 +8,7 @@ import { formatDate } from '../../utils/dateFormat';
 import { getInitials } from '../../utils/getInitials';
 
 /*
- * Chi tiết một đơn ứng tuyển (phụ huynh): gia sư, độ phù hợp, lời nhắn đầy đủ, request được ứng tuyển.
+ * Chi tiết một đơn ứng tuyển (phụ huynh): gia sư, lời nhắn đầy đủ, request được ứng tuyển.
  * onContinue / onSkip(application) trả về Promise; chỉ hiện nút khi đơn đang PENDING.
  */
 export default function ApplicationDetailModal({ application, request, onClose, onContinue, onSkip }) {
@@ -16,8 +16,8 @@ export default function ApplicationDetailModal({ application, request, onClose, 
   const badge = getStatusBadge(APPLICATION_STATUS, application.status);
   const tutor = application.tutor;
 
-  let tutorName = 'Tutor';
-  let avatarText = 'T';
+  let tutorName = 'Gia sư';
+  let avatarText = 'GS';
   if (tutor) {
     tutorName = tutor.full_name;
     avatarText = getInitials(tutor.full_name);
@@ -32,7 +32,7 @@ export default function ApplicationDetailModal({ application, request, onClose, 
 
   const isBusy = busyAction !== '';
 
-  let ratingText = 'No reviews yet';
+  let ratingText = 'Chưa có đánh giá';
   if (tutor && tutor.average_rating !== null && tutor.average_rating !== undefined) {
     ratingText = `★ ${Number(tutor.average_rating).toFixed(1)}`;
   }
@@ -43,7 +43,7 @@ export default function ApplicationDetailModal({ application, request, onClose, 
   }
 
   return (
-    <Modal title="Application details" onClose={onClose}>
+    <Modal title="Chi tiết đơn ứng tuyển" onClose={onClose}>
       <div className="review-detail">
         <div className="review-card-top">
           <span className="review-card-avatar" aria-hidden="true">{avatarText}</span>
@@ -60,12 +60,12 @@ export default function ApplicationDetailModal({ application, request, onClose, 
 
         <dl className="review-detail-facts">
           <div>
-            <dt>Applied</dt>
+            <dt>Ngày ứng tuyển</dt>
             <dd>{formatDate(application.created_at)}</dd>
           </div>
           {request && (
             <div>
-              <dt>For request</dt>
+              <dt>Yêu cầu</dt>
               <dd>
                 {request.title} · {request.subject_name}
                 {requestBadge && <span className={`status-badge tone-${requestBadge.tone}`}>{requestBadge.label}</span>}
@@ -74,22 +74,22 @@ export default function ApplicationDetailModal({ application, request, onClose, 
           )}
         </dl>
 
-        <h3 className="review-detail-heading">Message from the tutor</h3>
+        <h3 className="review-detail-heading">Lời nhắn từ gia sư</h3>
         {application.note ? (
           <p className="review-detail-note">{application.note}</p>
         ) : (
-          <p className="review-card-note is-empty">The tutor did not leave a note.</p>
+          <p className="review-card-note is-empty">Gia sư không để lại lời nhắn.</p>
         )}
 
         {tutor && (
           <p className="review-detail-link">
-            <Link to={`/tutors/${tutor.profile_id}`} className="link">View full tutor profile</Link>
+            <Link to={`/tutors/${tutor.profile_id}`} className="link">Xem hồ sơ đầy đủ của gia sư</Link>
           </p>
         )}
 
         {application.status === 'CONTINUED' && (
           <div className="review-card-chat">
-            <span>Conversation opened.</span>
+            <span>Đã mở hội thoại.</span>
             {application.conversation_id && <OpenChatLink to={`/parent/messages/${application.conversation_id}`} />}
           </div>
         )}
@@ -97,10 +97,10 @@ export default function ApplicationDetailModal({ application, request, onClose, 
         {application.status === 'PENDING' && (
           <div className="modal-actions">
             <button type="button" className="btn btn-outline btn-sm" disabled={isBusy} onClick={() => runAction('skip', onSkip)}>
-              {busyAction === 'skip' ? 'Skipping...' : 'Skip'}
+              {busyAction === 'skip' ? 'Đang bỏ qua...' : 'Bỏ qua'}
             </button>
             <button type="button" className="btn btn-primary btn-sm" disabled={isBusy} onClick={() => runAction('continue', onContinue)}>
-              {busyAction === 'continue' ? 'Opening...' : 'Continue'}
+              {busyAction === 'continue' ? 'Đang mở...' : 'Trao đổi'}
             </button>
           </div>
         )}
