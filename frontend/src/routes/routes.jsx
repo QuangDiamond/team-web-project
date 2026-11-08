@@ -16,6 +16,8 @@ import CreditsTransactions from '../pages/credits/CreditsTransactions';
 import UserManagement from '../pages/admin/UserManagement';
 import UserDetail from '../pages/admin/UserDetail';
 import Profile from '../pages/Profile';
+import PublicProfile from '../pages/PublicProfile';
+import { getPublicProfileReturn } from '../utils/publicProfileReturn';
 import NotFound from '../pages/NotFound';
 import PlansPricing from '../pages/admin/PlansPricing';
 import RoleRoute from './RoleRoute';
@@ -48,6 +50,8 @@ import { ADMIN_MENU, PARENT_MENU, STUDENT_MENU, TUTOR_MENU } from '../constants/
 function WorkspaceRedirect() {
   const { user } = useAuth();
   const location = useLocation();
+  const profileReturn = getPublicProfileReturn();
+  if (location.pathname === '/dashboard' && profileReturn) return <Navigate to={profileReturn} replace />;
   const prefixes = { STUDENT: '/student', PARENT: '/parent', TUTOR: '/tutor', ADMIN: '/admin' };
   const prefix = prefixes[user.role];
   if (!prefix) return <Navigate to="/" replace />;
@@ -61,6 +65,10 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: 'profile', element: <Profile /> },
+      { path: 'tutors/:profileId', element: <PublicProfile role="TUTOR" /> },
+      { element: <PrivateRoute />, children: [
+        { path: 'parents/:userId', element: <PublicProfile role="PARENT" /> },
+      ] },
       // Trang thanh toán cũ (placeholder) nay là Checkout (UC17)
       { path: 'payment', element: <Navigate to="/checkout" replace /> },
     ],

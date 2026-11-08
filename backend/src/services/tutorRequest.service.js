@@ -29,6 +29,7 @@ const { ParentRequestsStatus } = ENUMS;
 export const toTutorRequestDto = (request, { applicationCount, isBookmarked, hasApplied, matchScore = null }) => {
   return {
     _id: String(request._id),
+    parent_user_id: request.parent_user_id ? String(request.parent_user_id) : null,
     available: true,
     title: request.title,
     subject_name: request.subject_name,
