@@ -194,6 +194,18 @@ export const createClassroom = async ({ tutorProfile, user, data, origin = '' })
 };
 
 /**
+ * Đếm số lượng học viên (STUDENT) đang hoạt động trong lớp (SDS UC22 - Query 03)
+ * Loại trừ phụ huynh (PARENT) và gia sư để kiểm soát đúng sĩ số học viên (capacity)
+ */
+export const countActiveStudentsInClass = async (classroomId) => {
+  const activeMembers = await ClassMember.find({
+    class_id: classroomId,
+    status: ENUMS.ClassMembersStatus.ACTIVE,
+  }).populate('user_id', 'role');
+  return activeMembers.filter((m) => m.user_id?.role === 'STUDENT').length;
+};
+
+/**
  * Lấy danh sách lớp học của người dùng hiện tại (Hỗ trợ cả Gia sư chủ lớp, Học viên và Phụ huynh)
  */
 export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
@@ -280,10 +292,11 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
   // Đếm số thành viên và lấy conversation tương ứng cho từng lớp
   const populated = await Promise.all(
     classrooms.map(async (cls) => {
-      const memberCount = await ClassMember.countDocuments({
+      const activeMembers = await ClassMember.find({
         class_id: cls._id,
         status: 'ACTIVE',
-      });
+      }).populate('user_id', 'role');
+      const studentCount = activeMembers.filter((m) => m.user_id?.role === 'STUDENT').length;
       const conversation = await Conversation.findOne({ class_id: cls._id }).select('_id is_active').lean();
 
       const tutorUserObj = cls.tutor_profile_id?.user_id;
@@ -305,7 +318,8 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
 
       return {
         ...cls,
-        member_count: memberCount,
+        member_count: activeMembers.length,
+        student_count: studentCount,
         conversation_id: conversation?._id || null,
         is_owner: isOwner,
       };
@@ -397,15 +411,20 @@ export const getClassroomDetail = async ({ classroomId, tutorProfile, user }) =>
     }
   }
 
-  const memberCount = await ClassMember.countDocuments({
+  const activeMembers = await ClassMember.find({
     class_id: classroom._id,
     status: 'ACTIVE',
-  });
+  }).populate('user_id', 'role');
+  const studentCount = activeMembers.filter((m) => m.user_id?.role === 'STUDENT').length;
+  const parentCount = activeMembers.filter((m) => m.user_id?.role === 'PARENT').length;
   const conversation = await Conversation.findOne({ class_id: classroom._id }).lean();
 
   return {
     ...classroom,
-    member_count: memberCount,
+    member_count: activeMembers.length,
+    student_count: studentCount,
+    parent_count: parentCount,
+    is_full: studentCount >= (classroom.capacity || 20),
     conversation,
     is_owner: isOwner,
     current_user_id: user?._id,
@@ -466,14 +485,11 @@ export const updateClassroom = async ({ classroomId, tutorProfile, data }) => {
       throw new AppError('Sĩ số tối đa phải từ 1 đến 200 học sinh', 400);
     }
 
-    const currentMemberCount = await ClassMember.countDocuments({
-      class_id: classroom._id,
-      status: ENUMS.ClassMembersStatus.ACTIVE,
-    });
+    const activeStudentCount = await countActiveStudentsInClass(classroom._id);
 
-    if (newCap < currentMemberCount) {
+    if (newCap < activeStudentCount) {
       throw new AppError(
-        `Sĩ số tối đa không thể nhỏ hơn số học viên hiện tại trong lớp (${currentMemberCount} học viên)`,
+        `Sĩ số tối đa không thể nhỏ hơn số học viên hiện tại trong lớp (${activeStudentCount} học viên)`,
         400
       );
     }
@@ -846,14 +862,12 @@ export const addMemberToClass = async ({ classroomId, tutorProfile, data }) => {
     throw new AppError('Bạn là gia sư phụ trách lớp này, không thể thêm chính mình làm thành viên học sinh', 400);
   }
 
-  // Kiểm tra sức chứa hiện tại
-  const currentCount = await ClassMember.countDocuments({
-    class_id: classroom._id,
-    status: ENUMS.ClassMembersStatus.ACTIVE,
-  });
-
-  if (currentCount >= classroom.capacity) {
-    throw new AppError(`Lớp học đã đạt sĩ số tối đa (${classroom.capacity} học viên)`, 400);
+  // Kiểm tra sức chứa hiện tại (SDS UC22: chỉ kiểm tra sức chứa học sinh khi thêm STUDENT)
+  if (targetUser.role === 'STUDENT') {
+    const activeStudentCount = await countActiveStudentsInClass(classroom._id);
+    if (activeStudentCount >= classroom.capacity) {
+      throw new AppError(`Lớp học đã đạt sĩ số tối đa (${classroom.capacity} học sinh)`, 400);
+    }
   }
 
   // Kiểm tra thành viên đã có trong lớp chưa
@@ -1049,14 +1063,13 @@ export const joinClassroomByCode = async ({ joinCode, user, child_user_id }) => 
     throw new AppError('Bạn là gia sư phụ trách lớp học này, không thể tham gia với vai trò học sinh/phụ huynh', 400);
   }
 
-  // Kiểm tra sức chứa
-  const memberCount = await ClassMember.countDocuments({
-    class_id: classroom._id,
-    status: ENUMS.ClassMembersStatus.ACTIVE,
-  });
-
-  if (memberCount >= classroom.capacity) {
-    throw new AppError('Lớp học đã đạt sĩ số tối đa, không thể tham gia lúc này', 400);
+  // Kiểm tra sức chứa (SDS UC22 E2: chỉ áp dụng giới hạn sĩ số với học sinh; phụ huynh theo dõi không chiếm slot)
+  let activeStudentCount = 0;
+  if (user.role === 'STUDENT') {
+    activeStudentCount = await countActiveStudentsInClass(classroom._id);
+    if (activeStudentCount >= classroom.capacity) {
+      throw new AppError(`Lớp học đã đạt sĩ số tối đa (${classroom.capacity} học sinh), không thể nhận thêm học viên lúc này`, 400);
+    }
   }
 
   // Kiểm tra trạng thái tham gia
@@ -1147,11 +1160,14 @@ export const joinClassroomByCode = async ({ joinCode, user, child_user_id }) => 
       _id: classroom.tutor_profile_id?.user_id || classroom.tutor_profile_id,
     });
     if (tutorUser) {
+      const isParent = user.role === 'PARENT';
       await Notification.create({
         recipient_user_id: tutorUser._id,
         category: ENUMS.NotificationsCategory.SYSTEM,
-        title: `Học viên mới tham gia: ${classroom.name}`,
-        body: `${user.full_name || 'Một học viên'} đã tham gia lớp học qua mã ${code}. Sĩ số hiện tại: ${memberCount + 1}/${classroom.capacity}`,
+        title: isParent ? `Phụ huynh mới theo dõi lớp: ${classroom.name}` : `Học viên mới tham gia: ${classroom.name}`,
+        body: isParent
+          ? `Phụ huynh ${user.full_name || 'Một phụ huynh'} đã tham gia theo dõi lớp học qua mã ${code}.`
+          : `${user.full_name || 'Một học viên'} đã tham gia lớp học qua mã ${code}. Sĩ số học sinh: ${activeStudentCount + 1}/${classroom.capacity}`,
         target_type: ENUMS.NotificationsTargetType.CLASSROOM,
         target_id: classroom._id,
         is_read: false,
