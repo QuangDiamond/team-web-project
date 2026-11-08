@@ -15,6 +15,7 @@ import { ParentChildLink } from '../models/ParentChildLink.js';
 import { Message } from '../models/Message.js';
 import { AppError } from '../common/utils/AppError.js';
 import { ENUMS } from '../models/enums.js';
+import { env } from '../config/environment.js';
 
 /**
  * Sinh mã tham gia lớp học độc nhất (6 ký tự: TC + 4 ký tự hex in hoa)
