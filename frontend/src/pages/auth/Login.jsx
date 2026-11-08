@@ -1,77 +1,167 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { getGoogleLoginUrl } from '../../services/authService';
+import AuthLayout from '../../components/layout/AuthLayout';
+import FormInput from '../../components/common/FormInput';
+import PasswordInput from '../../components/common/PasswordInput';
+import GoogleButton from '../../components/common/GoogleButton';
+import Alert from '../../components/common/Alert';
+import ResendVerificationButton from '../../components/common/ResendVerificationButton';
+import { validateEmail, focusFirstInvalidField, toFieldErrors } from '../../utils/authValidators';
+import '../../styles/login.css';
+
+const LOGIN_FIELDS = ['email', 'password'];
+
+// Thông báo theo query backend gắn khi redirect về /login
+const getRedirectNotice = (searchParams) => {
+  if (searchParams.get('verify') === 'success') {
+    return { type: 'success', message: 'Your account has been verified. Please sign in.' };
+  }
+  if (searchParams.get('verify') === 'invalid') {
+    return { type: 'error', message: 'This verification link is invalid or has expired.', canResend: true };
+  }
+  if (searchParams.get('oauth') === 'failed') {
+    return { type: 'error', message: 'Google sign-in failed. Please try again.' };
+  }
+  return null;
+};
 
 export default function Login() {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
-  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const [values, setValues] = useState({ email: '', password: '' });
+  const [errors, setErrors] = useState({});
+  const [formError, setFormError] = useState('');
+  const [notVerified, setNotVerified] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  // Thông báo từ URL chỉ hiện cho đến khi user submit lần đầu
+  const [redirectNotice, setRedirectNotice] = useState(() => getRedirectNotice(searchParams));
+
+  const handleChange = (event) => {
+    const field = event.target.name;
+    setValues({ ...values, [field]: event.target.value });
+    if (errors[field]) {
+      setErrors({ ...errors, [field]: '' });
+    }
   };
 
   const handleFillAccount = (email) => {
-    setFormData({ email, password: 'password123' });
-    setError('');
+    setValues({ email, password: 'password123' });
+    setErrors({});
+    setFormError('');
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    const result = await login(formData);
-    if (result.success) {
-      navigate('/classes');
-    } else {
-      setError(result.error || 'Login failed');
+  const validate = () => {
+    const newErrors = { email: validateEmail(values.email), password: '' };
+    if (values.password.length === 0) {
+      newErrors.password = 'Password is required';
     }
-    setLoading(false);
+    return newErrors;
   };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setFormError('');
+    setNotVerified(false);
+    setRedirectNotice(null);
+
+    const newErrors = validate();
+    setErrors(newErrors);
+    if (newErrors.email || newErrors.password) {
+      focusFirstInvalidField(LOGIN_FIELDS, newErrors);
+      return;
+    }
+
+    setSubmitting(true);
+    const result = await login({ email: values.email.trim(), password: values.password });
+    setSubmitting(false);
+
+    // login() đã lưu user vào AuthContext, GuestRoute sẽ tự chuyển tới trang theo role
+    if (result.success) {
+      return;
+    }
+
+    const error = result.error;
+    if (error?.status === 403) {
+      setNotVerified(true);
+      return;
+    }
+    if (error?.status === 422 && error?.errors) {
+      setErrors(toFieldErrors(error.errors));
+      return;
+    }
+    setFormError(error?.message || 'Login failed');
+  };
+
+  let alert = null;
+  if (notVerified) {
+    alert = (
+      <Alert type="error">
+        Your account is not verified yet. Please check your email or resend the verification email below.
+      </Alert>
+    );
+  } else if (formError) {
+    alert = <Alert type="error">{formError}</Alert>;
+  } else if (redirectNotice) {
+    alert = <Alert type={redirectNotice.type}>{redirectNotice.message}</Alert>;
+  }
+
+  const showResend = notVerified || (redirectNotice !== null && redirectNotice.canResend === true);
 
   return (
-    <div className="page auth-page">
-      <div className="auth-card">
-        <h2>Đăng nhập / Login</h2>
-        {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="nhập email tài khoản"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              disabled={loading}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Mật khẩu (Password)</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Tối thiểu 8 ký tự (hoặc 12345678)"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              minLength={8}
-              disabled={loading}
-            />
-          </div>
-          <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={loading}>
-            {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-          </button>
-        </form>
+    <AuthLayout>
+      <form onSubmit={handleSubmit} noValidate className="login-form">
+        <h1 className="auth-title">Welcome back <span aria-hidden="true">👋</span></h1>
+        <p className="auth-subtitle">Sign in to continue to TuConnector.</p>
+
+        {alert}
+
+        <GoogleButton href={getGoogleLoginUrl()} />
+
+        <p className="auth-divider"><span>or sign in with email</span></p>
+
+        <FormInput
+          id="email"
+          label="Email"
+          type="email"
+          value={values.email}
+          onChange={handleChange}
+          error={errors.email}
+          placeholder="you@example.com"
+          autoComplete="email"
+          disabled={submitting}
+        />
+        <PasswordInput
+          id="password"
+          label="Password"
+          value={values.password}
+          onChange={handleChange}
+          error={errors.password}
+          placeholder="Enter your password"
+          autoComplete="current-password"
+          disabled={submitting}
+        />
+
+        <div className="login-options">
+          {/* TODO: đổi "#" thành trang Forgot password khi có */}
+          <a href="#" className="link">Forgot password?</a>
+        </div>
+
+        <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
+          {submitting ? 'Signing in...' : 'Sign in'}
+        </button>
+
+        {showResend && <ResendVerificationButton email={values.email} />}
+
+        <p className="auth-footer-text">
+          Don't have an account? <Link to="/register" className="link">Sign up</Link>
+        </p>
 
         {/* Nút điền nhanh tài khoản test phục vụ kiểm thử */}
-        <div style={{ marginTop: '20px', padding: '12px', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0', textAlign: 'left' }}>
+        <div style={{ marginTop: '16px', padding: '12px', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0', textAlign: 'left' }}>
           <div style={{ fontSize: '12px', fontWeight: 700, color: '#475569', marginBottom: '8px' }}>
             ⚡ Tài khoản kiểm thử nhanh (Bấm để điền):
           </div>
@@ -142,14 +232,10 @@ export default function Login() {
             </button>
           </div>
           <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '6px' }}>
-            * Mật khẩu kiểm thử: <code>12345678</code> hoặc <code>password123</code> (tự động chấp nhận)
+            * Mật khẩu kiểm thử: <code>12345678</code> hoặc <code>password123</code>
           </div>
         </div>
-
-        <p className="auth-footer" style={{ marginTop: '16px' }}>
-          Chưa có tài khoản? <Link to="/register">Đăng ký ngay</Link>
-        </p>
-      </div>
-    </div>
+      </form>
+    </AuthLayout>
   );
 }

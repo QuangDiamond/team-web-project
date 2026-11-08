@@ -1,0 +1,247 @@
+/* Màn Student Dashboard: /student/dashboard (UC36) */
+
+.student-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ---------- Banner chào mừng (Figma: gradient cam) ---------- */
+.student-welcome-banner {
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(90deg, var(--color-primary-strong), #e0663c);
+  color: var(--color-white);
+}
+
+.student-welcome-eyebrow {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.student-welcome-name {
+  margin: 0 0 4px;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.student-welcome-summary {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* ---------- Hàng số liệu ---------- */
+.student-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* ---------- Lưới 2 cột các khối ---------- */
+.student-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.student-dashboard-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.student-section-count {
+  color: var(--color-primary-strong);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.student-section-loading {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+  color: var(--color-primary-strong);
+}
+
+.student-section-error-text {
+  margin: 0 0 8px;
+}
+
+/* ---------- Dòng trong danh sách (Figma: nền xám nhạt, bo góc) ---------- */
+.student-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.student-list-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.student-list-row.is-top-aligned {
+  align-items: flex-start;
+}
+
+.student-list-row.is-overdue {
+  border-color: var(--color-error-soft);
+  background: var(--color-white);
+}
+
+.student-row-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+}
+
+.student-row-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.student-row-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.student-row-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.student-row-meta {
+  margin: 2px 0 0;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.student-row-note {
+  margin: 4px 0 0;
+  color: var(--color-warning);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.student-row-note.is-closed {
+  color: var(--color-error);
+}
+
+/* ---------- Điểm và nhận xét (Figma: Quiz History) ---------- */
+.student-score-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 48px;
+  height: 48px;
+  padding: 0 6px;
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.student-score-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.student-score-bar {
+  flex: 1;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-border);
+}
+
+.student-score-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+}
+
+.student-score-bar-fill.tone-success {
+  background: var(--color-success);
+}
+
+.student-score-bar-fill.tone-warning {
+  background: #d97706;
+}
+
+.student-score-bar-fill.tone-error {
+  background: var(--color-error);
+}
+
+.student-score-percent {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.student-feedback {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.student-feedback.is-empty {
+  color: var(--color-text-muted);
+}
+
+.student-feedback-label {
+  font-weight: 700;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  .student-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .student-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .student-welcome-banner {
+    padding: 20px;
+  }
+
+  .student-welcome-name {
+    font-size: 20px;
+  }
+}
