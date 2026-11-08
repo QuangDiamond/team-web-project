@@ -1,3 +1,50 @@
+import { useState, useRef } from 'react';
+import {
+  MessageSquare,
+  Users,
+  UserPlus,
+  Paperclip,
+  Send,
+  FileText,
+  Image as ImageIcon,
+  File,
+  Download,
+  X,
+} from 'lucide-react';
+
+const ALLOWED_EXTENSIONS = [
+  'pdf',
+  'doc',
+  'docx',
+  'ppt',
+  'pptx',
+  'xls',
+  'xlsx',
+  'jpg',
+  'jpeg',
+  'png',
+  'mp4',
+  'zip',
+];
+const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+
+const formatFileSize = (bytes) => {
+  if (!bytes || bytes <= 0) return '0 B';
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`;
+  }
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
+
+const readFileAsBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
+};
+
 export default function ClassroomChatTab({
   classroom,
   chatMessages,
@@ -13,15 +60,99 @@ export default function ClassroomChatTab({
   chatBottomRef,
   isOwner,
 }) {
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const fileInputRef = useRef(null);
+
+  const backendHost = (
+    import.meta.env.VITE_API_BASE_URL || 'http://localhost:9999/api'
+  ).replace(/\/api\/?$/, '');
+
+  const getAttachmentUrl = (url) => {
+    if (!url) return '#';
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+      return url;
+    }
+    return `${backendHost}${url.startsWith('/') ? '' : '/'}${url}`;
+  };
+
+  const isImageAttachment = (att) => {
+    if (att.mime_type?.startsWith('image/')) return true;
+    return /\.(jpg|jpeg|png)$/i.test(att.file_name || '');
+  };
+
+  const handleFileChange = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    const validFiles = [];
+    for (const file of files) {
+      const ext = file.name.split('.').pop()?.toLowerCase();
+      if (!ALLOWED_EXTENSIONS.includes(ext)) {
+        alert(
+          `Tệp "${file.name}" không hợp lệ. Chỉ chấp nhận các định dạng: pdf, doc/docx, ppt/pptx, xls/xlsx, jpg, png, mp4, zip.`
+        );
+        continue;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        alert(`Tệp "${file.name}" vượt quá dung lượng tối đa cho phép là 20MB.`);
+        continue;
+      }
+      try {
+        const base64 = await readFileAsBase64(file);
+        validFiles.push({
+          file_name: file.name,
+          file_size: file.size,
+          mime_type: file.type || `application/${ext}`,
+          file_data: base64,
+        });
+      } catch {
+        alert(`Không thể đọc tệp "${file.name}". Vui lòng thử lại.`);
+      }
+    }
+
+    if (validFiles.length > 0) {
+      setSelectedFiles((prev) => [...prev, ...validFiles]);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleRemoveSelectedFile = (index) => {
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!chatInput.trim() && selectedFiles.length === 0) return;
+
+    const filesToSend = [...selectedFiles];
+    const success = await onSendChat(e, filesToSend);
+    if (success !== false) {
+      setSelectedFiles([]);
+    }
+  };
+
   return (
     <div>
       <div className="members-toolbar" style={{ marginBottom: '16px' }}>
         <div>
-          <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', color: '#0f172a' }}>
-            💬 Phòng chat nhóm lớp học
+          <h3
+            style={{
+              margin: '0 0 4px 0',
+              fontSize: '18px',
+              color: '#0f172a',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+          >
+            <MessageSquare size={20} style={{ color: '#e85a2c' }} />
+            Phòng chat nhóm lớp học
           </h3>
           <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>
-            Kênh trao đổi học tập trực tiếp giữa Gia sư và toàn thể học sinh, phụ huynh lớp <strong>{classroom.name}</strong>.
+            Kênh trao đổi học tập trực tiếp giữa Gia sư và toàn thể học sinh, phụ huynh lớp{' '}
+            <strong>{classroom.name}</strong>.
           </p>
         </div>
 
@@ -29,21 +160,35 @@ export default function ClassroomChatTab({
           <button
             type="button"
             className="btn-outline-gray"
-            style={{ fontSize: '13px', padding: '7px 12px' }}
+            style={{
+              fontSize: '13px',
+              padding: '7px 12px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
             onClick={() => setShowChatMembers(!showChatMembers)}
           >
-            👥 {showChatMembers ? 'Ẩn thành viên' : `Thành viên (${chatGroupMembers.length})`}
+            <Users size={14} />
+            {showChatMembers ? 'Ẩn thành viên' : `Thành viên (${chatGroupMembers.length})`}
           </button>
 
           {isOwner && (
             <button
               type="button"
               className="btn-primary-orange"
-              style={{ fontSize: '13px', padding: '7px 12px' }}
+              style={{
+                fontSize: '13px',
+                padding: '7px 12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
               onClick={onOpenAddMember}
               title="Thêm thành viên vào lớp và nhóm chat"
             >
-              <span>➕</span> Thêm vào nhóm
+              <UserPlus size={14} />
+              Thêm vào nhóm
             </button>
           )}
         </div>
@@ -53,8 +198,19 @@ export default function ClassroomChatTab({
         <div style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
           <div className="chat-messages-area" style={{ flex: 1 }}>
             {chatMessages.length === 0 ? (
-              <div style={{ textAlign: 'center', margin: 'auto', color: '#94a3b8' }}>
-                👋 Chưa có tin nhắn nào trong nhóm chat lớp. Hãy gửi lời chào đầu tiên!
+              <div
+                style={{
+                  textAlign: 'center',
+                  margin: 'auto',
+                  color: '#94a3b8',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                <MessageSquare size={32} style={{ color: '#cbd5e1' }} />
+                <span>Chưa có tin nhắn nào trong nhóm chat lớp. Hãy gửi tin nhắn hoặc tài liệu đầu tiên!</span>
               </div>
             ) : (
               chatMessages.map((msg) => {
@@ -63,17 +219,73 @@ export default function ClassroomChatTab({
                 const senderName = isMine ? 'Bạn' : msg.sender_user_id?.full_name || 'Thành viên';
                 const roleBadge =
                   msg.sender_user_id?.role === 'TUTOR'
-                    ? '👨‍🏫 Gia sư'
+                    ? 'Gia sư'
                     : msg.sender_user_id?.role === 'PARENT'
-                    ? '👨‍👩‍👧 Phụ huynh'
-                    : '🎒 Học sinh';
+                    ? 'Phụ huynh'
+                    : 'Học sinh';
 
                 return (
                   <div key={msg._id} className={`chat-bubble ${isMine ? 'mine' : 'theirs'}`}>
                     <div className="chat-bubble-author">
-                      {senderName} {!isMine && <span style={{ fontWeight: 400, opacity: 0.85 }}>({roleBadge})</span>}
+                      {senderName}{' '}
+                      {!isMine && <span style={{ fontWeight: 400, opacity: 0.85 }}>({roleBadge})</span>}
                     </div>
-                    <div>{msg.content}</div>
+
+                    {msg.content && <div style={{ wordBreak: 'break-word' }}>{msg.content}</div>}
+
+                    {/* Hiển thị các tệp đính kèm trong tin nhắn */}
+                    {msg.attachments && msg.attachments.length > 0 && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '6px' }}>
+                        {msg.attachments.map((att, attIdx) => {
+                          const fileUrl = getAttachmentUrl(att.file_url);
+                          const isImg = isImageAttachment(att);
+
+                          if (isImg) {
+                            return (
+                              <div key={attIdx} className="chat-attachment-image-wrap">
+                                <a href={fileUrl} target="_blank" rel="noopener noreferrer">
+                                  <img
+                                    src={fileUrl}
+                                    alt={att.file_name || 'Ảnh đính kèm'}
+                                    style={{
+                                      display: 'block',
+                                      maxWidth: '260px',
+                                      maxHeight: '200px',
+                                      borderRadius: '6px',
+                                      objectFit: 'cover',
+                                    }}
+                                  />
+                                </a>
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <a
+                              key={attIdx}
+                              href={fileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              download={att.file_name}
+                              className="chat-attachment-file-card"
+                              title="Tải về tệp đính kèm"
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
+                                <FileText size={16} />
+                                <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                  <div style={{ fontWeight: 600 }}>{att.file_name}</div>
+                                  <div style={{ fontSize: '11px', opacity: 0.8 }}>
+                                    {formatFileSize(att.file_size)}
+                                  </div>
+                                </div>
+                              </div>
+                              <Download size={14} style={{ flexShrink: 0 }} />
+                            </a>
+                          );
+                        })}
+                      </div>
+                    )}
+
                     <div
                       style={{
                         fontSize: '10px',
@@ -116,7 +328,9 @@ export default function ClassroomChatTab({
                 <h4 style={{ margin: 0, fontSize: '14px', color: '#334155' }}>
                   Thành viên ({chatGroupMembers.length})
                 </h4>
-                <span style={{ fontSize: '11px', color: '#16a34a', fontWeight: 600 }}>● Đang hoạt động</span>
+                <span style={{ fontSize: '11px', color: '#16a34a', fontWeight: 600 }}>
+                  ● Đang hoạt động
+                </span>
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -147,7 +361,11 @@ export default function ClassroomChatTab({
                         {m.user?.full_name || m.user?.email || 'Người dùng'}
                       </div>
                       <div style={{ fontSize: '11px', color: '#64748b' }}>
-                        {m.is_owner ? '👨‍🏫 Gia sư chủ nhóm' : m.role === 'PARENT' ? '👨‍👩‍👧 Phụ huynh' : '🎒 Học sinh'}
+                        {m.is_owner
+                          ? 'Gia sư chủ nhóm'
+                          : m.role === 'PARENT'
+                          ? 'Phụ huynh'
+                          : 'Học sinh'}
                       </div>
                     </div>
 
@@ -160,12 +378,13 @@ export default function ClassroomChatTab({
                           background: 'transparent',
                           color: '#ef4444',
                           cursor: 'pointer',
-                          fontSize: '12px',
                           padding: '2px 4px',
+                          display: 'flex',
+                          alignItems: 'center',
                         }}
                         title="Xóa thành viên khỏi nhóm chat"
                       >
-                        ✕
+                        <X size={14} />
                       </button>
                     )}
                   </div>
@@ -175,21 +394,84 @@ export default function ClassroomChatTab({
           )}
         </div>
 
-        <form className="chat-input-bar" onSubmit={onSendChat}>
+        {/* Thanh đính kèm tệp đã chọn trước khi gửi */}
+        {selectedFiles.length > 0 && (
+          <div className="chat-preview-files-bar">
+            {selectedFiles.map((file, idx) => (
+              <div key={idx} className="chat-preview-file-tag">
+                {isImageAttachment(file) ? <ImageIcon size={14} /> : <FileText size={14} />}
+                <span className="chat-preview-file-name">{file.file_name}</span>
+                <span style={{ fontSize: '11px', color: '#64748b' }}>
+                  ({formatFileSize(file.file_size)})
+                </span>
+                <button
+                  type="button"
+                  className="chat-preview-file-remove"
+                  onClick={() => handleRemoveSelectedFile(idx)}
+                  title="Xóa tệp đính kèm này"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Thanh nhập tin nhắn và nút đính kèm tệp */}
+        <form className="chat-input-bar" onSubmit={handleSubmit}>
+          {/* Nút chọn tệp đính kèm */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png,.mp4,.zip"
+            multiple
+            style={{ display: 'none' }}
+          />
+
+          <button
+            type="button"
+            className="btn-outline-gray"
+            style={{
+              padding: '8px 12px',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              color: selectedFiles.length > 0 ? '#e85a2c' : '#64748b',
+              borderColor: selectedFiles.length > 0 ? '#e85a2c' : '#cbd5e1',
+            }}
+            onClick={() => fileInputRef.current?.click()}
+            title="Đính kèm tệp (PDF, Word, Excel, PowerPoint, Ảnh, Video, Zip - tối đa 20MB)"
+          >
+            <Paperclip size={18} />
+          </button>
+
           <input
             type="text"
             className="chat-input-field"
-            placeholder="Nhập tin nhắn gửi đến cả lớp..."
+            placeholder={
+              selectedFiles.length > 0
+                ? 'Nhập lời nhắn kèm tệp (hoặc bấm Gửi ngay)...'
+                : 'Nhập tin nhắn gửi đến cả lớp...'
+            }
             value={chatInput}
             onChange={(e) => setChatInput(e.target.value)}
           />
+
           <button
             type="submit"
             className="btn-primary-orange"
-            style={{ padding: '8px 18px' }}
-            disabled={sendingChat || !chatInput.trim()}
+            style={{
+              padding: '8px 18px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+            disabled={sendingChat || (!chatInput.trim() && selectedFiles.length === 0)}
           >
-            {sendingChat ? 'Đang gửi...' : 'Gửi'}
+            <Send size={15} />
+            <span>{sendingChat ? 'Đang gửi...' : 'Gửi'}</span>
           </button>
         </form>
       </div>

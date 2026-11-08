@@ -277,6 +277,7 @@ export const sendClassChatMessage = asyncHandler(async (req, res) => {
     classroomId: req.params.id,
     user: req.user,
     content: req.body.content,
+    attachments: req.body.attachments,
   });
 
   return responseCommon(res, msg, 'Gửi tin nhắn thành công', 201, responseCode.SUCCESSED);

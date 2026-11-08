@@ -1,4 +1,17 @@
 import { useState, useEffect } from 'react';
+import {
+  Pencil,
+  ClipboardList,
+  AlertTriangle,
+  Lock,
+  Sparkles,
+  Trash2,
+  Save,
+  Send,
+  X,
+  Plus,
+  Loader2,
+} from 'lucide-react';
 import { createAssignment, updateAssignment } from '../../services/classroomService';
 
 export default function CreateAssignmentModal({
@@ -240,7 +253,7 @@ export default function CreateAssignmentModal({
       setAiLoading(false);
       setShowAiPrompt(false);
       if (showToast) {
-        showToast('✨ Trợ lý AI đã tạo đề bài mẫu thành công! (Trừ 1 lượt hạn mức AI)');
+        showToast('Trợ lý AI đã tạo đề bài mẫu thành công! (Trừ 1 lượt hạn mức AI)');
       }
     }, 600);
   };
@@ -297,11 +310,12 @@ export default function CreateAssignmentModal({
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-content" style={{ maxWidth: '720px' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>
-            <span>{isEditing ? '✏️' : '📝'}</span> {isEditing ? 'Chỉnh sửa bài tập' : 'Tạo bài tập mới'}
+          <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {isEditing ? <Pencil size={20} style={{ color: '#e85a2c' }} /> : <ClipboardList size={20} style={{ color: '#e85a2c' }} />}
+            <span>{isEditing ? 'Chỉnh sửa bài tập' : 'Tạo bài tập mới'}</span>
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
-            ×
+            <X size={18} />
           </button>
         </div>
 
@@ -309,14 +323,15 @@ export default function CreateAssignmentModal({
           <div className="modal-body" style={{ maxHeight: '72vh', overflowY: 'auto' }}>
             {error && (
               <div className="error-alert">
-                <span>⚠️</span>
+                <AlertTriangle size={18} style={{ flexShrink: 0 }} />
                 <div>{error}</div>
               </div>
             )}
 
             {isQuestionLocked && (
-              <div style={{ background: '#fef3c7', border: '1px solid #fde68a', color: '#92400e', padding: '10px 14px', borderRadius: '8px', marginBottom: '14px', fontSize: '13px' }}>
-                🔒 <strong>Lưu ý:</strong> Bài tập đã công bố điểm cho học sinh, không thể chỉnh sửa nội dung và danh sách câu hỏi.
+              <div style={{ background: '#fef3c7', border: '1px solid #fde68a', color: '#92400e', padding: '10px 14px', borderRadius: '8px', marginBottom: '14px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Lock size={16} style={{ flexShrink: 0 }} />
+                <span><strong>Lưu ý:</strong> Bài tập đã công bố điểm cho học sinh, không thể chỉnh sửa nội dung và danh sách câu hỏi.</span>
               </div>
             )}
 
@@ -336,8 +351,9 @@ export default function CreateAssignmentModal({
                 }}
               >
                 <div>
-                  <div style={{ fontWeight: 600, color: '#0f766e', fontSize: '14px' }}>
-                    ✨ Trợ lý AI tạo đề bài thông minh
+                  <div style={{ fontWeight: 600, color: '#0f766e', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Sparkles size={16} />
+                    <span>Trợ lý AI tạo đề bài thông minh</span>
                   </div>
                   <div style={{ fontSize: '12px', color: '#64748b' }}>
                     Tự động tạo trắc nghiệm, trả lời ngắn và nộp tệp theo môn học. (Trừ vào hạn mức AI gói gia sư)
@@ -356,9 +372,13 @@ export default function CreateAssignmentModal({
                     fontWeight: 600,
                     cursor: 'pointer',
                     whiteSpace: 'nowrap',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
                   }}
                 >
-                  {showAiPrompt ? 'Đóng AI' : '✨ Tạo bằng AI'}
+                  <Sparkles size={14} />
+                  <span>{showAiPrompt ? 'Đóng AI' : 'Tạo bằng AI'}</span>
                 </button>
               </div>
             )}
@@ -387,11 +407,18 @@ export default function CreateAssignmentModal({
                 <button
                   type="button"
                   className="btn-primary-orange"
-                  style={{ padding: '7px 14px', fontSize: '13px' }}
+                  style={{ padding: '7px 14px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                   onClick={handleGenerateAiQuestions}
                   disabled={aiLoading}
                 >
-                  {aiLoading ? '⏳ Đang sinh đề...' : 'Tạo đề ngay'}
+                  {aiLoading ? (
+                    <>
+                      <Loader2 size={13} className="spin" />
+                      <span>Đang sinh đề...</span>
+                    </>
+                  ) : (
+                    'Tạo đề ngay'
+                  )}
                 </button>
               </div>
             )}
@@ -400,8 +427,22 @@ export default function CreateAssignmentModal({
               <label>
                 Tiêu đề bài tập <span className="required">*</span>
                 {isAiGenerated && (
-                  <span style={{ marginLeft: '8px', fontSize: '11px', background: '#dcfce7', color: '#15803d', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>
-                    ✨ Tạo bởi AI
+                  <span
+                    style={{
+                      marginLeft: '8px',
+                      fontSize: '11px',
+                      background: '#dcfce7',
+                      color: '#15803d',
+                      padding: '2px 8px',
+                      borderRadius: '12px',
+                      fontWeight: 600,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                    }}
+                  >
+                    <Sparkles size={12} />
+                    <span>Tạo bởi AI</span>
                   </span>
                 )}
               </label>
@@ -533,9 +574,9 @@ export default function CreateAssignmentModal({
                         disabled={isQuestionLocked}
                         style={{ padding: '3px 8px', borderRadius: '6px', fontSize: '12px', border: '1px solid #cbd5e1' }}
                       >
-                        <option value="MULTIPLE_CHOICE">🔘 Trắc nghiệm</option>
-                        <option value="SHORT_ANSWER">✍️ Trả lời ngắn</option>
-                        <option value="FILE_UPLOAD">📎 Nộp tệp</option>
+                        <option value="MULTIPLE_CHOICE">Trắc nghiệm</option>
+                        <option value="SHORT_ANSWER">Trả lời ngắn</option>
+                        <option value="FILE_UPLOAD">Nộp tệp</option>
                       </select>
                     </div>
 
@@ -543,9 +584,19 @@ export default function CreateAssignmentModal({
                       <button
                         type="button"
                         onClick={() => handleRemoveQuestion(idx)}
-                        style={{ border: 'none', background: 'transparent', color: '#ef4444', cursor: 'pointer', fontSize: '13px' }}
+                        style={{
+                          border: 'none',
+                          background: 'transparent',
+                          color: '#ef4444',
+                          cursor: 'pointer',
+                          fontSize: '13px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                        }}
                       >
-                        🗑️ Xóa câu
+                        <Trash2 size={13} />
+                        <span>Xóa câu</span>
                       </button>
                     )}
                   </div>
@@ -646,8 +697,10 @@ export default function CreateAssignmentModal({
                 className="btn-outline-gray"
                 onClick={() => handleSubmit('DRAFT')}
                 disabled={submitting}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               >
-                💾 Lưu bản nháp (DRAFT)
+                <Save size={15} />
+                <span>Lưu bản nháp (DRAFT)</span>
               </button>
 
               <button
@@ -655,8 +708,19 @@ export default function CreateAssignmentModal({
                 className="btn-primary-orange"
                 onClick={() => handleSubmit('PUBLISHED')}
                 disabled={submitting}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               >
-                {submitting ? 'Đang lưu...' : '🚀 Xuất bản & Giao bài'}
+                {submitting ? (
+                  <>
+                    <Loader2 size={15} className="spin" />
+                    <span>Đang lưu...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send size={15} />
+                    <span>Xuất bản & Giao bài</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
