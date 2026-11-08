@@ -81,8 +81,8 @@ export default function ClassroomsPage() {
             {isTutor
               ? 'Quản lý các lớp học trực tuyến, tạo lớp mới và chia sẻ mã tham gia cho học viên của bạn.'
               : user?.role === 'PARENT'
-              ? 'Theo dõi danh sách các lớp học con đang theo học, tiến độ làm bài và điểm số từ gia sư.'
-              : 'Theo dõi các lớp học trực tuyến đã tham gia, làm bài tập và trao đổi cùng gia sư.'}
+                ? 'Theo dõi danh sách các lớp học con đang theo học, tiến độ làm bài và điểm số từ gia sư.'
+                : 'Theo dõi các lớp học trực tuyến đã tham gia, làm bài tập và trao đổi cùng gia sư.'}
           </p>
         </div>
 
