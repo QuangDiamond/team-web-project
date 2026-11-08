@@ -366,6 +366,7 @@ export default function ClassroomDetail() {
   const memberCount = classroom.member_count || members.filter((m) => m.status === 'ACTIVE').length || 0;
   const capacity = classroom.capacity || 20;
   const percent = Math.min(Math.round((memberCount / capacity) * 100), 100);
+  const isOwner = Boolean(classroom.is_owner || user?.role === 'TUTOR');
 
   return (
     <div className="classroom-container">
@@ -402,9 +403,13 @@ export default function ClassroomDetail() {
             <span className="badge badge-status">
               {classroom.status === 'ACTIVE' ? 'Đang hoạt động' : 'Đã lưu trữ'}
             </span>
-            {Boolean(classroom.is_owner) ? (
+            {isOwner ? (
               <span className="badge" style={{ background: '#fff7ed', color: '#c2410c', border: '1px solid #fed7aa', fontWeight: 600 }}>
                 👨‍🏫 Bạn là Gia sư phụ trách lớp
+              </span>
+            ) : user?.role === 'PARENT' ? (
+              <span className="badge" style={{ background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 600 }}>
+                👨‍👩‍👧 Bạn là Phụ huynh theo dõi lớp
               </span>
             ) : (
               <span className="badge" style={{ background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', fontWeight: 600 }}>
@@ -437,7 +442,7 @@ export default function ClassroomDetail() {
           </div>
 
           {/* Nút tác vụ quản lý lớp học (UC22) - Chỉ hiển thị cho chủ lớp (Tutor) */}
-          {Boolean(classroom.is_owner) && (
+          {isOwner && (
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '16px' }}>
               <button
                 type="button"
@@ -560,7 +565,7 @@ export default function ClassroomDetail() {
       {activeTab === 'announcements' && (
         <div>
           {/* Trình tạo bài đăng thông báo (Chỉ hiển thị cho Gia sư chủ lớp) */}
-          {Boolean(classroom.is_owner) && (
+          {isOwner && (
             <form className="announcement-composer" onSubmit={handlePostAnnouncement}>
               <div className="composer-header">
                 <span>✍️</span> Đăng thông báo mới cho lớp học
@@ -634,7 +639,7 @@ export default function ClassroomDetail() {
                           <span className="announcement-badge-pinned">📌 Đã ghim</span>
                         )}
 
-                        {Boolean(classroom.is_owner) && (
+                        {isOwner && (
                           <div className="announcement-menu-actions">
                             <button
                               type="button"
@@ -747,7 +752,7 @@ export default function ClassroomDetail() {
                 🔗 Link mời
               </button>
 
-              {Boolean(classroom.is_owner) && (
+              {isOwner && (
                 <button
                   type="button"
                   className="btn-primary-orange"
@@ -771,7 +776,7 @@ export default function ClassroomDetail() {
               <p>
                 Chia sẻ mã <code>{classroom.join_code}</code> hoặc link mời để học sinh tham gia!
               </p>
-              {Boolean(classroom.is_owner) && (
+              {isOwner && (
                 <button
                   type="button"
                   className="btn-primary-orange"
@@ -791,7 +796,7 @@ export default function ClassroomDetail() {
                     <th>Số điện thoại</th>
                     <th>Ngày tham gia</th>
                     <th>Trạng thái</th>
-                    {Boolean(classroom.is_owner) && <th style={{ textAlign: 'right' }}>Tác vụ</th>}
+                    {isOwner && <th style={{ textAlign: 'right' }}>Tác vụ</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -837,7 +842,7 @@ export default function ClassroomDetail() {
                             </div>
                           )}
                         </td>
-                        {Boolean(classroom.is_owner) && (
+                        {isOwner && (
                           <td style={{ textAlign: 'right' }}>
                             {isActive && (
                               <button
@@ -876,7 +881,7 @@ export default function ClassroomDetail() {
               </p>
             </div>
 
-            {Boolean(classroom.is_owner) && (
+            {isOwner && (
               <button
                 type="button"
                 className="btn-primary-orange"
@@ -897,7 +902,7 @@ export default function ClassroomDetail() {
               <div className="empty-icon">📝</div>
               <h3>Chưa có bài tập nào</h3>
               <p>Hãy tạo bài tập đầu tiên để củng cố kiến thức cho học sinh sau mỗi buổi học!</p>
-              {Boolean(classroom.is_owner) && (
+              {isOwner && (
                 <button
                   type="button"
                   className="btn-primary-orange"
@@ -944,7 +949,7 @@ export default function ClassroomDetail() {
                   </div>
 
                   {/* Actions for Tutor (UC26) */}
-                  {Boolean(classroom.is_owner) ? (
+                  {isOwner ? (
                     <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
                       <button
                         type="button"
@@ -1043,7 +1048,7 @@ export default function ClassroomDetail() {
                 👥 {showChatMembers ? 'Ẩn thành viên' : `Thành viên (${chatGroupMembers.length})`}
               </button>
 
-              {Boolean(classroom.is_owner) && (
+              {isOwner && (
                 <button
                   type="button"
                   className="btn-primary-orange"
@@ -1136,7 +1141,7 @@ export default function ClassroomDetail() {
                           </div>
                         </div>
 
-                        {Boolean(classroom.is_owner) && !m.is_owner && (
+                        {isOwner && !m.is_owner && (
                           <button
                             type="button"
                             onClick={() => setRemoveMemberTarget(m)}

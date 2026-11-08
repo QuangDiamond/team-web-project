@@ -196,9 +196,13 @@ export default function ClassroomsPage() {
                     <span className="badge badge-status">
                       {cls.status === 'ACTIVE' ? 'Đang hoạt động' : 'Đã lưu trữ'}
                     </span>
-                    {cls.is_owner ? (
+                    {cls.is_owner || user?.role === 'TUTOR' ? (
                       <span className="badge" style={{ background: '#fff7ed', color: '#c2410c', border: '1px solid #fed7aa', fontWeight: 600 }}>
                         👨‍🏫 Bạn là Gia sư
+                      </span>
+                    ) : user?.role === 'PARENT' ? (
+                      <span className="badge" style={{ background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 600 }}>
+                        👨‍👩‍👧 Bạn là Phụ huynh
                       </span>
                     ) : (
                       <span className="badge" style={{ background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', fontWeight: 600 }}>

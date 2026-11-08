@@ -240,3 +240,4 @@ erDiagram
 > **Trả lời:** Để tránh xung đột dữ liệu và đảm bảo tính công bằng học thuật (UC26 & UC27):
 > - Khi gia sư đã công bố kết quả (`results_published_at != null`), hệ thống sẽ **khóa chỉnh sửa cấu trúc đề bài** (không cho phép sửa nội dung câu hỏi, xóa câu hoặc đổi thang điểm).
 > - Đồng thời học sinh cũng bị khóa không được phép nộp lại (`resubmit`) sau khi điểm đã công bố công khai.
+
