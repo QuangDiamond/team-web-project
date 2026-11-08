@@ -15,6 +15,9 @@ import { tutorProfileRoutes } from "./tutorProfile.routes.js";
 import { tutorPostRoutes } from "./tutorPost.routes.js";
 import { chatRoutes } from "./chat.routes.js";
 import { classroomRoutes } from './classroom.routes.js';
+import { topicRoutes } from './topic.routes.js';
+import { classMaterialRoutes } from './classMaterial.routes.js';
+import { classSessionRoutes } from './classSession.routes.js';
 export const router = Router();
 
 router.use('/user/v1', userRoutes)
@@ -33,3 +36,6 @@ router.use("/tutor-profile/v1", tutorProfileRoutes)
 router.use("/tutor-posts/v1", tutorPostRoutes)
 router.use("/chat/v1", chatRoutes)
 router.use('/classroom/v1', classroomRoutes)
+router.use('/classroom/v1', topicRoutes)
+router.use('/classroom/v1', classMaterialRoutes)
+router.use('/classroom/v1', classSessionRoutes)
