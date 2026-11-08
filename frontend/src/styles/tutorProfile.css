@@ -1,5 +1,9 @@
 /* Hồ sơ gia sư: /tutor/profile */
 
+.profile-form .form-required {
+  color: var(--color-error);
+}
+
 .profile-page {
   display: flex;
   flex-direction: column;

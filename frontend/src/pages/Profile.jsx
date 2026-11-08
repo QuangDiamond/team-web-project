@@ -1,4 +1,5 @@
 import { useAuth } from '../hooks/useAuth';
+import { Link } from 'react-router-dom';
 
 export default function Profile() {
   const { user } = useAuth();
@@ -31,7 +32,7 @@ export default function Profile() {
         </div>
         <div className="profile-actions">
           <button className="btn btn-secondary">Edit Profile</button>
-          <button className="btn btn-secondary">Change Password</button>
+          <Link to="/change-password" className="btn btn-secondary">Change Password</Link>
         </div>
       </div>
     </div>

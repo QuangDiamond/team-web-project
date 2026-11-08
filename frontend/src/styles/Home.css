@@ -1,5 +1,9 @@
 /* Home Page Styles */
 
+.home-page section[id] {
+  scroll-margin-top: 86px;
+}
+
 .home-page {
   overflow-x: hidden;
 }

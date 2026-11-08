@@ -154,13 +154,17 @@ test('scoreRequestForTutor: null without a matching post, best score among match
   assert.ok(scoreRequestForTutor(request, [expensive], 'Cầu Giấy') < perfect);
 });
 
-test('tutor-facing DTO never exposes parent or student information', () => {
+test('tutor-facing DTO exposes only the parent navigation ID and excludes private parent/student data', () => {
+  const parentId = newId();
   const dto = toTutorRequestDto(
-    { ...request, _id: newId(), parent_user_id: newId(), student_id: newId(), title: 'T', description: 'D', image_urls: ['a'], created_at: new Date() },
+    { ...request, _id: newId(), parent_user_id: parentId, student_id: newId(), title: 'T', description: 'D', image_urls: ['a'], created_at: new Date(),
+      parent: { email: 'private@example.com' }, parent_user: { phone: '0912345678' }, student: { full_name: 'Private child' },
+      email: 'private@example.com', phone: '0912345678', contact: 'Private contact' },
     { applicationCount: 2, isBookmarked: true, hasApplied: false }
   );
   const keys = Object.keys(dto);
-  for (const forbidden of ['parent_user_id', 'student_id', 'student', 'email', 'phone', 'status']) {
+  assert.equal(dto.parent_user_id, String(parentId));
+  for (const forbidden of ['student_id', 'student', 'parent', 'parent_user', 'email', 'phone', 'contact', 'status']) {
     assert.equal(keys.includes(forbidden), false, forbidden);
   }
   assert.equal(dto.budget, 200000);

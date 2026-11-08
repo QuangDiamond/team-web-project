@@ -7,7 +7,8 @@
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "test": "node --test",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "seed:admin": "node scripts/seed-billing-admin.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -20,7 +21,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.18.0",
     "morgan": "^1.10.0",
-    "nodemailer": "^10.2.1",
+    "nodemailer": "^10.4.0",
     "team-web-project": "file:..",
     "vnpay": "^2.5.0",
     "zod": "^4.6.5"
