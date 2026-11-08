@@ -31,6 +31,9 @@ import SuggestedRequests from '../pages/tutor/SuggestedRequests';
 import SavedRequests from '../pages/tutor/SavedRequests';
 import TutorRequestDetail from '../pages/tutor/TutorRequestDetail';
 import MyApplications from '../pages/tutor/MyApplications';
+import MyClasses from '../pages/tutor/MyClasses';
+import MyClassDetail from '../pages/tutor/MyClassDetail';
+import MySchedule from '../pages/tutor/MySchedule';
 import { PARENT_MENU, STUDENT_MENU, TUTOR_MENU } from '../constants/dashboardMenus';
 
 export const router = createBrowserRouter([
@@ -116,6 +119,9 @@ export const router = createBrowserRouter([
           { path: 'posts', element: <TutorPosts />, handle: { title: 'My Posts' } },
           { path: 'posts/new', element: <TutorPostForm />, handle: { title: 'New Post' } },
           { path: 'posts/:id/edit', element: <TutorPostForm />, handle: { title: 'Edit Post' } },
+          { path: 'classes', element: <MyClasses />, handle: { title: 'My Class' } },
+          { path: 'classes/:classId', element: <MyClassDetail />, handle: { title: 'Class Detail' } },
+          { path: 'schedule', element: <MySchedule />, handle: { title: 'My Schedule' } },
         ],
       },
     ],

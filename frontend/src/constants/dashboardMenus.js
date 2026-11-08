@@ -116,6 +116,8 @@ export const TUTOR_MENU = {
         { label: 'Messages', to: '/tutor/messages', icon: MessageSquare },
         { label: 'My Profile', to: '/tutor/profile', icon: User },
         { label: 'My Posts', to: '/tutor/posts', icon: FileText },
+        { label: 'My Class', to: '/tutor/classes', icon: BookOpen },
+        { label: 'My Schedule', to: '/tutor/schedule', icon: CalendarDays },
       ],
     },
   ],
