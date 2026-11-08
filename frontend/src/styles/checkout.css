@@ -1,0 +1,343 @@
+/* Màn Checkout (UC17 – SC20): /checkout */
+
+.checkout-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 48px 24px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Gói hiện tại ---------- */
+.current-plan {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0 0 20px;
+  padding: 16px 20px;
+}
+
+.current-plan dt {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.current-plan dd {
+  margin: 4px 0 0;
+  font-size: 20px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.current-plan .current-plan-note {
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Bố cục 2 cột ---------- */
+.checkout-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.checkout-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.checkout-section {
+  padding: 20px;
+}
+
+.checkout-fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.checkout-legend {
+  padding: 0;
+  margin-bottom: 4px;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.checkout-group-title {
+  margin: 16px 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Thẻ chọn plan / pack ---------- */
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+/* Radio thật nằm phủ lên thẻ (trong suốt) để bấm / bàn phím đều chọn được */
+.option-card-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.option-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  cursor: pointer;
+  transition: border-color var(--transition), background-color var(--transition);
+}
+
+.option-card:hover {
+  border-color: var(--color-primary);
+}
+
+.option-card.is-selected {
+  border-color: var(--color-primary-strong);
+  background: var(--color-primary-soft);
+}
+
+.option-card:has(.option-card-input:focus-visible) {
+  box-shadow: var(--focus-ring);
+}
+
+.option-card.is-disabled {
+  background: var(--color-surface);
+  cursor: not-allowed;
+}
+
+.option-card.is-disabled:hover {
+  border-color: var(--color-border);
+}
+
+.option-card.is-disabled .option-card-input {
+  cursor: not-allowed;
+}
+
+.option-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.option-card-title {
+  white-space: nowrap;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.option-card-price {
+  font-size: 20px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.option-card-price-note {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.option-card-features {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.option-card-feature {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Phương thức thanh toán ---------- */
+.method-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.method-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 64px;
+  padding: 12px 16px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--transition), background-color var(--transition);
+}
+
+.method-option:hover {
+  border-color: var(--color-primary);
+}
+
+.method-option.is-selected {
+  border-color: var(--color-primary-strong);
+  background: var(--color-primary-soft);
+}
+
+.method-option:has(.option-card-input:focus-visible) {
+  box-shadow: var(--focus-ring);
+}
+
+.method-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-primary-strong);
+}
+
+.method-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.method-label {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.method-description {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Tóm tắt đơn ---------- */
+.order-summary {
+  position: sticky;
+  top: 80px;
+  padding: 20px;
+}
+
+.order-summary-title {
+  margin: 0 0 12px;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.summary-item-title {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.summary-empty {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.summary-rows,
+.summary-total {
+  margin: 0;
+}
+
+.summary-row,
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  font-size: 14px;
+}
+
+.summary-row dt {
+  color: var(--color-text-muted);
+}
+
+.summary-row dd,
+.summary-total dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.summary-note {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--color-info-soft);
+  color: var(--color-info);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.summary-total {
+  margin: 12px 0 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.summary-total dd {
+  font-weight: 800;
+}
+
+.summary-cancel {
+  margin-top: 10px;
+}
+
+.summary-secure {
+  display: flex;
+  gap: 6px;
+  margin: 14px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.summary-secure svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+@media (max-width: 1000px) {
+  .checkout-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .order-summary {
+    position: static;
+  }
+}
+
+@media (max-width: 560px) {
+  .current-plan {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+}

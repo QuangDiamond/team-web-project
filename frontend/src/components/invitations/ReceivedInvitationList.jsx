@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import OpenChatLink from '../common/OpenChatLink';
 import { INVITATION_STATUS, formatBudget, getModeLabel, getStatusBadge } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
@@ -36,6 +37,7 @@ function ReceivedInvitationRow({ invitation, onAccept, onDecline }) {
         </div>
         <p className="item-meta">{metaParts.join(' · ')}</p>
         <p className="item-meta">A parent invited you · {formatDate(invitation.created_at)}</p>
+        {invitation.parent_user_id && <Link to={`/parents/${invitation.parent_user_id}`} className="link">View parent profile</Link>}
         {invitation.message && <p className="item-note">“{invitation.message}”</p>}
         {invitation.status === 'PENDING' && !canAccept && (
           <p className="received-invitation-warning">This request is no longer open, so the invitation cannot be accepted.</p>
@@ -68,7 +70,7 @@ function ReceivedInvitationRow({ invitation, onAccept, onDecline }) {
   );
 }
 
-// Lời mời gia sư nhận được; onAccept / onDecline(invitation) trả về Promise. Không hiện thông tin phụ huynh
+// Lời mời gia sư nhận được; chỉ liên kết hồ sơ công khai của phụ huynh, không hiển thị thông tin liên hệ.
 export default function ReceivedInvitationList({ invitations, onAccept, onDecline }) {
   return (
     <ul className="item-list">

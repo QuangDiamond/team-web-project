@@ -116,12 +116,12 @@ export default function Register() {
 
     const error = result.error;
     // E2: email đã được đăng ký
-    if (error.status === 409) {
+    if (error?.status === 409) {
       setEmailTaken(true);
       return;
     }
     // E1: backend báo lỗi field, nếu lỗi nằm ở bước 1 thì quay lại bước 1
-    if (error.status === 422 && error.errors) {
+    if (error?.status === 422 && error?.errors) {
       const backendErrors = toFieldErrors(error.errors);
       setErrors(backendErrors);
       const hasInfoError = INFO_FIELDS.some((field) => backendErrors[field]);
@@ -130,7 +130,7 @@ export default function Register() {
         return;
       }
     }
-    setFormError(error.message);
+    setFormError(error?.message || 'Registration failed');
   };
 
   let alert = null;
@@ -140,8 +140,7 @@ export default function Register() {
         This email is already registered.{' '}
         <Link to="/login" className="link">Login</Link>
         {' or '}
-        {/* TODO: đổi "#" thành trang Forgot password khi có */}
-        <a href="#" className="link">Forgot password</a>?
+        <Link to="/forgot-password" className="link">Forgot password</Link>?
       </Alert>
     );
   } else if (formError) {

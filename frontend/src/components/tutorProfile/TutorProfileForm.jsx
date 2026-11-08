@@ -27,15 +27,15 @@ const EMPTY_ACHIEVEMENT = { title: '', description: '' };
 
 const EXPERIENCE_FIELDS = [
   { name: 'title', label: 'Job title', type: 'text' },
-  { name: 'company', label: 'Company / school', type: 'text', optional: true },
-  { name: 'start_date', label: 'Start date', type: 'date', optional: true },
-  { name: 'end_date', label: 'End date', type: 'date', optional: true },
+  { name: 'company', label: 'Company / school', type: 'text' },
+  { name: 'start_date', label: 'Start date', type: 'date' },
+  { name: 'end_date', label: 'End date', type: 'date', allowNow: true },
 ];
 const EDUCATION_FIELDS = [
   { name: 'school', label: 'School', type: 'text' },
-  { name: 'degree', label: 'Degree / major', type: 'text', optional: true },
-  { name: 'graduation_year', label: 'Graduation year', type: 'number', optional: true },
-  { name: 'description', label: 'Notes', type: 'textarea', optional: true },
+  { name: 'degree', label: 'Degree / major', type: 'text' },
+  { name: 'graduation_year', label: 'Graduation year', type: 'number' },
+  { name: 'description', label: 'Details', type: 'textarea', optional: true },
 ];
 const ACHIEVEMENT_FIELDS = [
   { name: 'title', label: 'Achievement', type: 'text' },
@@ -43,9 +43,11 @@ const ACHIEVEMENT_FIELDS = [
 ];
 
 const TOP_LIMITS = { headline: 120, bio: 2000, address: 255 };
+const MAX_BIO_WORDS = 50;
+export const countProfileWords = (text) => text.trim() ? text.trim().split(/\s+/u).length : 0;
 
 // Kiểm tra giống tutorProfileSchema ở backend để báo lỗi ngay tại từng ô
-const validate = (values) => {
+export const validateProfileForm = (values) => {
   const errors = { top: {}, experiences: [], educations: [], achievements: [] };
 
   const requiredLabels = { headline: 'Headline', bio: 'Bio', address: 'Address' };
@@ -57,13 +59,19 @@ const validate = (values) => {
       errors.top[name] = `Must be at most ${TOP_LIMITS[name]} characters`;
     }
   });
+  if (countProfileWords(values.bio) > MAX_BIO_WORDS) {
+    errors.top.bio = 'About you must be at most 50 words';
+  }
 
   values.experiences.forEach((item, index) => {
     const itemErrors = {};
     if (!item.title.trim()) {
       itemErrors.title = 'Job title is required';
     }
-    if (item.start_date && item.end_date && item.end_date < item.start_date) {
+    if (!item.company.trim()) itemErrors.company = 'Company / school is required';
+    if (!item.start_date) itemErrors.start_date = 'Start date is required';
+    if (!item.end_date) itemErrors.end_date = 'End date is required';
+    if (item.start_date && item.end_date && item.end_date !== 'NOW' && item.end_date < item.start_date) {
       itemErrors.end_date = 'End date must not be before start date';
     }
     errors.experiences[index] = itemErrors;
@@ -74,7 +82,10 @@ const validate = (values) => {
     if (!item.school.trim()) {
       itemErrors.school = 'School is required';
     }
-    if (item.graduation_year !== '') {
+    if (!item.degree.trim()) itemErrors.degree = 'Degree / major is required';
+    if (!String(item.graduation_year).trim()) {
+      itemErrors.graduation_year = 'Graduation year is required';
+    } else {
       const year = Number(item.graduation_year);
       if (!Number.isInteger(year) || year < 1950 || year > 2100) {
         itemErrors.graduation_year = 'Enter a year between 1950 and 2100';
@@ -121,7 +132,7 @@ const toPayload = (values) => ({
     title: item.title.trim(),
     company: emptyToNull(item.company),
     start_date: emptyToNull(item.start_date),
-    end_date: emptyToNull(item.end_date),
+    end_date: item.end_date === 'NOW' ? null : emptyToNull(item.end_date),
   })),
   educations: values.educations.map((item) => {
     let graduationYear = null;
@@ -152,7 +163,7 @@ export const toProfileFormValues = (profile) => ({
     title: item.title || '',
     company: item.company || '',
     start_date: item.start_date || '',
-    end_date: item.end_date || '',
+    end_date: item.end_date || 'NOW',
   })),
   educations: profile.educations.map((item) => ({
     school: item.school || '',
@@ -192,10 +203,18 @@ export default function TutorProfileForm({ initialValues, submitLabel, onSubmit 
     event.preventDefault();
     setFormError('');
 
-    const foundErrors = validate(values);
+    const foundErrors = validateProfileForm(values);
     setErrors(foundErrors);
     if (hasAnyError(foundErrors)) {
       focusFirstInvalidField(TOP_LEVEL_FIELDS, foundErrors.top);
+      for (const section of ['experiences', 'educations', 'achievements']) {
+        const index = foundErrors[section].findIndex((item) => Object.keys(item).length > 0);
+        if (index >= 0 && Object.keys(foundErrors.top).length === 0) {
+          const field = Object.keys(foundErrors[section][index])[0];
+          document.getElementById(`${section}-${index}-${field}`)?.focus();
+          break;
+        }
+      }
       return;
     }
 
@@ -222,6 +241,7 @@ export default function TutorProfileForm({ initialValues, submitLabel, onSubmit 
       <FormInput
         id="headline"
         label="Headline"
+        required
         value={values.headline}
         onChange={handleChange}
         error={errors.top.headline}
@@ -231,10 +251,12 @@ export default function TutorProfileForm({ initialValues, submitLabel, onSubmit 
       <FormTextarea
         id="bio"
         label="About you"
+        required
+        hint={`${countProfileWords(values.bio)}/${MAX_BIO_WORDS} words`}
         rows={5}
         value={values.bio}
         onChange={handleChange}
-        error={errors.top.bio}
+        error={countProfileWords(values.bio) > MAX_BIO_WORDS ? 'About you must be at most 50 words' : errors.top.bio}
         placeholder="Your teaching experience, method and what students can expect"
         disabled={submitting}
       />
@@ -242,6 +264,7 @@ export default function TutorProfileForm({ initialValues, submitLabel, onSubmit 
         <FormInput
           id="address"
           label="Address / area"
+          required
           value={values.address}
           onChange={handleChange}
           error={errors.top.address}
@@ -251,6 +274,7 @@ export default function TutorProfileForm({ initialValues, submitLabel, onSubmit 
         <FormSelect
           id="availability_status"
           label="Availability"
+          required
           value={values.availability_status}
           onChange={handleChange}
           options={AVAILABILITY_OPTIONS}

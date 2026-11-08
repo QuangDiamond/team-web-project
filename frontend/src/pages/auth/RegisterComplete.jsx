@@ -60,7 +60,7 @@ export default function RegisterComplete() {
     setSubmitting(false);
 
     if (result.success) {
-      navigate('/');
+      navigate('/dashboard');
       return;
     }
 

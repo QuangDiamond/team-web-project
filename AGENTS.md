@@ -33,6 +33,7 @@
 - **API calls:** all API calls go through `src/services/<feature>Service.js` using the `api`
   instance from `src/services/api.js`. Check whether the service function already exists
   before adding one. Never import axios or use `fetch` inside pages/components.
+- **Icon:** Using icon from library (like react-icons, espeacially lucid icon and feather icon). Not using emoji for icon
 
 ## 3. Backend (reference: auth module)
 ### Checklist for a new API
@@ -58,11 +59,13 @@
   { "success": 1, "message": "...", "data": { "items": [], "pagination": { "page": 1, "limit": 10, "total": 0, "totalPages": 0 } } }
   ```
 
+### Role-based access
+- `authorize(...roles)` in `common/middlewares/auth.middleware.js` (always after `authentication`),
+  e.g. `authorize('ADMIN')`. Returns 403 `Forbidden` when `req.user.role` is not in the list.
+
 ### Planned — not implemented yet (do not build unless asked)
 - `validator(schema, source)` supporting `body` / `query` / `params`, so GET query params
   (`page`, `limit`, filters) can be validated.
-- `authorize(...roles)` middleware for role-based access. Until it exists, leave it out of
-  routes and add a `// TODO: authorize(...)` comment where it is needed.
 
 ### Comment above every service function
 ```js

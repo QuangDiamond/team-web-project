@@ -10,6 +10,7 @@
     "export-json": "node export-json.js"
   },
   "dependencies": {
-    "mongodb": "6.8.0"
+    "mongodb": "6.8.0",
+    "team-web-project": "file:../../.."
   }
 }

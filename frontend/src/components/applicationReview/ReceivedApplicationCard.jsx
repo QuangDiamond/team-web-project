@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import OpenChatLink from '../common/OpenChatLink';
 import { APPLICATION_STATUS, getStatusBadge } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
@@ -42,7 +43,7 @@ export default function ReceivedApplicationCard({ application, onContinue, onSki
       <div className="review-card-top">
         <span className="review-card-avatar" aria-hidden="true">{avatarText}</span>
         <div className="review-card-identity">
-          <p className="review-card-name">{tutorName}</p>
+          {tutor ? <Link to={`/tutors/${tutor.profile_id}`} className="review-card-name">{tutorName}</Link> : <p className="review-card-name">{tutorName}</p>}
           {headline && <p className="item-meta">{headline}</p>}
           <p className="review-card-rating">{tutor ? <RatingText rating={tutor.average_rating} /> : null}</p>
         </div>

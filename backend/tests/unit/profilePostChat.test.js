@@ -41,19 +41,42 @@ test('profile body: rejects system fields and bad enums', () => {
 test('profile body: experiences convert dates, validate order, limit size', () => {
   const ok = tutorProfileBodySchema.safeParse({
     ...validProfile,
-    experiences: [{ title: 'Giáo viên', company: '', start_date: '2020-01-01', end_date: '2022-06-30' }],
+    experiences: [{ title: 'Giáo viên', company: 'ABC school', start_date: '2020-01-01', end_date: '2022-06-30' }],
   });
   assert.equal(ok.success, true);
   assert.ok(ok.data.experiences[0].start_date instanceof Date);
-  assert.equal(ok.data.experiences[0].company, null);
+  assert.equal(ok.data.experiences[0].company, 'ABC school');
 
   const wrongOrder = tutorProfileBodySchema.safeParse({
     ...validProfile,
-    experiences: [{ title: 'X', start_date: '2022-01-01', end_date: '2020-01-01' }],
+    experiences: [{ title: 'X', company: 'School', start_date: '2022-01-01', end_date: '2020-01-01' }],
   });
   assert.equal(wrongOrder.success, false);
   assert.equal(tutorProfileBodySchema.safeParse({ ...validProfile, experiences: [{ title: 'X', start_date: 'not-a-date' }] }).success, false);
   assert.equal(tutorProfileBodySchema.safeParse({ ...validProfile, experiences: Array.from({ length: 11 }, () => ({ title: 'X' })) }).success, false);
+});
+
+test('profile body requires every item field except Details and limits About you to 50 words', () => {
+  const items = {
+    experiences: { title: 'Tutor', company: 'School', start_date: '2020-01-01', end_date: '2024-01-01' },
+    educations: { school: 'University', degree: 'Bachelor', graduation_year: 2024 },
+    achievements: { title: 'Teaching award' },
+  };
+  for (const [section, item] of Object.entries(items)) {
+    assert.equal(tutorProfileBodySchema.safeParse({ ...validProfile, [section]: [item] }).success, true, section);
+    for (const field of Object.keys(item)) {
+      const invalidValues = field === 'end_date' ? [undefined, ''] : [undefined, null, ''];
+      for (const value of invalidValues) {
+        const result = tutorProfileBodySchema.safeParse({ ...validProfile, [section]: [{ ...item, [field]: value }] });
+        assert.equal(result.success, false, `${section}.${field}: ${value}`);
+        assert.ok(result.error.issues.some((issue) => issue.path[0] === section && issue.path[2] === field));
+      }
+    }
+  }
+  assert.equal(tutorProfileBodySchema.safeParse({ ...validProfile, experiences: [{ ...items.experiences, end_date: null }] }).success, true);
+  const fiftyWords = Array(50).fill('dạy').join(' \n\t ');
+  assert.equal(tutorProfileBodySchema.safeParse({ ...validProfile, bio: `  ${fiftyWords}  ` }).success, true);
+  assert.equal(tutorProfileBodySchema.safeParse({ ...validProfile, bio: `${fiftyWords} thêm` }).success, false);
 });
 
 test('profile body: educations and achievements', () => {
