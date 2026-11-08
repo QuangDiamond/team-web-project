@@ -3,11 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   ChevronLeft,
   LoaderCircle,
-  Send,
-  CheckCheck,
-  FileText,
-  Handshake,
-  Sparkles
+  Send
 } from 'lucide-react';
 import Alert from '../common/Alert';
 import { formatDate, formatTime } from '../../utils/dateFormat';
@@ -52,7 +48,6 @@ function Bubble({ message, otherName }) {
         <p className="chat-bubble-text">{message.content}</p>
         <div className="chat-bubble-footer">
           <span className="chat-bubble-time">{formatTime(message.created_at)}</span>
-          {isMine && <CheckCheck size={12} className="chat-bubble-check" aria-hidden="true" />}
         </div>
       </div>
     </div>
@@ -181,8 +176,7 @@ export default function MessageThread({ thread, basePath }) {
 
               {conversation.request && (
                 <div className="chat-thread-request-pill" title={conversation.request.title}>
-                  <FileText size={12} />
-                  <span>{conversation.request.title}</span>
+                  <span>Lớp: {conversation.request.title}</span>
                 </div>
               )}
             </div>
@@ -194,8 +188,7 @@ export default function MessageThread({ thread, basePath }) {
                 className="btn-chat-agreement"
                 title="Xem danh sách thỏa thuận"
               >
-                <Handshake size={14} />
-                <span>Thỏa thuận</span>
+                <span>Xem thỏa thuận</span>
               </Link>
             </div>
           </div>
@@ -233,12 +226,9 @@ export default function MessageThread({ thread, basePath }) {
 
         {!thread.loading && messages.length === 0 && (
           <div className="chat-empty-thread">
-            <div className="chat-empty-icon-wrap">
-              <Sparkles size={28} />
-            </div>
             <h4>Bắt đầu cuộc trò chuyện</h4>
             <p>
-              Hãy gửi lời chào và thảo luận cùng <strong>{otherName}</strong> về lịch học và nhu cầu học tập!
+              Hãy gửi lời chào và thảo luận cùng <strong>{otherName}</strong> về lịch học và nhu cầu học tập.
             </p>
           </div>
         )}

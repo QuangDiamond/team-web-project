@@ -109,11 +109,8 @@
   gap: 8px;
 }
 
-.header-brand-pill {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
+.header-title-text {
+  font-size: 15px;
   font-weight: 800;
   color: #0f172a;
 }
@@ -220,26 +217,42 @@
 }
 
 .floating-search-bar {
-  padding: 8px 12px;
+  padding: 10px 14px;
   border-bottom: 1px solid #f1f5f9;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #f8fafc;
+  background: #ffffff;
 }
 
-.floating-search-bar .search-icon {
+.floating-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.floating-search-icon {
+  position: absolute;
+  left: 10px;
   color: #94a3b8;
+  pointer-events: none;
   flex-shrink: 0;
 }
 
-.floating-search-bar input {
+.floating-search-input {
   width: 100%;
-  border: none;
-  background: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 6px 10px 6px 32px;
+  background: #f8fafc;
   font-size: 12px;
   color: #0f172a;
   outline: none;
+  transition: all 0.15s ease-in-out;
+}
+
+.floating-search-input:focus {
+  background: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
 }
 
 .floating-conv-scroll {
@@ -536,3 +549,4 @@
     height: 480px;
   }
 }
+
