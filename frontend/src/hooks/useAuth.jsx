@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import * as authService from '../services/authService.js';
 
 const AuthContext = createContext(null);
@@ -12,10 +12,31 @@ export function AuthProvider({ children }) {
       return null;
     }
   });
-  const [loading, setLoading] = useState(false);
+  // true cho đến khi biết user đã đăng nhập hay chưa (gọi /me lúc mở app)
+  const [initializing, setInitializing] = useState(true);
 
+  // Lấy lại user từ cookie khi F5 trang
+  useEffect(() => {
+    authService.me()
+      .then((response) => {
+        setUser(response.data);
+        try {
+          localStorage.setItem('user', JSON.stringify(response.data));
+        } catch {}
+      })
+      .catch(() => {
+        setUser(null);
+        try {
+          localStorage.removeItem('user');
+        } catch {}
+      })
+      .finally(() => {
+        setInitializing(false);
+      });
+  }, []);
+
+  // Trả về error (có status, errors) để page tự xử lý, vd: 403 chưa kích hoạt
   const login = useCallback(async (credentials) => {
-    setLoading(true);
     try {
       const response = await authService.login(credentials);
       const userData = response.data;
@@ -25,38 +46,56 @@ export function AuthProvider({ children }) {
       } catch {}
       return { success: true, user: userData };
     } catch (error) {
-      return { success: false, error: error.message };
-    } finally {
-      setLoading(false);
+      return { success: false, error: error };
     }
   }, []);
 
+  // Đăng ký xong chưa đăng nhập, phải kích hoạt email trước
   const register = useCallback(async (data) => {
-    setLoading(true);
     try {
       const response = await authService.register(data);
-      const userData = response.data?.user || response.data;
+      const userData = response?.data?.user || response?.data;
+      if (userData) {
+        setUser(userData);
+        try {
+          localStorage.setItem('user', JSON.stringify(userData));
+        } catch {}
+      }
+      return { success: true, user: userData };
+    } catch (error) {
+      return { success: false, error: error };
+    }
+  }, []);
+
+  const completeGoogleRegister = useCallback(async (data) => {
+    try {
+      const response = await authService.completeGoogleRegister(data);
+      const userData = response.data;
       setUser(userData);
       try {
         localStorage.setItem('user', JSON.stringify(userData));
       } catch {}
       return { success: true, user: userData };
     } catch (error) {
-      return { success: false, error: error.message };
-    } finally {
-      setLoading(false);
+      return { success: false, error: error };
     }
   }, []);
 
-  const logout = useCallback(() => {
-    setUser(null);
+  const logout = useCallback(async () => {
     try {
-      localStorage.removeItem('user');
-    } catch {}
+      await authService.logout();
+    } finally {
+      setUser(null);
+      try {
+        localStorage.removeItem('user');
+      } catch {}
+    }
   }, []);
 
+  const value = { user, initializing, login, register, completeGoogleRegister, logout };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,0 +1,211 @@
+/* Màn đăng ký: /register và /register/complete */
+
+/* ---------- Thanh 2 bước ---------- */
+.register-stepper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 28px;
+  padding: 0;
+  list-style: none;
+}
+
+.stepper-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* Đường nối giữa 2 bước */
+.stepper-item + .stepper-item::before {
+  content: '';
+  width: 80px;
+  height: 1px;
+  margin-right: 4px;
+  background: var(--color-border);
+}
+
+.stepper-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.stepper-item.is-current,
+.stepper-item.is-done {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.stepper-item.is-current .stepper-circle,
+.stepper-item.is-done .stepper-circle {
+  background: var(--color-primary-strong);
+  color: var(--color-white);
+}
+
+/* ---------- Độ mạnh mật khẩu ---------- */
+.password-strength {
+  margin-top: 8px;
+}
+
+.strength-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.strength-segment {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-border);
+  transition: background-color var(--transition);
+}
+
+.strength-1 .strength-segment.is-filled {
+  background: #d93025;
+}
+
+.strength-2 .strength-segment.is-filled {
+  background: #f26b3a;
+}
+
+.strength-3 .strength-segment.is-filled {
+  background: #f5b800;
+}
+
+.strength-4 .strength-segment.is-filled {
+  background: #2e9e5b;
+}
+
+/* Chữ dùng màu xám để đủ contrast, màu sắc đã thể hiện trên thanh */
+.strength-label {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Chọn role ---------- */
+.role-selector {
+  margin: 0 0 20px;
+  padding: 0;
+  border: none;
+}
+
+.role-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.role-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 96px;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  cursor: pointer;
+  transition: border-color var(--transition), background-color var(--transition);
+}
+
+.role-card:hover {
+  border-color: var(--color-primary);
+}
+
+.role-card.is-selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+/* Radio bị ẩn nhưng vẫn focus được bằng bàn phím → hiện viền focus lên thẻ */
+.role-card:has(input:focus-visible) {
+  box-shadow: var(--focus-ring);
+}
+
+.role-card-icon {
+  margin-bottom: 6px;
+  color: var(--color-text-muted);
+}
+
+.role-card.is-selected .role-card-icon,
+.role-card.is-selected .role-card-title {
+  color: var(--color-primary-strong);
+}
+
+.role-card-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.role-card-description {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Account summary ---------- */
+.account-summary {
+  margin: 0 0 20px;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+}
+
+.account-summary-title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.account-summary dl {
+  margin: 0;
+}
+
+.account-summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 0;
+  font-size: 13px;
+}
+
+.account-summary-row dt {
+  color: var(--color-text-muted);
+}
+
+.account-summary-row dd {
+  margin: 0;
+  font-weight: 500;
+  text-align: right;
+  word-break: break-all;
+}
+
+.account-summary-role {
+  color: var(--color-primary-strong);
+}
+
+@media (max-width: 480px) {
+  .role-options {
+    grid-template-columns: 1fr;
+  }
+
+  .role-card {
+    min-height: auto;
+  }
+
+  .stepper-item + .stepper-item::before {
+    width: 32px;
+  }
+}

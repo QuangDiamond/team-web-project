@@ -13,7 +13,6 @@ const userSchema = new Schema(
   {
     full_name:                { type: String, required: true },
     email:                    { type: String, required: true },
-    phone:                    { type: String, default: null },
     password_hash:            { type: String, default: null },
     // Field này để lưu trạng thái xác thực email lúc nó đăng nhập nhé ae
     email_verify_status:      { type: Boolean, default: false },
@@ -30,7 +29,7 @@ const userSchema = new Schema(
     has_password:             { type: Boolean, default: null },
     avatar_url:               { type: String, default: null },
     // state khóa do đăng nhập sai quá nhiều lần
-    is_login_locked:          { type: Boolean, default: null },
+    is_login_locked:          { type: Boolean, default: false },
     // EMBED từ bảng GOOGLE_ACCOUNTS: 1-1 với User; unique index trên google_account.google_id
     google_account:           { type: googleAccountSchema, default: null },
     // EMBED từ bảng USER_CREDITS: 1-1 với User; trừ/cộng bằng $inc nguyên tử trên credit_wallet.balance
