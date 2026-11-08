@@ -217,6 +217,32 @@ export default function JoinClassPage() {
                       Đăng nhập ngay
                     </Link>
                   </div>
+                ) : user?.role === 'TUTOR' ? (
+                  <div
+                    style={{
+                      marginTop: '16px',
+                      padding: '18px',
+                      background: '#fff7ed',
+                      borderRadius: '12px',
+                      border: '1px solid #fed7aa',
+                      textAlign: 'center',
+                    }}
+                  >
+                    <div style={{ fontSize: '32px', marginBottom: '8px' }}>👨‍🏫</div>
+                    <h4 style={{ color: '#c2410c', margin: '0 0 6px 0', fontSize: '16px', fontWeight: 700 }}>
+                      Bạn đang đăng nhập với vai trò Gia sư
+                    </h4>
+                    <p style={{ color: '#9a3412', fontSize: '14px', margin: '0 0 16px 0', lineHeight: 1.5 }}>
+                      Bạn là Gia sư phụ trách/quản lý lớp học này. Liên kết mời và mã tham gia này dành cho Học sinh & Phụ huynh của bạn.
+                    </p>
+                    <Link
+                      to={`/classes/${preview._id}`}
+                      className="btn-primary-orange"
+                      style={{ textDecoration: 'none', display: 'inline-flex', padding: '10px 24px', justifyContent: 'center' }}
+                    >
+                      👉 Vào không gian quản lý lớp học
+                    </Link>
+                  </div>
                 ) : (
                   <button
                     type="button"

@@ -22,8 +22,9 @@ export const requireTutorAuth = async (req, res, next) => {
     if (token) {
       try {
         const payload = jwt.verify(token, env.jwtSecret || process.env.JWT_SECRET);
-        if (payload?.sub) {
-          user = await User.findById(payload.sub);
+        const userId = payload?.sub || payload?.id;
+        if (userId) {
+          user = await User.findById(userId);
         }
       } catch (err) {
         console.warn('[ClassroomAuth] Token verification failed:', err.message);
@@ -34,7 +35,6 @@ export const requireTutorAuth = async (req, res, next) => {
     if (!user && env.nodeEnv !== 'production') {
       user = await User.findOne({ role: 'TUTOR' });
       if (!user) {
-        // Tạo tài khoản tutor giả lập để test mượt mà nếu database chưa có
         user = await User.findOne();
       }
     }
@@ -86,8 +86,9 @@ export const requireUserAuth = async (req, res, next) => {
     if (token) {
       try {
         const payload = jwt.verify(token, env.jwtSecret || process.env.JWT_SECRET);
-        if (payload?.sub) {
-          user = await User.findById(payload.sub);
+        const userId = payload?.sub || payload?.id;
+        if (userId) {
+          user = await User.findById(userId);
         }
       } catch (err) {
         console.warn('[ClassroomAuth] Token verification failed:', err.message);
@@ -95,7 +96,7 @@ export const requireUserAuth = async (req, res, next) => {
     }
 
     if (!user && env.nodeEnv !== 'production') {
-      user = await User.findOne();
+      user = await User.findOne({ role: 'TUTOR' }) || await User.findOne();
     }
 
     if (!user) {
@@ -123,4 +124,3 @@ export const requireUserAuth = async (req, res, next) => {
     next(error);
   }
 };
-

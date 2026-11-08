@@ -189,6 +189,29 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
                 </div>
               )}
 
+              {/* Hướng dẫn riêng cho Gia sư */}
+              {user?.role === 'TUTOR' ? (
+                <div style={{ marginTop: '14px', padding: '14px', background: '#fff7ed', borderRadius: '8px', border: '1px solid #fed7aa', textAlign: 'center' }}>
+                  <div style={{ fontSize: '26px', marginBottom: '4px' }}>👨‍🏫</div>
+                  <div style={{ color: '#c2410c', fontWeight: 700, fontSize: '14px', marginBottom: '4px' }}>
+                    Bạn đang đăng nhập với vai trò Gia sư
+                  </div>
+                  <div style={{ color: '#9a3412', fontSize: '13px', marginBottom: '12px' }}>
+                    Mã tham gia này dành cho Học sinh & Phụ huynh. Bạn có thể vào xem hoặc chỉnh sửa lớp học ngay.
+                  </div>
+                  <button
+                    type="button"
+                    className="btn-primary-orange"
+                    onClick={() => {
+                      handleClose();
+                      navigate(`/classes/${preview._id}`);
+                    }}
+                  >
+                    👉 Vào trang quản lý lớp học
+                  </button>
+                </div>
+              ) : null}
+
               {preview.is_full && (
                 <div style={{ color: '#dc2626', fontSize: '13px', marginTop: '6px', fontWeight: 600 }}>
                   ⚠️ Lớp học đã đạt sĩ số tối đa, không thể nhận thêm học viên.
@@ -200,16 +223,18 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
 
         <div className="modal-footer">
           <button type="button" className="btn-outline-gray" onClick={handleClose} disabled={joining}>
-            Hủy
+            Đóng
           </button>
-          <button
-            type="button"
-            className="btn-primary-orange"
-            onClick={handleJoin}
-            disabled={joining || !preview || preview.is_full}
-          >
-            {joining ? 'Đang tham gia...' : '🚀 Tham gia lớp học'}
-          </button>
+          {user?.role !== 'TUTOR' && (
+            <button
+              type="button"
+              className="btn-primary-orange"
+              onClick={handleJoin}
+              disabled={joining || !preview || preview.is_full}
+            >
+              {joining ? 'Đang tham gia...' : '🚀 Tham gia lớp học'}
+            </button>
+          )}
         </div>
       </div>
     </div>

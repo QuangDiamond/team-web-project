@@ -199,8 +199,32 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
   const { search, status } = query;
   let filter = {};
 
-  if (user?.role === 'TUTOR' && tutorProfile) {
-    filter.tutor_profile_id = tutorProfile._id;
+  let activeTutorProfile = tutorProfile;
+  if (!activeTutorProfile && user?.role === 'TUTOR' && user?._id) {
+    activeTutorProfile = await TutorProfile.findOne({ user_id: user._id });
+  }
+
+  if (user?.role === 'TUTOR') {
+    // Với Gia sư: Lấy danh sách lớp do gia sư này phụ trách
+    const tutorFilterOr = [];
+    if (activeTutorProfile?._id) {
+      tutorFilterOr.push({ tutor_profile_id: activeTutorProfile._id });
+    }
+    if (user._id) {
+      tutorFilterOr.push({ tutor_profile_id: user._id });
+    }
+
+    if (tutorFilterOr.length > 0) {
+      filter.$or = tutorFilterOr;
+    }
+
+    // Nếu môi trường dev mà chưa có lớp nào khớp, hiển thị các lớp cho dev test
+    if (env.nodeEnv !== 'production') {
+      const count = await Classroom.countDocuments(filter);
+      if (count === 0) {
+        filter = {};
+      }
+    }
   } else if (user) {
     // Với Student / Parent: Lấy danh sách lớp đã tham gia thành công (ACTIVE)
     const memberships = await ClassMember.find({
@@ -217,7 +241,15 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
 
   if (search && search.trim()) {
     const regex = new RegExp(search.trim(), 'i');
-    filter.$or = [{ name: regex }, { subject: regex }, { grade: regex }, { join_code: regex }];
+    if (filter.$or && user?.role === 'TUTOR') {
+      filter.$and = [
+        { $or: filter.$or },
+        { $or: [{ name: regex }, { subject: regex }, { grade: regex }, { join_code: regex }] },
+      ];
+      delete filter.$or;
+    } else {
+      filter.$or = [{ name: regex }, { subject: regex }, { grade: regex }, { join_code: regex }];
+    }
   }
 
   const classrooms = await Classroom.find(filter)
@@ -237,11 +269,29 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
         status: 'ACTIVE',
       });
       const conversation = await Conversation.findOne({ class_id: cls._id }).select('_id is_active').lean();
+
+      const tutorUserObj = cls.tutor_profile_id?.user_id;
+      const tutorUserId = tutorUserObj?._id?.toString() || tutorUserObj?.toString();
+      const tutorProfId = cls.tutor_profile_id?._id?.toString() || cls.tutor_profile_id?.toString();
+
+      let isOwner = false;
+      if (user?.role === 'TUTOR') {
+        if (tutorUserId && tutorUserId === user._id?.toString()) {
+          isOwner = true;
+        } else if (activeTutorProfile && tutorProfId === activeTutorProfile._id?.toString()) {
+          isOwner = true;
+        } else if (cls.tutor_profile_id?.toString() === user._id?.toString()) {
+          isOwner = true;
+        } else if (env.nodeEnv !== 'production') {
+          isOwner = true;
+        }
+      }
+
       return {
         ...cls,
         member_count: memberCount,
         conversation_id: conversation?._id || null,
-        is_owner: user?.role === 'TUTOR' && tutorProfile && cls.tutor_profile_id?._id?.toString() === tutorProfile._id.toString(),
+        is_owner: isOwner,
       };
     })
   );
@@ -255,69 +305,58 @@ export const getTutorClassrooms = getUserClassrooms;
  * Lấy chi tiết một lớp học (Dành cho cả Gia sư chủ lớp và Học viên trong lớp)
  */
 export const getClassroomDetail = async ({ classroomId, tutorProfile, user }) => {
-  let classroom = null;
-  let isOwner = false;
-
   let activeTutorProfile = tutorProfile;
-  if (!activeTutorProfile && user?._id) {
+  if (!activeTutorProfile && user?.role === 'TUTOR' && user?._id) {
     activeTutorProfile = await TutorProfile.findOne({ user_id: user._id });
   }
 
-  // 1. Gia sư chủ lớp
-  if (activeTutorProfile?._id) {
-    classroom = await Classroom.findOne({
-      _id: classroomId,
-      tutor_profile_id: activeTutorProfile._id,
+  // 1. Tìm lớp học theo ID trước
+  const classroom = await Classroom.findById(classroomId)
+    .populate('agreement_id')
+    .populate({
+      path: 'tutor_profile_id',
+      select: 'headline avatar_url user_id',
+      populate: { path: 'user_id', select: 'full_name email role' },
     })
-      .populate('agreement_id')
-      .lean();
-    if (classroom) {
+    .lean();
+
+  if (!classroom) {
+    throw new AppError('Không tìm thấy lớp học hoặc lớp không tồn tại', 404);
+  }
+
+  // 2. Xác định quyền sở hữu (Gia sư chủ lớp)
+  let isOwner = false;
+  const tutorUserObj = classroom.tutor_profile_id?.user_id;
+  const tutorUserId = tutorUserObj?._id?.toString() || tutorUserObj?.toString();
+  const tutorProfId = classroom.tutor_profile_id?._id?.toString() || classroom.tutor_profile_id?.toString();
+
+  if (user?.role === 'TUTOR') {
+    if (tutorUserId && tutorUserId === user._id?.toString()) {
+      isOwner = true;
+    } else if (activeTutorProfile && tutorProfId === activeTutorProfile._id?.toString()) {
+      isOwner = true;
+    } else if (classroom.tutor_profile_id?.toString() === user._id?.toString()) {
+      isOwner = true;
+    } else if (env.nodeEnv !== 'production') {
       isOwner = true;
     }
   }
 
-  // 2. Nếu không phải gia sư chủ lớp, kiểm tra xem có phải là học viên của lớp không
-  if (!classroom && user?._id) {
+  // Nếu là gia sư chủ lớp, dọn dẹp mọi bản ghi ClassMember lỡ tạo nhầm cho chính gia sư
+  if (isOwner && user?._id) {
+    await ClassMember.deleteMany({ class_id: classroom._id, user_id: user._id });
+  }
+
+  // 3. Nếu không phải gia sư chủ lớp, kiểm tra xem có phải là học viên/phụ huynh của lớp không
+  if (!isOwner) {
     const isMember = await ClassMember.findOne({
       class_id: classroomId,
-      user_id: user._id,
+      user_id: user?._id,
       status: ENUMS.ClassMembersStatus.ACTIVE,
     });
-    if (isMember) {
-      classroom = await Classroom.findById(classroomId)
-        .populate('agreement_id')
-        .populate({
-          path: 'tutor_profile_id',
-          select: 'headline avatar_url user_id',
-          populate: { path: 'user_id', select: 'full_name' },
-        })
-        .lean();
+    if (!isMember && env.nodeEnv === 'production') {
+      throw new AppError('Bạn không có quyền truy cập lớp học này', 403);
     }
-  }
-
-  // 3. Fallback: Nếu lớp tồn tại và người dùng là TUTOR (hoặc lớp seed trong môi trường dev)
-  if (!classroom && user?.role === 'TUTOR') {
-    const existing = await Classroom.findById(classroomId)
-      .populate('agreement_id')
-      .populate({
-        path: 'tutor_profile_id',
-        select: 'headline avatar_url user_id',
-        populate: { path: 'user_id', select: 'full_name' },
-      })
-      .lean();
-
-    if (existing) {
-      classroom = existing;
-      if (activeTutorProfile && existing.tutor_profile_id?._id?.toString() === activeTutorProfile._id.toString()) {
-        isOwner = true;
-      } else if (env.nodeEnv !== 'production') {
-        isOwner = true;
-      }
-    }
-  }
-
-  if (!classroom) {
-    throw new AppError('Không tìm thấy lớp học hoặc bạn không có quyền truy cập', 404);
   }
 
   const memberCount = await ClassMember.countDocuments({
@@ -728,7 +767,12 @@ export const getClassMembers = async ({ classroomId }) => {
     return m;
   });
 
-  return enrichedMembers;
+  // Loại bỏ các bản ghi tài khoản Gia sư khỏi danh sách thành viên học viên/phụ huynh
+  const validMembers = enrichedMembers.filter(
+    (m) => m.user_id && m.user_id.role !== 'TUTOR'
+  );
+
+  return validMembers;
 };
 
 /**
@@ -925,6 +969,7 @@ export const getClassroomByJoinCode = async ({ joinCode }) => {
     member_count: activeMembers.length,
     is_full: activeMembers.length >= classroom.capacity,
     tutor: classroom.tutor_profile_id,
+    tutor_user_id: classroom.tutor_profile_id?.user_id?._id || classroom.tutor_profile_id?.user_id || null,
     students,
   };
 };
@@ -936,6 +981,14 @@ export const getClassroomByJoinCode = async ({ joinCode }) => {
 export const joinClassroomByCode = async ({ joinCode, user, child_user_id }) => {
   if (!joinCode || !joinCode.trim()) {
     throw new AppError('Vui lòng cung cấp mã tham gia', 400);
+  }
+
+  // UC24: Quy định vai trò - Chỉ Học sinh và Phụ huynh mới tham gia lớp học
+  if (user?.role === 'TUTOR') {
+    throw new AppError(
+      'Tài khoản Gia sư không thể tham gia lớp học với vai trò học sinh/phụ huynh. Vui lòng đăng nhập tài khoản Học sinh hoặc Phụ huynh.',
+      400
+    );
   }
 
   const code = joinCode.trim().toUpperCase();
@@ -951,7 +1004,10 @@ export const joinClassroomByCode = async ({ joinCode, user, child_user_id }) => 
 
   // Kiểm tra không cho gia sư tự tham gia lớp do chính mình quản lý
   const tutorProfile = await TutorProfile.findById(classroom.tutor_profile_id);
-  if (tutorProfile && tutorProfile.user_id?.toString() === user._id.toString()) {
+  if (
+    (tutorProfile && tutorProfile.user_id?.toString() === user._id.toString()) ||
+    classroom.tutor_profile_id?.toString() === user._id.toString()
+  ) {
     throw new AppError('Bạn là gia sư phụ trách lớp học này, không thể tham gia với vai trò học sinh/phụ huynh', 400);
   }
 
