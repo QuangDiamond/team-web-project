@@ -5,72 +5,84 @@ import * as classroomController from '../controllers/classroom.controller.js';
 export const classroomRoutes = Router();
 
 // ==========================================
-// UC24: Tham gia lớp học (Dành cho Học sinh / Phụ huynh)
+// 1. PUBLIC & CODE PREVIEW (UC24)
 // ==========================================
+// Xem trước thông tin lớp học theo mã mời (không yêu cầu đăng nhập)
 classroomRoutes.get('/preview/:joinCode', classroomController.previewClassroomByCode);
-classroomRoutes.post('/join', requireUserAuth, classroomController.joinClassroom);
 
 // ==========================================
-// Thỏa thuận kết nối đã xác nhận (Gia sư)
+// 2. TỔNG QUAN DANH SÁCH LỚP & THAM GIA
 // ==========================================
+// Lấy danh sách lớp của người dùng hiện tại (Gia sư / Học sinh / Phụ huynh)
+classroomRoutes.get('/', requireUserAuth, classroomController.getMyClassrooms);
+
+// UC21: Khởi tạo lớp học mới (Gia sư)
+classroomRoutes.post('/', requireTutorAuth, classroomController.createClassroom);
+
+// UC24: Tham gia lớp học bằng mã (Học sinh / Phụ huynh)
+classroomRoutes.post('/join', requireUserAuth, classroomController.joinClassroom);
+
+// Thỏa thuận kết nối đã xác nhận để tạo lớp (Gia sư)
 classroomRoutes.get('/agreements', requireTutorAuth, classroomController.getConfirmedAgreements);
 
 // ==========================================
-// UC22, UC23, UC26: Xem thông tin lớp, Bảng tin, Thành viên & Danh sách bài tập (Cả Gia sư và Học sinh)
+// 3. QUẢN LÝ BÀI TẬP & CHẤM ĐIỂM (UC26 & UC27)
+// Đặt TRƯỚC route `/:id` để tránh bị Express route matching nuốt mất
 // ==========================================
-classroomRoutes.get('/:id', requireUserAuth, classroomController.getClassroomDetail);
-classroomRoutes.get('/:id/announcements', requireUserAuth, classroomController.getClassAnnouncements);
-classroomRoutes.get('/:id/members', requireUserAuth, classroomController.getClassMembers);
-classroomRoutes.get('/:id/assignments', requireUserAuth, classroomController.getClassAssignments);
-
-// ==========================================
-// UC27: Nộp bài tập & Chi tiết bài tập (Học sinh)
-// ==========================================
+// UC27: Lấy chi tiết bài tập theo ID (Học sinh / Gia sư)
 classroomRoutes.get('/assignments/:assignmentId', requireUserAuth, classroomController.getAssignmentDetail);
+
+// UC27: Nộp bài tập (Học sinh)
 classroomRoutes.post('/assignments/:assignmentId/submit', requireUserAuth, classroomController.submitAssignment);
 
+// UC26: Lấy danh sách bài nộp của học sinh (Gia sư chủ lớp)
+classroomRoutes.get('/assignments/:assignmentId/submissions', requireTutorAuth, classroomController.getSubmissionsForAssignment);
+
+// UC26: Chỉnh sửa bài tập (Gia sư chủ lớp)
+classroomRoutes.put('/assignments/:assignmentId', requireTutorAuth, classroomController.updateAssignment);
+
+// UC26: Xóa bài tập (Gia sư chủ lớp)
+classroomRoutes.delete('/assignments/:assignmentId', requireTutorAuth, classroomController.deleteAssignment);
+
+// UC26: Chấm điểm bài nộp của học sinh (Gia sư chủ lớp)
+classroomRoutes.post('/submissions/:submissionId/grade', requireTutorAuth, classroomController.gradeSubmission);
+
 // ==========================================
-// UC33: Phòng chat nhóm lớp học (Cả Gia sư và Học sinh)
+// 4. CÁC TÁC VỤ THEO LỚP HỌC (/:id/...)
 // ==========================================
+// Bảng tin lớp học (UC22)
+classroomRoutes.get('/:id/announcements', requireUserAuth, classroomController.getClassAnnouncements);
+classroomRoutes.post('/:id/announcements', requireTutorAuth, classroomController.createClassAnnouncement);
+classroomRoutes.put('/:id/announcements/:announcementId', requireTutorAuth, classroomController.updateClassAnnouncement);
+classroomRoutes.delete('/:id/announcements/:announcementId', requireTutorAuth, classroomController.deleteClassAnnouncement);
+classroomRoutes.patch('/:id/announcements/:announcementId/pin', requireTutorAuth, classroomController.togglePinAnnouncement);
+
+// Thành viên lớp học (UC23)
+classroomRoutes.get('/:id/members', requireUserAuth, classroomController.getClassMembers);
+classroomRoutes.post('/:id/members', requireTutorAuth, classroomController.addMemberToClass);
+classroomRoutes.delete('/:id/members/:memberId', requireTutorAuth, classroomController.removeMemberFromClass);
+
+// Danh sách bài tập trong lớp (UC26)
+classroomRoutes.get('/:id/assignments', requireUserAuth, classroomController.getClassAssignments);
+classroomRoutes.post('/:id/assignments', requireTutorAuth, classroomController.createAssignment);
+
+// Phòng chat nhóm lớp học (UC33)
 classroomRoutes.get('/:id/chat', requireUserAuth, classroomController.getClassGroupChat);
 classroomRoutes.post('/:id/chat', requireUserAuth, classroomController.sendClassChatMessage);
+classroomRoutes.post('/:id/chat/init', requireTutorAuth, classroomController.createClassGroupChat);
+
+// Quản lý trạng thái và mã mời lớp học (UC22)
+classroomRoutes.patch('/:id/status', requireTutorAuth, classroomController.updateClassroomStatus);
+classroomRoutes.post('/:id/regenerate-code', requireTutorAuth, classroomController.regenerateJoinCode);
 
 // ==========================================
-// Danh sách lớp học của người dùng (Cả Gia sư, Học viên và Phụ huynh)
+// 5. CHI TIẾT & CHỈNH SỬA LỚP HỌC (/:id) - ĐẶT CUỐI CÙNG
 // ==========================================
-classroomRoutes.get('/', requireUserAuth, classroomController.getMyClassrooms);
+// UC22: Lấy chi tiết lớp học (Gia sư / Học viên / Phụ huynh)
+classroomRoutes.get('/:id', requireUserAuth, classroomController.getClassroomDetail);
 
-// ==========================================
-// Các route quản lý của Gia sư chủ lớp (requireTutorAuth)
-// ==========================================
-classroomRoutes.use(requireTutorAuth);
+// UC22: Cập nhật thông tin lớp học (Gia sư)
+classroomRoutes.put('/:id', requireTutorAuth, classroomController.updateClassroom);
 
-// UC21: Khởi tạo lớp học của gia sư
-classroomRoutes.post('/', classroomController.createClassroom);
-
-// UC22: Quản lý thiết lập lớp học, mã mời, trạng thái, xóa lớp
-classroomRoutes.put('/:id', classroomController.updateClassroom);
-classroomRoutes.patch('/:id/status', classroomController.updateClassroomStatus);
-classroomRoutes.post('/:id/regenerate-code', classroomController.regenerateJoinCode);
-classroomRoutes.delete('/:id', classroomController.deleteClassroom);
-
-// UC22: Đăng, sửa, xóa, ghim thông báo bảng tin lớp học
-classroomRoutes.post('/:id/announcements', classroomController.createClassAnnouncement);
-classroomRoutes.put('/:id/announcements/:announcementId', classroomController.updateClassAnnouncement);
-classroomRoutes.delete('/:id/announcements/:announcementId', classroomController.deleteClassAnnouncement);
-classroomRoutes.patch('/:id/announcements/:announcementId/pin', classroomController.togglePinAnnouncement);
-
-// UC23: Quản lý thành viên lớp học (Chỉ Gia sư chủ lớp)
-classroomRoutes.post('/:id/members', classroomController.addMemberToClass);
-classroomRoutes.delete('/:id/members/:memberId', classroomController.removeMemberFromClass);
-
-// UC33: Khởi tạo phòng chat lớp học (Chỉ Gia sư chủ lớp)
-classroomRoutes.post('/:id/chat/init', classroomController.createClassGroupChat);
-
-// UC26: Quản lý bài tập & Chấm điểm (Chỉ Gia sư chủ lớp)
-classroomRoutes.post('/:id/assignments', classroomController.createAssignment);
-classroomRoutes.put('/assignments/:assignmentId', classroomController.updateAssignment);
-classroomRoutes.delete('/assignments/:assignmentId', classroomController.deleteAssignment);
-classroomRoutes.get('/assignments/:assignmentId/submissions', classroomController.getSubmissionsForAssignment);
-classroomRoutes.post('/submissions/:submissionId/grade', classroomController.gradeSubmission);
-
+// UC22: Xóa lớp học (Gia sư)
+classroomRoutes.delete('/:id', requireTutorAuth, classroomController.deleteClassroom);
