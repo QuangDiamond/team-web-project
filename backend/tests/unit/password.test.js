@@ -50,8 +50,7 @@ function setup(t, overrides = {}) {
     }),
     record: null, mails: [], writes: [], failWrite: false, failCleanup: false,
   };
-  // Link khôi phục lấy gốc URL từ env.corsOrigin. Cố định giá trị này để test không phụ thuộc CORS_ORIGIN / backend/.env
-  // của máy chạy (mặc định khi thiếu biến là mảng 2 origin, `new URL` sẽ lỗi và mail không được gửi)
+  // Isolate the link origin from the local environment; array configurations are covered separately.
   const originalCorsOrigin = env.corsOrigin;
   env.corsOrigin = 'https://trusted.example';
   t.after(() => { env.corsOrigin = originalCorsOrigin; });
@@ -194,6 +193,37 @@ test('forgot response is identical before any lookup for missing, inactive, cool
   assert.equal(state.record, null, 'failed delivery deletes only the newly issued record');
   assert.equal(response.statusCode, 200);
   assert.equal(response.body.data, null);
+});
+
+test('recovery sends mail using the first configured CORS origin when multiple origins are allowed', async (t) => {
+  const state = setup(t);
+  env.corsOrigin = ['https://trusted.example', 'https://other.example'];
+  await requestLink(state);
+  assert.equal(state.mails.length, 1);
+  assert.match(state.mails[0].html, /https:\/\/trusted\.example\/reset-password\?token=/);
+  assert.equal(state.mails[0].html.includes('other.example'), false);
+});
+
+test('recovery supports the default localhost origin list', async (t) => {
+  const state = setup(t);
+  env.corsOrigin = ['http://localhost:5173', 'http://localhost:5174'];
+  await requestLink(state);
+  assert.match(state.mails[0].html, /http:\/\/localhost:5173\/reset-password\?token=/);
+});
+
+test('SMTP failure logs only the diagnostic code and removes the undelivered token', async (t) => {
+  const state = setup(t);
+  const log = t.mock.method(console, 'error', () => {});
+  t.mock.method(transport, 'sendMail', async () => {
+    const error = new Error('Sensitive SMTP response');
+    error.code = 'EAUTH';
+    throw error;
+  });
+  service.forgotPassword(state.user.email);
+  await setImmediate();
+  await setImmediate();
+  assert.equal(state.record, null);
+  assert.deepEqual(log.mock.calls[0].arguments, ['Password recovery email failed:', 'EAUTH']);
 });
 
 test('recovery stores only SHA256, expires in 15 minutes and rotates once after 60 seconds', async (t) => {
