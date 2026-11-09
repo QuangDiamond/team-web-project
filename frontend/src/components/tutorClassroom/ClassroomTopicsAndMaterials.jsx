@@ -77,21 +77,21 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material, er
     const extension = fileNameParts[fileNameParts.length - 1];
     const allowedMimeTypes = ALLOWED_FILE_MIME_TYPES[extension];
     if (!allowedMimeTypes || (selectedFile.type && !allowedMimeTypes.includes(selectedFile.type))) {
-      setFileError('This file type is not allowed. Choose a file type listed below.');
+      setFileError('Định dạng file không được hỗ trợ. Vui lòng chọn một định dạng trong danh sách bên dưới.');
       setFile(null);
       event.target.value = '';
       return;
     }
 
     if (selectedFile.size === 0) {
-      setFileError('The selected file is empty. Choose a different file.');
+      setFileError('File đã chọn không có nội dung. Vui lòng chọn file khác.');
       setFile(null);
       event.target.value = '';
       return;
     }
 
     if (selectedFile.size > MAX_CLASS_MATERIAL_SIZE) {
-      setFileError('The file must be 20 MB or smaller.');
+      setFileError('File vượt quá 20 MB. Vui lòng nén file hoặc chọn file nhỏ hơn.');
       setFile(null);
       event.target.value = '';
     }
@@ -132,6 +132,7 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material, er
   return (
     <Modal title={material ? 'Replace class material' : 'Upload class material'} onClose={onClose}>
       <form className="class-create-form" onSubmit={handleSubmit}>
+        {error && <Alert type="error"><strong>Không thể tải tài liệu lên</strong><p>{error}</p></Alert>}
         <FormInput
           id="material-title"
           label="Title"
@@ -187,10 +188,9 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material, er
             </div>
             <p className="form-hint-left">{MATERIAL_FILE_HELP}</p>
             {file && <p className="form-hint-left">Selected: {file.name} ({formatFileSize(file.size)})</p>}
-            {fileError && <p className="form-error">{fileError}</p>}
+            {fileError && <p className="form-error" role="alert">{fileError}</p>}
           </div>
         )}
-        {error && <Alert type="error"><p>{error}</p></Alert>}
         <div className="modal-actions">
           <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={isSaving}>Cancel</button>
           <button
