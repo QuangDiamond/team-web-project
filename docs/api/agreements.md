@@ -5,6 +5,16 @@ Dành cho `PARENT` và `TUTOR` đã đăng nhập (bắt buộc middleware `auth
 ## GET `/`
 Trả về danh sách các thỏa thuận dạy học (`connections`) và các hội thoại 1-1 đang hoạt động (`activeConversations`) của người dùng hiện tại.
 
+`activeConversations` bổ sung `request_id` (string hoặc null nếu yêu cầu không còn) và `grade_level` (string).
+Các trường `_id`, `request_title`, `subject_name`, `schedule`, `budget`, `parent_name`, `tutor_name` giữ nguyên.
+Chỉ hội thoại DIRECT của người đang đăng nhập được trả về như trước.
+
+Ở `/parent/contracts`, modal đề xuất nhóm hội thoại theo `request_id` để chọn yêu cầu trước,
+sau đó chọn gia sư đã kết nối với đúng yêu cầu đó. Yêu cầu không có hội thoại hoạt động chưa được chọn để tạo thỏa thuận.
+Môn/trình độ, ngân sách và lịch được điền từ yêu cầu đã đăng; người dùng được chỉnh sửa.
+Dropdown gia sư vẫn gửi `conversationId` theo contract POST cũ, backend tiếp tục kiểm tra quyền thành viên.
+Lịch dùng lại bộ chọn ngày và giờ của form yêu cầu, đọc được lịch chuẩn AM/PM và lịch cũ tiếng Việt dạng 24 giờ.
+
 ## POST `/propose`
 Body: `{ "conversationId": "<ObjectId>", "agreedSubject": "Toán 9", "agreedSchedule": "Thứ 3 & Thứ 5", "agreedPrice": 250000 }`.
 - Tạo bản ghi `TutoringAgreement` ở trạng thái `PENDING`.

@@ -1,5 +1,25 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import {
+  AlertTriangle,
+  BookOpen,
+  CalendarDays,
+  Sparkles,
+  GraduationCap,
+  Users,
+  UserCheck,
+  Settings,
+  RefreshCw,
+  Archive,
+  RotateCcw,
+  Trash2,
+  Copy,
+  Link as LinkIcon,
+  Bell,
+  ClipboardList,
+  MessageSquare,
+  LoaderCircle,
+} from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import {
   getClassroomDetail,
@@ -23,6 +43,7 @@ import ClassroomAnnouncementsTab from '../../components/classroom/ClassroomAnnou
 import ClassroomMembersTab from '../../components/classroom/ClassroomMembersTab';
 import ClassroomAssignmentsTab from '../../components/classroom/ClassroomAssignmentsTab';
 import ClassroomChatTab from '../../components/classroom/ClassroomChatTab';
+import MyClassDetail from '../tutor/MyClassDetail';
 import './classroom.css';
 
 export default function ClassroomDetail() {
@@ -234,17 +255,19 @@ export default function ClassroomDetail() {
   };
 
   // Send chat message
-  const handleSendChat = async (e) => {
-    e.preventDefault();
-    if (!chatInput.trim()) return;
+  const handleSendChat = async (e, attachments = []) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (!chatInput.trim() && attachments.length === 0) return false;
 
     try {
       setSendingChat(true);
-      const res = await sendClassChatMessage(id, chatInput.trim());
+      const res = await sendClassChatMessage(id, chatInput.trim(), attachments);
       setChatMessages((prev) => [...prev, res?.data]);
       setChatInput('');
+      return true;
     } catch (err) {
       alert(err?.response?.data?.message || err.message || 'Lỗi gửi tin nhắn');
+      return false;
     } finally {
       setSendingChat(false);
     }
@@ -283,7 +306,9 @@ export default function ClassroomDetail() {
   if (loading) {
     return (
       <div className="classroom-container" style={{ textAlign: 'center', padding: '80px' }}>
-        <div style={{ fontSize: '36px', marginBottom: '12px' }}>⏳</div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+          <LoaderCircle size={36} className="spin" style={{ color: '#e85a2c' }} />
+        </div>
         <p style={{ color: '#64748b' }}>Đang tải thông tin lớp học...</p>
       </div>
     );
@@ -293,7 +318,7 @@ export default function ClassroomDetail() {
     return (
       <div className="classroom-container">
         <div className="error-alert">
-          <span>⚠️</span>
+          <AlertTriangle size={18} style={{ flexShrink: 0 }} />
           <div>{error || 'Không tìm thấy lớp học'}</div>
         </div>
         <Link to={backUrl} className="btn-primary-orange" style={{ textDecoration: 'none' }}>
@@ -314,7 +339,11 @@ export default function ClassroomDetail() {
   return (
     <div className="classroom-container">
       {/* Toast Notification */}
-      {toastMessage && <div className="copy-toast">✨ {toastMessage}</div>}
+      {toastMessage && (
+        <div className="copy-toast" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <Sparkles size={16} /> {toastMessage}
+        </div>
+      )}
 
       {/* Breadcrumb Navigation */}
       <div style={{ marginBottom: '16px', fontSize: '14px', color: '#64748b' }}>
@@ -347,16 +376,16 @@ export default function ClassroomDetail() {
               {classroom.status === 'ACTIVE' ? 'Đang hoạt động' : 'Đã lưu trữ'}
             </span>
             {isOwner ? (
-              <span className="badge" style={{ background: '#fff7ed', color: '#c2410c', border: '1px solid #fed7aa', fontWeight: 600 }}>
-                👨‍🏫 Bạn là Gia sư phụ trách lớp
+              <span className="badge" style={{ background: '#fff7ed', color: '#c2410c', border: '1px solid #fed7aa', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <GraduationCap size={13} /> Bạn là Gia sư phụ trách lớp
               </span>
             ) : user?.role === 'PARENT' ? (
-              <span className="badge" style={{ background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 600 }}>
-                👨‍👩‍👧 Bạn là Phụ huynh theo dõi lớp
+              <span className="badge" style={{ background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <Users size={13} /> Bạn là Phụ huynh theo dõi lớp
               </span>
             ) : (
-              <span className="badge" style={{ background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', fontWeight: 600 }}>
-                🎒 Bạn là Học viên trong lớp
+              <span className="badge" style={{ background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <UserCheck size={13} /> Bạn là Học viên trong lớp
               </span>
             )}
           </div>
@@ -395,35 +424,51 @@ export default function ClassroomDetail() {
               <button
                 type="button"
                 className="btn-outline-gray"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 onClick={() => setIsEditModalOpen(true)}
                 title="Chỉnh sửa tên, môn, sĩ số, mô tả"
               >
-                ⚙️ Chỉnh sửa thông tin
+                <Settings size={14} />
+                <span>Chỉnh sửa thông tin</span>
               </button>
               <button
                 type="button"
                 className="btn-outline-gray"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 onClick={handleRegenerateCode}
                 title="Cấp lại mã tham gia mới"
               >
-                🔄 Đổi mã mời
+                <RefreshCw size={14} />
+                <span>Đổi mã mời</span>
               </button>
               <button
                 type="button"
                 className="btn-outline-gray"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 onClick={handleToggleStatus}
                 title="Chuyển đổi trạng thái lưu trữ"
               >
-                {classroom.status === 'ACTIVE' ? '📦 Lưu trữ lớp' : '⚡ Kích hoạt lại'}
+                {classroom.status === 'ACTIVE' ? (
+                  <>
+                    <Archive size={14} />
+                    <span>Lưu trữ lớp</span>
+                  </>
+                ) : (
+                  <>
+                    <RotateCcw size={14} />
+                    <span>Kích hoạt lại</span>
+                  </>
+                )}
               </button>
               <button
                 type="button"
                 className="btn-outline-gray"
-                style={{ color: '#dc2626' }}
+                style={{ color: '#dc2626', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 onClick={handleDeleteClassroom}
                 title="Xóa lớp học (chỉ khi không còn thành viên/buổi học)"
               >
-                🗑️ Xóa lớp
+                <Trash2 size={14} />
+                <span>Xóa lớp</span>
               </button>
             </div>
           )}
@@ -451,15 +496,16 @@ export default function ClassroomDetail() {
             <button
               type="button"
               className="btn-primary-orange"
-              style={{ padding: '8px 14px', fontSize: '13px' }}
+              style={{ padding: '8px 14px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               onClick={() => handleCopy(classroom.join_code, 'mã tham gia')}
             >
-              📋 Sao chép mã
+              <Copy size={13} />
+              <span>Sao chép mã</span>
             </button>
             <button
               type="button"
               className="btn-outline-gray"
-              style={{ padding: '8px 14px', fontSize: '13px' }}
+              style={{ padding: '8px 14px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               onClick={() =>
                 handleCopy(
                   classroom.invite_link || `${window.location.origin}/join-class/${classroom.join_code}`,
@@ -467,7 +513,8 @@ export default function ClassroomDetail() {
                 )
               }
             >
-              🔗 Liên kết mời
+              <LinkIcon size={13} />
+              <span>Liên kết mời</span>
             </button>
           </div>
         </div>
@@ -479,31 +526,57 @@ export default function ClassroomDetail() {
           <button
             type="button"
             className={`tab-btn ${activeTab === 'announcements' ? 'active' : ''}`}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             onClick={() => setActiveTab('announcements')}
           >
-            📢 Bảng tin
+            <Bell size={15} />
+            <span>Bảng tin</span>
           </button>
           <button
             type="button"
             className={`tab-btn ${activeTab === 'members' ? 'active' : ''}`}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             onClick={() => setActiveTab('members')}
           >
-            👥 Thành viên ({studentCount} HS{parentMembers.length > 0 ? ` + ${parentMembers.length} PH` : ''})
+            <Users size={15} />
+            <span>Thành viên ({studentCount} HS{parentMembers.length > 0 ? ` + ${parentMembers.length} PH` : ''})</span>
           </button>
           <button
             type="button"
             className={`tab-btn ${activeTab === 'assignments' ? 'active' : ''}`}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             onClick={() => setActiveTab('assignments')}
           >
-            📝 Bài tập ({assignments.length})
+            <ClipboardList size={15} />
+            <span>Bài tập ({assignments.length})</span>
           </button>
           <button
             type="button"
             className={`tab-btn ${activeTab === 'chat' ? 'active' : ''}`}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             onClick={() => setActiveTab('chat')}
           >
-            💬 Nhóm Chat lớp
+            <MessageSquare size={15} />
+            <span>Nhóm Chat lớp</span>
           </button>
+          {user?.role === 'TUTOR' && (
+            <>
+              <button
+                type="button"
+                className={`tab-btn ${activeTab === 'materials' ? 'active' : ''}`}
+                onClick={() => setActiveTab('materials')}
+              >
+                <BookOpen size={15} aria-hidden="true" /> Tài liệu &amp; chủ đề
+              </button>
+              <button
+                type="button"
+                className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`}
+                onClick={() => setActiveTab('schedule')}
+              >
+                <CalendarDays size={15} aria-hidden="true" /> Lịch lớp học
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -574,6 +647,15 @@ export default function ClassroomDetail() {
           onSelectRemoveMember={(m) => setRemoveMemberTarget(m)}
           chatBottomRef={chatBottomRef}
           isOwner={isOwner}
+        />
+      )}
+
+      {user?.role === 'TUTOR' && (activeTab === 'materials' || activeTab === 'schedule') && (
+        <MyClassDetail
+          embedded
+          classId={id}
+          classroom={classroom}
+          activeTab={activeTab}
         />
       )}
 

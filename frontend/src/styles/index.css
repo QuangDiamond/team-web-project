@@ -162,6 +162,14 @@ body {
   border-color: var(--color-border);
 }
 
+/* Nút chỉ có icon (thu gọn hàng nút); luôn kèm title và aria-label */
+.btn.btn-icon {
+  width: 36px;
+  min-width: 36px;
+  padding: 0;
+  justify-content: center;
+}
+
 .btn-outline:hover:not(:disabled) {
   border-color: var(--color-primary);
   background: var(--color-primary-soft);
@@ -1134,6 +1142,92 @@ body {
   color: var(--color-primary-strong);
 }
 
+/* ---------- Chọn lịch học (SchedulePicker) ---------- */
+.schedule-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.schedule-day {
+  min-height: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.schedule-day:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.schedule-day.is-selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+}
+
+.schedule-times {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.schedule-time {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.schedule-time-label {
+  flex: 0 0 40px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.schedule-time input,
+.schedule-time select {
+  min-height: 44px;
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  color: inherit;
+  font: inherit;
+  text-align: center;
+}
+
+.schedule-time input {
+  width: 60px;
+}
+
+.schedule-time select {
+  padding: 0 8px;
+}
+
+.schedule-time input:focus-visible,
+.schedule-time select:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+@media (max-width: 640px) {
+  .schedule-times {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---------- Modal ---------- */
 .modal-overlay {
   position: fixed;
@@ -1379,7 +1473,7 @@ body {
 
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
 }
 
@@ -1530,9 +1624,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
 }
 
 .nav-brand {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1569,7 +1665,7 @@ body {
   font-weight: 500;
   color: var(--gray-600);
   padding: 8px 14px;
-  border-radius: var(--radius-md);
+  border-radius: 999px;
   transition: all 0.15s ease;
   white-space: nowrap;
   display: inline-flex;
@@ -1591,14 +1687,48 @@ body {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  min-width: 0;
+}
+
+.nav-actions > .btn {
+  min-height: 40px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.nav-actions > .nav-round-action {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.nav-actions > .nav-logout-action {
+  color: var(--color-error);
+}
+
+.dashboard-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+.nav-actions > .btn-outline {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .nav-noti-btn {
   position: relative;
   width: 40px;
   height: 40px;
-  border-radius: 10px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1867,7 +1997,7 @@ body {
   display: none;
   padding: 8px;
   color: var(--gray-600);
-  border-radius: var(--radius-md);
+  border-radius: 50%;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -2002,7 +2132,7 @@ body {
   color: var(--gray-700);
 }
 
-@media (max-width: 1120px) {
+@media (max-width: 1200px) {
   .nav-links {
     display: none;
   }
@@ -2021,6 +2151,16 @@ body {
 }
 
 @media (max-width: 640px) {
+  .nav-container {
+    padding: 0 16px;
+    gap: 8px;
+  }
+  .nav-actions {
+    gap: 8px;
+  }
+  .nav-actions > .btn {
+    display: none;
+  }
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 24px;

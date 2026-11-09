@@ -11,7 +11,7 @@ export const FREE_PLAN_NAME = 'FREE_DEFAULT';
 /**
  * Đổi Plan document sang dạng trả về cho API (monthly_price là number)
  * @param {Object} plan - Plan document
- * @returns {Object} { _id, target_role, name, monthly_price, monthly_credits, ai_quota, max_classrooms, sms_reminders_enabled, is_active }
+ * @returns {Object} Plan details including its billing period and annual discount.
  */
 export const toPlanResponse = (plan) => {
   return {
@@ -19,11 +19,29 @@ export const toPlanResponse = (plan) => {
     target_role: plan.target_role,
     name: plan.name,
     monthly_price: decimalToNumber(plan.monthly_price),
+    billing_period: plan.billing_period || 'MONTHLY',
+    annual_discount_percent: plan.annual_discount_percent || 0,
     monthly_credits: plan.monthly_credits,
     ai_quota: plan.ai_quota,
     max_classrooms: plan.max_classrooms,
     sms_reminders_enabled: plan.sms_reminders_enabled,
     is_active: plan.is_active,
+  };
+};
+
+/**
+ * Calculate the charge and subscription duration from the selected plan.
+ * @param {Object} plan - Plan price, billing period, and annual discount.
+ * @returns {{ duration_months: number, amount: number }} Server-calculated charge terms.
+ */
+export const calculatePlanCharge = (plan) => {
+  const durationMonths = plan.billing_period === 'YEARLY' ? 12 : 1;
+  const discountPercent = plan.billing_period === 'YEARLY' ? Number(plan.annual_discount_percent || 0) : 0;
+  const fullAmount = decimalToNumber(plan.monthly_price) * durationMonths;
+
+  return {
+    duration_months: durationMonths,
+    amount: Math.round(fullAmount * (100 - discountPercent) / 100),
   };
 };
 
@@ -93,10 +111,10 @@ const findCreditPackOrThrow = async (creditPackId) => {
 };
 
 /**
- * Admin sửa cấu hình gói (UC39): giá, credit/tháng, AI quota, số lớp tối đa, SMS. Gói Free phải giữ giá 0.
+ * Admin sửa cấu hình gói (UC39): giá, chu kỳ, chiết khấu, credit/tháng, AI quota, số lớp tối đa, SMS.
  * Ghi audit log UPDATE_PLAN kèm giá trị trước / sau
  * @param {string} planId - id của Plan
- * @param {Object} data - { monthly_price, monthly_credits, ai_quota, max_classrooms, sms_reminders_enabled, is_active?, reason }
+ * @param {Object} data - Validated plan settings and audit reason.
  * @param {Object} admin - { adminUserId, ipAddress }
  * @returns {Promise<Object>} plan sau khi sửa (dạng toPlanResponse)
  */
@@ -108,10 +126,38 @@ export const updatePlan = async (planId, data, admin) => {
       monthly_price: ['Free plan price must be 0'],
     });
   }
+  if (plan.name === FREE_PLAN_NAME && data.name !== undefined && data.name !== FREE_PLAN_NAME) {
+    throw new AppError('Free plan name cannot be changed', 422, {
+      name: ['Free plan name cannot be changed'],
+    });
+  }
+  if (plan.name !== FREE_PLAN_NAME && data.name === FREE_PLAN_NAME) {
+    throw new AppError('FREE_DEFAULT is reserved for the Free plan', 422, {
+      name: ['FREE_DEFAULT is reserved for the Free plan'],
+    });
+  }
+
+  const billingPeriod = data.billing_period || plan.billing_period || 'MONTHLY';
+  const annualDiscountPercent = data.annual_discount_percent ?? plan.annual_discount_percent ?? 0;
+  if (billingPeriod === 'MONTHLY' && annualDiscountPercent > 0) {
+    throw new AppError('Annual discount is only available for yearly plans', 422, {
+      annual_discount_percent: ['Annual discount is only available for yearly plans'],
+    });
+  }
+  if (plan.name === FREE_PLAN_NAME && billingPeriod === 'YEARLY') {
+    throw new AppError('Free plan must use the monthly period', 422, {
+      billing_period: ['Free plan must use the monthly period'],
+    });
+  }
 
   const before = toPlanResponse(plan);
 
   plan.monthly_price = String(data.monthly_price);
+  if (data.name !== undefined) {
+    plan.name = data.name;
+  }
+  plan.billing_period = billingPeriod;
+  plan.annual_discount_percent = annualDiscountPercent;
   plan.monthly_credits = data.monthly_credits;
   plan.ai_quota = data.ai_quota;
   plan.max_classrooms = data.max_classrooms;

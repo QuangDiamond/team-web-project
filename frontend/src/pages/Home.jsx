@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { getHomePathByRole } from '../utils/getHomePathByRole';
 import { statsService } from '../services/statsService';
+import { useSubjectNames } from '../hooks/useSubjectNames';
 import '../styles/Home.css';
 
 const trustedLogos = [
@@ -21,8 +22,8 @@ const features = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     ),
-    title: 'Ghép đôi AI thông minh',
-    desc: 'Thuật toán AI phân tích phong cách học, năng lực và mục tiêu để đề xuất gia sư lý tưởng nhất cho học sinh.',
+    title: 'Gợi ý gia sư phù hợp',
+    desc: 'Đối chiếu môn học và trình độ cần học với danh mục giảng dạy trong hồ sơ gia sư để gợi ý người phù hợp.',
   },
   {
     icon: (
@@ -61,7 +62,7 @@ const howItWorksSteps = [
   },
   {
     step: '02',
-    title: 'AI gợi ý & Kết nối 1-1',
+    title: 'Gợi ý & Kết nối 1-1',
     desc: 'Hệ thống gợi ý gia sư phù hợp nhất hoặc gia sư chủ động ứng tuyển, mở phòng trò chuyện trực tiếp.',
   },
   {
@@ -72,6 +73,7 @@ const howItWorksSteps = [
 ];
 
 export default function Home() {
+  const categories = useSubjectNames();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchSubject, setSearchSubject] = useState('');
@@ -101,11 +103,11 @@ export default function Home() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (user && user.role) {
-      navigate(getHomePathByRole(user.role));
-    } else {
-      navigate('/login');
-    }
+    const query = new URLSearchParams();
+    if (searchSubject.trim()) query.set('q', searchSubject.trim());
+    query.set('mode', teachingMode);
+    if (gradeLevel !== 'ALL') query.set('grade', gradeLevel);
+    navigate(`/tutors?${query}`);
   };
 
   return (
@@ -126,7 +128,7 @@ export default function Home() {
               </h1>
 
               <p className="hero-subtitle">
-                TuConnector là cầu nối đáng tin cậy giữa phụ huynh và đội ngũ gia sư giỏi được xác thực. Ghép đôi bằng AI, trao đổi trực tiếp và theo dõi tiến độ minh bạch.
+                TuConnector là cầu nối đáng tin cậy giữa phụ huynh và đội ngũ gia sư giỏi được xác thực. Gợi ý theo nhu cầu học, trao đổi trực tiếp và theo dõi tiến độ minh bạch.
               </p>
 
               <form onSubmit={handleSearch} className="hero-search-box">
@@ -149,12 +151,12 @@ export default function Home() {
                   className="search-select"
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
-                  aria-label="Chọn khối lớp"
+                  aria-label="Chọn cấp học / trình độ"
                 >
-                  <option value="ALL">Mọi khối lớp</option>
-                  <option value="TIEU_HOC">Tiểu học (Lớp 1-5)</option>
-                  <option value="THCS">THCS (Lớp 6-9)</option>
-                  <option value="THPT">THPT (Lớp 10-12)</option>
+                  <option value="ALL">Mọi trình độ</option>
+                  {categories.gradeNames.map((name) => (
+                    <option key={name} value={name}>{name}</option>
+                  ))}
                 </select>
 
                 <div className="search-divider"></div>
@@ -217,7 +219,7 @@ export default function Home() {
                     <div className="sidebar-title">BẢNG ĐIỀU KHIỂN</div>
                     <div className="sidebar-item active">Tổng quan</div>
                     <div className="sidebar-item">Yêu cầu tìm gia sư</div>
-                    <div className="sidebar-item">Gợi ý AI</div>
+                    <div className="sidebar-item">Gợi ý gia sư</div>
                     <div className="sidebar-item">Hợp đồng kết nối</div>
                     <div className="sidebar-item">Tin nhắn</div>
                   </div>
@@ -227,8 +229,8 @@ export default function Home() {
 
                     <div className="stat-cards-grid">
                       <div className="mini-stat-card orange">
-                        <div className="mini-stat-label">Độ tương thích AI</div>
-                        <div className="mini-stat-value orange">95%</div>
+                        <div className="mini-stat-label">Trình độ phù hợp</div>
+                        <div className="mini-stat-value orange">Lớp 9</div>
                         <div className="mini-stat-trend">✓ Đề xuất hàng đầu</div>
                       </div>
                       <div className="mini-stat-card gray">
@@ -261,7 +263,7 @@ export default function Home() {
                 </div>
                 <div>
                   <div className="floating-title">Kết nối nhanh chóng</div>
-                  <div className="floating-subtitle">Ghép đôi gia sư bằng AI</div>
+                  <div className="floating-subtitle">Theo môn học và trình độ</div>
                 </div>
               </div>
 
@@ -325,8 +327,8 @@ export default function Home() {
               <h2 className="section-title" style={{ marginBottom: 4 }}>Gia sư tiêu biểu hàng đầu</h2>
               <p className="section-desc">Được phụ huynh đánh giá cao về chuyên môn và sự tận tâm</p>
             </div>
-            <Link to={targetDashboardPath} className="btn btn-outline" style={{ display: 'inline-flex' }}>
-              {user ? 'Vào bảng điều khiển →' : 'Đăng nhập để kết nối →'}
+            <Link to="/tutors" className="btn btn-outline" style={{ display: 'inline-flex' }}>
+              Xem tất cả gia sư
             </Link>
           </div>
 
@@ -335,7 +337,7 @@ export default function Home() {
               <div key={t._id || t.name} className="tutor-card">
                 <div className="tutor-card-top">
                   <div className="tutor-avatar" style={{ backgroundColor: t.color }}>
-                    {t.initials}
+                    {t.avatar_url ? <img src={t.avatar_url} alt="" loading="lazy" /> : t.initials}
                   </div>
                   <div>
                     <h3 className="tutor-name">{t.name}</h3>

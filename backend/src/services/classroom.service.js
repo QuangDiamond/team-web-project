@@ -1,4 +1,7 @@
 import crypto from 'crypto';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { Classroom } from '../models/Classroom.js';
 import { Conversation } from '../models/Conversation.js';
 import { ClassMember } from '../models/ClassMember.js';
@@ -16,6 +19,82 @@ import { Message } from '../models/Message.js';
 import { AppError } from '../common/utils/AppError.js';
 import { ENUMS } from '../models/enums.js';
 import { env } from '../config/environment.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadsDir = path.resolve(__dirname, '../../uploads');
+
+const ALLOWED_CHAT_FILE_EXTENSIONS = new Set([
+  'pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'jpg', 'jpeg', 'png', 'mp4', 'zip',
+]);
+const MAX_CHAT_FILE_SIZE = 20 * 1024 * 1024; // 20MB theo quy tắc ràng buộc nghiệp vụ
+
+/**
+ * Xử lý và lưu tệp đính kèm trong tin nhắn nhóm chat lớp học
+ * @param {Array<Object>} attachments
+ * @returns {Promise<Array<Object>>}
+ */
+const processChatMessageAttachments = async (attachments = []) => {
+  if (!Array.isArray(attachments) || attachments.length === 0) {
+    return [];
+  }
+
+  const processed = [];
+  await fs.mkdir(uploadsDir, { recursive: true });
+
+  for (const att of attachments) {
+    if (!att) continue;
+
+    const originalName = (att.file_name || 'attachment').trim();
+    const ext = originalName.split('.').pop()?.toLowerCase() || '';
+
+    if (!ALLOWED_CHAT_FILE_EXTENSIONS.has(ext)) {
+      throw new AppError(
+        `Định dạng tệp "${originalName}" không được hỗ trợ. Chỉ cho phép: pdf, doc/docx, ppt/pptx, xls/xlsx, jpg, png, mp4, zip.`,
+        400
+      );
+    }
+
+    let fileSize = parseInt(att.file_size, 10) || 0;
+    let fileUrl = att.file_url || '';
+
+    // Nếu gửi kèm file_data dạng base64, lưu file vào thư mục uploads
+    if (att.file_data) {
+      let base64Data = att.file_data;
+      if (base64Data.includes(',')) {
+        base64Data = base64Data.split(',')[1];
+      }
+      const buffer = Buffer.from(base64Data, 'base64');
+      fileSize = buffer.length;
+
+      if (fileSize > MAX_CHAT_FILE_SIZE) {
+        throw new AppError(`Tệp "${originalName}" vượt quá dung lượng tối đa cho phép là 20MB.`, 400);
+      }
+
+      const safeBaseName = originalName
+        .replace(/[^a-zA-Z0-9._-]/g, '_')
+        .slice(0, 50);
+      const uniqueFileName = `${Date.now()}-${crypto.randomBytes(4).toString('hex')}-${safeBaseName}`;
+      const targetPath = path.join(uploadsDir, uniqueFileName);
+
+      await fs.writeFile(targetPath, buffer);
+      fileUrl = `/uploads/${uniqueFileName}`;
+    } else {
+      if (fileSize > MAX_CHAT_FILE_SIZE) {
+        throw new AppError(`Tệp "${originalName}" vượt quá dung lượng tối đa cho phép là 20MB.`, 400);
+      }
+    }
+
+    processed.push({
+      file_url: fileUrl,
+      file_name: originalName,
+      file_size: fileSize,
+      mime_type: att.mime_type || `application/${ext}`,
+    });
+  }
+
+  return processed;
+};
 
 /**
  * Sinh mã tham gia lớp học độc nhất (6 ký tự: TC + 4 ký tự hex in hoa)
@@ -206,15 +285,21 @@ export const countActiveStudentsInClass = async (classroomId) => {
 };
 
 /**
- * Lấy danh sách lớp học của người dùng hiện tại (Hỗ trợ cả Gia sư chủ lớp, Học viên và Phụ huynh)
+ * Lấy danh sách lớp thuộc quyền truy cập của người dùng hiện tại.
+ * @param {Object} options - { user, tutorProfile, query }
+ * @returns {Promise<Object[]>} Danh sách lớp cùng sĩ số và quyền sở hữu.
  */
 export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
   const { search, status } = query;
-  let filter = {};
+  const filter = {};
+  const userId = user?._id || user?.id;
+  if (!userId) {
+    return [];
+  }
 
   let activeTutorProfile = tutorProfile;
-  if (!activeTutorProfile && user?.role === 'TUTOR' && user?._id) {
-    activeTutorProfile = await TutorProfile.findOne({ user_id: user._id });
+  if (!activeTutorProfile && user?.role === 'TUTOR' && userId) {
+    activeTutorProfile = await TutorProfile.findOne({ user_id: userId });
   }
 
   if (user?.role === 'TUTOR') {
@@ -223,25 +308,18 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
     if (activeTutorProfile?._id) {
       tutorFilterOr.push({ tutor_profile_id: activeTutorProfile._id });
     }
-    if (user._id) {
-      tutorFilterOr.push({ tutor_profile_id: user._id });
+    if (userId) {
+      tutorFilterOr.push({ tutor_profile_id: userId });
     }
 
     if (tutorFilterOr.length > 0) {
       filter.$or = tutorFilterOr;
     }
 
-    // Nếu môi trường dev mà chưa có lớp nào khớp, hiển thị các lớp cho dev test
-    if (env.nodeEnv !== 'production') {
-      const count = await Classroom.countDocuments(filter);
-      if (count === 0) {
-        filter = {};
-      }
-    }
-  } else if (user?.role === 'PARENT' && user?._id) {
+  } else if (user?.role === 'PARENT' && userId) {
     // Với Parent: CHỈ lấy danh sách các lớp mà con của phụ huynh đang thực tế theo học (status: ACTIVE)
     const childLinks = await ParentChildLink.find({
-      parent_user_id: user._id,
+      parent_user_id: userId,
       status: ENUMS.ParentChildLinksStatus.ACCEPTED,
     }).select('student_user_id').lean();
     const studentUserIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
@@ -259,7 +337,7 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
   } else if (user) {
     // Với Student: Lấy danh sách lớp đã tham gia thành công (ACTIVE)
     const memberships = await ClassMember.find({
-      user_id: user._id,
+      user_id: userId,
       status: ENUMS.ClassMembersStatus.ACTIVE,
     }).select('class_id').lean();
     const classIds = memberships.map((m) => m.class_id);
@@ -308,13 +386,11 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
 
       let isOwner = false;
       if (user?.role === 'TUTOR') {
-        if (tutorUserId && tutorUserId === user._id?.toString()) {
+        if (tutorUserId && tutorUserId === userId?.toString()) {
           isOwner = true;
         } else if (activeTutorProfile && tutorProfId === activeTutorProfile._id?.toString()) {
           isOwner = true;
-        } else if (cls.tutor_profile_id?.toString() === user._id?.toString()) {
-          isOwner = true;
-        } else if (env.nodeEnv !== 'production') {
+        } else if (cls.tutor_profile_id?.toString() === userId?.toString()) {
           isOwner = true;
         }
       }
@@ -1376,11 +1452,16 @@ export const getClassGroupChat = async ({ classroomId, user }) => {
 };
 
 /**
- * Gửi tin nhắn vào nhóm chat lớp học (UC33, UC34)
+ * Gửi tin nhắn và tệp đính kèm vào nhóm chat lớp học (UC33, UC34)
+ * @param {Object} params - { classroomId, user, content, attachments }
+ * @returns {Promise<Object>} Message đã tạo kèm thông tin người gửi
  */
-export const sendClassChatMessage = async ({ classroomId, user, content }) => {
-  if (!content || !content.trim()) {
-    throw new AppError('Nội dung tin nhắn không được để trống', 400);
+export const sendClassChatMessage = async ({ classroomId, user, content, attachments = [] }) => {
+  const trimmedContent = (content || '').trim();
+  const processedAttachments = await processChatMessageAttachments(attachments);
+
+  if (!trimmedContent && processedAttachments.length === 0) {
+    throw new AppError('Nội dung tin nhắn hoặc tệp đính kèm không được để trống', 400);
   }
 
   const classroom = await Classroom.findById(classroomId);
@@ -1443,11 +1524,21 @@ export const sendClassChatMessage = async ({ classroomId, user, content }) => {
     });
   }
 
+  // Xác định message_type theo enum: TEXT, IMAGE, FILE
+  let messageType = ENUMS.MessagesMessageType.TEXT;
+  if (processedAttachments.length > 0) {
+    const isImage = processedAttachments.some((a) =>
+      a.mime_type?.startsWith('image/') || /\.(jpg|jpeg|png)$/i.test(a.file_name)
+    );
+    messageType = isImage ? ENUMS.MessagesMessageType.IMAGE : ENUMS.MessagesMessageType.FILE;
+  }
+
   const message = await Message.create({
     conversation_id: conversation._id,
     sender_user_id: user._id,
-    message_type: ENUMS.MessagesMessageType.TEXT,
-    content: content.trim(),
+    message_type: messageType,
+    content: trimmedContent || (processedAttachments.length > 0 ? `Đã gửi ${processedAttachments.length} tệp đính kèm` : ''),
+    attachments: processedAttachments,
   });
 
   const populated = await Message.findById(message._id).populate({
@@ -1774,7 +1865,7 @@ export const submitAssignment = async ({ assignmentId, user, answers = [] }) => 
 /**
  * Lấy danh sách bài nộp của học sinh cho gia sư chấm điểm (UC26)
  */
-export const getSubmissionsForAssignment = async ({ assignmentId, tutorProfile }) => {
+export const getSubmissionsForAssignment = async ({ assignmentId }) => {
   const assignment = await Assignment.findById(assignmentId);
   if (!assignment) {
     throw new AppError('Không tìm thấy bài tập', 404);
@@ -2012,6 +2103,3 @@ export const respondParentChildLink = async ({ studentUserId, linkId, action }) 
 
   return link;
 };
-
-
-

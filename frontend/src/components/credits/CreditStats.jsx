@@ -37,7 +37,7 @@ export default function CreditStats({ billing }) {
   return (
     <dl className="stat-grid">
       <StatCard label="Gói hiện tại" value={planTitle} detail={getPlanDetail(billing)} tone="primary" />
-      <StatCard label="Số dư tín dụng" value={billing.credit_balance} detail="1 tín dụng cho mỗi lượt ứng tuyển hoặc lời mời" tone="success" />
+      <StatCard label="Số dư credits" value={billing.credit_balance} detail="1 credits cho mỗi lượt ứng tuyển hoặc lời mời" tone="success" />
       <StatCard label="Lượt dùng AI còn lại" value={billing.ai_quota_left} detail="Còn lại trong kỳ dịch vụ này" tone="info" />
     </dl>
   );

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GraduationCap } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import {
   getConnections,
@@ -7,6 +8,7 @@ import {
   proposeAgreement,
   rateTutor,
 } from '../../services/agreementService';
+import AgreementProposalModal from '../../components/connections/AgreementProposalModal';
 import '../../styles/MyConnections.css';
 
 export default function MyConnections() {
@@ -21,12 +23,6 @@ export default function MyConnections() {
   const [processingId, setProcessingId] = useState(null);
 
   const [proposeModalOpen, setProposeModalOpen] = useState(false);
-  const [proposeForm, setProposeForm] = useState({
-    conversationId: '',
-    subject: '',
-    schedule: '',
-    price: '250000',
-  });
 
   const [ratingModalTarget, setRatingModalTarget] = useState(null);
   const [ratingScore, setRatingScore] = useState(5);
@@ -50,15 +46,6 @@ export default function MyConnections() {
       const loadedConversations = data?.activeConversations || [];
       setConnections(loadedConnections);
       setActiveConversations(loadedConversations);
-      if (loadedConversations.length > 0 && !proposeForm.conversationId) {
-        const firstConv = loadedConversations[0];
-        setProposeForm({
-          conversationId: firstConv._id,
-          subject: firstConv.subject_name || '',
-          schedule: firstConv.schedule || '',
-          price: String(firstConv.budget || 250000),
-        });
-      }
     } catch (err) {
       showToast(err.message || 'Lỗi tải danh sách kết nối', 'error');
     } finally {
@@ -69,20 +56,6 @@ export default function MyConnections() {
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 4000);
-  };
-
-  const handleSelectConversation = (convId) => {
-    const selected = activeConversations.find((c) => c._id === convId);
-    if (selected) {
-      setProposeForm({
-        conversationId: selected._id,
-        subject: selected.subject_name || '',
-        schedule: selected.schedule || '',
-        price: String(selected.budget || 250000),
-      });
-    } else {
-      setProposeForm({ ...proposeForm, conversationId: convId });
-    }
   };
 
   const handleConfirmAction = async (agreement, action) => {
@@ -105,30 +78,11 @@ export default function MyConnections() {
     }
   };
 
-  const handleProposeSubmit = async (e) => {
-    e.preventDefault();
-    if (!proposeForm.conversationId) {
-      showToast('Vui lòng chọn phòng trò chuyện để đề xuất thỏa thuận', 'error');
-      return;
-    }
-    if (!proposeForm.subject.trim()) {
-      showToast('Vui lòng nhập môn học đã thống nhất', 'error');
-      return;
-    }
-
-    try {
-      const res = await proposeAgreement({
-        conversationId: proposeForm.conversationId,
-        agreedSubject: proposeForm.subject,
-        agreedSchedule: proposeForm.schedule,
-        agreedPrice: Number(proposeForm.price),
-      });
-      setProposeModalOpen(false);
-      showToast(res?.message || 'Đã gửi đề xuất thỏa thuận kết nối!');
-      await loadData();
-    } catch (err) {
-      showToast(err.message || 'Lỗi khi gửi đề xuất', 'error');
-    }
+  const handleProposeSubmit = async (payload) => {
+    const res = await proposeAgreement(payload);
+    setProposeModalOpen(false);
+    showToast(res?.message || 'Đã gửi đề xuất thỏa thuận kết nối!');
+    await loadData();
   };
 
   const handleRatingSubmit = async (e) => {
@@ -467,12 +421,10 @@ export default function MyConnections() {
                       type="button"
                       className="btn-conn rate"
                       onClick={() =>
-                        showToast(
-                          `Gợi ý: Bạn có thể tạo lớp học mới cho môn "${conn.agreed_subject}" theo lịch ${conn.agreed_schedule}.`
-                        )
+                        navigate(`/tutor/classes?agreement=${encodeURIComponent(conn._id)}`)
                       }
                     >
-                      🏫 Tạo lớp học
+                      <GraduationCap size={16} aria-hidden="true" /> Tạo lớp học
                     </button>
                   )}
 
@@ -497,110 +449,12 @@ export default function MyConnections() {
       )}
 
       {proposeModalOpen && (
-        <div className="conn-modal-overlay" onClick={() => setProposeModalOpen(false)}>
-          <div className="conn-modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="conn-modal-header">
-              <span className="conn-modal-title">Đề xuất thỏa thuận dạy học</span>
-              <button
-                type="button"
-                className="btn-close-modal"
-                onClick={() => setProposeModalOpen(false)}
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleProposeSubmit} className="conn-modal-body">
-              <p style={{ color: '#64748B', fontSize: '0.875rem', marginBottom: '1rem' }}>
-                Chọn phòng hội thoại 1-1 đang hoạt động để gửi đề xuất chốt môn học, lịch dạy và mức học phí.
-              </p>
-
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: '700', marginBottom: '0.35rem' }}>
-                  Phòng hội thoại đang mở: *
-                </label>
-                {activeConversations.length === 0 ? (
-                  <p style={{ color: '#EF4444', fontSize: '0.8125rem' }}>
-                    Bạn chưa có phòng hội thoại 1-1 nào đang hoạt động.
-                  </p>
-                ) : (
-                  <select
-                    value={proposeForm.conversationId}
-                    onChange={(e) => handleSelectConversation(e.target.value)}
-                    style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1' }}
-                    required
-                  >
-                    <option value="">-- Chọn hội thoại --</option>
-                    {activeConversations.map((conv) => (
-                      <option key={conv._id} value={conv._id}>
-                        {conv.request_title} ({conv.parent_name} - {conv.tutor_name})
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: '700', marginBottom: '0.35rem' }}>
-                  Môn học &amp; Khối lớp chốt: *
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ví dụ: Toán lớp 9 ôn thi vào 10"
-                  value={proposeForm.subject}
-                  onChange={(e) => setProposeForm({ ...proposeForm, subject: e.target.value })}
-                  style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1' }}
-                  required
-                />
-              </div>
-
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: '700', marginBottom: '0.35rem' }}>
-                  Khung giờ &amp; Lịch học đã thống nhất:
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ví dụ: Thứ 3 & Thứ 5 (19:30 – 21:00)"
-                  value={proposeForm.schedule}
-                  onChange={(e) => setProposeForm({ ...proposeForm, schedule: e.target.value })}
-                  style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1' }}
-                />
-              </div>
-
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: '700', marginBottom: '0.35rem' }}>
-                  Mức học phí thống nhất (VNĐ / buổi): *
-                </label>
-                <input
-                  type="number"
-                  placeholder="250000"
-                  step="10000"
-                  value={proposeForm.price}
-                  onChange={(e) => setProposeForm({ ...proposeForm, price: e.target.value })}
-                  style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1' }}
-                  required
-                />
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
-                <button
-                  type="button"
-                  className="btn-conn decline"
-                  onClick={() => setProposeModalOpen(false)}
-                >
-                  Hủy bỏ
-                </button>
-                <button
-                  type="submit"
-                  className="btn-conn confirm"
-                  disabled={activeConversations.length === 0}
-                >
-                  Gửi đề xuất thỏa thuận
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <AgreementProposalModal
+          conversations={activeConversations}
+          role={user?.role}
+          onSubmit={handleProposeSubmit}
+          onClose={() => setProposeModalOpen(false)}
+        />
       )}
 
       {ratingModalTarget && (

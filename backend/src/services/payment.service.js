@@ -8,7 +8,7 @@ import { CreditTransaction } from '../models/CreditTransaction.js';
 import { AppError } from '../common/utils/AppError.js';
 import * as pspClient from '../common/utils/pspClient.js';
 import { env } from '../config/environment.js';
-import { FREE_PLAN_NAME, toPlanResponse, toCreditPackResponse } from './plan.service.js';
+import { FREE_PLAN_NAME, calculatePlanCharge, toPlanResponse, toCreditPackResponse } from './plan.service.js';
 
 // BR-06: đơn chờ thanh toán hết hạn sau 15 phút (PAYMENT_ORDERS không có field expires_at nên tính từ created_at)
 const ORDER_TTL_MS = 15 * 60 * 1000;
@@ -259,7 +259,7 @@ export const getMyBilling = async (userId) => {
 /**
  * Tạo đơn thanh toán PENDING (BR-06), số tiền tính từ giá hiện tại trong DB (D9), rồi tạo payment bên PSP
  * @param {Object} user - { id, role } từ JWT
- * @param {Object} data - { item_type, plan_id, duration_months } hoặc { item_type, pack_id, quantity }, kèm payment_method
+ * @param {Object} data - { item_type, plan_id } hoặc { item_type, pack_id, quantity }, kèm payment_method
  * @param {string} payerIp - Validated client IP from the HTTP request
  * @returns {Promise<{ order_code, item_type, amount, expires_at, checkout_url }>}
  */
@@ -287,9 +287,10 @@ export const createOrder = async (user, data, payerIp) => {
     if (plan.name === FREE_PLAN_NAME) {
       throw new AppError('The Free plan cannot be purchased', 422, { plan_id: ['The Free plan cannot be purchased'] });
     }
-    amount = Number(plan.monthly_price) * data.duration_months;
+    const planCharge = calculatePlanCharge(plan);
+    amount = planCharge.amount;
     newOrder.plan_id = plan._id;
-    newOrder.duration_months = data.duration_months;
+    newOrder.duration_months = planCharge.duration_months;
     newOrder.quantity = null;
   } else {
     const creditPack = await CreditPack.findById(data.pack_id);

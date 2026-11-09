@@ -67,8 +67,8 @@ export default function PaymentHistoryPanel() {
         filtersActive={history.filtersActive}
         onClearFilters={history.clearFilters}
         emptyTitle="Chưa có thanh toán"
-        emptyText="Nâng cấp lên Pro hoặc mua gói tín dụng để bắt đầu."
-        emptyAction={<Link to="/checkout" className="btn btn-primary btn-sm">Nâng cấp / Mua tín dụng</Link>}
+        emptyText="Nâng cấp lên Pro hoặc mua gói credits để bắt đầu."
+        emptyAction={<Link to="/checkout" className="btn btn-primary btn-sm">Nâng cấp / Mua credits</Link>}
       />
 
       {!list.loadError && list.items.length > 0 && (

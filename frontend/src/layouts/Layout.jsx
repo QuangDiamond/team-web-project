@@ -12,7 +12,12 @@ import {
   Handshake,
   Calendar,
   BookOpen,
-  CreditCard
+  CreditCard,
+  LayoutDashboard,
+  LogIn,
+  LogOut,
+  UserRound,
+  UserRoundPlus
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { getHomePathByRole } from '../utils/getHomePathByRole';
@@ -72,9 +77,14 @@ export default function Layout() {
   useEffect(() => {
     if (location.pathname !== '/') return;
     const frame = requestAnimationFrame(() => {
-      const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+      const behavior = window.matchMedia('(prefers-reduced-motion: reduce)')
+        .matches
+        ? 'auto'
+        : 'smooth';
       if (location.hash) {
-        document.getElementById(location.hash.slice(1))?.scrollIntoView({ behavior });
+        document
+          .getElementById(location.hash.slice(1))
+          ?.scrollIntoView({ behavior });
       } else {
         window.scrollTo({ top: 0, behavior });
       }
@@ -99,12 +109,15 @@ export default function Layout() {
     let ignore = false;
     getMyProfile()
       .then((response) => {
-        if (!ignore) setOwnProfile({ userId, profileId: response.data.profile?._id });
+        if (!ignore)
+          setOwnProfile({ userId, profileId: response.data.profile?._id });
       })
       .catch(() => {
         if (!ignore) setOwnProfile(null);
       });
-    return () => { ignore = true; };
+    return () => {
+      ignore = true;
+    };
   }, [userId, user?.role]);
 
   let profilePath = '/profile';
@@ -240,6 +253,15 @@ export default function Layout() {
             >
               Cách hoạt động
             </Link>
+            <Link
+              to="/tutors"
+              className={`nav-link ${location.pathname === '/tutors' ? 'active' : ''}`}
+              aria-current={
+                location.pathname === '/tutors' ? 'page' : undefined
+              }
+            >
+              Gia sư
+            </Link>
           </div>
 
           <div className="nav-actions">
@@ -335,28 +357,29 @@ export default function Layout() {
                   )}
                 </div>
 
-                <Link to={dashboardPath} className="btn btn-primary">
-                  Bảng điều khiển
+                <Link to={dashboardPath} className="btn btn-primary nav-round-action" aria-label="Bảng điều khiển" title="Bảng điều khiển">
+                  <LayoutDashboard size={19} aria-hidden="true" />
                 </Link>
-                <Link to={profilePath} className="btn btn-outline">
-                  {user.full_name || user.email || 'Tài khoản'}
+                <Link to={profilePath} className="btn btn-outline nav-round-action" aria-label="Hồ sơ của tôi" title={user.full_name || 'Hồ sơ của tôi'}>
+                  <UserRound size={19} aria-hidden="true" />
                 </Link>
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="btn btn-ghost"
-                  style={{ color: '#EF4444' }}
+                  className="btn btn-ghost nav-round-action nav-logout-action"
+                  aria-label="Đăng xuất"
+                  title="Đăng xuất"
                 >
-                  Đăng xuất
+                  <LogOut size={19} aria-hidden="true" />
                 </button>
               </>
             ) : (
               <>
-                <Link to="/login" className="btn btn-ghost">
-                  Đăng nhập
+                <Link to="/login" className="btn btn-ghost nav-round-action" aria-label="Đăng nhập" title="Đăng nhập">
+                  <LogIn size={19} aria-hidden="true" />
                 </Link>
-                <Link to="/register" className="btn btn-primary">
-                  Đăng ký ngay
+                <Link to="/register" className="btn btn-primary nav-round-action" aria-label="Đăng ký" title="Đăng ký">
+                  <UserRoundPlus size={19} aria-hidden="true" />
                 </Link>
               </>
             )}
@@ -409,7 +432,9 @@ export default function Layout() {
                 <Link
                   to="/#features"
                   className={`mobile-nav-item ${activeSection === '#features' ? 'active' : ''}`}
-                  aria-current={activeSection === '#features' ? 'location' : undefined}
+                  aria-current={
+                    activeSection === '#features' ? 'location' : undefined
+                  }
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span>Tính năng</span>
@@ -417,7 +442,11 @@ export default function Layout() {
                 <Link
                   to="/#featured-tutors"
                   className={`mobile-nav-item ${activeSection === '#featured-tutors' ? 'active' : ''}`}
-                  aria-current={activeSection === '#featured-tutors' ? 'location' : undefined}
+                  aria-current={
+                    activeSection === '#featured-tutors'
+                      ? 'location'
+                      : undefined
+                  }
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span>Gia sư tiêu biểu</span>
@@ -425,10 +454,19 @@ export default function Layout() {
                 <Link
                   to="/#how-it-works"
                   className={`mobile-nav-item ${activeSection === '#how-it-works' ? 'active' : ''}`}
-                  aria-current={activeSection === '#how-it-works' ? 'location' : undefined}
+                  aria-current={
+                    activeSection === '#how-it-works' ? 'location' : undefined
+                  }
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span>Cách hoạt động</span>
+                </Link>
+                <Link
+                  to="/tutors"
+                  className={`mobile-nav-item ${location.pathname === '/tutors' ? 'active' : ''}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span>Gia sư</span>
                 </Link>
               </div>
             </div>
@@ -507,46 +545,70 @@ export default function Layout() {
       <footer className="site-footer">
         <div className="footer-container">
           <div className="footer-grid">
-            <div className="footer-brand">
+            <Link to="/" className="footer-brand">
               <div className="footer-logo">
                 <div className="brand-icon">Tu</div>
                 <span>TuConnector</span>
               </div>
-              <p className="footer-desc">
-                Nền tảng công nghệ kết nối gia sư và phụ huynh thông minh, minh bạch và an toàn hàng đầu Việt Nam.
+              <p>
+                Nền tảng kết nối gia sư và phụ huynh thông minh hàng đầu Việt
+                Nam. Ứng dụng AI ghép đôi chính xác và quản lý lịch dạy hiệu
+                quả.
               </p>
-            </div>
+            </Link>
 
             <div className="footer-column">
               <h4>Dành cho phụ huynh</h4>
               <ul>
-                <li><Link to="/register">Đăng yêu cầu tìm gia sư</Link></li>
-                <li><Link to="/#featured-tutors">Tìm kiếm gia sư giỏi</Link></li>
-                <li><Link to="/#features">Tính năng ghép đôi AI</Link></li>
+                <li>
+                  <Link to="/">Trang chủ</Link>
+                </li>
+                <li>
+                  <a href="/#features">Tính năng nổi bật</a>
+                </li>
+                <li>
+                  <a href="/#featured-tutors">Gia sư tiêu biểu</a>
+                </li>
+                <li>
+                  <a href="/#how-it-works">Quy trình kết nối</a>
+                </li>
               </ul>
             </div>
 
             <div className="footer-column">
               <h4>Dành cho gia sư</h4>
               <ul>
-                <li><Link to={user ? dashboardPath : '/login'}>Bảng điều khiển</Link></li>
-                <li><Link to="/register">Đăng ký Phụ huynh / Gia sư</Link></li>
-                <li><Link to="/payment">Gói dịch vụ &amp; tín dụng</Link></li>
+                <li>
+                  <Link to={user ? dashboardPath : '/login'}>
+                    Bảng điều khiển
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/register">Đăng ký Phụ huynh / Gia sư</Link>
+                </li>
+                <li>
+                  <Link to="/payment">Gói dịch vụ &amp; credits</Link>
+                </li>
               </ul>
             </div>
 
             <div className="footer-column">
               <h4>Hỗ trợ &amp; Quy định</h4>
               <ul>
-                <li><Link to="/">Điều khoản sử dụng</Link></li>
-                <li><Link to="/">Chính sách bảo mật</Link></li>
-                <li><Link to="/">Liên hệ hỗ trợ</Link></li>
+                <li>
+                  <a href="/#how-it-works">Hướng dẫn sử dụng</a>
+                </li>
+                <li>
+                  <Link to="/login">Đăng nhập tài khoản</Link>
+                </li>
               </ul>
             </div>
           </div>
 
           <div className="footer-bottom">
-            <p>&copy; {new Date().getFullYear()} TuConnector. Bảo lưu mọi quyền.</p>
+            <p>
+              &copy; {new Date().getFullYear()} TuConnector. Bảo lưu mọi quyền.
+            </p>
             <div className="footer-bottom-links">
               <Link to="/">Trang chủ</Link>
               <Link to="/login">Đăng nhập</Link>

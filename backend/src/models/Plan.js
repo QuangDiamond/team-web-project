@@ -14,6 +14,10 @@ const planSchema = new Schema(
     name:                  { type: String, default: null },
     // Giá cước hàng tháng
     monthly_price:         { type: Schema.Types.Decimal128, default: null, get: decimalToString },
+    // Chu kỳ đăng ký của gói; dữ liệu cũ mặc định theo tháng.
+    billing_period:        { type: String, enum: ['MONTHLY', 'YEARLY'], default: 'MONTHLY' },
+    // Phần trăm giảm trên tổng 12 tháng, chỉ áp dụng khi billing_period là YEARLY.
+    annual_discount_percent: { type: Schema.Types.Int32, default: 0 },
     // Số credit cấp hàng tháng
     monthly_credits:       { type: Schema.Types.Int32, default: null },
     // Giới hạn AI hàng tháng

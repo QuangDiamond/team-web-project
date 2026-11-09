@@ -1,11 +1,11 @@
 // Nhãn hiển thị cho màn Credits & Transactions (UC18)
 
 export const CREDIT_TYPE_OPTIONS = [
-  { value: 'MONTHLY_GRANT', label: 'Cấp hằng tháng', description: 'Tín dụng hằng tháng từ gói dịch vụ' },
-  { value: 'PURCHASE', label: 'Mua tín dụng', description: 'Mua gói tín dụng' },
+  { value: 'MONTHLY_GRANT', label: 'Cấp hằng tháng', description: 'Credits hằng tháng từ gói dịch vụ' },
+  { value: 'PURCHASE', label: 'Mua credits', description: 'Mua gói credits' },
   { value: 'USED_APPLY', label: 'Dùng để ứng tuyển', description: 'Đã ứng tuyển yêu cầu tìm gia sư' },
   { value: 'USED_INVITATION', label: 'Dùng để mời gia sư', description: 'Đã mời gia sư' },
-  { value: 'EXPIRED_GRANT', label: 'Đã hết hạn', description: 'Tín dụng hằng tháng chưa dùng đã hết hạn' },
+  { value: 'EXPIRED_GRANT', label: 'Đã hết hạn', description: 'Credits hằng tháng chưa dùng đã hết hạn' },
 ];
 
 export const ORDER_STATUS_OPTIONS = [
@@ -63,7 +63,7 @@ export const getOrderItemTypeLabel = (itemType) => {
   if (itemType === 'PLAN_UPGRADE') {
     return 'Nâng cấp gói dịch vụ';
   }
-  return 'Gói tín dụng';
+  return 'Gói credits';
 };
 
 // Bỏ các bộ lọc rỗng trước khi gửi lên API / ghép vào link CSV

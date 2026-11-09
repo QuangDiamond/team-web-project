@@ -34,6 +34,8 @@ Query `page` (mặc định 1), `limit` (mặc định 10, tối đa 100). Giá 
   "target_role": "TUTOR",
   "name": "PRO",
   "monthly_price": 199000,
+  "billing_period": "YEARLY",
+  "annual_discount_percent": 15,
   "monthly_credits": 30,
   "ai_quota": 100,
   "max_classrooms": null,
@@ -42,6 +44,9 @@ Query `page` (mặc định 1), `limit` (mặc định 10, tối đa 100). Giá 
 }
 ```
 - `target_role`: `TUTOR` | `PARENT`
+- `billing_period`: `MONTHLY` | `YEARLY`; dữ liệu cũ mặc định `MONTHLY`
+- `annual_discount_percent`: số nguyên 0–99; chỉ áp dụng khi `billing_period: "YEARLY"`; 0 nghĩa là không giảm
+- Giá checkout theo năm là `round(monthly_price × 12 × (100 - annual_discount_percent) / 100)`; theo tháng là `monthly_price`
 - `name`: chuỗi 1–100 ký tự; `FREE_DEFAULT` là tên dành riêng cho gói Free, `PRO` là tên Pro hiện có.
 - `max_classrooms`: `null` = không giới hạn
 - `sms_reminders_enabled`: có thể `null` với dữ liệu cũ (gói PARENT), coi như `false`
@@ -64,9 +69,9 @@ defaults to `true`; send `false` to create an unavailable plan. Returns 201 with
 created Plan. A `FREE_DEFAULT` plan must have price 0. The admin reason is required;
 the audit operation is `CREATE`, with `before: null` and the created plan as `after`.
 
-Schema compatibility: existing Mongoose `Plan` and database `PLANS` validator already
-support arbitrary string names, role, Decimal128 price, Int32 limits, and boolean
-`is_active`. No schema change or migration is required.
+Schema update: Mongoose `Plan` now stores `billing_period` and `annual_discount_percent`.
+Both fields default to `MONTHLY` and `0`, so existing documents keep their monthly behavior
+without a database migration.
 
 ## PUT `/plans/:id`
 Sửa gói (UC39 bước 2–4). Phải gửi đủ các field.
@@ -75,6 +80,8 @@ Body:
 ```json
 {
   "monthly_price": 199000,
+  "billing_period": "YEARLY",
+  "annual_discount_percent": 15,
   "monthly_credits": 30,
   "ai_quota": 100,
   "max_classrooms": null,
@@ -83,6 +90,9 @@ Body:
 }
 ```
 - `monthly_price`: số nguyên ≥ 0, tối đa 1,000,000,000. **Gói `FREE_DEFAULT` phải giữ giá 0** (422 `Free plan price must be 0`, `errors.monthly_price`)
+- `billing_period`: optional `MONTHLY` | `YEARLY`; bỏ qua thì giữ chu kỳ hiện tại
+- `annual_discount_percent`: optional số nguyên 0–99; chỉ gói năm được áp dụng; bỏ qua thì giữ giá trị hiện tại
+- `FREE_DEFAULT` chỉ dùng chu kỳ tháng và không có chiết khấu
 - `monthly_credits`: số nguyên ≥ 1 (tối đa 1,000,000), áp dụng cho mọi gói kể cả Free (quyết định D1)
 - `ai_quota`: số nguyên ≥ 0 (tối đa 1,000,000)
 - `max_classrooms`: số nguyên 1–1000 **hoặc `null` (không giới hạn)**
@@ -91,7 +101,7 @@ Body:
 - `is_active`: optional boolean; `false` hides the plan from the user catalog and blocks
   new checkout orders, `true` makes it available again. Omit to preserve the current
   value for older callers. Existing subscriptions and orders are not modified.
-- `target_role`, `name` không sửa qua API này (field lạ bị bỏ qua)
+- `target_role` không sửa qua API này. `name` là tùy chọn, trim 1–100 ký tự; gói `FREE_DEFAULT` giữ nguyên tên để bảo toàn quy tắc gói miễn phí.
 
 | Status | Khi nào |
 |---|---|

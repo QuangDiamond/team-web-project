@@ -1,5 +1,6 @@
 import { useAuth } from '../hooks/useAuth';
 import { Link } from 'react-router-dom';
+import AvatarUpload from '../components/common/AvatarUpload';
 
 export default function Profile() {
   const { user } = useAuth();
@@ -8,6 +9,7 @@ export default function Profile() {
     <div className="page profile">
       <h1>Hồ sơ</h1>
       <div className="profile-card">
+        <AvatarUpload />
         <div className="profile-header">
           <div className="avatar">
             {user?.name?.charAt(0).toUpperCase() || 'U'}

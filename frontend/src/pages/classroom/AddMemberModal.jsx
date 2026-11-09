@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { UserPlus, AlertTriangle, X } from 'lucide-react';
 import { addMemberToClass } from '../../services/classroomService';
 
 export default function AddMemberModal({ isOpen, onClose, classroomId, onMemberAdded, showToast }) {
@@ -50,11 +51,12 @@ export default function AddMemberModal({ isOpen, onClose, classroomId, onMemberA
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>
-            <span>👤</span> Thêm học viên vào lớp
+          <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <UserPlus size={20} style={{ color: '#e85a2c' }} />
+            <span>Thêm học viên vào lớp</span>
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
-            ×
+            <X size={18} />
           </button>
         </div>
 
@@ -62,7 +64,7 @@ export default function AddMemberModal({ isOpen, onClose, classroomId, onMemberA
           <div className="modal-body">
             {error && (
               <div className="error-alert">
-                <span>⚠️</span>
+                <AlertTriangle size={18} style={{ flexShrink: 0 }} />
                 <div>{error}</div>
               </div>
             )}

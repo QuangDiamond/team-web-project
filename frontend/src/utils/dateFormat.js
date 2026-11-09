@@ -11,7 +11,7 @@ export const formatTime = (value) => {
   return new Date(value).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
 };
 
-// "28 Oct 2026"
+// "28/10/2026"
 export const formatDate = (value) => {
   if (!value) {
     return '';

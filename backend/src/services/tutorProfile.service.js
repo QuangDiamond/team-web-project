@@ -3,6 +3,34 @@ import { User } from '../models/User.js';
 import { ENUMS } from '../models/enums.js';
 import { AppError } from '../common/utils/AppError.js';
 import { assertRole } from '../common/utils/assertRole.js';
+import { Subject } from '../models/Subject.js';
+import { GradeLevel } from '../models/GradeLevel.js';
+
+/**
+ * Resolve catalog selections and reject missing or newly selected inactive entries.
+ * @param {Object[]} selections - Category type and ID pairs.
+ * @param {Object[]} previous - Previously saved selections, including inactive ones.
+ * @returns {Promise<Object[]>} Validated selections with server-owned display names.
+ */
+export const resolveTeachingCategories = async (selections, previous = []) => {
+  const resolved = new Map();
+  const retained = new Set(previous.map((item) => `${item.type}:${item.category_id}`));
+  for (const [type, Model] of [['subjects', Subject], ['grades', GradeLevel]]) {
+    const ids = selections.filter((item) => item.type === type).map((item) => item.category_id);
+    if (ids.length === 0) continue;
+    const categories = await Model.find({ _id: { $in: ids } }).select('_id name is_active').lean();
+    for (const item of categories) {
+      const key = `${type}:${item._id}`;
+      if (item.is_active || retained.has(key)) resolved.set(key, item);
+    }
+  }
+  return selections.map((item) => {
+    const key = `${item.type}:${item.category_id.toLowerCase()}`;
+    const category = resolved.get(key);
+    if (!category) throw new AppError('Danh mục không còn khả dụng. Vui lòng bỏ mục đó và chọn lại.', 422, { teaching_categories: ['Danh mục không còn khả dụng.'] });
+    return { type: item.type, category_id: category._id, name: category.name };
+  });
+};
 
 const toDateOnly = (value) => {
   if (!value) {
@@ -20,6 +48,8 @@ export const toTutorProfileDto = (profile) => {
   const raw = typeof profile.toObject === 'function' ? profile.toObject() : profile;
   return {
     _id: String(raw._id),
+    avatar_url: raw.avatar_url || null,
+    teaching_categories: (raw.teaching_categories || []).map((item) => ({ type: item.type, category_id: String(item.category_id), name: item.name })),
     headline: raw.headline,
     bio: raw.bio,
     address: raw.address,
@@ -56,12 +86,13 @@ export const getMyProfile = async (user) => {
 
   const [profile, account] = await Promise.all([
     TutorProfile.findOne({ user_id: user.id }),
-    User.findById(user.id).select('full_name').lean(),
+    User.findById(user.id).select('full_name avatar_url').lean(),
   ]);
 
   let profileDto = null;
   if (profile) {
     profileDto = toTutorProfileDto(profile);
+    profileDto.avatar_url = account?.avatar_url || profile.avatar_url || null;
   }
   let fullName = '';
   if (account) {
@@ -82,6 +113,9 @@ export const saveMyProfile = async (user, data) => {
 
   const fields = { ...data, is_complete: true };
   let profile = await TutorProfile.findOne({ user_id: user.id });
+  if (data.teaching_categories !== undefined) {
+    fields.teaching_categories = await resolveTeachingCategories(data.teaching_categories, profile?.teaching_categories || []);
+  }
   let created = false;
 
   if (profile) {

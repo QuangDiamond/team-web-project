@@ -42,20 +42,20 @@ export default function CreditActivityPanel() {
         isEmpty={list.items.length === 0}
         filtersActive={history.filtersActive}
         onClearFilters={history.clearFilters}
-        emptyTitle="Chưa có biến động tín dụng"
-        emptyText="Nâng cấp lên Pro hoặc mua gói tín dụng để bắt đầu."
-        emptyAction={<Link to="/checkout" className="btn btn-primary btn-sm">Nâng cấp / Mua tín dụng</Link>}
+        emptyTitle="Chưa có biến động credits"
+        emptyText="Nâng cấp lên Pro hoặc mua gói credits để bắt đầu."
+        emptyAction={<Link to="/checkout" className="btn btn-primary btn-sm">Nâng cấp / Mua credits</Link>}
       />
 
       {!list.loadError && list.items.length > 0 && (
         <table className="data-table history-table">
-          <caption className="visually-hidden">Biến động tín dụng</caption>
+          <caption className="visually-hidden">Biến động credits</caption>
           <thead>
             <tr>
               <th scope="col">Ngày</th>
               <th scope="col">Loại</th>
               <th scope="col">Chi tiết</th>
-              <th scope="col" className="cell-number">Tín dụng</th>
+              <th scope="col" className="cell-number">Credits</th>
               <th scope="col">Hết hạn</th>
             </tr>
           </thead>
@@ -70,7 +70,7 @@ export default function CreditActivityPanel() {
                   <td data-label="Ngày">{formatDateTime(transaction.created_at)}</td>
                   <td data-label="Loại">{getCreditTypeLabel(transaction.type)}</td>
                   <td data-label="Chi tiết">{getCreditDescription(transaction)}</td>
-                  <td data-label="Tín dụng" className={amountClass}>{formatCreditAmount(transaction.amount)}</td>
+                  <td data-label="Credits" className={amountClass}>{formatCreditAmount(transaction.amount)}</td>
                   <td data-label="Hết hạn">{formatDate(transaction.expires_at)}</td>
                 </tr>
               );
@@ -83,7 +83,7 @@ export default function CreditActivityPanel() {
         pagination={list.pagination}
         onPageChange={history.setPage}
         disabled={list.loading}
-        label="Phân trang biến động tín dụng"
+        label="Phân trang biến động credits"
       />
     </>
   );

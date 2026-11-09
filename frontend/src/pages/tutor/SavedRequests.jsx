@@ -5,7 +5,7 @@ import { useRequestActions } from '../../hooks/useRequestActions';
 import { getSavedRequests } from '../../services/tutorRequestService';
 import ListState from '../../components/common/ListState';
 import Pagination from '../../components/common/Pagination';
-import RequestGrid from '../../components/tutorRequests/RequestGrid';
+import RequestGrid from '../../components/tutor/RequestGrid';
 import '../../styles/tutorRequests.css';
 
 const PAGE_SIZE = 9;

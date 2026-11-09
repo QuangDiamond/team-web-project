@@ -13,6 +13,31 @@ export const getMyClassrooms = async (params = {}) => {
   return await api.get('/classroom/v1', { params });
 };
 
+export const getMyClassroomsPage = async (params = {}) => {
+  const response = await getMyClassrooms(params);
+  if (!Array.isArray(response.data)) {
+    return response;
+  }
+
+  const page = Number(params.page) || 1;
+  const limit = Number(params.limit) || 10;
+  const total = response.data.length;
+  const startIndex = (page - 1) * limit;
+
+  return {
+    ...response,
+    data: {
+      items: response.data.slice(startIndex, startIndex + limit),
+      pagination: {
+        page: page,
+        limit: limit,
+        total: total,
+        totalPages: Math.ceil(total / limit),
+      },
+    },
+  };
+};
+
 export const getClassroomDetail = async (id) => {
   return await api.get(`/classroom/v1/${id}`);
 };
@@ -115,8 +140,8 @@ export const getClassGroupChat = async (classroomId) => {
   return await api.get(`/classroom/v1/${classroomId}/chat`);
 };
 
-export const sendClassChatMessage = async (classroomId, content) => {
-  return await api.post(`/classroom/v1/${classroomId}/chat`, { content });
+export const sendClassChatMessage = async (classroomId, content, attachments = []) => {
+  return await api.post(`/classroom/v1/${classroomId}/chat`, { content, attachments });
 };
 
 /**
@@ -156,3 +181,50 @@ export const gradeSubmission = async (submissionId, data) => {
   return await api.post(`/classroom/v1/submissions/${submissionId}/grade`, data);
 };
 
+export const getClassSessions = async (classId, params = {}) => {
+  return await api.get(`/classroom/v1/${classId}/sessions`, { params });
+};
+
+export const createClassSession = async (classId, data) => {
+  return await api.post(`/classroom/v1/${classId}/sessions`, data);
+};
+
+export const updateClassSession = async (classId, sessionId, data) => {
+  return await api.patch(`/classroom/v1/${classId}/sessions/${sessionId}`, data);
+};
+
+export const deleteClassSession = async (classId, sessionId) => {
+  return await api.delete(`/classroom/v1/${classId}/sessions/${sessionId}`);
+};
+
+export const getClassTopics = async (classId) => {
+  return await api.get(`/classroom/v1/${classId}/topics`);
+};
+
+export const createClassTopic = async (classId, data) => {
+  return await api.post(`/classroom/v1/${classId}/topics`, data);
+};
+
+export const updateClassTopic = async (classId, topicId, data) => {
+  return await api.patch(`/classroom/v1/${classId}/topics/${topicId}`, data);
+};
+
+export const deleteClassTopic = async (classId, topicId) => {
+  return await api.delete(`/classroom/v1/${classId}/topics/${topicId}`);
+};
+
+export const getClassMaterials = async (classId) => {
+  return await api.get(`/classroom/v1/${classId}/materials`);
+};
+
+export const createClassMaterial = async (classId, data) => {
+  return await api.post(`/classroom/v1/${classId}/materials`, data);
+};
+
+export const updateClassMaterial = async (classId, materialId, data) => {
+  return await api.patch(`/classroom/v1/${classId}/materials/${materialId}`, data);
+};
+
+export const deleteClassMaterial = async (classId, materialId) => {
+  return await api.delete(`/classroom/v1/${classId}/materials/${materialId}`);
+};

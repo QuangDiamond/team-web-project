@@ -106,11 +106,14 @@ const buildSummaries = async (user, conversations) => {
     for (const conversation of conversations) {
       const profile = profileById.get(String(conversation.tutor_profile_id));
       const account = profile ? userById.get(String(profile.user_id)) : null;
+      let avatarUrl = null;
+      if (account?.avatar_url) avatarUrl = account.avatar_url;
+      else if (profile?.avatar_url) avatarUrl = profile.avatar_url;
       otherByConversation.set(String(conversation._id), {
         name: account ? account.full_name : 'Tutor',
         role: UserRole.TUTOR,
         headline: profile ? profile.headline || null : null,
-        avatar_url: profile && profile.avatar_url ? profile.avatar_url : account ? account.avatar_url || null : null,
+        avatar_url: avatarUrl,
       });
     }
   } else {

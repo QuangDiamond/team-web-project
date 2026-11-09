@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { AlertTriangle, Trash2, X } from 'lucide-react';
 import { removeMemberFromClass } from '../../services/classroomService';
 
 export default function RemoveMemberModal({ isOpen, onClose, classroomId, member, onMemberRemoved, showToast }) {
@@ -48,11 +49,12 @@ export default function RemoveMemberModal({ isOpen, onClose, classroomId, member
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>
-            <span>⚠️</span> Xác nhận xóa thành viên
+          <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#dc2626' }}>
+            <AlertTriangle size={20} />
+            <span>Xác nhận xóa thành viên</span>
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
-            ×
+            <X size={18} />
           </button>
         </div>
 
@@ -60,7 +62,7 @@ export default function RemoveMemberModal({ isOpen, onClose, classroomId, member
           <div className="modal-body">
             {error && (
               <div className="error-alert">
-                <span>⚠️</span>
+                <AlertTriangle size={18} style={{ flexShrink: 0 }} />
                 <div>{error}</div>
               </div>
             )}
@@ -89,10 +91,11 @@ export default function RemoveMemberModal({ isOpen, onClose, classroomId, member
             <button
               type="submit"
               className="btn-primary-orange"
-              style={{ backgroundColor: '#dc2626' }}
+              style={{ backgroundColor: '#dc2626', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               disabled={submitting}
             >
-              {submitting ? 'Đang xóa...' : '🗑️ Xác nhận xóa'}
+              <Trash2 size={15} />
+              <span>{submitting ? 'Đang xóa...' : 'Xác nhận xóa'}</span>
             </button>
           </div>
         </form>

@@ -1,18 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft, LoaderCircle, Sparkles } from 'lucide-react';
+import { ChevronLeft, LoaderCircle, Sparkles, Trash2 } from 'lucide-react';
 import { getMyRequest } from '../../services/parentRequestService';
 import Alert from '../../components/common/Alert';
 import SectionCard from '../../components/common/SectionCard';
+import ApplicationsSection from '../../components/applicationReview/ApplicationsSection';
+import DeleteRequestModal from '../../components/tutoringRequests/DeleteRequestModal';
 import { REQUEST_STATUS, formatBudget, getModeLabel, getStatusBadge } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 import '../../styles/tutoringRequests.css';
 
-// UC10 – chi tiết một yêu cầu của phụ huynh
+// UC10 – chi tiết một yêu cầu của phụ huynh, kèm các đơn ứng tuyển của gia sư
 export default function TutoringRequestDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [state, setState] = useState({ loading: true, error: null, request: null });
+  const [deleting, setDeleting] = useState(false);
 
   const load = useCallback(async () => {
     setState({ loading: true, error: null, request: null });
@@ -53,18 +56,13 @@ export default function TutoringRequestDetail() {
   const badge = getStatusBadge(REQUEST_STATUS, request.status);
   const canSuggest = request.status === 'OPEN' && !request.is_expired;
 
-  let learner = "Không chỉ định học sinh";
-  if (request.student) {
-    learner = request.student.full_name;
-  }
-
   const facts = [
-    ["Môn học", request.subject_name],
-    ["Khối lớp", request.grade_level],
-    ["Ngân sách", formatBudget(request.budget)],
-    ["Lịch học", request.schedule],
-    ["Hình thức học", getModeLabel(request.teaching_mode)],
-    ["Địa điểm", request.location_address || '—'],
+    ['Môn học', request.subject_name],
+    ['Khối lớp', request.grade_level],
+    ['Ngân sách', formatBudget(request.budget)],
+    ['Lịch học', request.schedule],
+    ['Hình thức học', getModeLabel(request.teaching_mode)],
+    ['Địa điểm', request.location_address || '—'],
   ];
 
   return (
@@ -77,7 +75,7 @@ export default function TutoringRequestDetail() {
       <div className="request-detail-grid">
         <div className="request-detail-main">
           <SectionCard title={request.title} action={<span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>}>
-            <p className="item-meta">Cho yêu cầu {learner} · Đã đăng {formatDate(request.created_at)}</p>
+            <p className="item-meta">Đã đăng {formatDate(request.created_at)}</p>
             {request.is_expired && <Alert type="info">Yêu cầu này đã quá 30 ngày và không còn hiển thị với gia sư.</Alert>}
             <p className="request-detail-text">{request.description}</p>
             <dl className="request-facts">
@@ -98,15 +96,8 @@ export default function TutoringRequestDetail() {
           <p className="request-detail-count">{request.application_count}</p>
           <p className="item-meta">Đơn ứng tuyển đã nhận</p>
           <div className="request-detail-actions">
-            <button
-              type="button"
-              className="btn btn-primary btn-block"
-              onClick={() => navigate(`/parent/requests/${request._id}/applications`)}
-            >
-              Xem đơn ứng tuyển
-            </button>
             {request.can_edit && (
-              <button type="button" className="btn btn-outline btn-block" onClick={() => navigate(`/parent/requests/${request._id}/edit`)}>
+              <button type="button" className="btn btn-primary btn-block" onClick={() => navigate(`/parent/requests/${request._id}/edit`)}>
                 Sửa yêu cầu
               </button>
             )}
@@ -114,18 +105,28 @@ export default function TutoringRequestDetail() {
               <button
                 type="button"
                 className="btn btn-outline btn-block"
-                onClick={() => navigate(`/parent/requests/${request._id}/ai-suggestions`)}
+                onClick={() => navigate(`/parent/requests/${request._id}/suggestions`)}
               >
                 <Sparkles size={16} aria-hidden="true" />
-                <span>Gợi ý gia sư bằng AI</span>
+                <span>Gợi ý gia sư</span>
               </button>
             )}
+            <button type="button" className="btn btn-outline btn-block" onClick={() => setDeleting(true)}>
+              <Trash2 size={16} aria-hidden="true" />
+              <span>Xóa yêu cầu</span>
+            </button>
             {!request.can_edit && (
               <p className="item-meta">Yêu cầu này đang ở trạng thái {badge.label.toLowerCase()} và không thể chỉnh sửa.</p>
             )}
           </div>
         </SectionCard>
       </div>
+
+      <ApplicationsSection requestId={request._id} />
+
+      {deleting && (
+        <DeleteRequestModal request={request} onClose={() => setDeleting(false)} onDeleted={() => navigate('/parent/requests')} />
+      )}
     </div>
   );
 }

@@ -11,6 +11,6 @@ export const getSuggestions = asyncHandler(async (req, res) => {
 });
 
 export const refreshSuggestions = asyncHandler(async (req, res) => {
-  const data = await aiSuggestionService.refreshSuggestions(req.user, req.params.requestId, req.body.weights);
+  const data = await aiSuggestionService.refreshSuggestions(req.user, req.params.requestId);
   return responseCommon(res, data, 'Tutor suggestions refreshed successfully!', 200, responseCode.SUCCESSED);
 });

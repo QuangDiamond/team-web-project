@@ -37,9 +37,9 @@ export default function PackStatusDialog({ pack, onClose, onSaved }) {
     try {
       await updateCreditPackStatus(pack._id, { is_active: willEnable, reason: reason.trim() });
       if (willEnable) {
-        onSaved(`Gói tín dụng "${pack.name}" đã được bật lại.`);
+        onSaved(`Gói credits "${pack.name}" đã được bật lại.`);
       } else {
-        onSaved(`Gói tín dụng "${pack.name}" đã được tắt.`);
+        onSaved(`Gói credits "${pack.name}" đã được tắt.`);
       }
     } catch (error) {
       const fieldErrors = toFieldErrors(error.errors);
@@ -53,11 +53,11 @@ export default function PackStatusDialog({ pack, onClose, onSaved }) {
 
   let title = `Tắt "${pack.name}"?`;
   let description = 'Gia sư và phụ huynh không thấy các gói đã tắt. Các lượt mua trước đó không bị ảnh hưởng.';
-  let submitLabel = 'Tắt gói tín dụng';
+  let submitLabel = 'Tắt gói credits';
   if (willEnable) {
     title = `Bật "${pack.name}"?`;
     description = 'Gói sẽ hiển thị lại cho người dùng và có thể mua ngay.';
-    submitLabel = 'Bật gói tín dụng';
+    submitLabel = 'Bật gói credits';
   }
 
   return (

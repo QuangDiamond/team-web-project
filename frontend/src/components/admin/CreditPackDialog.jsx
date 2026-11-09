@@ -106,10 +106,10 @@ export default function CreditPackDialog({ pack, onClose, onSaved }) {
     if (isCreating) {
       payload.target_role = values.target_role;
       await createCreditPack(payload);
-      return `Gói tín dụng "${payload.name}" đã được thêm.`;
+      return `Gói credits "${payload.name}" đã được thêm.`;
     }
     await updateCreditPack(pack._id, payload);
-    return `Gói tín dụng "${payload.name}" đã được cập nhật.`;
+    return `Gói credits "${payload.name}" đã được cập nhật.`;
   };
 
   const handleSubmit = async (event) => {
@@ -136,13 +136,13 @@ export default function CreditPackDialog({ pack, onClose, onSaved }) {
     }
   };
 
-  let title = 'Sửa gói tín dụng';
+  let title = 'Sửa gói credits';
   let description = `Dành cho: ${getTargetRoleLabel(values.target_role)}. Các thay đổi chỉ áp dụng cho lượt mua mới.`;
   let submitLabel = 'Lưu thay đổi';
   if (isCreating) {
-    title = 'Thêm gói tín dụng';
+    title = 'Thêm gói credits';
     description = 'Gói mới sẽ hiển thị ngay cho người dùng thuộc vai trò đã chọn.';
-    submitLabel = 'Thêm gói tín dụng';
+    submitLabel = 'Thêm gói credits';
   }
 
   return (
@@ -161,11 +161,11 @@ export default function CreditPackDialog({ pack, onClose, onSaved }) {
 
         <FormInput
           id="name"
-          label="Tên gói tín dụng"
+          label="Tên gói credits"
           value={values.name}
           onChange={handleChange}
           error={errors.name}
-          placeholder="Ví dụ: 30 tín dụng"
+          placeholder="Ví dụ: 30 credits"
           disabled={submitting}
           belowControl={<p className="form-field-hint">Tối đa {PACK_NAME_MAX_LENGTH} ký tự.</p>}
         />
@@ -173,7 +173,7 @@ export default function CreditPackDialog({ pack, onClose, onSaved }) {
         <div className="form-grid">
           <FormInput
             id="credit_amount"
-            label="Tín dụng"
+            label="Credits"
             type="number"
             value={values.credit_amount}
             onChange={handleChange}
