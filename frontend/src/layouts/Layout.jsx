@@ -21,11 +21,18 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { getHomePathByRole } from '../utils/getHomePathByRole';
-import { getUnreadCount, notificationService } from '../services/notificationService';
+import * as notiServiceModule from '../services/notificationService';
 import { getMyProfile } from '../services/tutorProfileService';
 import { getInitials } from '../utils/getInitials';
 import { getRoleLabel } from '../constants/dashboardNav';
 import FloatingChatWidget from '../components/chat/FloatingChatWidget';
+
+const getUnreadCount = notiServiceModule.getUnreadCount;
+const notificationService = notiServiceModule.notificationService || {
+  getNotifications: async () => ({ data: { items: [] } }),
+  markAsRead: async () => {},
+  markAllAsRead: async () => {}
+};
 
 const AVATAR_PALETTE = ['#0284C7', '#6366F1', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#0D9488'];
 

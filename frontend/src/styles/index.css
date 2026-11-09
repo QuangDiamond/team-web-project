@@ -1,5 +1,6 @@
 /* Khu vực dashboard (sidebar, card, modal, bảng...) dùng chung cho các màn đã đăng nhập */
 @import './dashboard.css';
+@import './FloatingChatWidget.css';
 
 * {
   box-sizing: border-box;
