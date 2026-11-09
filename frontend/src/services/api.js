@@ -2,7 +2,9 @@ import axios from 'axios';
 import { translateSystemMessage } from '../utils/viMessages';
 
 const api = axios.create({
-  baseURL: import.meta?.env?.VITE_API_BASE_URL || 'http://localhost:5000/api',
+  baseURL:
+    (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) ||
+    'http://localhost:9999/api',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
