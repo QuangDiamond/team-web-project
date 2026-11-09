@@ -20,7 +20,6 @@ import {
 } from '../../services/chatService';
 import { getInitials } from '../../utils/getInitials';
 import { formatTime } from '../../utils/dateFormat';
-import '../../styles/FloatingChatWidget.css';
 
 const AVATAR_PALETTE = ['#0284C7', '#6366F1', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#0D9488'];
 
