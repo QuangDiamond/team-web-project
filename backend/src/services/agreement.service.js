@@ -168,6 +168,8 @@ export const getConnections = async (user) => {
       return {
         _id: String(c._id),
         request_title: req.title || 'Hội thoại dạy học',
+        request_id: req._id ? String(req._id) : null,
+        grade_level: req.grade_level || '',
         subject_name: req.subject_name || '',
         schedule: req.schedule || '',
         budget: defaultPrice,

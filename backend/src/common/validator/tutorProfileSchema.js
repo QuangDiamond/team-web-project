@@ -55,8 +55,17 @@ const achievementSchema = z.strictObject({
 
 const MAX_ITEMS = 10;
 
+const teachingCategorySchema = z.strictObject({
+  type: z.enum(['subjects', 'grades']),
+  category_id: z.string().regex(/^[a-f\d]{24}$/i, 'Invalid category ID'),
+});
+
 // Body lưu hồ sơ gia sư (UC hồ sơ). strictObject chặn user_id, is_complete, average_rating, avatar_url...
 export const tutorProfileBodySchema = z.strictObject({
+  teaching_categories: z.array(teachingCategorySchema).max(50).refine((items) => {
+    const keys = items.map((item) => `${item.type}:${item.category_id.toLowerCase()}`);
+    return new Set(keys).size === keys.length;
+  }, 'Duplicate teaching category').optional(),
   headline: requiredText('Headline', 120),
   bio: requiredText('About you', 2000).refine((value) => value.split(/\s+/u).length <= 50, 'About you must be at most 50 words'),
   address: requiredText('Address', 255),

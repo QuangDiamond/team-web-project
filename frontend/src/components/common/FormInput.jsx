@@ -10,6 +10,7 @@ export default function FormInput({
   placeholder,
   autoComplete,
   disabled,
+  maxLength,
   endAdornment,
   belowControl,
   required = false,

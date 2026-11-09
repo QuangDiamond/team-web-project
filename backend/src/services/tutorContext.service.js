@@ -42,10 +42,10 @@ export const loadTutorSummaries = async (tutorProfileIds) => {
       continue;
     }
     let avatarUrl = null;
-    if (profile.avatar_url) {
-      avatarUrl = profile.avatar_url;
-    } else if (user.avatar_url) {
+    if (user.avatar_url) {
       avatarUrl = user.avatar_url;
+    } else if (profile.avatar_url) {
+      avatarUrl = profile.avatar_url;
     }
     summaries.set(String(profile._id), {
       profile_id: String(profile._id),

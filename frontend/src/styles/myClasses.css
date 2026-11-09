@@ -1,0 +1,72 @@
+.my-classes-page {
+  gap: 16px;
+}
+
+.my-classes-page > .item-meta {
+  margin: 0;
+}
+
+.tutor-classroom-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+}
+
+.classroom-card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.classroom-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 220px;
+  padding: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+.classroom-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 8px 24px rgba(27, 27, 51, 0.08);
+  transform: translateY(-2px);
+}
+
+.classroom-card-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.classroom-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .classroom-card {
+    transition: none;
+  }
+
+  .classroom-card:hover {
+    transform: none;
+  }
+}

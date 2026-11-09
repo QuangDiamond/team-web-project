@@ -1,33 +1,44 @@
+import { Award, BriefcaseBusiness, GraduationCap, UserRound } from 'lucide-react';
 import SectionCard from '../common/SectionCard';
 
 const SECTIONS = [
-  { field: 'experiences', title: "Kinh nghiệm", name: 'title', subtitle: 'company' },
-  { field: 'educations', title: "Học vấn", name: 'school', subtitle: 'degree' },
-  { field: 'achievements', title: "Thành tích", name: 'title', subtitle: 'description' },
+  { field: 'experiences', title: 'Kinh nghiệm', name: 'title', subtitle: 'company', Icon: BriefcaseBusiness },
+  { field: 'educations', title: 'Học vấn và bằng cấp', name: 'school', subtitle: 'degree', Icon: GraduationCap },
+  { field: 'achievements', title: 'Thành tích', name: 'title', subtitle: 'description', Icon: Award },
 ];
 
 export default function ProfileBackground({ profile }) {
   return (
-    <>
-      <SectionCard title="Giới thiệu">
-        <p className="public-profile-text">{profile.bio || "Gia sư chưa thêm phần giới thiệu."}</p>
+    <div className="public-profile-background">
+      <SectionCard title={<><UserRound size={19} aria-hidden="true" />Giới thiệu</>}>
+        <p className="public-profile-text">{profile.bio || 'Gia sư chưa thêm phần giới thiệu.'}</p>
       </SectionCard>
-      {SECTIONS.map((section) => (
-        <SectionCard key={section.field} title={section.title}>
-          {profile[section.field].length === 0 && <p className="item-meta">Chưa có thông tin.</p>}
-          <ul className="public-profile-list">
-            {profile[section.field].map((item, index) => (
+      <SectionCard title={<><GraduationCap size={19} aria-hidden="true" />Môn học và trình độ giảng dạy</>}>
+        {profile.teaching_categories?.length > 0 ? (
+          <ul className="public-profile-teaching-tags">
+            {profile.teaching_categories.map((item) => <li key={`${item.type}:${item.category_id}`}>{item.name}</li>)}
+          </ul>
+        ) : <p className="item-meta">Gia sư chưa cập nhật môn học và trình độ giảng dạy.</p>}
+      </SectionCard>
+      {SECTIONS.map(({ field, title, name, subtitle, Icon }) => (
+        <SectionCard key={field} title={<><Icon size={19} aria-hidden="true" />{title}</>}>
+          {profile[field].length === 0 && <p className="item-meta">Chưa có thông tin.</p>}
+          <ul className="public-profile-background-list">
+            {profile[field].map((item, index) => (
               <li key={index}>
-                <h3>{item[section.name]}</h3>
-                {item[section.subtitle] && <p className="public-profile-text">{item[section.subtitle]}</p>}
-                {item.graduation_year && <p className="item-meta">Năm tốt nghiệp: {item.graduation_year}</p>}
-                {item.start_date && <p className="item-meta">{String(item.start_date).slice(0, 10)} – {item.end_date ? String(item.end_date).slice(0, 10) : "Hiện tại"}</p>}
-                {section.field === 'educations' && item.description && <p className="public-profile-text">{item.description}</p>}
+                <span className="public-profile-item-icon"><Icon size={19} aria-hidden="true" /></span>
+                <div>
+                  <h3>{item[name]}</h3>
+                  {item[subtitle] && <p className="public-profile-text">{item[subtitle]}</p>}
+                  {item.graduation_year && <p className="item-meta">Năm tốt nghiệp: {item.graduation_year}</p>}
+                  {item.start_date && <p className="item-meta">{String(item.start_date).slice(0, 10)} – {item.end_date ? String(item.end_date).slice(0, 10) : 'Hiện tại'}</p>}
+                  {field === 'educations' && item.description && <p className="public-profile-text">{item.description}</p>}
+                </div>
               </li>
             ))}
           </ul>
         </SectionCard>
       ))}
-    </>
+    </div>
   );
 }

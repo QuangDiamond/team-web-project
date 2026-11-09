@@ -133,7 +133,16 @@ export function AuthProvider({ children }) {
     setUser(response.data);
   }, []);
 
-  const value = { user, initializing, loggedOutByUser, clearLoggedOutByUser, accountLockedOnStart, login, register, completeGoogleRegister, logout, resetPassword, changePassword };
+  const updateAvatarUrl = useCallback((avatarUrl) => {
+    setUser((previous) => {
+      if (!previous) return previous;
+      const updated = { ...previous, avatar_url: avatarUrl };
+      try { localStorage.setItem('user', JSON.stringify(updated)); } catch {}
+      return updated;
+    });
+  }, []);
+
+  const value = { user, initializing, loggedOutByUser, clearLoggedOutByUser, accountLockedOnStart, login, register, completeGoogleRegister, logout, resetPassword, changePassword, updateAvatarUrl };
 
   return (
     <AuthContext.Provider value={value}>

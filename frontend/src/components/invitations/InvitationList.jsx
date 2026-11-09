@@ -27,22 +27,27 @@ function InvitationRow({ invitation, onCancel }) {
     <li className="item-row">
       <div className="item-row-body">
         <div className="item-row-heading">
-          {invitation.tutor ? <Link to={`/tutors/${invitation.tutor.profile_id}`} className="item-title">{tutorName}</Link> : <p className="item-title">{tutorName}</p>}
+          <p className="item-title">{tutorName}</p>
           <span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>
         </div>
-        <p className="item-meta">Cho yêu cầu {requestTitle} · Đã gửi {formatDate(invitation.created_at)}</p>
+        <p className="item-meta">
+          Cho yêu cầu {requestTitle} · Đã gửi {formatDate(invitation.created_at)} · đã dùng {invitation.credits_spent} credits
+        </p>
         {invitation.message && <p className="item-note">“{invitation.message}”</p>}
         {invitation.status === 'ACCEPTED' && (
           <p className="item-meta">Gia sư đã chấp nhận. Cuộc trò chuyện đã được mở.</p>
         )}
       </div>
-      {invitation.status === 'PENDING' && (
-        <div className="item-actions">
+      <div className="item-actions">
+        {invitation.tutor && (
+          <Link to={`/tutors/${invitation.tutor.profile_id}`} className="btn btn-outline btn-sm">Xem chi tiết</Link>
+        )}
+        {invitation.status === 'PENDING' && (
           <button type="button" className="btn btn-outline btn-sm" disabled={cancelling} onClick={handleCancel}>
             {cancelling ? "Đang hủy..." : "Hủy lời mời"}
           </button>
-        </div>
-      )}
+        )}
+      </div>
       {invitation.status === 'ACCEPTED' && invitation.conversation_id && (
         <div className="item-actions">
           <OpenChatLink to={`/parent/messages/${invitation.conversation_id}`} />

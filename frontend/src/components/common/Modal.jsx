@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 
 // Hộp thoại có tiêu đề, đóng bằng nút X, phím Esc hoặc bấm ra ngoài; focus được đưa vào hộp khi mở
-export default function Modal({ title, onClose, children }) {
+export default function Modal({ title, onClose, children, className = '' }) {
   const dialogRef = useRef(null);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function Modal({ title, onClose, children }) {
     <div className="modal-overlay" onMouseDown={onClose}>
       <div
         ref={dialogRef}
-        className="modal"
+        className={`modal ${className}`.trim()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"

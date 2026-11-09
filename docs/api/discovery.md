@@ -3,6 +3,15 @@
 Base URL: `/api/discovery/v1`. Responses use the existing envelope
 `{ success: 1, message: string, data: object }`.
 
+## GET /tutors
+
+Public tutor directory. Each item includes `teaching_categories: [{ type, category_id, name }]`
+from the tutor profile, alongside the existing `subjects` and other card fields.
+Category IDs are strings and names use contact masking; old profiles return `[]`.
+The `/tutors` frontend requests 12 tutors per page and displays up to 4 category tags.
+When profile categories are empty, cards fall back to subjects from published posts.
+Profiles with fewer than 4 categories show only their available categories.
+
 ## GET /tutors/:profileId
 
 Public; no authentication required. `profileId` is a TutorProfile ID, not a User ID.
@@ -14,7 +23,7 @@ The exact `data` fields are:
 ```text
 profile: {
   _id, user_id, full_name, avatar_url, cover_url, headline, bio, address,
-  availability_status, average_rating, experiences, educations, achievements
+  availability_status, average_rating, experiences, educations, achievements, teaching_categories
 }
 posts: { items: [{ _id, title, subject_name, grade_level, teaching_mode,
                    price, schedule, description }], pagination }
@@ -26,9 +35,10 @@ Nested allowlists:
 - `experiences`: `{ title, company, start_date, end_date }`
 - `educations`: `{ school, degree, graduation_year, description }`
 - `achievements`: `{ title, description }`
+- `teaching_categories`: `{ type, category_id, name }`, empty for old profiles. Saved tutor selections render as public tags; names use contact masking.
 
 IDs are strings. `price` is a number or null. Dates serialize as ISO timestamps or
-null. Avatar uses the tutor profile avatar, falling back to the User avatar;
+null. Avatar uses the current User avatar, falling back to the old tutor profile avatar;
 cover uses the profile cover. `address` is null when `is_address_hidden` is true.
 Email and phone fields are never returned, regardless of that flag.
 Only PUBLISHED posts and APPROVED reviews are returned, newest first, with `_id`

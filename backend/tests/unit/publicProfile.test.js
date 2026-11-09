@@ -51,6 +51,7 @@ test('tutor response has exact allowlists, nested masks, shared pagination and p
     _id: profileId, user_id: userId, is_complete: true, is_address_hidden: true,
     headline: contact, bio: contact, address: 'Private street', average_rating: 4.5,
     availability_status: 'AVAILABLE', cover_url: 'https://cdn.example/cover.png',
+    teaching_categories: [{ type: 'subjects', category_id: newId(), name: contact }],
     experiences: [{ title: contact, company: contact, start_date: null, end_date: null, student_id: childId }],
     educations: [{ school: contact, degree: contact, graduation_year: 2024, description: contact, student_id: childId }],
     achievements: [{ title: contact, description: contact, student_id: childId }],
@@ -74,10 +75,12 @@ test('tutor response has exact allowlists, nested masks, shared pagination and p
 
   const result = await getTutorPublicProfile(String(profileId), { page: '2', limit: '3' });
   assertFields(result, 'profile posts reviews');
-  assertFields(result.profile, '_id user_id full_name avatar_url cover_url headline bio address availability_status average_rating experiences educations achievements');
+  assertFields(result.profile, '_id user_id full_name avatar_url cover_url headline bio address availability_status average_rating experiences educations achievements teaching_categories');
   assertFields(result.profile.experiences[0], 'title company start_date end_date');
   assertFields(result.profile.educations[0], 'school degree graduation_year description');
   assertFields(result.profile.achievements[0], 'title description');
+  assertFields(result.profile.teaching_categories[0], 'type category_id name');
+  assert.equal(result.profile.teaching_categories[0].name, masked);
   assertFields(result.posts.items[0], '_id title subject_name grade_level teaching_mode price schedule description');
   assertFields(result.reviews.items[0], '_id rating comment tutor_reply created_at');
   assert.equal(result.profile.address, null);
@@ -110,7 +113,7 @@ test('tutor response has exact allowlists, nested masks, shared pagination and p
   profile.avatar_url = 'https://cdn.example/profile.png';
   const visible = await getTutorPublicProfile(String(profileId));
   assert.equal(visible.profile.address, masked);
-  assert.equal(visible.profile.avatar_url, profile.avatar_url);
+  assert.equal(visible.profile.avatar_url, user.avatar_url);
 });
 
 test('invalid and missing profiles, incomplete tutors and inactive/wrong-role accounts return generic 404', async (t) => {

@@ -1,5 +1,21 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
+import {
+  GraduationCap,
+  KeyRound,
+  Plus,
+  Search,
+  AlertTriangle,
+  LoaderCircle,
+  BookOpen,
+  Users,
+  UserCheck,
+  Copy,
+  Link as LinkIcon,
+  ArrowRight,
+  Sparkles,
+  Archive,
+} from 'lucide-react';
 import { getMyClassrooms } from '../../services/classroomService';
 import { useAuth } from '../../hooks/useAuth.jsx';
 import CreateClassroomModal from './CreateClassroomModal';
@@ -9,6 +25,8 @@ import './classroom.css';
 export default function ClassroomsPage() {
   const { user } = useAuth();
   const isTutor = user?.role === 'TUTOR';
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialAgreementId = isTutor ? searchParams.get('agreement') || '' : '';
   const [classrooms, setClassrooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -60,6 +78,16 @@ export default function ClassroomsPage() {
     fetchClassrooms();
   };
 
+  const handleCloseCreateModal = () => {
+    setIsModalOpen(false);
+    if (initialAgreementId) {
+      setSearchParams((params) => {
+        params.delete('agreement');
+        return params;
+      }, { replace: true });
+    }
+  };
+
   const getClassroomDetailUrl = (id) => {
     if (user?.role === 'TUTOR') return `/tutor/classes/${id}`;
     if (user?.role === 'PARENT') return `/parent/classes/${id}`;
@@ -69,13 +97,18 @@ export default function ClassroomsPage() {
   return (
     <div className="classroom-container">
       {/* Toast Notification */}
-      {toastMessage && <div className="copy-toast">✨ {toastMessage}</div>}
+      {toastMessage && (
+        <div className="copy-toast" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <Sparkles size={16} /> {toastMessage}
+        </div>
+      )}
 
       {/* Header */}
       <div className="classroom-header">
         <div className="classroom-header-info">
-          <h1>
-            <span>🏫</span> Lớp học của tôi (Classes)
+          <h1 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <GraduationCap size={26} style={{ color: '#e85a2c' }} />
+            <span>Lớp học của tôi</span>
           </h1>
           <p>
             {isTutor
@@ -86,23 +119,26 @@ export default function ClassroomsPage() {
           </p>
         </div>
 
-        {/* Nút hành động chính chuẩn Figma */}
+        {/* Nút hành động chính */}
         <div style={{ display: 'flex', gap: '10px' }}>
           <button
             type="button"
             className={isTutor ? 'btn-outline-gray' : 'btn-primary-orange'}
-            style={{ padding: '12px 18px', fontSize: '15px' }}
+            style={{ padding: '12px 18px', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}
             onClick={() => setIsJoinModalOpen(true)}
           >
-            <span>🔑</span> Tham gia bằng mã
+            <KeyRound size={16} />
+            <span>Tham gia bằng mã</span>
           </button>
           {isTutor && (
             <button
               type="button"
               className="btn-primary-orange"
+              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
               onClick={() => setIsModalOpen(true)}
             >
-              <span>➕</span> Tạo lớp học mới
+              <Plus size={16} />
+              <span>Tạo lớp học mới</span>
             </button>
           )}
         </div>
@@ -116,7 +152,7 @@ export default function ClassroomsPage() {
             className={`tab-btn ${activeTab === 'ALL' ? 'active' : ''}`}
             onClick={() => setActiveTab('ALL')}
           >
-            Tất cả lớp ({classrooms.length})
+            Tất cả lớp
           </button>
           <button
             type="button"
@@ -135,7 +171,9 @@ export default function ClassroomsPage() {
         </div>
 
         <div className="classroom-search-box">
-          <span className="search-icon">🔍</span>
+          <span className="search-icon" style={{ display: 'flex', alignItems: 'center' }}>
+            <Search size={15} style={{ color: '#94a3b8' }} />
+          </span>
           <input
             type="text"
             placeholder="Tìm theo tên lớp, môn học, mã..."
@@ -148,7 +186,7 @@ export default function ClassroomsPage() {
       {/* Thông báo lỗi nếu có */}
       {error && (
         <div className="error-alert">
-          <span>⚠️</span>
+          <AlertTriangle size={18} style={{ flexShrink: 0 }} />
           <div>{error}</div>
         </div>
       )}
@@ -156,35 +194,79 @@ export default function ClassroomsPage() {
       {/* Loading state */}
       {loading ? (
         <div style={{ textAlign: 'center', padding: '60px', color: '#64748b' }}>
-          <div style={{ fontSize: '32px', marginBottom: '12px' }}>⏳</div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+            <LoaderCircle size={32} className="spin" style={{ color: '#e85a2c' }} />
+          </div>
           <p>Đang tải danh sách lớp học của bạn...</p>
         </div>
       ) : classrooms.length === 0 ? (
         /* Empty State */
         <div className="classroom-empty-state">
-          <div className="empty-icon">📚</div>
-          <h3>Chưa có lớp học nào phù hợp</h3>
-          <p>
-            {isTutor
-              ? 'Bạn chưa có lớp học nào đang hoạt động. Hãy tạo lớp học đầu tiên để chia sẻ mã tham gia và kết nối học sinh ngay hôm nay!'
-              : 'Bạn chưa tham gia lớp học nào. Hãy sử dụng mã tham gia hoặc liên kết mời do gia sư cung cấp để gia nhập lớp học ngay nhé!'}
-          </p>
-          {isTutor ? (
-            <button
-              type="button"
-              className="btn-primary-orange"
-              onClick={() => setIsModalOpen(true)}
-            >
-              <span>➕</span> Khởi tạo lớp học đầu tiên
-            </button>
+          {searchQuery ? (
+            <>
+              <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center' }}>
+                <Search size={42} style={{ color: '#94a3b8' }} />
+              </div>
+              <h3>Không tìm thấy lớp học phù hợp</h3>
+              <p>Không tìm thấy lớp học nào khớp với từ khóa "{searchQuery}". Vui lòng thử tìm kiếm khác.</p>
+              <button
+                type="button"
+                className="btn-outline-gray"
+                onClick={() => setSearchQuery('')}
+              >
+                Xóa bộ lọc tìm kiếm
+              </button>
+            </>
+          ) : activeTab === 'ARCHIVED' ? (
+            <>
+              <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center' }}>
+                <Archive size={42} style={{ color: '#94a3b8' }} />
+              </div>
+              <h3>Chưa có lớp học nào được lưu trữ</h3>
+              <p>
+                Khi một lớp học kết thúc hoặc tạm ngưng, bạn có thể chuyển lớp sang trạng thái Lưu trữ để lưu lại toàn bộ dữ liệu lịch sử bài tập, điểm số và xem lại bất cứ lúc nào.
+              </p>
+              <button
+                type="button"
+                className="btn-outline-gray"
+                onClick={() => setActiveTab('ACTIVE')}
+              >
+                Xem các lớp đang hoạt động
+              </button>
+            </>
           ) : (
-            <button
-              type="button"
-              className="btn-primary-orange"
-              onClick={() => setIsJoinModalOpen(true)}
-            >
-              <span>🔑</span> Tham gia lớp học bằng mã
-            </button>
+            <>
+              <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center' }}>
+                <BookOpen size={42} style={{ color: '#94a3b8' }} />
+              </div>
+              <h3>Chưa có lớp học nào</h3>
+              <p>
+                {isTutor
+                  ? 'Bạn chưa có lớp học nào đang hoạt động. Hãy tạo lớp học đầu tiên để chia sẻ mã tham gia và kết nối học sinh ngay hôm nay!'
+                  : 'Bạn chưa tham gia lớp học nào. Hãy sử dụng mã tham gia hoặc liên kết mời do gia sư cung cấp để gia nhập lớp học ngay nhé!'}
+              </p>
+              {isTutor ? (
+                <button
+                  type="button"
+                  className="btn-primary-orange"
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  <Plus size={16} />
+                  <span>Khởi tạo lớp học đầu tiên</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="btn-primary-orange"
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                  onClick={() => setIsJoinModalOpen(true)}
+                >
+                  <KeyRound size={16} />
+                  <span>Tham gia lớp học bằng mã</span>
+                </button>
+              )}
+            </>
           )}
         </div>
       ) : (
@@ -205,16 +287,16 @@ export default function ClassroomsPage() {
                       {cls.status === 'ACTIVE' ? 'Đang hoạt động' : 'Đã lưu trữ'}
                     </span>
                     {cls.is_owner || user?.role === 'TUTOR' ? (
-                      <span className="badge" style={{ background: '#fff7ed', color: '#c2410c', border: '1px solid #fed7aa', fontWeight: 600 }}>
-                        👨‍🏫 Bạn là Gia sư
+                      <span className="badge" style={{ background: '#fff7ed', color: '#c2410c', border: '1px solid #fed7aa', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <GraduationCap size={13} /> Bạn là Gia sư
                       </span>
                     ) : user?.role === 'PARENT' ? (
-                      <span className="badge" style={{ background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 600 }}>
-                        👨‍👩‍👧 Bạn là Phụ huynh
+                      <span className="badge" style={{ background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Users size={13} /> Bạn là Phụ huynh
                       </span>
                     ) : (
-                      <span className="badge" style={{ background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', fontWeight: 600 }}>
-                        🎒 Bạn là Học sinh
+                      <span className="badge" style={{ background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <UserCheck size={13} /> Bạn là Học sinh
                       </span>
                     )}
                   </div>
@@ -233,10 +315,12 @@ export default function ClassroomsPage() {
                     <button
                       type="button"
                       className="btn-outline-gray"
+                      style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
                       onClick={() => handleCopy(cls.join_code, 'mã lớp')}
                       title="Sao chép mã tham gia"
                     >
-                        📋 Sao chép
+                      <Copy size={13} />
+                      <span>Sao chép</span>
                     </button>
                   </div>
 
@@ -259,6 +343,7 @@ export default function ClassroomsPage() {
                     <button
                       type="button"
                       className="btn-outline-gray"
+                      style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
                       onClick={() =>
                         handleCopy(
                           cls.invite_link || `${window.location.origin}/join-class/${cls.join_code}`,
@@ -266,10 +351,16 @@ export default function ClassroomsPage() {
                         )
                       }
                     >
-                      🔗 Liên kết mời
+                      <LinkIcon size={13} />
+                      <span>Liên kết mời</span>
                     </button>
-                    <Link to={getClassroomDetailUrl(cls._id)} className="btn-primary-orange">
-                      Vào lớp học →
+                    <Link
+                      to={getClassroomDetailUrl(cls._id)}
+                      className="btn-primary-orange"
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                    >
+                      <span>Vào lớp học</span>
+                      <ArrowRight size={14} />
                     </Link>
                   </div>
                 </div>
@@ -281,8 +372,9 @@ export default function ClassroomsPage() {
 
       {/* Modal Tạo Lớp Học (UC21) */}
       <CreateClassroomModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isModalOpen || Boolean(initialAgreementId)}
+        initialAgreementId={initialAgreementId}
+        onClose={handleCloseCreateModal}
         onClassroomCreated={handleClassroomCreated}
         showToast={showToast}
       />

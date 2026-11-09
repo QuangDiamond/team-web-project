@@ -2,31 +2,25 @@ import mongoose from 'mongoose';
 import { ParentRequest } from '../models/ParentRequest.js';
 import { BookmarkedRequest } from '../models/BookmarkedRequest.js';
 import { ApplyRequest } from '../models/ApplyRequest.js';
-import { AiPostSuggestion } from '../models/AiPostSuggestion.js';
-import { TutorPost } from '../models/TutorPost.js';
 import { ENUMS } from '../models/enums.js';
 import { AppError } from '../common/utils/AppError.js';
 import { buildPagination } from '../common/utils/pagination.js';
 import { decimalToNumber, escapeRegex, getRequestCutoff, isRequestAvailable } from '../common/utils/requestRules.js';
 import { countApplications } from './parentRequest.service.js';
 import { getTutorProfileOrThrow } from './tutorContext.service.js';
-import { isGradeMatch, isModeCompatible, isSubjectMatch, scoreCandidate } from './tutorMatching.service.js';
+import { matchesSubjectAndGrade, matchesAnyTeachingCategory } from './tutorMatching.service.js';
+import { loadActiveTeachingCatalog } from './category.service.js';
 
-// UC11 – chỉ xếp hạng bằng luật, chưa gọi AI provider (ai_reason luôn null, giống UC09)
-const SUGGESTION_LIMIT = 10;
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
-// Rating là của chính gia sư nên không dùng để chọn request; chỉ xét giá, lịch, khu vực
-const SUGGESTION_WEIGHTS = Object.freeze({ budget: 40, rating: 0, schedule: 30, area: 30 });
 
 const { ParentRequestsStatus } = ENUMS;
 
 /**
  * Chuyển request sang dữ liệu công khai cho gia sư: KHÔNG có thông tin phụ huynh / học sinh
  * @param {Object} request - ParentRequest (lean)
- * @param {Object} extra - { applicationCount, isBookmarked, hasApplied, matchScore? }
+ * @param {Object} extra - { applicationCount, isBookmarked, hasApplied }
  * @returns {Object}
  */
-export const toTutorRequestDto = (request, { applicationCount, isBookmarked, hasApplied, matchScore = null }) => {
+export const toTutorRequestDto = (request, { applicationCount, isBookmarked, hasApplied }) => {
   return {
     _id: String(request._id),
     parent_user_id: request.parent_user_id ? String(request.parent_user_id) : null,
@@ -44,7 +38,6 @@ export const toTutorRequestDto = (request, { applicationCount, isBookmarked, has
     application_count: applicationCount,
     is_bookmarked: isBookmarked,
     has_applied: hasApplied,
-    match_score: matchScore,
     created_at: request.created_at,
   };
 };
@@ -66,10 +59,10 @@ export const buildBrowseFilter = (query, now = new Date()) => {
     filter.$or = [{ title: keyword }, { subject_name: keyword }, { description: keyword }];
   }
   if (query.subject) {
-    filter.subject_name = new RegExp(escapeRegex(query.subject), 'i');
+    filter.subject_name = new RegExp(`^${escapeRegex(query.subject)}$`, 'i');
   }
   if (query.grade) {
-    filter.grade_level = new RegExp(escapeRegex(query.grade), 'i');
+    filter.grade_level = new RegExp(`^${escapeRegex(query.grade)}$`, 'i');
   }
   if (query.area) {
     filter.location_address = new RegExp(escapeRegex(query.area), 'i');
@@ -92,39 +85,13 @@ export const buildBrowseFilter = (query, now = new Date()) => {
 };
 
 /**
- * Điểm phù hợp tốt nhất giữa một request và các bài đăng của gia sư; null nếu không bài nào qua ràng buộc cứng
+ * Request phù hợp với gia sư khi có ít nhất một bài đăng PUBLISHED cùng môn học và khối lớp
  * @param {Object} request - ParentRequest (lean)
  * @param {Object[]} posts - TutorPost PUBLISHED của gia sư (lean)
- * @param {string|null} tutorAddress - địa chỉ trong hồ sơ gia sư
- * @returns {number|null}
+ * @returns {boolean}
  */
-export const scoreRequestForTutor = (request, posts, tutorAddress) => {
-  const requestForScoring = {
-    teaching_mode: request.teaching_mode,
-    budget: decimalToNumber(request.budget),
-    schedule: request.schedule,
-    location_address: request.location_address,
-  };
-
-  let bestScore = null;
-  for (const post of posts) {
-    const passesHardConstraints =
-      isSubjectMatch(request.subject_name, post.subject_name) &&
-      isGradeMatch(request.grade_level, post.grade_level) &&
-      isModeCompatible(request.teaching_mode, post.teaching_mode);
-    if (!passesHardConstraints) {
-      continue;
-    }
-    const scored = scoreCandidate(
-      requestForScoring,
-      { price: decimalToNumber(post.price), schedule: post.schedule, address: tutorAddress, average_rating: null },
-      SUGGESTION_WEIGHTS
-    );
-    if (bestScore === null || scored.match_score > bestScore) {
-      bestScore = scored.match_score;
-    }
-  }
-  return bestScore;
+export const matchesAnyPost = (request, posts) => {
+  return posts.some((post) => matchesSubjectAndGrade(request, post));
 };
 
 const assertValidId = (id) => {
@@ -137,16 +104,19 @@ const assertValidId = (id) => {
  * Gắn số đơn, trạng thái đã lưu / đã ứng tuyển vào danh sách request
  * @param {Object[]} requests - ParentRequest (lean)
  * @param {Object} profile - TutorProfile của gia sư
- * @param {Map<string, number>} [scoreByRequest]
  * @returns {Promise<Object[]>}
  */
-const decorateRequests = async (requests, profile, scoreByRequest = new Map()) => {
+const decorateRequests = async (requests, profile) => {
   const requestIds = requests.map((request) => request._id);
   const counts = await countApplications(requestIds);
   const bookmarks = await BookmarkedRequest.find({ tutor_profile_id: profile._id, request_id: { $in: requestIds } })
     .select('request_id')
     .lean();
-  const applications = await ApplyRequest.find({ tutor_profile_id: profile._id, request_id: { $in: requestIds } })
+  const applications = await ApplyRequest.find({
+    tutor_profile_id: profile._id,
+    request_id: { $in: requestIds },
+    status: { $ne: ENUMS.ApplyRequestsStatus.WITHDRAWN },
+  })
     .select('request_id')
     .lean();
 
@@ -155,15 +125,10 @@ const decorateRequests = async (requests, profile, scoreByRequest = new Map()) =
 
   return requests.map((request) => {
     const key = String(request._id);
-    let matchScore = null;
-    if (scoreByRequest.has(key)) {
-      matchScore = scoreByRequest.get(key);
-    }
     return toTutorRequestDto(request, {
       applicationCount: counts.get(key) || 0,
       isBookmarked: bookmarkedIds.has(key),
       hasApplied: appliedIds.has(key),
-      matchScore: matchScore,
     });
   });
 };
@@ -313,128 +278,48 @@ export const listBookmarks = async (user, { page, limit }) => {
 };
 
 /**
- * Tính lại "Suggested for you" và thay cache cũ của gia sư này (24 giờ)
- * @param {Object} profile - TutorProfile (lean)
- * @returns {Promise<{ rows: Object[], hint: string|null }>} rows: bản ghi AI_POST_SUGGESTIONS vừa lưu
+ * Suggest current requests using the tutor's active teaching-category selections.
+ * @param {Object} user - Authenticated Tutor account.
+ * @param {Object} query - Page and limit.
+ * @returns {Promise<Object>} Decorated matching requests, pagination and optional profile hint.
  */
-const regenerateSuggestions = async (profile) => {
-  const posts = await TutorPost.find({ profile_id: profile._id, status: ENUMS.TutorPostsStatus.PUBLISHED }).lean();
-  // Chỉ xóa cache gợi ý của đúng gia sư này
-  await AiPostSuggestion.deleteMany({ tutor_profile_id: profile._id });
+export const getSuggestions = async (user, { page, limit }) => {
+  const profile = await getTutorProfileOrThrow(user);
+  const selections = profile.teaching_categories || [];
+  const profileHint = 'Hoàn thiện hồ sơ và chọn ít nhất một môn học hoặc cấp học / trình độ giảng dạy để nhận gợi ý.';
+  const empty = { items: [], pagination: buildPagination(page, limit, 0), hint: profileHint };
+  if (profile.is_complete !== true || selections.length === 0) return empty;
 
-  if (posts.length === 0) {
-    return { rows: [], hint: 'Publish a tutoring post to get suggestions that fit your profile.' };
-  }
+  const { catalog } = await loadActiveTeachingCatalog();
+  const activeSelections = selections.filter((item) => catalog.has(item.type + ':' + item.category_id));
+  if (activeSelections.length === 0) return empty;
 
-  const appliedRequestIds = await ApplyRequest.distinct('request_id', { tutor_profile_id: profile._id });
-  const requests = await ParentRequest.find({
-    status: ParentRequestsStatus.OPEN,
-    created_at: { $gte: getRequestCutoff() },
-    _id: { $nin: appliedRequestIds },
-  }).lean();
-
-  const ranked = [];
-  for (const request of requests) {
-    const score = scoreRequestForTutor(request, posts, profile.address);
-    if (score !== null) {
-      ranked.push({ request_id: request._id, match_score: score });
-    }
-  }
-  ranked.sort((first, second) => second.match_score - first.match_score);
-  const top = ranked.slice(0, SUGGESTION_LIMIT);
-
-  if (top.length === 0) {
-    return { rows: [], hint: 'No open request fits your published posts yet. Check back later.' };
-  }
-
-  const cachedUntil = new Date(Date.now() + CACHE_TTL_MS);
-  const created = await AiPostSuggestion.insertMany(
-    top.map((entry) => ({
-      tutor_profile_id: profile._id,
-      request_id: entry.request_id,
-      match_score: entry.match_score,
-      ai_reason: null,
-      cached_until: cachedUntil,
-    }))
-  );
-  return { rows: created.map((document) => document.toObject()), hint: null };
-};
-
-/**
- * Gắn thông tin request vào các dòng gợi ý; bỏ request đã đóng / hết hạn / đã ứng tuyển
- * @param {Object[]} rows - AI_POST_SUGGESTIONS (lean)
- * @param {Object} profile
- * @returns {Promise<Object[]>} sắp xếp theo điểm giảm dần
- */
-const hydrateSuggestions = async (rows, profile) => {
-  const requests = await ParentRequest.find({ _id: { $in: rows.map((row) => row.request_id) } }).lean();
   const appliedRequestIds = await ApplyRequest.distinct('request_id', {
     tutor_profile_id: profile._id,
-    request_id: { $in: rows.map((row) => row.request_id) },
+    status: { $ne: ENUMS.ApplyRequestsStatus.WITHDRAWN },
   });
-  const appliedSet = new Set(appliedRequestIds.map((id) => String(id)));
-
-  const usableRequests = requests.filter((request) => isRequestAvailable(request) && !appliedSet.has(String(request._id)));
-  const scoreByRequest = new Map(rows.map((row) => [String(row.request_id), row.match_score]));
-  const items = await decorateRequests(usableRequests, profile, scoreByRequest);
-  items.sort((first, second) => second.match_score - first.match_score);
-  return items;
-};
-
-const buildSuggestionResponse = (items, rows, hint, page, limit) => {
-  let cachedUntil = null;
-  if (rows.length > 0) {
-    cachedUntil = rows[0].cached_until;
-  }
+  const requests = await ParentRequest.find({
+    ...buildBrowseFilter({}),
+    _id: { $nin: appliedRequestIds },
+  }).sort({ created_at: -1, _id: -1 }).lean();
+  const matches = requests.filter((request) =>
+    isRequestAvailable(request) && matchesAnyTeachingCategory(request, activeSelections, catalog));
+  matches.sort((first, second) => {
+    const dateOrder = new Date(second.created_at).getTime() - new Date(first.created_at).getTime();
+    if (dateOrder !== 0) return dateOrder;
+    return String(second._id).localeCompare(String(first._id));
+  });
+  const items = await decorateRequests(matches.slice((page - 1) * limit, page * limit), profile);
   return {
-    items: items.slice((page - 1) * limit, page * limit),
-    pagination: buildPagination(page, limit, items.length),
-    // Chưa có AI provider nên không có lời giải thích (giống UC09 E1)
-    ai_status: 'FALLBACK',
-    cached_until: cachedUntil,
-    hint: hint,
+    items,
+    pagination: buildPagination(page, limit, matches.length),
+    hint: matches.length === 0 ? 'Chưa có yêu cầu đang mở phù hợp với môn học hoặc trình độ trong hồ sơ của bạn.' : null,
   };
 };
 
 /**
- * "Suggested for you": dùng cache còn hạn, hết hạn / rỗng thì tính lại
- * @param {Object} user - req.user { id, role }
- * @param {Object} query - { page, limit }
- * @returns {Promise<Object>} { items, pagination, ai_status, cached_until, hint }
+ * Reload profile-based suggestions without reading or writing any AI cache.
+ * @param {Object} user - Authenticated Tutor account.
+ * @returns {Promise<Object>} First page of current matching requests.
  */
-export const getSuggestions = async (user, { page, limit }) => {
-  const profile = await getTutorProfileOrThrow(user);
-
-  let rows = await AiPostSuggestion.find({ tutor_profile_id: profile._id, cached_until: { $gt: new Date() } }).lean();
-  let items = [];
-  if (rows.length > 0) {
-    items = await hydrateSuggestions(rows, profile);
-  }
-
-  let hint = null;
-  if (items.length === 0) {
-    const regenerated = await regenerateSuggestions(profile);
-    rows = regenerated.rows;
-    hint = regenerated.hint;
-    if (rows.length > 0) {
-      items = await hydrateSuggestions(rows, profile);
-    }
-  }
-  return buildSuggestionResponse(items, rows, hint, page, limit);
-};
-
-/**
- * Bỏ cache và tính lại "Suggested for you"
- * @param {Object} user - req.user { id, role }
- * @returns {Promise<Object>} cùng dạng getSuggestions (trang 1)
- */
-export const refreshSuggestions = async (user) => {
-  const profile = await getTutorProfileOrThrow(user);
-  const regenerated = await regenerateSuggestions(profile);
-
-  let items = [];
-  if (regenerated.rows.length > 0) {
-    items = await hydrateSuggestions(regenerated.rows, profile);
-  }
-  return buildSuggestionResponse(items, regenerated.rows, regenerated.hint, 1, SUGGESTION_LIMIT);
-};
+export const refreshSuggestions = (user) => getSuggestions(user, { page: 1, limit: 10 });

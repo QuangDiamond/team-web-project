@@ -4,7 +4,7 @@ import { Bookmark, BookmarkCheck, ChevronLeft, LoaderCircle } from 'lucide-react
 import { getTutorRequest, saveRequest, unsaveRequest } from '../../services/tutorRequestService';
 import Alert from '../../components/common/Alert';
 import SectionCard from '../../components/common/SectionCard';
-import ApplyModal from '../../components/tutorRequests/ApplyModal';
+import ApplyModal from '../../components/tutor/ApplyModal';
 import { formatBudget, getModeLabel } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 import '../../styles/tutorRequests.css';
@@ -49,7 +49,7 @@ export default function TutorRequestDetail() {
   const handleApplied = (result) => {
     const request = state.request;
     setState({ ...state, request: { ...request, has_applied: true, application_count: request.application_count + 1 } });
-    setNotice(`Đã gửi đơn ứng tuyển. Bạn còn ${result.remaining_credits} tín dụng.`);
+    setNotice(`Đã gửi đơn ứng tuyển. Bạn còn ${result.remaining_credits} credits.`);
     setApplying(false);
   };
 
@@ -116,7 +116,7 @@ export default function TutorRequestDetail() {
         </div>
 
         <SectionCard title="Bạn quan tâm đến yêu cầu này?">
-          <p className="item-meta">Giới thiệu ngắn về kinh nghiệm của bạn. Ứng tuyển tốn 1 tín dụng.</p>
+          <p className="item-meta">Giới thiệu ngắn về kinh nghiệm của bạn. Ứng tuyển tốn ít nhất 1 credits.</p>
           <div className="tutor-detail-actions">
             <button
               type="button"

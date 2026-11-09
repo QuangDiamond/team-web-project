@@ -5,7 +5,7 @@ import api from './api.js';
 export const getCatalog = () => api.get('/payment/v1/catalog');
 // Gói hiện tại, hạn dùng, số credit và AI quota còn lại
 export const getMyBilling = () => api.get('/payment/v1/me');
-// Tạo đơn: { item_type: 'PLAN_UPGRADE', plan_id, duration_months } hoặc { item_type: 'CREDIT_PACK', pack_id, quantity }
+// Tạo đơn: { item_type: 'PLAN_UPGRADE', plan_id } hoặc { item_type: 'CREDIT_PACK', pack_id, quantity }
 // kèm payment_method. Trả về checkout_url để chuyển trình duyệt sang cổng thanh toán
 export const createOrder = (data) => api.post('/payment/v1/orders', data);
 export const getOrder = (orderCode) => api.get(`/payment/v1/orders/${encodeURIComponent(orderCode)}`);

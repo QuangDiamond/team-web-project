@@ -19,11 +19,15 @@ const getNavLinkClass = ({ isActive }) => {
   return 'dashboard-nav-link';
 };
 
-function NavItem({ item, onNavigate }) {
+function NavItem({ item, user, onNavigate }) {
   const Icon = item.icon;
+  let destination = item.to;
+  if (typeof destination === 'function') {
+    destination = destination(user);
+  }
 
   // Mục chưa có màn hình: hiển thị nhưng không bấm được
-  if (!item.to) {
+  if (!destination) {
     return (
       <li>
         <span className="dashboard-nav-link is-disabled" aria-disabled="true" title="Sắp ra mắt">
@@ -36,7 +40,7 @@ function NavItem({ item, onNavigate }) {
 
   return (
     <li>
-      <NavLink to={item.to} end={item.end === true} className={getNavLinkClass} onClick={onNavigate}>
+      <NavLink to={destination} end={item.end === true} className={getNavLinkClass} onClick={onNavigate}>
         {Icon && <Icon size={16} aria-hidden="true" />}
         <span>{item.label}</span>
       </NavLink>
@@ -74,7 +78,7 @@ export default function DashboardSidebar({ menu, isOpen, onClose }) {
       </div>
 
       <div className="dashboard-user-card">
-        <span className="dashboard-avatar" aria-hidden="true">{getInitials(fullName)}</span>
+        <span className="dashboard-avatar" aria-hidden="true">{user?.avatar_url ? <img src={user.avatar_url} alt="" /> : getInitials(fullName)}</span>
         <div className="dashboard-user-info">
           <p className="dashboard-user-name">{fullName || "Người dùng"}</p>
           <span className="dashboard-role-badge">{menu.roleLabel}</span>
@@ -87,7 +91,7 @@ export default function DashboardSidebar({ menu, isOpen, onClose }) {
             <p className="dashboard-nav-group-label">{group.label}</p>
             <ul className="dashboard-nav-list">
               {group.items.map((item) => (
-                <NavItem key={item.label} item={item} onNavigate={onClose} />
+                <NavItem key={item.label} item={item} user={user} onNavigate={onClose} />
               ))}
             </ul>
           </div>

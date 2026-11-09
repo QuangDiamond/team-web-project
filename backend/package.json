@@ -8,10 +8,13 @@
     "start": "node src/server.js",
     "test": "node --test",
     "lint": "eslint .",
-    "seed:admin": "node scripts/seed-billing-admin.js"
+    "seed:admin": "node scripts/seed-billing-admin.js",
+    "seed:categories": "node scripts/seed-categories.js",
+    "seed:marketplace": "node scripts/seed-marketplace.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.11.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
@@ -21,6 +24,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.18.0",
     "morgan": "^1.10.0",
+    "multer": "^2.5.0",
     "nodemailer": "^10.4.0",
     "team-web-project": "file:..",
     "vnpay": "^2.5.0",

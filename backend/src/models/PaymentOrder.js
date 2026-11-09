@@ -20,7 +20,7 @@ const paymentOrderSchema = new Schema(
     pack_id:         { type: Schema.Types.ObjectId, ref: 'CreditPack', default: null },
     // Số lượng credit pack mua trong đơn (chỉ dùng khi item_type = CREDIT_PACK). amount = CREDIT_PACKS.price ×…
     quantity:        { type: Schema.Types.Int32, default: 1 },
-    // Số tháng mua gói (chỉ dùng khi item_type = PLAN_UPGRADE, vd 1/3/6/12). amount = PLANS.monthly_price ×…
+    // Số tháng suy ra từ chu kỳ Plan (1 tháng hoặc 12 tháng); dùng để gia hạn subscription.
     duration_months: { type: Schema.Types.Int32, default: null },
     // Tổng tiền thanh toán (VND)
     amount:          { type: Schema.Types.Decimal128, default: null, get: decimalToString },
