@@ -6,9 +6,6 @@ const api = axios.create({
     (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) ||
     'http://localhost:9999/api',
   withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
 // Lỗi trả về giữ lại status (vd: 403 chưa kích hoạt) và errors (lỗi theo từng field)

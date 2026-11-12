@@ -41,10 +41,12 @@ const deliverResetLink = async (email) => {
     throw error;
   }
   try {
-    const resetLink = new URL('/reset-password', env.corsOrigin);
+    const clientOrigin = Array.isArray(env.corsOrigin) ? env.corsOrigin[0] : env.corsOrigin;
+    const resetLink = new URL('/reset-password', clientOrigin);
     resetLink.searchParams.set('token', rawToken);
     await sendPasswordResetEmail(user.email, user.full_name, resetLink.toString());
-  } catch {
+  } catch (error) {
+    console.error('Password recovery email failed:', error.code || error.name);
     await PasswordResetToken.deleteOne({ _id: user._id, token_value: tokenValue });
   }
 };
