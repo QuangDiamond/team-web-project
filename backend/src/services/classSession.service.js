@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { AppError } from '../common/utils/AppError.js';
 import { buildPagination } from '../common/utils/pagination.js';
 import { ClassSession } from '../models/ClassSession.js';
+import { ENUMS } from '../models/enums.js';
 import { getOwnedActiveClassroom } from './topic.service.js';
 
 /**
@@ -53,6 +54,44 @@ const validateFutureStartTime = (startTime) => {
 };
 
 /**
+ * Reject a session time range that overlaps another non-cancelled session in the same classroom
+ * @param {ObjectId} classId - Classroom ID to check
+ * @param {Date} startTime - Proposed session start time
+ * @param {Date} endTime - Proposed session end time
+ * @param {string | null} excludedSessionId - Session ID to ignore while updating
+ * @returns {Promise<void>}
+ */
+const ensureNoSessionOverlap = async (classId, startTime, endTime, excludedSessionId = null) => {
+  const filter = {
+    class_id: classId,
+    status: { $ne: ENUMS.ClassSessionsStatus.CANCELLED },
+    $or: [
+      {
+        start_time: { $lte: startTime },
+        end_time: { $gte: startTime },
+      },
+      {
+        start_time: { $lte: endTime },
+        end_time: { $gte: endTime },
+      },
+      {
+        start_time: { $gte: startTime },
+        end_time: { $lte: endTime },
+      },
+    ],
+  };
+
+  if (excludedSessionId) {
+    filter._id = { $ne: excludedSessionId };
+  }
+
+  const conflictingSession = await ClassSession.exists(filter);
+  if (conflictingSession) {
+    throw new AppError('Class session overlaps with another session in this classroom', 409);
+  }
+};
+
+/**
  * List sessions from an active classroom owned by the authenticated tutor
  * @param {Object} user - Authenticated user { id, role }
  * @param {string} classId - Classroom ID
@@ -100,6 +139,7 @@ export const getClassSession = async (user, classId, sessionId) => {
 export const createClassSession = async (user, classId, data) => {
   const classroom = await getOwnedActiveClassroom(user, classId);
   validateFutureStartTime(data.start_time);
+  await ensureNoSessionOverlap(classroom._id, data.start_time, data.end_time);
 
   const classSession = await ClassSession.create({
     class_id: classroom._id,
@@ -109,7 +149,7 @@ export const createClassSession = async (user, classId, data) => {
     start_time: data.start_time,
     end_time: data.end_time,
     meeting_link: data.meeting_link,
-    status: data.status,
+    status: ENUMS.ClassSessionsStatus.SCHEDULED,
   });
 
   return toClassSessionDto(classSession);
@@ -133,6 +173,12 @@ export const updateClassSession = async (user, classId, sessionId, data) => {
 
   if (data.start_time) {
     validateFutureStartTime(data.start_time);
+    await ensureNoSessionOverlap(
+      classroom._id,
+      data.start_time,
+      data.end_time,
+      classSession._id,
+    );
   }
 
   const updatedSession = await ClassSession.findOneAndUpdate(

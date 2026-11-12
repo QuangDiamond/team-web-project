@@ -47,4 +47,13 @@ const linkMaterialSchema = z.strictObject({
 
 export const createClassMaterialSchema = z.union([uploadedFileMaterialSchema, linkMaterialSchema]);
 
-export const updateClassMaterialSchema = createClassMaterialSchema;
+export const updateClassMaterialSchema = z.strictObject({
+  topic_id: topicIdSchema.optional(),
+  title: commonMaterialFields.title.optional(),
+  material_type: z.enum([
+    ...uploadedMaterialTypes,
+    ENUMS.ClassMaterialsMaterialType.LINK,
+  ]).optional(),
+  visibility: commonMaterialFields.visibility.optional(),
+  file_url: linkMaterialSchema.shape.file_url.optional(),
+}).refine((data) => Object.keys(data).length > 0, 'At least one field is required');

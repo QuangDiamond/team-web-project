@@ -23,25 +23,35 @@ const tutorOnly = (req, res, next) => {
   return next();
 };
 
+// hàm add, create
 classMaterialRoutes.post(
   '/:classId/materials',
-  authentication,
-  tutorOnly,
-  uploadClassMaterialFile,
+  authentication, // validate token
+  tutorOnly, // validate role tutor 
+  uploadClassMaterialFile, 
   validator(createClassMaterialSchema),
   requireClassMaterialFile,
   validateClassMaterialFileContent,
   createClassMaterial,
 );
-classMaterialRoutes.get('/:classId/materials', authentication, tutorOnly, getClassMaterials);
+
+// hàm lấy all material của 1 class
+classMaterialRoutes.get(
+  '/:classId/materials',
+  authentication,
+  tutorOnly,
+  getClassMaterials);
+
+// hàm update
 classMaterialRoutes.patch(
   '/:classId/materials/:materialId',
   authentication,
   tutorOnly,
   uploadClassMaterialFile,
   validator(updateClassMaterialSchema),
-  requireClassMaterialFile,
   validateClassMaterialFileContent,
   updateClassMaterial,
 );
+
+// hàm delete material
 classMaterialRoutes.delete('/:classId/materials/:materialId', authentication, tutorOnly, deleteClassMaterial);

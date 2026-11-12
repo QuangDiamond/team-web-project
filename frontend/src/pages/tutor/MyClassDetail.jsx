@@ -38,14 +38,15 @@ import '../../styles/mySchedule.css';
 
 const SESSION_PAGE_SIZE = 100;
 const HOUR_HEIGHT = 52;
-const WEEKDAY_FORMATTER = new Intl.DateTimeFormat('en', { weekday: 'short' });
-const DAY_FORMATTER = new Intl.DateTimeFormat('en', { day: 'numeric' });
-const MONTH_YEAR_FORMATTER = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric' });
-const TIME_FORMATTER = new Intl.DateTimeFormat('en', { hour: 'numeric', minute: '2-digit' });
+const WEEKDAY_FORMATTER = new Intl.DateTimeFormat('vi-VN', { weekday: 'short' });
+const DAY_FORMATTER = new Intl.DateTimeFormat('vi-VN', { day: 'numeric' });
+const MONTH_YEAR_FORMATTER = new Intl.DateTimeFormat('vi-VN', { month: 'long', year: 'numeric' });
+const DATE_RANGE_FORMATTER = new Intl.DateTimeFormat('vi-VN', { day: 'numeric', month: 'short', year: 'numeric' });
+const TIME_FORMATTER = new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
 
 const CLASS_TABS = [
-  { id: 'materials', label: 'Materials & Topics', Icon: BookOpen },
-  { id: 'schedule', label: 'Schedule of Class', Icon: CalendarDays },
+  { id: 'materials', label: 'Tài liệu và chủ đề', Icon: BookOpen },
+  { id: 'schedule', label: 'Lịch học', Icon: CalendarDays },
 ];
 
 function getWeekStart(date) {
@@ -147,6 +148,14 @@ function formatTimeInput(value) {
   return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
+function getFirstFieldError(fieldErrors, field) {
+  const messages = fieldErrors[field];
+  if (Array.isArray(messages)) {
+    return messages[0] || '';
+  }
+  return messages || '';
+}
+
 async function getAllClassSessions(classId) {
   const firstResponse = await getClassSessions(classId, { page: 1, limit: SESSION_PAGE_SIZE });
   const allSessions = [...firstResponse.data.items];
@@ -177,7 +186,6 @@ function ClassSessionFormModal({ session, initialValues, onClose, onSave, onSucc
         start_time: initialValues ? initialValues.start_time : '',
         end_time: initialValues ? initialValues.end_time : '',
         meeting_link: '',
-        status: 'SCHEDULED',
       };
     }
     return {
@@ -190,40 +198,48 @@ function ClassSessionFormModal({ session, initialValues, onClose, onSave, onSucc
     };
   });
   const [formError, setFormError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (field, value) => {
     setValues((currentValues) => ({ ...currentValues, [field]: value }));
+    setFieldErrors((currentErrors) => ({ ...currentErrors, [field]: '' }));
+    setFormError('');
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setFormError('');
+    setFieldErrors({});
 
     if (!values.title.trim()) {
-      setFormError('Session title is required.');
+      setFieldErrors({ title: 'Vui lòng nhập tên buổi học.' });
       return;
     }
 
     const startTime = new Date(`${values.date}T${values.start_time}`);
     const endTime = new Date(`${values.date}T${values.end_time}`);
     if (startTime <= new Date()) {
-      setFormError('Start time must be in the future.');
+      setFieldErrors({ start_time: 'Giờ bắt đầu phải sau thời điểm hiện tại.' });
       return;
     }
     if (endTime <= startTime) {
-      setFormError('End time must be after start time on the selected day.');
+      setFieldErrors({ end_time: 'Giờ kết thúc phải sau giờ bắt đầu trong cùng ngày.' });
       return;
     }
 
     setIsSubmitting(true);
-    const result = await onSave({
+    const sessionData = {
       title: values.title.trim(),
       start_time: startTime.toISOString(),
       end_time: endTime.toISOString(),
       meeting_link: values.meeting_link.trim() || null,
-      status: values.status,
-    }, session ? session._id : null);
+    };
+    if (session) {
+      sessionData.status = values.status;
+    }
+
+    const result = await onSave(sessionData, session ? session._id : null);
     setIsSubmitting(false);
 
     if (result.success) {
@@ -232,24 +248,26 @@ function ClassSessionFormModal({ session, initialValues, onClose, onSave, onSucc
       return;
     }
     setFormError(result.message);
+    setFieldErrors(result.errors || {});
   };
 
   const isEditing = Boolean(session);
 
   return (
-    <Modal title={isEditing ? 'Edit class session' : 'Create class session'} onClose={onClose}>
+    <Modal title={isEditing ? 'Chỉnh sửa buổi học' : 'Tạo buổi học'} onClose={onClose}>
       <form className="class-create-form class-session-create-form" onSubmit={handleSubmit}>
         <FormInput
           id="class-session-title"
-          label="Session title"
+          label="Tên buổi học"
           value={values.title}
           onChange={(event) => handleChange('title', event.target.value)}
-          placeholder="For example: Algebra lesson"
+          error={getFirstFieldError(fieldErrors, 'title')}
+          placeholder="Ví dụ: Buổi học Đại số"
           maxLength={200}
           disabled={isSubmitting}
         />
         <div className="form-field">
-          <label className="form-label" htmlFor="class-session-date">Date</label>
+          <label className="form-label" htmlFor="class-session-date">Ngày học</label>
           <div className="form-control">
             <input
               id="class-session-date"
@@ -263,60 +281,68 @@ function ClassSessionFormModal({ session, initialValues, onClose, onSave, onSucc
         </div>
         <div className="class-session-time-fields">
           <div className="form-field">
-            <label className="form-label" htmlFor="class-session-start-time">Start time</label>
+            <label className="form-label" htmlFor="class-session-start-time">Giờ bắt đầu</label>
             <div className="form-control">
               <input
                 id="class-session-start-time"
                 type="time"
                 value={values.start_time}
                 onChange={(event) => handleChange('start_time', event.target.value)}
+                aria-invalid={Boolean(getFirstFieldError(fieldErrors, 'start_time'))}
+                aria-describedby={fieldErrors.start_time ? 'class-session-start-time-error' : undefined}
                 required
                 disabled={isSubmitting}
               />
             </div>
+            {fieldErrors.start_time && <p id="class-session-start-time-error" className="form-error">{getFirstFieldError(fieldErrors, 'start_time')}</p>}
           </div>
           <div className="form-field">
-            <label className="form-label" htmlFor="class-session-end-time">End time</label>
+            <label className="form-label" htmlFor="class-session-end-time">Giờ kết thúc</label>
             <div className="form-control">
               <input
                 id="class-session-end-time"
                 type="time"
                 value={values.end_time}
                 onChange={(event) => handleChange('end_time', event.target.value)}
+                aria-invalid={Boolean(getFirstFieldError(fieldErrors, 'end_time'))}
+                aria-describedby={fieldErrors.end_time ? 'class-session-end-time-error' : undefined}
                 required
                 disabled={isSubmitting}
               />
             </div>
+            {fieldErrors.end_time && <p id="class-session-end-time-error" className="form-error">{getFirstFieldError(fieldErrors, 'end_time')}</p>}
           </div>
         </div>
         <FormInput
           id="class-session-meeting-link"
-          label="Meeting link (optional)"
+          label="Liên kết buổi học (không bắt buộc)"
           value={values.meeting_link}
           onChange={(event) => handleChange('meeting_link', event.target.value)}
           placeholder="https://meet.google.com/..."
           maxLength={2048}
           disabled={isSubmitting}
         />
-        <FormSelect
-          id="class-session-status"
-          label="Status"
-          value={values.status}
-          onChange={(event) => handleChange('status', event.target.value)}
-          options={[
-            { value: 'SCHEDULED', label: 'Scheduled' },
-            { value: 'CANCELLED', label: 'Cancelled' },
-            { value: 'COMPLETED', label: 'Completed' },
-          ]}
-          disabled={isSubmitting}
-        />
+        {isEditing && (
+          <FormSelect
+            id="class-session-status"
+            label="Trạng thái"
+            value={values.status}
+            onChange={(event) => handleChange('status', event.target.value)}
+            options={[
+              { value: 'SCHEDULED', label: 'Đã lên lịch' },
+              { value: 'CANCELLED', label: 'Đã hủy' },
+              { value: 'COMPLETED', label: 'Đã hoàn thành' },
+            ]}
+            disabled={isSubmitting}
+          />
+        )}
         {formError && <Alert type="error"><p>{formError}</p></Alert>}
         <div className="class-session-form-actions">
           <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={isSubmitting}>
-            Cancel
+            Hủy
           </button>
           <button type="submit" className="btn btn-primary btn-sm" disabled={isSubmitting}>
-            {isSubmitting ? 'Saving...' : isEditing ? 'Save changes' : 'Create session'}
+            {isSubmitting ? 'Đang lưu...' : isEditing ? 'Lưu thay đổi' : 'Tạo buổi học'}
           </button>
         </div>
       </form>
@@ -328,6 +354,7 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
   const [weekStart, setWeekStart] = useState(() => getWeekStart(new Date()));
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedSlotError, setSelectedSlotError] = useState('');
   const [sessionToEdit, setSessionToEdit] = useState(null);
   const [sessionToDelete, setSessionToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -343,15 +370,8 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
     })
     .sort((first, second) => new Date(first.start_time) - new Date(second.start_time)), [sessions, weekStart]);
 
-  let hourStart = 7;
-  let hourEnd = 21;
-  for (const session of weekSessions) {
-    const startTime = new Date(session.start_time);
-    const endTime = new Date(session.end_time);
-    hourStart = Math.min(hourStart, startTime.getHours());
-    const roundedEndHour = Math.ceil(endTime.getHours() + (endTime.getMinutes() > 0 ? 1 : 0));
-    hourEnd = Math.max(hourEnd, Math.min(24, roundedEndHour));
-  }
+  const hourStart = 6;
+  const hourEnd = 24;
 
   const hourCount = Math.max(1, hourEnd - hourStart);
   const gridHeight = hourCount * HOUR_HEIGHT;
@@ -368,11 +388,13 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
       return nextWeekStart;
     });
     setSelectedSlot(null);
+    setSelectedSlotError('');
   };
 
   const goToCurrentWeek = () => {
     setWeekStart(getWeekStart(new Date()));
     setSelectedSlot(null);
+    setSelectedSlotError('');
   };
 
   const handleCalendarColumnClick = (event, day) => {
@@ -385,6 +407,7 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
 
     if (startTime <= new Date()) {
       setSelectedSlot(null);
+      setSelectedSlotError('Hãy chọn một khung giờ trong tương lai để tạo buổi học.');
       return;
     }
 
@@ -394,17 +417,19 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
       endTime.setHours(23, 59, 0, 0);
     }
 
-    setSelectedSlot({
-      dayKey: day.toDateString(),
-      top: (roundedMinutesFromTop / 60) * HOUR_HEIGHT,
+    const nextSelectedSlot = {
       date: formatDateInput(startTime),
       start_time: formatTimeInput(startTime),
       end_time: formatTimeInput(endTime),
-    });
+    };
+    setSelectedSlot(nextSelectedSlot);
+    setSelectedSlotError('');
+    setIsCreateOpen(true);
   };
 
   const openCreateForm = (initialValues) => {
     setIsCreateOpen(true);
+    setSelectedSlotError('');
     if (!initialValues) {
       setSelectedSlot(null);
     }
@@ -429,7 +454,7 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
     return (
       <div className="schedule-loading" role="status">
         <LoaderCircle size={24} className="spin" aria-hidden="true" />
-        <span>Loading class sessions...</span>
+          <span>Đang tải các buổi học...</span>
       </div>
     );
   }
@@ -438,7 +463,7 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
     return (
       <Alert type="error">
         <p>{error}</p>
-        <button type="button" className="btn btn-outline btn-sm" onClick={onRetry}>Try again</button>
+        <button type="button" className="btn btn-outline btn-sm" onClick={onRetry}>Thử lại</button>
       </Alert>
     );
   }
@@ -451,24 +476,24 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
           <div>
             <h2 id="class-schedule-title">{MONTH_YEAR_FORMATTER.format(weekStart)}</h2>
             <p>
-              {weekStart.toLocaleDateString('en', { month: 'short', day: 'numeric' })}
+              {DATE_RANGE_FORMATTER.format(weekStart)}
               {' – '}
               {new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6)
-                .toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' })}
+                .toLocaleDateString('vi-VN', { day: 'numeric', month: 'short', year: 'numeric' })}
             </p>
           </div>
         </div>
         <div className="schedule-toolbar-actions">
           <button type="button" className="btn btn-primary btn-sm" onClick={() => openCreateForm(null)}>
             <Plus size={15} aria-hidden="true" />
-            Create session
+            Tạo buổi học
           </button>
-          <button type="button" className="btn btn-outline btn-sm" onClick={goToCurrentWeek}>Today</button>
-          <div className="schedule-week-arrows" aria-label="Change week">
-            <button type="button" className="btn btn-outline btn-sm" onClick={() => moveWeek(-1)} aria-label="Previous week">
+          <button type="button" className="btn btn-outline btn-sm" onClick={goToCurrentWeek}>Hôm nay</button>
+          <div className="schedule-week-arrows" aria-label="Đổi tuần">
+            <button type="button" className="btn btn-outline btn-sm" onClick={() => moveWeek(-1)} aria-label="Tuần trước">
               <ChevronLeft size={16} aria-hidden="true" />
             </button>
-            <button type="button" className="btn btn-outline btn-sm" onClick={() => moveWeek(1)} aria-label="Next week">
+            <button type="button" className="btn btn-outline btn-sm" onClick={() => moveWeek(1)} aria-label="Tuần sau">
               <ChevronRight size={16} aria-hidden="true" />
             </button>
           </div>
@@ -478,9 +503,10 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
       <div className="schedule-calendar-card">
         {weekSessions.length === 0 && (
           <div className="schedule-week-empty">
-            <span>No sessions this week. Use the arrows to browse another week.</span>
+          <span>Tuần này chưa có buổi học. Chọn một khung giờ trong tương lai để tạo buổi học, hoặc dùng các nút mũi tên để xem tuần khác.</span>
           </div>
         )}
+        {selectedSlotError && <p className="schedule-slot-error" role="status">{selectedSlotError}</p>}
         <div className="schedule-calendar-scroll">
           <div className="schedule-calendar" style={{ '--schedule-grid-height': `${gridHeight}px` }}>
             <div className="schedule-calendar-corner" aria-hidden="true" />
@@ -508,7 +534,7 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
                   key={day.toISOString()}
                   className={dayIsToday ? 'schedule-day-column schedule-day-column-selectable is-today' : 'schedule-day-column schedule-day-column-selectable'}
                   style={{ height: `${gridHeight}px` }}
-                  title="Click an empty time to create a session"
+                  title="Chọn khung giờ trống để tạo buổi học"
                   onClick={(event) => handleCalendarColumnClick(event, day)}
                 >
                   {events.map((event) => {
@@ -529,7 +555,7 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
                         onClick={(eventClick) => eventClick.stopPropagation()}
                       >
                         <div className="schedule-event-heading">
-                          <strong className="schedule-event-title">{event.session.title || 'Class session'}</strong>
+                        <strong className="schedule-event-title">{event.session.title || 'Buổi học'}</strong>
                           <div className="schedule-event-actions">
                             {event.session.meeting_link && (
                               <a
@@ -537,8 +563,8 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
                                 href={event.session.meeting_link}
                                 target="_blank"
                                 rel="noreferrer"
-                                aria-label={`Open meeting for ${event.session.title || 'class session'}`}
-                                title="Open meeting"
+                                aria-label={`Mở liên kết buổi học ${event.session.title || 'Buổi học'}`}
+                                title="Mở liên kết buổi học"
                               >
                                 <ExternalLink size={13} aria-hidden="true" />
                               </a>
@@ -548,8 +574,8 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
                               className="schedule-event-action"
                               onClick={() => setSessionToEdit(event.session)}
                               disabled={sessionHasStarted}
-                              aria-label={sessionHasStarted ? 'Past sessions cannot be updated' : 'Edit session'}
-                              title={sessionHasStarted ? 'Past sessions cannot be updated' : 'Edit session'}
+                              aria-label={sessionHasStarted ? 'Không thể chỉnh sửa buổi học đã bắt đầu' : 'Chỉnh sửa buổi học'}
+                              title={sessionHasStarted ? 'Không thể chỉnh sửa buổi học đã bắt đầu' : 'Chỉnh sửa buổi học'}
                             >
                               <Pencil size={13} aria-hidden="true" />
                             </button>
@@ -561,8 +587,8 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
                                 setSessionToDelete(event.session);
                               }}
                               disabled={sessionHasStarted}
-                              aria-label={sessionHasStarted ? 'Past sessions cannot be deleted' : 'Delete session'}
-                              title={sessionHasStarted ? 'Past sessions cannot be deleted' : 'Delete session'}
+                              aria-label={sessionHasStarted ? 'Không thể xóa buổi học đã bắt đầu' : 'Xóa buổi học'}
+                              title={sessionHasStarted ? 'Không thể xóa buổi học đã bắt đầu' : 'Xóa buổi học'}
                             >
                               <Trash2 size={13} aria-hidden="true" />
                             </button>
@@ -575,27 +601,13 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
                       </article>
                     );
                   })}
-                  {selectedSlot && selectedSlot.dayKey === day.toDateString() && (
-                    <button
-                      type="button"
-                      className="schedule-slot-create-button"
-                      style={{ top: `${selectedSlot.top}px` }}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        openCreateForm(selectedSlot);
-                      }}
-                    >
-                      <Plus size={13} aria-hidden="true" />
-                      Create session
-                    </button>
-                  )}
                 </div>
               );
             })}
           </div>
         </div>
       </div>
-      <p className="schedule-timezone-note">Times are shown in your device’s local timezone.</p>
+      <p className="schedule-timezone-note">Giờ hiển thị theo múi giờ trên thiết bị của bạn.</p>
       {isCreateOpen && (
         <ClassSessionFormModal
           key="create-session"
@@ -619,9 +631,9 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
         />
       )}
       {sessionToDelete && (
-        <Modal title="Delete class session" onClose={() => setSessionToDelete(null)}>
+        <Modal title="Xóa buổi học" onClose={() => setSessionToDelete(null)}>
           <p className="class-session-delete-copy">
-            Delete “{sessionToDelete.title || 'Class session'}”? This action cannot be undone.
+            Bạn có chắc muốn xóa “{sessionToDelete.title || 'Buổi học'}” không? Thao tác này không thể hoàn tác.
           </p>
           {deleteError && <Alert type="error"><p>{deleteError}</p></Alert>}
           <div className="class-session-form-actions">
@@ -631,7 +643,7 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
               onClick={() => setSessionToDelete(null)}
               disabled={isDeleting}
             >
-              Cancel
+              Hủy
             </button>
             <button
               type="button"
@@ -639,7 +651,7 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
               onClick={handleConfirmDelete}
               disabled={isDeleting}
             >
-              {isDeleting ? 'Deleting...' : 'Delete session'}
+              {isDeleting ? 'Đang xóa...' : 'Xóa buổi học'}
             </button>
           </div>
         </Modal>
@@ -661,11 +673,15 @@ export default function MyClassDetail({
   const activeTab = embedded ? providedActiveTab : localActiveTab;
   const [toast, setToast] = useState(null);
   const [topics, setTopics] = useState([]);
+  const [newlyCreatedTopicId, setNewlyCreatedTopicId] = useState(null);
   const [topicsLoading, setTopicsLoading] = useState(true);
   const [topicsError, setTopicsError] = useState('');
   const [createTopicError, setCreateTopicError] = useState('');
+  const [createTopicNotice, setCreateTopicNotice] = useState('');
   const [topicActionError, setTopicActionError] = useState('');
   const [createMaterialError, setCreateMaterialError] = useState('');
+  const [createMaterialNotice, setCreateMaterialNotice] = useState(null);
+  const [newlyCreatedMaterialId, setNewlyCreatedMaterialId] = useState(null);
   const [materials, setMaterials] = useState([]);
   const [materialsLoading, setMaterialsLoading] = useState(true);
   const [materialsError, setMaterialsError] = useState('');
@@ -766,9 +782,12 @@ export default function MyClassDetail({
 
   const handleCreateTopic = async (topicName) => {
     setCreateTopicError('');
+    setCreateTopicNotice('');
     try {
       const response = await createClassTopic(classId, { name: topicName });
       setTopics((currentTopics) => [...currentTopics, response.data]);
+      setNewlyCreatedTopicId(response.data._id);
+      setCreateTopicNotice(response.message);
       showToast('success', response.message);
       return true;
     } catch (error) {
@@ -810,9 +829,12 @@ export default function MyClassDetail({
 
   const handleCreateMaterial = async (formData) => {
     setCreateMaterialError('');
+    setCreateMaterialNotice(null);
     try {
       const response = await createClassMaterial(classId, formData);
       setMaterials((currentMaterials) => [...currentMaterials, response.data]);
+      setNewlyCreatedMaterialId(response.data._id);
+      setCreateMaterialNotice({ type: 'success', message: response.message });
       showToast('success', response.message);
       return true;
     } catch (error) {
@@ -824,15 +846,18 @@ export default function MyClassDetail({
 
   const handleUpdateMaterial = async (materialId, formData) => {
     setCreateMaterialError('');
+    setCreateMaterialNotice(null);
     try {
       const response = await updateClassMaterial(classId, materialId, formData);
       setMaterials((currentMaterials) => currentMaterials.map((material) => (
         material._id === materialId ? response.data : material
       )));
-      if (!response.data.old_file_deleted) {
-        setCreateMaterialError(response.message);
-        showToast('error', response.message);
+      if (response.data.old_file_deleted === false) {
+        const message = 'Tài liệu đã cập nhật, nhưng chưa xóa được file cũ trên Cloudinary.';
+        setCreateMaterialNotice({ type: 'info', message });
+        showToast('success', message);
       } else {
+        setCreateMaterialNotice({ type: 'success', message: response.message });
         showToast('success', response.message);
       }
       return true;
@@ -845,13 +870,16 @@ export default function MyClassDetail({
 
   const handleDeleteMaterial = async (materialId) => {
     setCreateMaterialError('');
+    setCreateMaterialNotice(null);
     try {
       const response = await deleteClassMaterial(classId, materialId);
       setMaterials((currentMaterials) => currentMaterials.filter((material) => material._id !== materialId));
-      if (!response.data.cloudinary_deleted) {
-        setCreateMaterialError(response.message);
-        showToast('error', response.message);
+      if (response.data.cloudinary_deleted === false) {
+        const message = 'Đã xóa tài liệu, nhưng chưa xóa được file trên Cloudinary.';
+        setCreateMaterialNotice({ type: 'info', message });
+        showToast('success', message);
       } else {
+        setCreateMaterialNotice({ type: 'success', message: response.message });
         showToast('success', response.message);
       }
       return true;
@@ -906,10 +934,15 @@ export default function MyClassDetail({
         }
         return [...currentSessions, response.data];
       });
-      showToast('success', response.message);
-      return { success: true, message: response.message, session: response.data };
+      const successMessage = response.message || (
+        sessionId
+          ? 'Đã cập nhật buổi học thành công.'
+          : 'Đã tạo buổi học thành công.'
+      );
+      showToast('success', successMessage);
+      return { success: true, message: successMessage, session: response.data };
     } catch (error) {
-      return { success: false, message: error.message };
+      return { success: false, message: error.message, errors: error.errors };
     }
   };
 
@@ -939,10 +972,12 @@ export default function MyClassDetail({
         {activeTab === 'materials' && (
           <ClassroomTopicsAndMaterials
             topics={topics}
+            newlyCreatedTopicId={newlyCreatedTopicId}
             materials={materials}
             topicsLoading={topicsLoading}
             topicsError={topicsError}
             createTopicError={createTopicError}
+            createTopicNotice={createTopicNotice}
             topicActionError={topicActionError}
             onRetryTopics={handleRetryLoadingTopics}
             onCreateTopic={handleCreateTopic}
@@ -950,6 +985,8 @@ export default function MyClassDetail({
             onDeleteTopic={handleDeleteTopic}
             onCreateMaterial={handleCreateMaterial}
             createMaterialError={createMaterialError}
+            createMaterialNotice={createMaterialNotice}
+            newlyCreatedMaterialId={newlyCreatedMaterialId}
             materialsLoading={materialsLoading}
             materialsError={materialsError}
             onRetryMaterials={handleRetryLoadingMaterials}
@@ -1020,10 +1057,12 @@ export default function MyClassDetail({
         {activeTab === 'materials' && (
           <ClassroomTopicsAndMaterials
             topics={topics}
+            newlyCreatedTopicId={newlyCreatedTopicId}
             materials={materials}
             topicsLoading={topicsLoading}
             topicsError={topicsError}
             createTopicError={createTopicError}
+            createTopicNotice={createTopicNotice}
             topicActionError={topicActionError}
             onRetryTopics={handleRetryLoadingTopics}
             onCreateTopic={handleCreateTopic}
@@ -1031,6 +1070,8 @@ export default function MyClassDetail({
             onDeleteTopic={handleDeleteTopic}
             onCreateMaterial={handleCreateMaterial}
             createMaterialError={createMaterialError}
+            createMaterialNotice={createMaterialNotice}
+            newlyCreatedMaterialId={newlyCreatedMaterialId}
             materialsLoading={materialsLoading}
             materialsError={materialsError}
             onRetryMaterials={handleRetryLoadingMaterials}

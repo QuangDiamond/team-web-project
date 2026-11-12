@@ -11,15 +11,16 @@ import {
 import { Link } from 'react-router-dom';
 import Alert from '../../components/common/Alert';
 import EmptyState from '../../components/common/EmptyState';
-import { getClassSessions, getMyClassroomsPage } from '../../services/classroomService';
+import { getUserSessions } from '../../services/sessionService';
 import '../../styles/mySchedule.css';
 
 const PAGE_SIZE = 100;
 const HOUR_HEIGHT = 64;
-const WEEKDAY_FORMATTER = new Intl.DateTimeFormat('en', { weekday: 'short' });
-const DAY_FORMATTER = new Intl.DateTimeFormat('en', { day: 'numeric' });
-const MONTH_YEAR_FORMATTER = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric' });
-const TIME_FORMATTER = new Intl.DateTimeFormat('en', { hour: 'numeric', minute: '2-digit' });
+const WEEKDAY_FORMATTER = new Intl.DateTimeFormat('vi-VN', { weekday: 'short' });
+const DAY_FORMATTER = new Intl.DateTimeFormat('vi-VN', { day: 'numeric' });
+const MONTH_YEAR_FORMATTER = new Intl.DateTimeFormat('vi-VN', { month: 'long', year: 'numeric' });
+const DATE_RANGE_FORMATTER = new Intl.DateTimeFormat('vi-VN', { day: 'numeric', month: 'short', year: 'numeric' });
+const TIME_FORMATTER = new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
 
 async function getAllPages(loadPage) {
   const firstPage = await loadPage(1);
@@ -142,7 +143,7 @@ function ScheduleEvent({ event }) {
   return (
     <article className={`schedule-event schedule-event-color-${event.colorIndex}`} style={eventStyle}>
       <Link className="schedule-event-title" to={`/tutor/classes/${session.class_id}`}>
-        {session.title || 'Class session'}
+        {session.title || 'Buổi học'}
       </Link>
       <span className="schedule-event-class">{session.class_name}</span>
       <span className="schedule-event-time">
@@ -155,10 +156,10 @@ function ScheduleEvent({ event }) {
           href={session.meeting_link}
           target="_blank"
           rel="noreferrer"
-          aria-label={`Open meeting link for ${session.title || session.class_name}`}
+            aria-label={`Mở liên kết buổi học ${session.title || session.class_name}`}
         >
           <ExternalLink size={12} aria-hidden="true" />
-          Join meeting
+          Vào buổi học
         </a>
       )}
     </article>
@@ -168,15 +169,8 @@ function ScheduleEvent({ event }) {
 function CalendarWeek({ weekStart, sessions }) {
   const days = getWeekDays(weekStart);
   const today = new Date();
-  let hourStart = 7;
-  let hourEnd = 21;
-
-  for (const session of sessions) {
-    const startTime = new Date(session.start_time);
-    const endTime = new Date(session.end_time);
-    hourStart = Math.min(hourStart, startTime.getHours());
-    hourEnd = Math.max(hourEnd, Math.min(24, Math.ceil(endTime.getHours() + (endTime.getMinutes() > 0 ? 1 : 0))));
-  }
+  const hourStart = 6;
+  const hourEnd = 24;
 
   const hourCount = Math.max(1, hourEnd - hourStart);
   const gridHeight = hourCount * HOUR_HEIGHT;
@@ -238,24 +232,24 @@ export default function MySchedule() {
       setError('');
 
       try {
-        const classrooms = await getAllPages((page) => getMyClassroomsPage({ page: page, limit: PAGE_SIZE }));
-        const sessionsByClass = await Promise.all(classrooms.map(async (classroom) => {
-          const classSessions = await getAllPages((page) => getClassSessions(classroom._id, {
-            page: page,
-            limit: PAGE_SIZE,
-          }));
-          return classSessions.map((session) => ({
-            ...session,
-            class_name: classroom.name || 'Untitled class',
-          }));
+        const allSessions = await getAllPages((page) => getUserSessions({
+          page: page,
+          limit: PAGE_SIZE,
         }));
+        const scheduleSessions = allSessions.map((session) => {
+          let className = 'Lớp chưa đặt tên';
+          if (session.classroom && session.classroom.name) {
+            className = session.classroom.name;
+          }
+          return { ...session, class_name: className };
+        });
 
         if (isCurrentRequest) {
-          setSessions(sessionsByClass.flat());
+          setSessions(scheduleSessions);
         }
       } catch (requestError) {
         if (isCurrentRequest) {
-          setError(requestError.message || 'Unable to load your schedule');
+          setError(requestError.message || 'Không thể tải lịch của bạn. Vui lòng thử lại.');
         }
       } finally {
         if (isCurrentRequest) {
@@ -295,25 +289,25 @@ export default function MySchedule() {
 
   return (
     <div className="page-stack my-schedule-page">
-      <section className="schedule-toolbar" aria-label="Calendar navigation">
+      <section className="schedule-toolbar" aria-label="Điều hướng lịch">
         <div className="schedule-toolbar-title">
           <span className="schedule-toolbar-icon" aria-hidden="true"><CalendarDays size={19} /></span>
           <div>
             <h2>{MONTH_YEAR_FORMATTER.format(weekStart)}</h2>
             <p>
-              {weekStart.toLocaleDateString('en', { month: 'short', day: 'numeric' })}
+              {DATE_RANGE_FORMATTER.format(weekStart)}
               {' – '}
-              {weekEnd.toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' })}
+              {DATE_RANGE_FORMATTER.format(weekEnd)}
             </p>
           </div>
         </div>
         <div className="schedule-toolbar-actions">
-          <button type="button" className="btn btn-outline btn-sm" onClick={goToCurrentWeek}>Today</button>
-          <div className="schedule-week-arrows" aria-label="Change week">
-            <button type="button" className="btn btn-outline btn-sm" onClick={() => moveWeek(-1)} aria-label="Previous week">
+          <button type="button" className="btn btn-outline btn-sm" onClick={goToCurrentWeek}>Hôm nay</button>
+          <div className="schedule-week-arrows" aria-label="Đổi tuần">
+            <button type="button" className="btn btn-outline btn-sm" onClick={() => moveWeek(-1)} aria-label="Tuần trước">
               <ChevronLeft size={16} aria-hidden="true" />
             </button>
-            <button type="button" className="btn btn-outline btn-sm" onClick={() => moveWeek(1)} aria-label="Next week">
+            <button type="button" className="btn btn-outline btn-sm" onClick={() => moveWeek(1)} aria-label="Tuần sau">
               <ChevronRight size={16} aria-hidden="true" />
             </button>
           </div>
@@ -323,7 +317,7 @@ export default function MySchedule() {
       {isLoading && (
         <div className="schedule-loading" role="status">
           <LoaderCircle size={24} className="spin" aria-hidden="true" />
-          <span>Loading your classes and sessions...</span>
+          <span>Đang tải lớp học và buổi học...</span>
         </div>
       )}
 
@@ -331,7 +325,7 @@ export default function MySchedule() {
         <Alert type="error">
           <p>{error}</p>
           <button type="button" className="btn btn-outline btn-sm" onClick={() => setReloadKey((key) => key + 1)}>
-            Try again
+            Thử lại
           </button>
         </Alert>
       )}
@@ -339,8 +333,8 @@ export default function MySchedule() {
       {!isLoading && !error && sessions.length === 0 && (
         <EmptyState
           icon={CalendarDays}
-          title="No class sessions yet"
-          description="Sessions from your active classes will appear on this weekly calendar."
+          title="Chưa có buổi học nào"
+          description="Buổi học từ các lớp đang hoạt động sẽ xuất hiện trên lịch tuần này."
         />
       )}
 
@@ -350,12 +344,12 @@ export default function MySchedule() {
             {weekSessions.length === 0 && (
               <div className="schedule-week-empty">
                 <MapPin size={17} aria-hidden="true" />
-                <span>No sessions this week. Use the arrows to browse another week.</span>
+                <span>Tuần này chưa có buổi học. Dùng các nút mũi tên để xem tuần khác.</span>
               </div>
             )}
             <CalendarWeek weekStart={weekStart} sessions={weekSessions} />
           </div>
-          <p className="schedule-timezone-note">Times are shown in your device’s local timezone.</p>
+          <p className="schedule-timezone-note">Giờ hiển thị theo múi giờ trên thiết bị của bạn.</p>
         </>
       )}
     </div>

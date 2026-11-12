@@ -12,6 +12,7 @@ const ZIP_SIGNATURES = [
   [0x50, 0x4b, 0x07, 0x08],
 ];
 
+// mime type ứng với từng định dạng
 const ALLOWED_FILE_TYPES = {
   '.pdf': ['application/pdf'],
   '.doc': ['application/msword', 'application/octet-stream'],
@@ -26,14 +27,24 @@ const ALLOWED_FILE_TYPES = {
   '.zip': ['application/zip', 'application/x-zip-compressed', 'application/octet-stream'],
 };
 
+// cấu hình multer. chỉ được áp dụng khi dùng upload.single('file')
 const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: MAX_FILE_SIZE_BYTES, files: 1, fields: 5, fieldSize: 16 * 1024 },
-  fileFilter: (_req, file, callback) => {
-    const fileName = file.originalname.toLowerCase();
-    const extension = fileName.slice(fileName.lastIndexOf('.'));
-    const allowedMimeTypes = ALLOWED_FILE_TYPES[extension];
+  storage: multer.memoryStorage(), // file được đọc vào RAM
+  // Đây là các giới hạn của request multipart/form-data:
+  limits: { 
+    fileSize: MAX_FILE_SIZE_BYTES, // tối da 20MB (config ở trên)
+    files: 1, // tối đa 1 file, ko cho gửi nhiều file 1 lúc
+    fields: 5, // gồm 5 field là topic_id, title, material_type, visibility, Nếu là tài liệu có thêm URL: 
+    fieldSize: 16 * 1024 }, // mỗi field thì max là 16KB
 
+
+  fileFilter: (_req, file, callback) => {
+    const fileName = file.originalname.toLowerCase(); // lấy file name từ client gửi về, kèm extendsion 
+    const extension = fileName.slice(fileName.lastIndexOf('.')); // lấy extendsion của file
+    const allowedMimeTypes = ALLOWED_FILE_TYPES[extension]; // lấy Danh sách MIMI ứng với extendsion được lấy từ đuôi file
+
+    // check xem có tồn tại mime type đấy ko - tức ko có định dạng cho phép,
+    // hoặc là nếu có lấy đc MIME nhưng lúc check kĩ thì file.mimetype lại ko đúng ? 
     if (!allowedMimeTypes || !allowedMimeTypes.includes(file.mimetype)) {
       callback(new AppError('File type is not allowed. Allowed types: pdf, doc/docx, ppt/pptx, xls/xlsx, jpg, png, mp4, zip', 422));
       return;
@@ -45,23 +56,27 @@ const upload = multer({
 
 /**
  * Receive and validate one class material file
+ * nhận và validate metarial file
  * @param {import('express').Request} req
  * @param {import('express').Response} res
  * @param {import('express').NextFunction} next
  * @returns {void}
  */
 export const uploadClassMaterialFile = (req, res, next) => {
+  // gọi cái multer ở trên để validate file được gửi
   upload.single('file')(req, res, (error) => {
     if (!error) {
       next();
       return;
     }
 
+    // check xem lỗi bắn ra là lỗi gì ?, nếu là lỗi của limit file thì gửi lại mã về cho FE
     if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
       next(new AppError('File must be 20 MB or smaller', 413));
       return;
     }
 
+    // nếu mà thuộc lỗi multer thì bắn ra, các lỗi khác
     if (error instanceof multer.MulterError) {
       next(new AppError(error.message, 422));
       return;
@@ -107,7 +122,7 @@ export const requireClassMaterialFile = (req, res, next) => {
  * @returns {void}
  */
 export const validateClassMaterialFileContent = (req, res, next) => {
-  if (req.body.material_type === 'LINK') {
+  if (!req.file || req.body.material_type === 'LINK') {
     next();
     return;
   }

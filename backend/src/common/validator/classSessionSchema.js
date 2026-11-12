@@ -25,7 +25,6 @@ export const createClassSessionSchema = z
     start_time: dateTimeSchema,
     end_time: dateTimeSchema,
     meeting_link: meetingLinkSchema,
-    status: sessionStatusSchema.default(ENUMS.ClassSessionsStatus.SCHEDULED),
   })
   .refine((data) => data.end_time > data.start_time, {
     path: ['end_time'],

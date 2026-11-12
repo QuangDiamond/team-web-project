@@ -25,7 +25,7 @@ Returns a paginated list of material records for the tutor's active classroom. U
 
 ## PATCH `/:classId/materials/:materialId`
 
-Replaces the material file or link and updates its topic, title, material type, and visibility. Uses `multipart/form-data` and the same conditional fields as POST. When replacing with a file, the previous Cloudinary file is removed after the DB update. When replacing with a link, the URL is stored directly and `file_size` becomes `null`. The response includes `old_file_deleted` so the client can detect Cloudinary cleanup failure.
+Partially updates the material using `multipart/form-data`; send only the metadata fields that changed (`topic_id`, `title`, `material_type`, or `visibility`). A new file is optional when editing metadata and the existing file URL/size are preserved. Replacing a file or changing from a link to a file requires a new `file`; changing from a file to `LINK` requires `file_url` and removes the old Cloudinary file after the DB update. The response includes `old_file_deleted` so the client can detect Cloudinary cleanup failure.
 
 ## DELETE `/:classId/materials/:materialId`
 

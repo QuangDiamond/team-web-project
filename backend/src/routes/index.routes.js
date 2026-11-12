@@ -26,6 +26,7 @@ import { discoveryRoutes } from './discovery.routes.js';
 import { topicRoutes } from './topic.routes.js';
 import { classMaterialRoutes } from './classMaterial.routes.js';
 import { classSessionRoutes } from './classSession.routes.js';
+import { sessionRoute } from './sessionRoute.js';
 
 export const router = Router();
 router.use('/categories/v1', categoryRoutes);
@@ -57,3 +58,4 @@ router.use('/discovery/v1', discoveryRoutes);
 router.use('/classroom/v1', topicRoutes);
 router.use('/classroom/v1', classMaterialRoutes);
 router.use('/classroom/v1', classSessionRoutes);
+router.use('/session/v1', sessionRoute);
