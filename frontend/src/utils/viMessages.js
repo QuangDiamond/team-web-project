@@ -1,5 +1,13 @@
 // Translate system messages only; user-entered content and API identifiers stay unchanged.
 const MESSAGES = {
+  'The file content does not match its file extension': 'Nội dung file không khớp với đuôi file. Hãy mở file bằng ứng dụng gốc và lưu hoặc xuất lại đúng định dạng, sau đó tải lên lại. Đổi tên đuôi file không chuyển đổi định dạng.',
+  'File type is not allowed. Allowed types: pdf, doc/docx, ppt/pptx, xls/xlsx, jpg, png, mp4, zip': 'Định dạng file không được hỗ trợ. Vui lòng chọn PDF, Word, PowerPoint, Excel, JPG, PNG, MP4 hoặc ZIP.',
+  'File must be 20 MB or smaller': 'File phải có dung lượng không quá 20 MB. Hãy nén file hoặc chọn file nhỏ hơn.',
+  'A file is required for this material type': 'Vui lòng chọn file tài liệu trước khi tải lên.',
+  'A link material must not include a file': 'Tài liệu dạng liên kết chỉ cần URL, không gửi kèm file.',
+  'A URL is required for link material': 'Vui lòng nhập liên kết tài liệu.',
+  'Enter a valid URL': 'Liên kết không hợp lệ. Vui lòng nhập URL đầy đủ bắt đầu bằng http:// hoặc https://.',
+  'URL must start with http:// or https://': 'Liên kết phải bắt đầu bằng http:// hoặc https://.',
   'Something went wrong, please try again': 'Có lỗi xảy ra, vui lòng thử lại.',
   'Your account has been suspended or banned': 'Tài khoản của bạn đã bị tạm khóa hoặc cấm.',
   'Account not verified': 'Tài khoản chưa xác thực email.',

@@ -122,6 +122,8 @@ current passwords return 400 with `errors.current_password`; reused passwords re
   upsert permits rotation only after 60 seconds (or when used); duplicate-key 11000 is a neutral
   cooldown/concurrent-request no-op. Rotation replaces the previous digest atomically.
 - SMTP failure deletes only the matching newly issued digest, preserving any newer rotation.
+  Recovery links use the first configured `CORS_ORIGIN` entry (the frontend address), never the full comma-separated list.
+  Link-building or SMTP errors log only the error code/name as `Password recovery email failed`, without tokens, credentials or recipient addresses.
   Expired records are eventually removed by the existing TTL index. TTL index provisioning remains
   the existing database setup's responsibility (`autoIndex` is disabled).
 - Reset reads a valid token and active, verified user, hashes the new password, then atomically

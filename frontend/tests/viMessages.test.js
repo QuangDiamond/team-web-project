@@ -2,6 +2,16 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { translateSystemMessage } from '../src/utils/viMessages.js';
 
+test('upload errors explain how to correct the file instead of showing a generic failure', () => {
+  const mismatch = translateSystemMessage('The file content does not match its file extension');
+  assert.match(mismatch, /Nội dung file không khớp với đuôi file/);
+  assert.match(mismatch, /lưu hoặc xuất lại đúng định dạng/);
+  assert.match(mismatch, /Đổi tên đuôi file không chuyển đổi định dạng/);
+  assert.match(translateSystemMessage('File must be 20 MB or smaller'), /20 MB/);
+  assert.match(translateSystemMessage('A file is required for this material type'), /chọn file/);
+  assert.match(translateSystemMessage('A URL is required for link material'), /nhập liên kết/);
+});
+
 test('Vietnamese system messages cover errors, dynamic validation and status labels', () => {
   assert.equal(translateSystemMessage('Invalid username or password'), 'Email hoặc mật khẩu không đúng.');
   assert.equal(translateSystemMessage('Reason must be at most 500 characters'), 'Lý do không được quá 500 ký tự.');
