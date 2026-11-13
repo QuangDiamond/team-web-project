@@ -25,11 +25,15 @@ import { getPublicProfileReturn } from '../utils/publicProfileReturn';
 import NotFound from '../pages/NotFound';
 import ClassroomsPage from '../pages/classroom/ClassroomsPage';
 import ClassroomDetail from '../pages/classroom/ClassroomDetail';
+import CreateAssignmentPage from '../pages/classroom/CreateAssignmentPage';
+import GradeAssignmentPage from '../pages/classroom/GradeAssignmentPage';
 import JoinClassPage from '../pages/classroom/JoinClassPage';
 import PlansPricing from '../pages/admin/PlansPricing';
 import Categories from '../pages/admin/Categories';
 import RoleRoute from './RoleRoute';
 import StudentDashboard from '../pages/student/StudentDashboard';
+import StudentAssignmentsPage from '../pages/student/StudentAssignmentsPage';
+import StudentSchedulePage from '../pages/student/StudentSchedulePage';
 import AiTutorSuggestions from '../pages/parent/AiTutorSuggestions';
 import ParentDashboard from '../pages/parent/ParentDashboard';
 import ChatPage from '../pages/chat/ChatPage';
@@ -137,6 +141,8 @@ export const router = createBrowserRouter([
           { path: 'dashboard', element: <StudentDashboard />, handle: { title: "Tổng quan" } },
           { path: 'classes', element: <ClassroomsPage />, handle: { title: 'Lớp học của tôi' } },
           { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
+          { path: 'schedule', element: <StudentSchedulePage />, handle: { title: "Lịch học của tôi" } },
+          { path: 'assignments', element: <StudentAssignmentsPage />, handle: { title: "Tất cả bài tập" } },
           { path: 'change-password', element: <ChangePassword />, handle: { title: "Bảo mật tài khoản" } },
           { path: 'notifications', element: <Notifications />, handle: { title: "Thông báo" } },
         ],
@@ -200,6 +206,9 @@ export const router = createBrowserRouter([
           { path: 'dashboard', element: <TutorDashboard />, handle: { title: "Tổng quan" } },
           { path: 'classes', element: <ClassroomsPage />, handle: { title: 'Quản lý lớp học' } },
           { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
+          { path: 'classes/:id/assignments/new', element: <CreateAssignmentPage />, handle: { title: 'Tạo bài tập mới' } },
+          { path: 'classes/:id/assignments/:assignmentId/edit', element: <CreateAssignmentPage />, handle: { title: 'Chỉnh sửa bài tập' } },
+          { path: 'classes/:id/assignments/:assignmentId/grade', element: <GradeAssignmentPage />, handle: { title: 'Chấm điểm bài tập' } },
           { path: 'change-password', element: <ChangePassword />, handle: { title: "Bảo mật tài khoản" } },
           { path: 'requests', element: <BrowseRequests />, handle: { title: "Tìm yêu cầu" } },
           { path: 'requests/suggested', element: <SuggestedRequests />, handle: { title: 'Gợi ý' } },

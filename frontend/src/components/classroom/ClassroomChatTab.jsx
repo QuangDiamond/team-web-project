@@ -170,7 +170,7 @@ export default function ClassroomChatTab({
             onClick={() => setShowChatMembers(!showChatMembers)}
           >
             <Users size={14} />
-            {showChatMembers ? 'Ẩn thành viên' : `Thành viên (${chatGroupMembers.length})`}
+            {showChatMembers ? 'Ẩn thành viên' : 'Thành viên'}
           </button>
 
           {isOwner && (
@@ -326,7 +326,7 @@ export default function ClassroomChatTab({
                 }}
               >
                 <h4 style={{ margin: 0, fontSize: '14px', color: '#334155' }}>
-                  Thành viên ({chatGroupMembers.length})
+                  Thành viên
                 </h4>
                 <span style={{ fontSize: '11px', color: '#16a34a', fontWeight: 600 }}>
                   ● Đang hoạt động

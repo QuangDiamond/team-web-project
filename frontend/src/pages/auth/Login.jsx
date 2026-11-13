@@ -94,7 +94,7 @@ export default function Login() {
 
     // login() đã lưu user vào AuthContext, GuestRoute sẽ tự chuyển tới trang theo role
     if (result.success) {
-      navigate(getPathAfterLogin(location), { replace: true });
+      navigate(getPathAfterLogin(location, searchParams), { replace: true });
       return;
     }
 

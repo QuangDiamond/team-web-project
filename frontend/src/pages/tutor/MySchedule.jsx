@@ -7,6 +7,7 @@ import {
   ExternalLink,
   LoaderCircle,
   MapPin,
+  Video,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Alert from '../../components/common/Alert';
@@ -15,11 +16,11 @@ import { getClassSessions, getMyClassroomsPage } from '../../services/classroomS
 import '../../styles/mySchedule.css';
 
 const PAGE_SIZE = 100;
-const HOUR_HEIGHT = 64;
-const WEEKDAY_FORMATTER = new Intl.DateTimeFormat('en', { weekday: 'short' });
-const DAY_FORMATTER = new Intl.DateTimeFormat('en', { day: 'numeric' });
-const MONTH_YEAR_FORMATTER = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric' });
-const TIME_FORMATTER = new Intl.DateTimeFormat('en', { hour: 'numeric', minute: '2-digit' });
+const HOUR_HEIGHT = 40;
+const WEEKDAY_FORMATTER = new Intl.DateTimeFormat('vi-VN', { weekday: 'short' });
+const DAY_FORMATTER = new Intl.DateTimeFormat('vi-VN', { day: 'numeric' });
+const MONTH_YEAR_FORMATTER = new Intl.DateTimeFormat('vi-VN', { month: 'long', year: 'numeric' });
+const TIME_FORMATTER = new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit' });
 
 async function getAllPages(loadPage) {
   const firstPage = await loadPage(1);
@@ -72,9 +73,9 @@ function getSessionLayout(sessions, hourStart, hourEnd) {
     const startTime = new Date(session.start_time);
     const endTime = new Date(session.end_time);
     const startOffset = (startTime.getHours() - hourStart) * 60 + startTime.getMinutes();
-    const endOffset = Math.min((hourEnd - hourStart) * 60, (endTime.getHours() * 60) + endTime.getMinutes() - (hourStart * 60));
+    const durationMinutes = Math.max(30, (endTime.getTime() - startTime.getTime()) / 60000);
     const top = (startOffset / 60) * HOUR_HEIGHT;
-    const height = Math.max(28, ((endOffset - startOffset) / 60) * HOUR_HEIGHT);
+    const height = Math.max(76, (durationMinutes / 60) * HOUR_HEIGHT);
 
     return {
       session: session,
@@ -142,25 +143,43 @@ function ScheduleEvent({ event }) {
   return (
     <article className={`schedule-event schedule-event-color-${event.colorIndex}`} style={eventStyle}>
       <Link className="schedule-event-title" to={`/tutor/classes/${session.class_id}`}>
-        {session.title || 'Class session'}
+        {session.title || 'Buổi học'}
       </Link>
       <span className="schedule-event-class">{session.class_name}</span>
       <span className="schedule-event-time">
         <Clock3 size={12} aria-hidden="true" />
         {formatTimeRange(session)}
       </span>
-      {session.meeting_link && (
-        <a
-          className="schedule-event-meeting-link"
-          href={session.meeting_link}
-          target="_blank"
-          rel="noreferrer"
-          aria-label={`Open meeting link for ${session.title || session.class_name}`}
+      <div className="schedule-event-footer">
+        <span
+          className={`schedule-status-pill ${
+            session.status === 'CANCELLED'
+              ? 'status-cancelled'
+              : session.status === 'COMPLETED'
+              ? 'status-completed'
+              : 'status-scheduled'
+          }`}
         >
-          <ExternalLink size={12} aria-hidden="true" />
-          Join meeting
-        </a>
-      )}
+          {session.status === 'CANCELLED'
+            ? 'Đã hủy'
+            : session.status === 'COMPLETED'
+            ? 'Đã học xong'
+            : 'Sắp tới'}
+        </span>
+        {session.meeting_link && (
+          <a
+            className="schedule-join-btn"
+            href={session.meeting_link}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`Vào phòng học cho ${session.title || session.class_name}`}
+            title="Vào phòng học"
+          >
+            <Video size={11} aria-hidden="true" />
+            <span>Vào học</span>
+          </a>
+        )}
+      </div>
     </article>
   );
 }
@@ -175,11 +194,25 @@ function CalendarWeek({ weekStart, sessions }) {
     const startTime = new Date(session.start_time);
     const endTime = new Date(session.end_time);
     hourStart = Math.min(hourStart, startTime.getHours());
-    hourEnd = Math.max(hourEnd, Math.min(24, Math.ceil(endTime.getHours() + (endTime.getMinutes() > 0 ? 1 : 0))));
+    const nominalEndHour = Math.ceil(endTime.getHours() + (endTime.getMinutes() > 0 ? 1 : 0));
+    const visualEndHour = Math.ceil(startTime.getHours() + (startTime.getMinutes() / 60) + (76 / HOUR_HEIGHT));
+    const latestHour = Math.max(nominalEndHour, visualEndHour);
+    hourEnd = Math.max(hourEnd, Math.min(24, latestHour + 1));
   }
 
   const hourCount = Math.max(1, hourEnd - hourStart);
-  const gridHeight = hourCount * HOUR_HEIGHT;
+  let calculatedGridHeight = hourCount * HOUR_HEIGHT;
+  for (const session of sessions) {
+    const startTime = new Date(session.start_time);
+    const endTime = new Date(session.end_time);
+    const startOffset = (startTime.getHours() - hourStart) * 60 + startTime.getMinutes();
+    const durationMinutes = Math.max(30, (endTime.getTime() - startTime.getTime()) / 60000);
+    const top = (startOffset / 60) * HOUR_HEIGHT;
+    const height = Math.max(76, (durationMinutes / 60) * HOUR_HEIGHT);
+    calculatedGridHeight = Math.max(calculatedGridHeight, top + height + 24);
+  }
+  const gridHeight = calculatedGridHeight;
+
   const timeLabels = [];
   for (let hour = hourStart; hour < hourEnd; hour += 1) {
     const hourDate = new Date(2000, 0, 1, hour, 0, 0, 0);
@@ -188,7 +221,13 @@ function CalendarWeek({ weekStart, sessions }) {
 
   return (
     <div className="schedule-calendar-scroll">
-      <div className="schedule-calendar" style={{ '--schedule-grid-height': `${gridHeight}px` }}>
+      <div
+        className="schedule-calendar"
+        style={{
+          '--schedule-grid-height': `${gridHeight}px`,
+          '--schedule-hour-height': `${HOUR_HEIGHT}px`,
+        }}
+      >
         <div className="schedule-calendar-corner" aria-hidden="true" />
         {days.map((day) => {
           const dayIsToday = isSameDay(day, today);
@@ -301,19 +340,19 @@ export default function MySchedule() {
           <div>
             <h2>{MONTH_YEAR_FORMATTER.format(weekStart)}</h2>
             <p>
-              {weekStart.toLocaleDateString('en', { month: 'short', day: 'numeric' })}
+              {weekStart.toLocaleDateString('vi-VN', { day: 'numeric', month: 'numeric' })}
               {' – '}
-              {weekEnd.toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' })}
+              {weekEnd.toLocaleDateString('vi-VN', { day: 'numeric', month: 'numeric', year: 'numeric' })}
             </p>
           </div>
         </div>
         <div className="schedule-toolbar-actions">
-          <button type="button" className="btn btn-outline btn-sm" onClick={goToCurrentWeek}>Today</button>
-          <div className="schedule-week-arrows" aria-label="Change week">
-            <button type="button" className="btn btn-outline btn-sm" onClick={() => moveWeek(-1)} aria-label="Previous week">
+          <button type="button" className="btn btn-outline btn-sm" onClick={goToCurrentWeek}>Hôm nay</button>
+          <div className="schedule-week-arrows" aria-label="Đổi tuần">
+            <button type="button" className="btn btn-outline btn-sm" onClick={() => moveWeek(-1)} aria-label="Tuần trước">
               <ChevronLeft size={16} aria-hidden="true" />
             </button>
-            <button type="button" className="btn btn-outline btn-sm" onClick={() => moveWeek(1)} aria-label="Next week">
+            <button type="button" className="btn btn-outline btn-sm" onClick={() => moveWeek(1)} aria-label="Tuần sau">
               <ChevronRight size={16} aria-hidden="true" />
             </button>
           </div>
@@ -323,7 +362,7 @@ export default function MySchedule() {
       {isLoading && (
         <div className="schedule-loading" role="status">
           <LoaderCircle size={24} className="spin" aria-hidden="true" />
-          <span>Loading your classes and sessions...</span>
+          <span>Đang tải lịch dạy và các buổi học...</span>
         </div>
       )}
 
@@ -331,7 +370,7 @@ export default function MySchedule() {
         <Alert type="error">
           <p>{error}</p>
           <button type="button" className="btn btn-outline btn-sm" onClick={() => setReloadKey((key) => key + 1)}>
-            Try again
+            Thử lại
           </button>
         </Alert>
       )}
@@ -339,8 +378,8 @@ export default function MySchedule() {
       {!isLoading && !error && sessions.length === 0 && (
         <EmptyState
           icon={CalendarDays}
-          title="No class sessions yet"
-          description="Sessions from your active classes will appear on this weekly calendar."
+          title="Chưa có buổi học nào"
+          description="Các buổi học từ các lớp đang dạy sẽ hiển thị trên lịch tuần này."
         />
       )}
 
@@ -350,12 +389,12 @@ export default function MySchedule() {
             {weekSessions.length === 0 && (
               <div className="schedule-week-empty">
                 <MapPin size={17} aria-hidden="true" />
-                <span>No sessions this week. Use the arrows to browse another week.</span>
+                <span>Không có buổi học nào trong tuần này. Sử dụng các mũi tên để xem tuần khác.</span>
               </div>
             )}
             <CalendarWeek weekStart={weekStart} sessions={weekSessions} />
           </div>
-          <p className="schedule-timezone-note">Times are shown in your device’s local timezone.</p>
+          <p className="schedule-timezone-note">Thời gian hiển thị theo múi giờ trên thiết bị của bạn.</p>
         </>
       )}
     </div>

@@ -374,6 +374,7 @@ export default function ClassroomsPage() {
       <CreateClassroomModal
         isOpen={isModalOpen || Boolean(initialAgreementId)}
         initialAgreementId={initialAgreementId}
+        existingClassrooms={classrooms}
         onClose={handleCloseCreateModal}
         onClassroomCreated={handleClassroomCreated}
         showToast={showToast}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   AlertTriangle,
   BookOpen,
@@ -36,20 +36,24 @@ import {
 import EditClassroomModal from './EditClassroomModal';
 import AddMemberModal from './AddMemberModal';
 import RemoveMemberModal from './RemoveMemberModal';
-import CreateAssignmentModal from './CreateAssignmentModal';
 import GradeSubmissionModal from './GradeSubmissionModal';
 import DoAssignmentModal from './DoAssignmentModal';
 import ClassroomAnnouncementsTab from '../../components/classroom/ClassroomAnnouncementsTab';
 import ClassroomMembersTab from '../../components/classroom/ClassroomMembersTab';
 import ClassroomAssignmentsTab from '../../components/classroom/ClassroomAssignmentsTab';
 import ClassroomChatTab from '../../components/classroom/ClassroomChatTab';
+import ClassroomScheduleTab from '../../components/classroom/ClassroomScheduleTab';
 import MyClassDetail from '../tutor/MyClassDetail';
 import './classroom.css';
 
 export default function ClassroomDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
+
+  const searchParams = new URLSearchParams(location.search);
+  const initialTab = searchParams.get('tab') || location.state?.activeTab || 'announcements';
 
   const backUrl =
     user?.role === 'TUTOR'
@@ -62,15 +66,13 @@ export default function ClassroomDetail() {
   const [classroom, setClassroom] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState('announcements'); // announcements, members, assignments, chat
+  const [activeTab, setActiveTab] = useState(initialTab); // announcements, members, assignments, chat
   const [toastMessage, setToastMessage] = useState('');
 
   // Modals State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
   const [removeMemberTarget, setRemoveMemberTarget] = useState(null);
-  const [isCreateAssignmentOpen, setIsCreateAssignmentOpen] = useState(false);
-  const [assignmentToEdit, setAssignmentToEdit] = useState(null);
   const [gradingAssignmentTarget, setGradingAssignmentTarget] = useState(null);
   const [doAssignmentTarget, setDoAssignmentTarget] = useState(null);
 
@@ -234,9 +236,21 @@ export default function ClassroomDetail() {
     }
   };
 
-  // Delete classroom
+  // Delete classroom (UC22 Case 2.5: Xóa khi còn thành viên -> Yêu cầu xác nhận, gợi ý Archive)
   const handleDeleteClassroom = async () => {
     if (!classroom) return;
+
+    // Kiểm tra nếu lớp vẫn còn thành viên học sinh
+    if (studentCount > 0 || members.length > 0) {
+      const shouldArchive = window.confirm(
+        `Lớp học "${classroom.name}" hiện vẫn còn ${studentCount || members.length} học viên tham gia.\n\nTheo quy định bảo vệ dữ liệu học tập, bạn không nên xóa lớp đang có người học.\n\nBấm "OK" để chuyển lớp sang trạng thái Lưu trữ (Archive) nhằm lưu lại lịch sử bài tập & điểm số.\nBấm "Cancel" để hủy thao tác.`
+      );
+      if (shouldArchive) {
+        await handleToggleStatus();
+      }
+      return;
+    }
+
     if (
       !window.confirm(
         `Bạn có chắc chắn muốn xóa lớp học "${classroom.name}"? Hành động này sẽ xóa toàn bộ bảng tin, tài liệu và nhóm chat!`
@@ -247,7 +261,7 @@ export default function ClassroomDetail() {
 
     try {
       await deleteClassroom(classroom._id);
-      alert('Đã xóa lớp học thành công!');
+      showToast('Đã xóa lớp học thành công!');
       navigate(backUrl);
     } catch (err) {
       alert(err?.response?.data?.message || err.message || 'Không thể xóa lớp học');
@@ -273,16 +287,14 @@ export default function ClassroomDetail() {
     }
   };
 
-  // Mở modal tạo bài tập mới
+  // Chuyển sang trang tạo bài tập mới
   const handleOpenCreateAssignment = () => {
-    setAssignmentToEdit(null);
-    setIsCreateAssignmentOpen(true);
+    navigate(`/tutor/classes/${id}/assignments/new`);
   };
 
-  // Mở modal chỉnh sửa bài tập
+  // Chuyển sang trang chỉnh sửa bài tập
   const handleOpenEditAssignment = (asg) => {
-    setAssignmentToEdit(asg);
-    setIsCreateAssignmentOpen(true);
+    navigate(`/tutor/classes/${id}/assignments/${asg._id}/edit`);
   };
 
   // Xóa bài tập
@@ -332,7 +344,7 @@ export default function ClassroomDetail() {
   const studentMembers = activeMembers.filter((m) => m.user_id?.role === 'STUDENT');
   const parentMembers = activeMembers.filter((m) => m.user_id?.role === 'PARENT');
   const studentCount = typeof classroom.student_count === 'number' ? classroom.student_count : studentMembers.length;
-  const capacity = classroom.capacity || 20;
+  const capacity = classroom.capacity || 50;
   const percent = Math.min(Math.round((studentCount / capacity) * 100), 100);
   const isOwner = Boolean(classroom.is_owner || user?.role === 'TUTOR');
 
@@ -390,6 +402,31 @@ export default function ClassroomDetail() {
             )}
           </div>
 
+          {/* Banner thông báo khi lớp đang ở trạng thái ARCHIVED (Case 2.4: Read-only) */}
+          {classroom.status === 'ARCHIVED' && (
+            <div
+              className="archived-notice-banner"
+              style={{
+                background: '#f8fafc',
+                border: '1px solid #cbd5e1',
+                borderLeft: '4px solid #64748b',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                marginBottom: '14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                color: '#334155',
+                fontSize: '13px',
+              }}
+            >
+              <Archive size={16} style={{ color: '#64748b', flexShrink: 0 }} />
+              <div>
+                <strong>Lớp học đã lưu trữ (Chỉ đọc)</strong>: Thành viên có thể xem lại tài liệu và lịch sử bài tập, không thể nộp bài hoặc đăng nội dung mới.
+              </div>
+            </div>
+          )}
+
           <h1 style={{ fontSize: '26px', fontWeight: 700, margin: '0 0 10px 0', color: '#0f172a' }}>
             {classroom.name}
           </h1>
@@ -405,12 +442,7 @@ export default function ClassroomDetail() {
             <div className="capacity-row">
               <span>Sĩ số học viên:</span>
               <span>
-                <strong>{studentCount}</strong> / {capacity} học sinh ({percent}%)
-                {parentMembers.length > 0 && (
-                  <span style={{ marginLeft: '6px', fontSize: '12px', color: '#64748b', fontWeight: 'normal' }}>
-                    (+ {parentMembers.length} phụ huynh)
-                  </span>
-                )}
+                <strong>{studentCount}</strong> / {capacity} học sinh
               </span>
             </div>
             <div className="capacity-progress-bar">
@@ -421,26 +453,30 @@ export default function ClassroomDetail() {
           {/* Nút tác vụ quản lý lớp học - Chỉ hiển thị cho chủ lớp (Tutor) */}
           {isOwner && (
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '16px' }}>
-              <button
-                type="button"
-                className="btn-outline-gray"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-                onClick={() => setIsEditModalOpen(true)}
-                title="Chỉnh sửa tên, môn, sĩ số, mô tả"
-              >
-                <Settings size={14} />
-                <span>Chỉnh sửa thông tin</span>
-              </button>
-              <button
-                type="button"
-                className="btn-outline-gray"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-                onClick={handleRegenerateCode}
-                title="Cấp lại mã tham gia mới"
-              >
-                <RefreshCw size={14} />
-                <span>Đổi mã mời</span>
-              </button>
+              {classroom.status === 'ACTIVE' && (
+                <>
+                  <button
+                    type="button"
+                    className="btn-outline-gray"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                    onClick={() => setIsEditModalOpen(true)}
+                    title="Chỉnh sửa tên, môn, sĩ số, mô tả"
+                  >
+                    <Settings size={14} />
+                    <span>Chỉnh sửa thông tin</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-outline-gray"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                    onClick={handleRegenerateCode}
+                    title="Cấp lại mã tham gia mới"
+                  >
+                    <RefreshCw size={14} />
+                    <span>Đổi mã mời</span>
+                  </button>
+                </>
+              )}
               <button
                 type="button"
                 className="btn-outline-gray"
@@ -539,7 +575,7 @@ export default function ClassroomDetail() {
             onClick={() => setActiveTab('members')}
           >
             <Users size={15} />
-            <span>Thành viên ({studentCount} HS{parentMembers.length > 0 ? ` + ${parentMembers.length} PH` : ''})</span>
+            <span>Thành viên</span>
           </button>
           <button
             type="button"
@@ -548,7 +584,7 @@ export default function ClassroomDetail() {
             onClick={() => setActiveTab('assignments')}
           >
             <ClipboardList size={15} />
-            <span>Bài tập ({assignments.length})</span>
+            <span>Bài tập</span>
           </button>
           <button
             type="button"
@@ -560,23 +596,21 @@ export default function ClassroomDetail() {
             <span>Nhóm Chat lớp</span>
           </button>
           {user?.role === 'TUTOR' && (
-            <>
-              <button
-                type="button"
-                className={`tab-btn ${activeTab === 'materials' ? 'active' : ''}`}
-                onClick={() => setActiveTab('materials')}
-              >
-                <BookOpen size={15} aria-hidden="true" /> Tài liệu &amp; chủ đề
-              </button>
-              <button
-                type="button"
-                className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`}
-                onClick={() => setActiveTab('schedule')}
-              >
-                <CalendarDays size={15} aria-hidden="true" /> Lịch lớp học
-              </button>
-            </>
+            <button
+              type="button"
+              className={`tab-btn ${activeTab === 'materials' ? 'active' : ''}`}
+              onClick={() => setActiveTab('materials')}
+            >
+              <BookOpen size={15} aria-hidden="true" /> Tài liệu &amp; chủ đề
+            </button>
           )}
+          <button
+            type="button"
+            className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`}
+            onClick={() => setActiveTab('schedule')}
+          >
+            <CalendarDays size={15} aria-hidden="true" /> Lịch lớp học
+          </button>
         </div>
       </div>
 
@@ -616,6 +650,7 @@ export default function ClassroomDetail() {
           ========================================== */}
       {activeTab === 'assignments' && (
         <ClassroomAssignmentsTab
+          classroomId={id}
           assignments={assignments}
           loadingAssignments={loadingAssignments}
           isOwner={isOwner}
@@ -650,13 +685,33 @@ export default function ClassroomDetail() {
         />
       )}
 
-      {user?.role === 'TUTOR' && (activeTab === 'materials' || activeTab === 'schedule') && (
+      {/* ==========================================
+          TAB 5: TÀI LIỆU & LỊCH LỚP HỌC
+          ========================================== */}
+      {activeTab === 'materials' && user?.role === 'TUTOR' && (
         <MyClassDetail
           embedded
           classId={id}
           classroom={classroom}
-          activeTab={activeTab}
+          activeTab="materials"
         />
+      )}
+
+      {activeTab === 'schedule' && (
+        user?.role === 'TUTOR' ? (
+          <MyClassDetail
+            embedded
+            classId={id}
+            classroom={classroom}
+            activeTab="schedule"
+          />
+        ) : (
+          <ClassroomScheduleTab
+            classId={id}
+            classroom={classroom}
+            showToast={showToast}
+          />
+        )
       )}
 
       {/* ==========================================
@@ -691,25 +746,12 @@ export default function ClassroomDetail() {
         showToast={showToast}
       />
 
-      {/* Modal tạo hoặc sửa bài tập */}
-      <CreateAssignmentModal
-        isOpen={isCreateAssignmentOpen}
-        onClose={() => {
-          setIsCreateAssignmentOpen(false);
-          setAssignmentToEdit(null);
-        }}
-        classroomId={classroom._id}
-        assignmentToEdit={assignmentToEdit}
-        classroomSubject={classroom.subject_name}
-        onAssignmentCreated={() => fetchAssignments()}
-        showToast={showToast}
-      />
-
       {/* Modal chấm điểm bài tập */}
       <GradeSubmissionModal
         isOpen={Boolean(gradingAssignmentTarget)}
         onClose={() => setGradingAssignmentTarget(null)}
         assignment={gradingAssignmentTarget}
+        onGraded={() => fetchAssignments()}
         showToast={showToast}
       />
 

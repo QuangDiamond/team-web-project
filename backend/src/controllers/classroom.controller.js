@@ -365,6 +365,25 @@ export const gradeSubmission = asyncHandler(async (req, res) => {
   return responseCommon(res, submission, 'Chấm điểm bài nộp thành công', 200, responseCode.SUCCESSED);
 });
 
+export const publishAssignmentResults = asyncHandler(async (req, res) => {
+  const assignment = await classroomService.publishAssignmentResults({
+    assignmentId: req.params.assignmentId,
+    tutorProfile: req.tutorProfile,
+  });
+
+  return responseCommon(res, assignment, 'Công bố kết quả bài tập thành công', 200, responseCode.SUCCESSED);
+});
+
+export const generateAiQuestions = asyncHandler(async (req, res) => {
+  const draft = await classroomService.generateAiQuestions({
+    user: req.user,
+    tutorProfile: req.tutorProfile,
+    data: req.body,
+  });
+
+  return responseCommon(res, draft, 'Tạo câu hỏi bằng AI thành công', 200, responseCode.SUCCESSED);
+});
+
 export const getPendingParentLinks = asyncHandler(async (req, res) => {
   const links = await classroomService.getPendingParentLinks({
     studentUserId: req.user._id,
@@ -381,4 +400,71 @@ export const respondParentChildLink = asyncHandler(async (req, res) => {
   });
 
   return responseCommon(res, link, 'Xử lý yêu cầu liên kết thành công', 200, responseCode.SUCCESSED);
+});
+
+// ==========================================
+// UC33: CLASS GROUPS & SUB-GROUPS
+// ==========================================
+
+export const getClassGroups = asyncHandler(async (req, res) => {
+  const groups = await classroomService.getClassGroups({
+    classroomId: req.params.id,
+    user: req.user,
+  });
+
+  return responseCommon(res, groups, 'Lấy danh sách nhóm thành công', 200, responseCode.SUCCESSED);
+});
+
+export const createClassGroup = asyncHandler(async (req, res) => {
+  const group = await classroomService.createClassGroup({
+    classroomId: req.params.id,
+    tutorProfile: req.tutorProfile,
+    user: req.user,
+    data: req.body,
+  });
+
+  return responseCommon(res, group, 'Tạo nhóm mới thành công', 201, responseCode.SUCCESSED);
+});
+
+export const addMemberToClassGroup = asyncHandler(async (req, res) => {
+  const updated = await classroomService.addMemberToClassGroup({
+    classroomId: req.params.id,
+    tutorProfile: req.tutorProfile,
+    groupId: req.params.groupId,
+    memberUserId: req.body.member_user_id,
+  });
+
+  return responseCommon(res, updated, 'Thêm thành viên vào nhóm thành công', 200, responseCode.SUCCESSED);
+});
+
+export const removeMemberFromClassGroup = asyncHandler(async (req, res) => {
+  const updated = await classroomService.removeMemberFromClassGroup({
+    classroomId: req.params.id,
+    tutorProfile: req.tutorProfile,
+    groupId: req.params.groupId,
+    memberUserId: req.params.memberUserId,
+  });
+
+  return responseCommon(res, updated, 'Xóa thành viên khỏi nhóm thành công', 200, responseCode.SUCCESSED);
+});
+
+export const updateClassGroupSettings = asyncHandler(async (req, res) => {
+  const updated = await classroomService.updateClassGroupSettings({
+    classroomId: req.params.id,
+    tutorProfile: req.tutorProfile,
+    groupId: req.params.groupId,
+    data: req.body,
+  });
+
+  return responseCommon(res, updated, 'Cập nhật cài đặt nhóm thành công', 200, responseCode.SUCCESSED);
+});
+
+export const updateClassroomChatSettings = asyncHandler(async (req, res) => {
+  const updated = await classroomService.updateClassroomChatSettings({
+    classroomId: req.params.id,
+    tutorProfile: req.tutorProfile,
+    data: req.body,
+  });
+
+  return responseCommon(res, updated, 'Cập nhật cài đặt nhóm chat thành công', 200, responseCode.SUCCESSED);
 });

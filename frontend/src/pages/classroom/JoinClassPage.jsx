@@ -67,6 +67,11 @@ export default function JoinClassPage() {
     const targetCode = (joinCode || code || '').trim().toUpperCase();
     if (!targetCode) return;
 
+    if (!user) {
+      navigate(`/login?redirect=/join-class/${targetCode}`);
+      return;
+    }
+
     try {
       setJoining(true);
       setError('');
@@ -245,59 +250,88 @@ export default function JoinClassPage() {
                   <div
                     style={{
                       marginTop: '16px',
-                      padding: '14px',
+                      padding: '16px',
                       background: '#fffbeb',
-                      borderRadius: '8px',
+                      borderRadius: '10px',
                       border: '1px solid #fef3c7',
                       fontSize: '14px',
                       color: '#b45309',
                       textAlign: 'center',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
                     }}
                   >
-                    <Lock size={15} />
-                    <span>
-                      Bạn cần đăng nhập để tham gia lớp học.{' '}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '10px' }}>
+                      <Lock size={16} />
+                      <span style={{ fontWeight: 600 }}>Bạn cần đăng nhập để tham gia lớp học này</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
                       <Link
                         to={`/login?redirect=/join-class/${(joinCode || code || '').trim().toUpperCase()}`}
-                        style={{ color: '#e85a2c', fontWeight: 600, textDecoration: 'underline' }}
+                        className="btn-primary-orange"
+                        style={{ padding: '8px 18px', textDecoration: 'none', fontSize: '13px' }}
                       >
                         Đăng nhập ngay
                       </Link>
-                    </span>
+                      <Link
+                        to={`/register`}
+                        className="btn-outline-gray"
+                        style={{ padding: '8px 18px', textDecoration: 'none', fontSize: '13px' }}
+                      >
+                        Đăng ký tài khoản
+                      </Link>
+                    </div>
                   </div>
                 ) : user?.role === 'TUTOR' ? (
-                  <div
-                    style={{
-                      marginTop: '16px',
-                      padding: '18px',
-                      background: '#fff7ed',
-                      borderRadius: '12px',
-                      border: '1px solid #fed7aa',
-                      textAlign: 'center',
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
-                      <GraduationCap size={36} color="#c2410c" />
-                    </div>
-                    <h4 style={{ color: '#c2410c', margin: '0 0 6px 0', fontSize: '16px', fontWeight: 700 }}>
-                      Bạn đang đăng nhập với vai trò Gia sư
-                    </h4>
-                    <p style={{ color: '#9a3412', fontSize: '14px', margin: '0 0 16px 0', lineHeight: 1.5 }}>
-                      Bạn là Gia sư phụ trách/quản lý lớp học này. Liên kết mời và mã tham gia này dành cho Học sinh & Phụ huynh của bạn.
-                    </p>
-                    <Link
-                      to={getClassDetailUrl(preview._id)}
-                      className="btn-primary-orange"
-                      style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '10px 24px', justifyContent: 'center' }}
+                  preview.tutor_user_id && user?._id && preview.tutor_user_id.toString() === user._id.toString() ? (
+                    <div
+                      style={{
+                        marginTop: '16px',
+                        padding: '18px',
+                        background: '#fff7ed',
+                        borderRadius: '12px',
+                        border: '1px solid #fed7aa',
+                        textAlign: 'center',
+                      }}
                     >
-                      <ArrowRight size={15} />
-                      <span>Vào không gian quản lý lớp học</span>
-                    </Link>
-                  </div>
+                      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
+                        <GraduationCap size={36} color="#c2410c" />
+                      </div>
+                      <h4 style={{ color: '#c2410c', margin: '0 0 6px 0', fontSize: '16px', fontWeight: 700 }}>
+                        Bạn là Gia sư phụ trách lớp học này
+                      </h4>
+                      <p style={{ color: '#9a3412', fontSize: '14px', margin: '0 0 16px 0', lineHeight: 1.5 }}>
+                        Liên kết mời và mã tham gia này dành cho Học sinh & Phụ huynh của bạn.
+                      </p>
+                      <Link
+                        to={getClassDetailUrl(preview._id)}
+                        className="btn-primary-orange"
+                        style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '10px 24px', justifyContent: 'center' }}
+                      >
+                        <ArrowRight size={15} />
+                        <span>Vào không gian quản lý lớp học</span>
+                      </Link>
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        marginTop: '16px',
+                        padding: '18px',
+                        background: '#fef2f2',
+                        borderRadius: '12px',
+                        border: '1px solid #fecaca',
+                        textAlign: 'center',
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
+                        <AlertTriangle size={36} color="#dc2626" />
+                      </div>
+                      <h4 style={{ color: '#dc2626', margin: '0 0 6px 0', fontSize: '16px', fontWeight: 700 }}>
+                        Không thể tham gia với tài khoản Gia sư
+                      </h4>
+                      <p style={{ color: '#991b1b', fontSize: '14px', margin: '0 0 8px 0', lineHeight: 1.5 }}>
+                        Tài khoản Gia sư không thể tham gia lớp học với vai trò học sinh hoặc phụ huynh. Vui lòng đăng nhập bằng tài khoản Học sinh hoặc Phụ huynh.
+                      </p>
+                    </div>
+                  )
                 ) : (
                   <button
                     type="button"

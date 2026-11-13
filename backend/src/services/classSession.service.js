@@ -2,11 +2,82 @@ import mongoose from 'mongoose';
 import { AppError } from '../common/utils/AppError.js';
 import { buildPagination } from '../common/utils/pagination.js';
 import { ClassSession } from '../models/ClassSession.js';
+import { Classroom } from '../models/Classroom.js';
+import { ClassMember } from '../models/ClassMember.js';
+import { ParentChildLink } from '../models/ParentChildLink.js';
+import { TutorProfile } from '../models/TutorProfile.js';
+import { RecurringRule } from '../models/RecurringRule.js';
+import { ScheduleChangeRequest } from '../models/ScheduleChangeRequest.js';
+import { SessionReminder } from '../models/SessionReminder.js';
+import { ENUMS } from '../models/enums.js';
 import { getOwnedActiveClassroom } from './topic.service.js';
 
 /**
+ * Check if user is owner, active member, or parent of an active member of the classroom
+ * @param {Object} user - Authenticated user { id, role }
+ * @param {string} classId - Classroom ID
+ * @returns {Promise<Object>} Classroom document
+ */
+const assertClassroomMemberOrOwner = async (user, classId) => {
+  if (!mongoose.isValidObjectId(classId)) {
+    throw new AppError('Classroom not found', 404);
+  }
+
+  const classroom = await Classroom.findById(classId);
+  if (!classroom) {
+    throw new AppError('Classroom not found', 404);
+  }
+
+  if (user.role === ENUMS.UserRole.ADMIN) {
+    return classroom;
+  }
+
+  if (user.role === ENUMS.UserRole.TUTOR) {
+    const tutorProfile = await TutorProfile.findOne({ user_id: user.id });
+    const isOwner =
+      (tutorProfile && String(classroom.tutor_profile_id) === String(tutorProfile._id)) ||
+      String(classroom.tutor_profile_id) === String(user.id);
+    if (!isOwner) {
+      throw new AppError('Forbidden: Only classroom owner can view class sessions', 403);
+    }
+    return classroom;
+  }
+
+  if (user.role === ENUMS.UserRole.STUDENT) {
+    const isMember = await ClassMember.findOne({
+      class_id: classId,
+      user_id: user.id,
+      status: ENUMS.ClassMembersStatus.ACTIVE,
+    });
+    if (!isMember) {
+      throw new AppError('Forbidden: Bạn chưa tham gia lớp học này', 403);
+    }
+    return classroom;
+  }
+
+  if (user.role === ENUMS.UserRole.PARENT) {
+    const childrenLinks = await ParentChildLink.find({
+      parent_user_id: user.id,
+      status: ENUMS.ParentChildLinksStatus.ACCEPTED,
+    });
+    const childUserIds = childrenLinks.map((l) => l.student_user_id);
+    const isChildMember = await ClassMember.findOne({
+      class_id: classId,
+      user_id: { $in: childUserIds },
+      status: ENUMS.ClassMembersStatus.ACTIVE,
+    });
+    if (!isChildMember) {
+      throw new AppError('Forbidden: Con của bạn chưa tham gia lớp học này', 403);
+    }
+    return classroom;
+  }
+
+  throw new AppError('Forbidden', 403);
+};
+
+/**
  * Find a class session that belongs to the classroom
- * @param {Object} classroom - Active classroom owned by the authenticated tutor
+ * @param {Object} classroom - Active classroom
  * @param {string} sessionId - Class session ID
  * @returns {Promise<Object>} ClassSession document
  */
@@ -37,6 +108,7 @@ const toClassSessionDto = (classSession) => ({
   end_time: classSession.end_time,
   meeting_link: classSession.meeting_link,
   status: classSession.status,
+  attendance: classSession.attendance || [],
   created_at: classSession.created_at,
   updated_at: classSession.updated_at,
 });
@@ -53,14 +125,83 @@ const validateFutureStartTime = (startTime) => {
 };
 
 /**
- * List sessions from an active classroom owned by the authenticated tutor
+ * Kiểm tra xung đột trùng lịch dạy của gia sư (BR-10: Overlap Conflict Check)
+ * @param {ObjectId|string} tutorProfileId
+ * @param {Date} startTime
+ * @param {Date} endTime
+ * @param {ObjectId|string|null} excludeSessionId
+ */
+export const assertNoConflict = async (tutorProfileId, startTime, endTime, excludeSessionId = null) => {
+  const filter = {
+    tutor_profile_id: tutorProfileId,
+    status: ENUMS.ClassSessionsStatus.SCHEDULED,
+    start_time: { $lt: endTime },
+    end_time: { $gt: startTime },
+  };
+  if (excludeSessionId) {
+    filter._id = { $ne: excludeSessionId };
+  }
+
+  const conflicting = await ClassSession.findOne(filter).lean();
+  if (conflicting) {
+    const conflictStart = new Date(conflicting.start_time).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    const conflictEnd = new Date(conflicting.end_time).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    const conflictDate = new Date(conflicting.start_time).toLocaleDateString('vi-VN');
+    throw new AppError(
+      `Trùng lịch dạy (BR-10): Bạn đã có buổi học "${conflicting.title || 'Buổi học'}" từ ${conflictStart} đến ${conflictEnd} ngày ${conflictDate}.`,
+      409
+    );
+  }
+};
+
+/**
+ * Lên lịch nhắc hẹn 24h và 30m trước giờ học (BR-10 Reminders)
+ * @param {Object} session - ClassSession document
+ */
+const scheduleRemindersForSession = async (session) => {
+  try {
+    const now = new Date();
+    const remind24h = new Date(session.start_time.getTime() - 24 * 60 * 60 * 1000);
+    const remind30m = new Date(session.start_time.getTime() - 30 * 60 * 1000);
+
+    const remindersToCreate = [];
+    if (remind24h > now) {
+      remindersToCreate.push({
+        session_id: session._id,
+        user_id: session.tutor_profile_id,
+        channel: ENUMS.SessionRemindersChannel.EMAIL,
+        trigger_time: ENUMS.SessionRemindersTriggerTime.BEFORE_24H,
+        status: ENUMS.SessionRemindersStatus.PENDING,
+        scheduled_for: remind24h,
+      });
+    }
+    if (remind30m > now) {
+      remindersToCreate.push({
+        session_id: session._id,
+        user_id: session.tutor_profile_id,
+        channel: ENUMS.SessionRemindersChannel.EMAIL,
+        trigger_time: ENUMS.SessionRemindersTriggerTime.BEFORE_30M,
+        status: ENUMS.SessionRemindersStatus.PENDING,
+        scheduled_for: remind30m,
+      });
+    }
+    if (remindersToCreate.length > 0) {
+      await SessionReminder.insertMany(remindersToCreate);
+    }
+  } catch (err) {
+    console.warn('Lên lịch nhắc hẹn gặp lỗi nhẹ:', err.message);
+  }
+};
+
+/**
+ * List sessions from a classroom (accessible to owner tutor, active students and parents)
  * @param {Object} user - Authenticated user { id, role }
  * @param {string} classId - Classroom ID
  * @param {{ page: number, limit: number }} query - Pagination options
  * @returns {Promise<{ items: Object[], pagination: Object }>}
  */
 export const listClassSessions = async (user, classId, { page, limit }) => {
-  const classroom = await getOwnedActiveClassroom(user, classId);
+  const classroom = await assertClassroomMemberOrOwner(user, classId);
   const filter = { class_id: classroom._id };
   const [sessions, total] = await Promise.all([
     ClassSession.find(filter)
@@ -78,20 +219,20 @@ export const listClassSessions = async (user, classId, { page, limit }) => {
 };
 
 /**
- * Get one session from an active classroom owned by the authenticated tutor
+ * Get one session from a classroom
  * @param {Object} user - Authenticated user { id, role }
  * @param {string} classId - Classroom ID
  * @param {string} sessionId - Class session ID
  * @returns {Promise<Object>} Class session DTO
  */
 export const getClassSession = async (user, classId, sessionId) => {
-  const classroom = await getOwnedActiveClassroom(user, classId);
+  const classroom = await assertClassroomMemberOrOwner(user, classId);
   const classSession = await getClassSessionOrThrow(classroom, sessionId);
   return toClassSessionDto(classSession);
 };
 
 /**
- * Create a one-off session for an active classroom owned by the authenticated tutor
+ * Create a one-off or recurring session for an active classroom owned by the authenticated tutor
  * @param {Object} user - Authenticated user { id, role }
  * @param {string} classId - Classroom ID
  * @param {Object} data - Validated class session fields
@@ -101,18 +242,94 @@ export const createClassSession = async (user, classId, data) => {
   const classroom = await getOwnedActiveClassroom(user, classId);
   validateFutureStartTime(data.start_time);
 
-  const classSession = await ClassSession.create({
+  // 1. Nếu không có lặp lại (buổi lẻ)
+  if (!data.repeat) {
+    await assertNoConflict(classroom.tutor_profile_id, data.start_time, data.end_time);
+
+    const classSession = await ClassSession.create({
+      class_id: classroom._id,
+      tutor_profile_id: classroom.tutor_profile_id,
+      rule_id: null,
+      title: data.title,
+      start_time: data.start_time,
+      end_time: data.end_time,
+      meeting_link: data.meeting_link,
+      status: data.status,
+    });
+
+    await scheduleRemindersForSession(classSession);
+    return toClassSessionDto(classSession);
+  }
+
+  // 2. Nếu có quy tắc lặp lại (Recurring Rule)
+  const durationMs = data.end_time.getTime() - data.start_time.getTime();
+  const durationMinutes = Math.round(durationMs / (60 * 1000));
+  const startTimeStr = `${String(data.start_time.getHours()).padStart(2, '0')}:${String(data.start_time.getMinutes()).padStart(2, '0')}`;
+
+  const recurringRule = await RecurringRule.create({
     class_id: classroom._id,
-    tutor_profile_id: classroom.tutor_profile_id,
-    rule_id: null,
-    title: data.title,
-    start_time: data.start_time,
-    end_time: data.end_time,
-    meeting_link: data.meeting_link,
-    status: data.status,
+    days_of_week: data.repeat.days_of_week,
+    start_time: startTimeStr,
+    duration_minutes: durationMinutes,
+    end_date: data.repeat.end_date,
   });
 
-  return toClassSessionDto(classSession);
+  const DAY_MAP = {
+    SUN: 0,
+    MON: 1,
+    TUE: 2,
+    WED: 3,
+    THU: 4,
+    FRI: 5,
+    SAT: 6,
+  };
+  const targetDays = new Set(data.repeat.days_of_week.map((d) => DAY_MAP[d]));
+
+  const generatedSessions = [];
+  const curr = new Date(data.start_time);
+  const endDate = new Date(data.repeat.end_date);
+
+  while (curr <= endDate) {
+    if (targetDays.has(curr.getDay())) {
+      const sStart = new Date(curr);
+      const sEnd = new Date(curr.getTime() + durationMs);
+      generatedSessions.push({
+        class_id: classroom._id,
+        tutor_profile_id: classroom.tutor_profile_id,
+        rule_id: recurringRule._id,
+        title: data.title,
+        start_time: sStart,
+        end_time: sEnd,
+        meeting_link: data.meeting_link,
+        status: data.status || ENUMS.ClassSessionsStatus.SCHEDULED,
+      });
+    }
+    curr.setDate(curr.getDate() + 1);
+  }
+
+  if (generatedSessions.length === 0) {
+    generatedSessions.push({
+      class_id: classroom._id,
+      tutor_profile_id: classroom.tutor_profile_id,
+      rule_id: recurringRule._id,
+      title: data.title,
+      start_time: data.start_time,
+      end_time: data.end_time,
+      meeting_link: data.meeting_link,
+      status: data.status || ENUMS.ClassSessionsStatus.SCHEDULED,
+    });
+  }
+
+  for (const s of generatedSessions) {
+    await assertNoConflict(classroom.tutor_profile_id, s.start_time, s.end_time);
+  }
+
+  const createdSessions = await ClassSession.insertMany(generatedSessions);
+  for (const s of createdSessions) {
+    await scheduleRemindersForSession(s);
+  }
+
+  return toClassSessionDto(createdSessions[0]);
 };
 
 /**
@@ -131,8 +348,9 @@ export const updateClassSession = async (user, classId, sessionId, data) => {
     throw new AppError('Past class sessions cannot be updated', 422);
   }
 
-  if (data.start_time) {
+  if (data.start_time && data.end_time) {
     validateFutureStartTime(data.start_time);
+    await assertNoConflict(classroom.tutor_profile_id, data.start_time, data.end_time, classSession._id);
   }
 
   const updatedSession = await ClassSession.findOneAndUpdate(
@@ -172,4 +390,152 @@ export const deleteClassSession = async (user, classId, sessionId) => {
   }
 
   return { _id: String(deletedSession._id) };
+};
+
+/**
+ * Điểm danh học sinh sau khi buổi học bắt đầu hoặc kết thúc (UC26.A2)
+ * @param {Object} user - Authenticated tutor
+ * @param {string} classId
+ * @param {string} sessionId
+ * @param {{ items: Array<{ student_user_id: string, status: string, comment?: string }> }} data
+ */
+export const markAttendance = async (user, classId, sessionId, { items }) => {
+  const classroom = await getOwnedActiveClassroom(user, classId);
+  const classSession = await getClassSessionOrThrow(classroom, sessionId);
+
+  if (new Date(classSession.start_time) > new Date()) {
+    throw new AppError('Chỉ có thể điểm danh sau khi buổi học đã bắt đầu', 422);
+  }
+
+  const attendanceRecords = items.map((item) => ({
+    student_user_id: item.student_user_id,
+    status: item.status,
+    comment: item.comment || null,
+    marked_at: new Date(),
+  }));
+
+  classSession.attendance = attendanceRecords;
+  classSession.status = ENUMS.ClassSessionsStatus.COMPLETED;
+  await classSession.save();
+
+  return toClassSessionDto(classSession);
+};
+
+/**
+ * Học sinh hoặc phụ huynh gửi yêu cầu đổi / hủy lịch học (UC27)
+ * Ràng buộc BR-10: Phải gửi trước giờ học ít nhất 12 tiếng
+ * @param {Object} user
+ * @param {string} classId
+ * @param {string} sessionId
+ * @param {Object} data - { request_type, proposed_start_time, proposed_end_time, reason }
+ */
+export const createScheduleChangeRequest = async (user, classId, sessionId, data) => {
+  const classroom = await assertClassroomMemberOrOwner(user, classId);
+  const classSession = await getClassSessionOrThrow(classroom, sessionId);
+
+  if (classSession.status !== ENUMS.ClassSessionsStatus.SCHEDULED) {
+    throw new AppError('Chỉ có thể xin đổi lịch cho buổi học chưa diễn ra và đang được lên lịch', 422);
+  }
+
+  const now = new Date();
+  const noticeMs = new Date(classSession.start_time).getTime() - now.getTime();
+  const MIN_NOTICE_MS = 12 * 60 * 60 * 1000;
+
+  if (noticeMs < MIN_NOTICE_MS) {
+    throw new AppError(
+      'Theo quy định, yêu cầu đổi/hủy lịch học phải được gửi trước giờ học ít nhất 12 tiếng. Do đã cận giờ, vui lòng nhắn tin trực tiếp cho gia sư trong nhóm chat.',
+      422
+    );
+  }
+
+  const existingPending = await ScheduleChangeRequest.findOne({
+    session_id: classSession._id,
+    status: ENUMS.ScheduleChangeRequestsStatus.PENDING,
+  });
+  if (existingPending) {
+    throw new AppError('Buổi học này đã có một yêu cầu đổi lịch đang chờ gia sư phản hồi', 409);
+  }
+
+  const changeRequest = await ScheduleChangeRequest.create({
+    session_id: classSession._id,
+    requester_user_id: user.id,
+    responder_user_id: null,
+    request_type: data.request_type,
+    proposed_start_time: data.proposed_start_time || null,
+    proposed_end_time: data.proposed_end_time || null,
+    reason: data.reason,
+    status: ENUMS.ScheduleChangeRequestsStatus.PENDING,
+    response_comment: null,
+    responded_at: null,
+  });
+
+  return changeRequest;
+};
+
+/**
+ * Lấy danh sách yêu cầu đổi lịch của lớp học (UC27 / UC28)
+ * @param {Object} user
+ * @param {string} classId
+ */
+export const listScheduleChangeRequests = async (user, classId) => {
+  const classroom = await assertClassroomMemberOrOwner(user, classId);
+  const sessions = await ClassSession.find({ class_id: classroom._id }).select('_id title').lean();
+  const sessionIds = sessions.map((s) => s._id);
+
+  const requests = await ScheduleChangeRequest.find({ session_id: { $in: sessionIds } })
+    .populate('session_id', 'title start_time end_time meeting_link status')
+    .populate('requester_user_id', 'full_name email role avatar_url')
+    .sort({ created_at: -1 })
+    .lean();
+
+  return requests;
+};
+
+/**
+ * Gia sư duyệt hoặc từ chối yêu cầu đổi lịch học (UC28)
+ * @param {Object} user
+ * @param {string} classId
+ * @param {string} requestId
+ * @param {{ status: 'APPROVED' | 'REJECTED', response_comment?: string }} data
+ */
+export const respondScheduleChangeRequest = async (user, classId, requestId, data) => {
+  const classroom = await getOwnedActiveClassroom(user, classId);
+
+  if (!mongoose.isValidObjectId(requestId)) {
+    throw new AppError('Schedule change request not found', 404);
+  }
+
+  const changeRequest = await ScheduleChangeRequest.findById(requestId).populate('session_id');
+  if (!changeRequest) {
+    throw new AppError('Schedule change request not found', 404);
+  }
+
+  if (changeRequest.status !== ENUMS.ScheduleChangeRequestsStatus.PENDING) {
+    throw new AppError('Yêu cầu đổi lịch này đã được phản hồi trước đó', 409);
+  }
+
+  const session = await ClassSession.findById(changeRequest.session_id);
+  if (!session || String(session.class_id) !== String(classroom._id)) {
+    throw new AppError('Buổi học không thuộc lớp này', 404);
+  }
+
+  if (data.status === ENUMS.ScheduleChangeRequestsStatus.APPROVED) {
+    if (changeRequest.request_type === ENUMS.ScheduleChangeRequestsRequestType.MOVE) {
+      await assertNoConflict(classroom.tutor_profile_id, changeRequest.proposed_start_time, changeRequest.proposed_end_time, session._id);
+      session.start_time = changeRequest.proposed_start_time;
+      session.end_time = changeRequest.proposed_end_time;
+      await session.save();
+    } else if (changeRequest.request_type === ENUMS.ScheduleChangeRequestsRequestType.CANCEL) {
+      session.status = ENUMS.ClassSessionsStatus.CANCELLED;
+      await session.save();
+    }
+  }
+
+  changeRequest.status = data.status;
+  changeRequest.response_comment = data.response_comment || null;
+  changeRequest.responder_user_id = user.id;
+  changeRequest.responded_at = new Date();
+  await changeRequest.save();
+
+  return changeRequest;
 };

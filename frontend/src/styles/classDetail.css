@@ -347,7 +347,6 @@
 }
 
 .class-schedule-section {
-  --schedule-hour-height: 52px;
   display: flex;
   flex-direction: column;
   gap: 16px;
