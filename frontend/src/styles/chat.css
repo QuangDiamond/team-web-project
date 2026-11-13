@@ -360,6 +360,16 @@
   border-color: #86efac;
 }
 
+button.btn-chat-agreement {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+button.btn-chat-agreement:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 /* Chat message flow */
 .chat-messages {
   display: flex;

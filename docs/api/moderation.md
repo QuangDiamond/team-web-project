@@ -1,6 +1,7 @@
 # Moderation API (`/api/moderation/v1`) – UC38 Moderate Content & Reports
 
-Chỉ dành cho role `ADMIN` (kiểm tra bằng `authentication` và `assertRole(req.user, 'ADMIN')`).
+Chỉ dành cho role `ADMIN`: `authentication` → `authorize('ADMIN')` ở route (role khác → 403); service vẫn giữ `assertRole` làm lớp bảo vệ thứ hai.
+
 
 ## GET `/`
 Query: `status`, `severity`, `target_type`.

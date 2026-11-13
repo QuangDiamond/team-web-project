@@ -1886,6 +1886,7 @@ body {
   border-left-color: #0284c7;
 }
 
+
 .nav-popover-icon {
   width: 36px;
   height: 36px;
@@ -2172,3 +2173,16 @@ body {
     text-align: center;
   }
 }
+
+/* Form đề xuất thỏa thuận (UC16) — dùng ở SC22 My Agreements và SC11 Messages */
+.modal.agreement-proposal-modal { width: min(860px, calc(100vw - 32px)); max-width: 860px; }
+.agreement-proposal-form { padding: 24px; }
+.agreement-proposal-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.agreement-proposal-fields .form-field { min-width: 0; }
+.agreement-proposal-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; padding-top: 20px; border-top: 1px solid var(--color-border); }
+@media (max-width: 600px) {
+  .agreement-proposal-form { padding: 16px; }
+  .agreement-proposal-fields { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .agreement-proposal-actions .btn { flex: 1 1 180px; }
+}
+
