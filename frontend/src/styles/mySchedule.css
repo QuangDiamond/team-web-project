@@ -164,6 +164,22 @@
   );
 }
 
+.my-schedule-page .schedule-time-axis span {
+  flex-basis: var(--schedule-hour-height);
+}
+
+.my-schedule-page .schedule-day-column {
+  background-image: none;
+}
+
+.my-schedule-page .schedule-hour-line {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 0;
+  border-top: 1px solid var(--color-border);
+}
+
 .schedule-day-column.is-today {
   background-color: #fffaf7;
 }
@@ -230,27 +246,30 @@
   color: #76500f;
 }
 
-.schedule-event-title {
+.my-schedule-page .schedule-event-title {
   flex: 1;
   min-width: 0;
   overflow: hidden;
   color: inherit;
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.my-schedule-page .schedule-event-class {
+  display: block;
+  overflow: hidden;
+  color: inherit;
+  font-size: 13px;
   font-weight: 700;
   text-decoration: none;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.schedule-event-title:hover {
+.my-schedule-page .schedule-event-class:hover {
   text-decoration: underline;
-}
-
-.schedule-event-class {
-  overflow: hidden;
-  opacity: 0.85;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .schedule-event-time,

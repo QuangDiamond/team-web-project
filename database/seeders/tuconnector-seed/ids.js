@@ -21,7 +21,9 @@ const NAMES = [
   'msg_1', 'msg_2', 'msg_3', 'msg_4', 'msg_5', 'msg_6',
   'agr_ha_minh', 'agr_tuan_lan',
   // Lớp học
-  'class_toan9', 'topic_dai_so', 'topic_hinh_hoc', 'mem_an', 'mem_ha', 'ann_1', 'mat_1', 'mat_2',
+  'class_toan9', 'class_toan8_minh', 'class_anh7_lan', 'class_anh8_lan', 'class_ly11_huy', 'class_ly10_huy',
+  'topic_dai_so', 'topic_hinh_hoc', 'mem_an', 'mem_ha', 'mem_binh_minh_toan8', 'mem_binh_lan_anh7',
+  'mem_chi_lan_anh8', 'mem_chi_huy_ly11', 'mem_an_huy_ly10', 'ann_1', 'mat_1', 'mat_2',
   'asg_1', 'q_1', 'q_2', 'q_3', 'sub_an_1',
   'rule_toan9', 'ses_1', 'ses_2', 'scr_1', 'rem_1', 'rem_2', 'cal_minh', 'sync_ses2_minh',
   // Thanh toán, credit

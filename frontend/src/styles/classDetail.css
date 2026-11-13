@@ -536,6 +536,18 @@
   max-width: none;
 }
 
+.class-schedule-section .schedule-day-column {
+  background-image: none;
+}
+
+.class-schedule-section .schedule-hour-line {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 0;
+  border-top: 1px solid var(--color-border);
+}
+
 .class-session-create-form {
   padding-top: 0;
 }

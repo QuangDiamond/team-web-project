@@ -38,6 +38,7 @@ import '../../styles/mySchedule.css';
 
 const SESSION_PAGE_SIZE = 100;
 const HOUR_HEIGHT = 52;
+const EMPTY_HOUR_HEIGHT = 36;
 const WEEKDAY_FORMATTER = new Intl.DateTimeFormat('vi-VN', { weekday: 'short' });
 const DAY_FORMATTER = new Intl.DateTimeFormat('vi-VN', { day: 'numeric' });
 const MONTH_YEAR_FORMATTER = new Intl.DateTimeFormat('vi-VN', { month: 'long', year: 'numeric' });
@@ -73,7 +74,65 @@ function isSameDay(firstDate, secondDate) {
     && firstDate.getDate() === secondDate.getDate();
 }
 
-function getSessionLayout(sessions, hourStart, hourEnd) {
+function getHourHeights(sessions, hourStart, hourEnd) {
+  const hourHeights = Array(hourEnd - hourStart).fill(EMPTY_HOUR_HEIGHT);
+
+  for (const session of sessions) {
+    const sessionStart = new Date(session.start_time);
+    const sessionEnd = new Date(session.end_time);
+
+    for (let hourIndex = 0; hourIndex < hourHeights.length; hourIndex += 1) {
+      const hourStartTime = new Date(sessionStart);
+      hourStartTime.setHours(hourStart + hourIndex, 0, 0, 0);
+      const hourEndTime = new Date(hourStartTime);
+      hourEndTime.setHours(hourEndTime.getHours() + 1);
+
+      if (sessionStart < hourEndTime && sessionEnd > hourStartTime) {
+        hourHeights[hourIndex] = HOUR_HEIGHT;
+      }
+    }
+  }
+
+  return hourHeights;
+}
+
+function getVerticalPosition(minutesFromStart, hourHeights) {
+  const minutesPerHour = 60;
+  const totalMinutes = hourHeights.length * minutesPerHour;
+  const boundedMinutes = Math.min(Math.max(minutesFromStart, 0), totalMinutes);
+  const completeHours = Math.floor(boundedMinutes / minutesPerHour);
+  const minutesInCurrentHour = boundedMinutes % minutesPerHour;
+  let position = 0;
+
+  for (let hourIndex = 0; hourIndex < completeHours; hourIndex += 1) {
+    position += hourHeights[hourIndex];
+  }
+
+  if (completeHours < hourHeights.length) {
+    position += (minutesInCurrentHour / minutesPerHour) * hourHeights[completeHours];
+  }
+
+  return position;
+}
+
+function getMinutesFromPosition(position, hourHeights) {
+  let remainingPosition = Math.max(0, position);
+  let minutesFromStart = 0;
+
+  for (const hourHeight of hourHeights) {
+    if (remainingPosition <= hourHeight) {
+      minutesFromStart += (remainingPosition / hourHeight) * 60;
+      return minutesFromStart;
+    }
+
+    remainingPosition -= hourHeight;
+    minutesFromStart += 60;
+  }
+
+  return minutesFromStart;
+}
+
+function getSessionLayout(sessions, hourStart, hourEnd, hourHeights) {
   const events = sessions.map((session, index) => {
     const startTime = new Date(session.start_time);
     const endTime = new Date(session.end_time);
@@ -85,8 +144,11 @@ function getSessionLayout(sessions, hourStart, hourEnd) {
 
     return {
       session: session,
-      top: (startOffset / 60) * HOUR_HEIGHT,
-      height: Math.max(28, ((endOffset - startOffset) / 60) * HOUR_HEIGHT),
+      top: getVerticalPosition(startOffset, hourHeights),
+      height: Math.max(
+        28,
+        getVerticalPosition(endOffset, hourHeights) - getVerticalPosition(startOffset, hourHeights),
+      ),
       colorIndex: index % 5,
     };
   });
@@ -373,12 +435,24 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
   const hourStart = 6;
   const hourEnd = 24;
 
-  const hourCount = Math.max(1, hourEnd - hourStart);
-  const gridHeight = hourCount * HOUR_HEIGHT;
+  const hourHeights = getHourHeights(weekSessions, hourStart, hourEnd);
+  const hourCount = hourHeights.length;
+  const hourTops = [];
+  let gridHeight = 0;
+  for (let hourIndex = 0; hourIndex < hourCount; hourIndex += 1) {
+    hourTops.push(gridHeight);
+    gridHeight += hourHeights[hourIndex];
+  }
+  const hourLines = [...hourTops, gridHeight];
+
   const timeLabels = [];
-  for (let hour = hourStart; hour < hourEnd; hour += 1) {
+  for (let hourIndex = 0; hourIndex < hourCount; hourIndex += 1) {
+    const hour = hourStart + hourIndex;
     const hourDate = new Date(2000, 0, 1, hour, 0, 0, 0);
-    timeLabels.push(TIME_FORMATTER.format(hourDate));
+    timeLabels.push({
+      label: TIME_FORMATTER.format(hourDate),
+      height: hourHeights[hourIndex],
+    });
   }
 
   const moveWeek = (amount) => {
@@ -399,7 +473,7 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
 
   const handleCalendarColumnClick = (event, day) => {
     const columnBounds = event.currentTarget.getBoundingClientRect();
-    const minutesFromTop = Math.max(0, event.clientY - columnBounds.top) * 60 / HOUR_HEIGHT;
+    const minutesFromTop = getMinutesFromPosition(event.clientY - columnBounds.top, hourHeights);
     const roundedMinutesFromTop = Math.floor(minutesFromTop / 15) * 15;
     const dayMinutes = Math.min((hourStart * 60) + roundedMinutesFromTop, (23 * 60) + 45);
     const startTime = new Date(day);
@@ -521,12 +595,19 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
             ))}
 
             <div className="schedule-time-axis">
-              {timeLabels.map((label) => <span key={label}>{label}</span>)}
+              {timeLabels.map((timeLabel) => (
+                <span
+                  key={timeLabel.label}
+                  style={{ '--schedule-hour-height': `${timeLabel.height}px` }}
+                >
+                  {timeLabel.label}
+                </span>
+              ))}
             </div>
 
             {days.map((day) => {
               const daySessions = weekSessions.filter((session) => isSameDay(new Date(session.start_time), day));
-              const events = getSessionLayout(daySessions, hourStart, hourEnd);
+              const events = getSessionLayout(daySessions, hourStart, hourEnd, hourHeights);
               const dayIsToday = isSameDay(day, today);
 
               return (
@@ -537,6 +618,9 @@ function ClassSchedule({ sessions, isLoading, error, onRetry, onSaveSession, onD
                   title="Chọn khung giờ trống để tạo buổi học"
                   onClick={(event) => handleCalendarColumnClick(event, day)}
                 >
+                  {hourLines.map((top) => (
+                    <span key={top} className="schedule-hour-line" style={{ top: `${top}px` }} />
+                  ))}
                   {events.map((event) => {
                     const sessionHasStarted = new Date(event.session.start_time) <= new Date();
                     const eventStyle = {
@@ -669,8 +753,17 @@ export default function MyClassDetail({
   const routeParams = useParams();
   const location = useLocation();
   const classId = providedClassId || routeParams.classId;
-  const [localActiveTab, setLocalActiveTab] = useState('materials');
+  const requestedTab = new URLSearchParams(location.search).get('tab');
+  const [localActiveTab, setLocalActiveTab] = useState(requestedTab === 'schedule' ? 'schedule' : 'materials');
   const activeTab = embedded ? providedActiveTab : localActiveTab;
+
+  useEffect(() => {
+    if (!embedded) {
+      const tabFromUrl = new URLSearchParams(location.search).get('tab');
+      setLocalActiveTab(tabFromUrl === 'schedule' ? 'schedule' : 'materials');
+    }
+  }, [classId, embedded, location.search]);
+
   const [toast, setToast] = useState(null);
   const [topics, setTopics] = useState([]);
   const [newlyCreatedTopicId, setNewlyCreatedTopicId] = useState(null);
