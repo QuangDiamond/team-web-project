@@ -7,10 +7,15 @@ import {
   ExternalLink,
   LoaderCircle,
   MapPin,
+  Plus,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Alert from '../../components/common/Alert';
 import EmptyState from '../../components/common/EmptyState';
+import FormInput from '../../components/common/FormInput';
+import FormSelect from '../../components/common/FormSelect';
+import Modal from '../../components/common/Modal';
+import { createClassSession, getMyClassroomsPage } from '../../services/classroomService';
 import { getUserSessions } from '../../services/sessionService';
 import '../../styles/mySchedule.css';
 
@@ -110,8 +115,31 @@ function getVerticalPosition(minutesFromStart, hourHeights) {
   return position;
 }
 
-function getSessionLayout(sessions, hourStart, hourEnd, hourHeights) {
-  const events = sessions.map((session, index) => {
+function getClassColorMap(sessions) {
+  const classNamesById = new Map();
+  for (const session of sessions) {
+    if (!classNamesById.has(session.class_id)) {
+      classNamesById.set(session.class_id, session.class_name);
+    }
+  }
+
+  const sortedClassIds = [...classNamesById.keys()].sort((firstClassId, secondClassId) => {
+    const firstName = classNamesById.get(firstClassId) || '';
+    const secondName = classNamesById.get(secondClassId) || '';
+    return firstName.localeCompare(secondName, 'vi') || firstClassId.localeCompare(secondClassId);
+  });
+  const colorByClassId = new Map();
+
+  sortedClassIds.forEach((classId, index) => {
+    const hue = Math.round((index * 360) / Math.max(sortedClassIds.length, 1));
+    colorByClassId.set(classId, hue);
+  });
+
+  return colorByClassId;
+}
+
+function getSessionLayout(sessions, hourStart, hourEnd, hourHeights, colorByClassId) {
+  const events = sessions.map((session) => {
     const startTime = new Date(session.start_time);
     const endTime = new Date(session.end_time);
     const startOffset = (startTime.getHours() - hourStart) * 60 + startTime.getMinutes();
@@ -124,7 +152,7 @@ function getSessionLayout(sessions, hourStart, hourEnd, hourHeights) {
       session: session,
       top: top,
       height: height,
-      colorIndex: index % 5,
+      colorHue: colorByClassId.get(session.class_id) || 0,
     };
   });
 
@@ -173,9 +201,167 @@ function formatTimeRange(session) {
   return `${TIME_FORMATTER.format(startTime)} – ${TIME_FORMATTER.format(endTime)}`;
 }
 
+function getSessionConflicts(sessions) {
+  const conflicts = [];
+  const activeSessions = sessions.filter((session) => session.status !== 'CANCELLED');
+
+  for (let firstIndex = 0; firstIndex < activeSessions.length; firstIndex += 1) {
+    const firstSession = activeSessions[firstIndex];
+    for (let secondIndex = firstIndex + 1; secondIndex < activeSessions.length; secondIndex += 1) {
+      const secondSession = activeSessions[secondIndex];
+      if (firstSession.class_id === secondSession.class_id) {
+        continue;
+      }
+
+      const firstStart = new Date(firstSession.start_time);
+      const firstEnd = new Date(firstSession.end_time);
+      const secondStart = new Date(secondSession.start_time);
+      const secondEnd = new Date(secondSession.end_time);
+      if (firstStart < secondEnd && secondStart < firstEnd) {
+        conflicts.push({ firstSession, secondSession });
+      }
+    }
+  }
+
+  return conflicts;
+}
+
+function formatConflict(conflict) {
+  const firstSession = conflict.firstSession;
+  const secondSession = conflict.secondSession;
+  const startTime = new Date(Math.max(
+    new Date(firstSession.start_time).getTime(),
+    new Date(secondSession.start_time).getTime(),
+  ));
+  const endTime = new Date(Math.min(
+    new Date(firstSession.end_time).getTime(),
+    new Date(secondSession.end_time).getTime(),
+  ));
+  const date = DATE_RANGE_FORMATTER.format(startTime);
+  return `${firstSession.class_name} và ${secondSession.class_name}, ${date}, ${TIME_FORMATTER.format(startTime)}–${TIME_FORMATTER.format(endTime)}`;
+}
+
+function CreateScheduleSessionModal({ classrooms, sessions, onClose, onCreated }) {
+  const [values, setValues] = useState({
+    class_id: '',
+    title: '',
+    date: '',
+    start_time: '',
+    end_time: '',
+    meeting_link: '',
+  });
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const updateValue = (field, value) => {
+    setValues((current) => ({ ...current, [field]: value }));
+    setError('');
+  };
+
+  const startTime = values.date && values.start_time ? new Date(`${values.date}T${values.start_time}`) : null;
+  const endTime = values.date && values.end_time ? new Date(`${values.date}T${values.end_time}`) : null;
+  const hasOverlap = startTime && endTime && endTime > startTime && sessions.some((session) => (
+    session.status !== 'CANCELLED'
+    && session.class_id !== values.class_id
+    && startTime < new Date(session.end_time)
+    && endTime > new Date(session.start_time)
+  ));
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError('');
+    if (!values.class_id) {
+      setError('Vui lòng chọn lớp học.');
+      return;
+    }
+    if (!startTime || !endTime || startTime <= new Date() || endTime <= startTime) {
+      setError('Vui lòng chọn thời gian hợp lệ trong tương lai.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await createClassSession(values.class_id, {
+        title: values.title.trim(),
+        start_time: startTime.toISOString(),
+        end_time: endTime.toISOString(),
+        meeting_link: values.meeting_link.trim() || null,
+      });
+      onCreated();
+      onClose();
+    } catch (requestError) {
+      setError(requestError.message || 'Không thể tạo buổi học. Vui lòng thử lại.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <Modal title="Tạo buổi học" onClose={onClose}>
+      <form className="class-create-form class-session-create-form" onSubmit={handleSubmit}>
+        <FormSelect
+          id="global-session-class-id"
+          label="Lớp học (classId)"
+          value={values.class_id}
+          onChange={(event) => updateValue('class_id', event.target.value)}
+          options={classrooms.map((classroom) => ({ value: classroom._id, label: classroom.name }))}
+          placeholder="Chọn lớp học"
+          required
+          disabled={isSubmitting}
+        />
+        <FormInput
+          id="global-session-title"
+          label="Tên buổi học"
+          value={values.title}
+          onChange={(event) => updateValue('title', event.target.value)}
+          placeholder="Ví dụ: Buổi học Đại số"
+          maxLength={200}
+          required
+          disabled={isSubmitting}
+        />
+        <div className="form-field">
+          <label className="form-label" htmlFor="global-session-date">Ngày học</label>
+          <div className="form-control"><input id="global-session-date" type="date" value={values.date} onChange={(event) => updateValue('date', event.target.value)} required disabled={isSubmitting} /></div>
+        </div>
+        <div className="class-session-time-fields">
+          <div className="form-field">
+            <label className="form-label" htmlFor="global-session-start">Giờ bắt đầu</label>
+            <div className="form-control"><input id="global-session-start" type="time" value={values.start_time} onChange={(event) => updateValue('start_time', event.target.value)} required disabled={isSubmitting} /></div>
+          </div>
+          <div className="form-field">
+            <label className="form-label" htmlFor="global-session-end">Giờ kết thúc</label>
+            <div className="form-control"><input id="global-session-end" type="time" value={values.end_time} onChange={(event) => updateValue('end_time', event.target.value)} required disabled={isSubmitting} /></div>
+          </div>
+        </div>
+        <FormInput
+          id="global-session-meeting-link"
+          label="Liên kết buổi học"
+          value={values.meeting_link}
+          onChange={(event) => updateValue('meeting_link', event.target.value)}
+          placeholder="https://meet.google.com/..."
+          maxLength={2048}
+          disabled={isSubmitting}
+        />
+        {hasOverlap && <Alert type="info"><p>Khung giờ này trùng với lịch của lớp khác. Anh kiểm tra lại trước khi lưu nhé.</p></Alert>}
+        {error && <Alert type="error"><p>{error}</p></Alert>}
+        <div className="class-session-form-actions">
+          <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={isSubmitting}>Hủy</button>
+          <button type="submit" className="btn btn-primary btn-sm" disabled={isSubmitting}>{isSubmitting ? 'Đang lưu...' : 'Tạo buổi học'}</button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
 function ScheduleEvent({ event }) {
   const session = event.session;
+  const colorStyle = {
+    '--schedule-event-border': `hsl(${event.colorHue} 62% 40%)`,
+    '--schedule-event-background': `hsl(${event.colorHue} 80% 95%)`,
+    '--schedule-event-text': `hsl(${event.colorHue} 48% 27%)`,
+  };
   const eventStyle = {
+    ...colorStyle,
     top: `${event.top}px`,
     height: `${event.height}px`,
     left: `calc(${(100 / event.laneCount) * event.laneIndex}% + 4px)`,
@@ -184,7 +370,7 @@ function ScheduleEvent({ event }) {
   };
 
   return (
-    <article className={`schedule-event schedule-event-color-${event.colorIndex}`} style={eventStyle}>
+    <article className="schedule-event" style={eventStyle}>
       <Link className="schedule-event-class" to={`/tutor/classes/${session.class_id}?tab=schedule`}>
         {session.class_name}
       </Link>
@@ -209,7 +395,7 @@ function ScheduleEvent({ event }) {
   );
 }
 
-function CalendarWeek({ weekStart, sessions }) {
+function CalendarWeek({ weekStart, sessions, colorByClassId }) {
   const days = getWeekDays(weekStart);
   const today = new Date();
   const hourStart = 6;
@@ -262,7 +448,7 @@ function CalendarWeek({ weekStart, sessions }) {
 
         {days.map((day) => {
           const daySessions = sessions.filter((session) => isSameDay(new Date(session.start_time), day));
-          const events = getSessionLayout(daySessions, hourStart, hourEnd, hourHeights);
+          const events = getSessionLayout(daySessions, hourStart, hourEnd, hourHeights, colorByClassId);
           const dayIsToday = isSameDay(day, today);
           return (
             <div
@@ -285,7 +471,9 @@ function CalendarWeek({ weekStart, sessions }) {
 export default function MySchedule() {
   const [weekStart, setWeekStart] = useState(() => getWeekStart(new Date()));
   const [sessions, setSessions] = useState([]);
+  const [classrooms, setClassrooms] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [error, setError] = useState('');
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -297,10 +485,11 @@ export default function MySchedule() {
       setError('');
 
       try {
-        const allSessions = await getAllPages((page) => getUserSessions({
-          page: page,
-          limit: PAGE_SIZE,
-        }));
+        const [allSessions, classroomResponse] = await Promise.all([
+          getAllPages((page) => getUserSessions({ page: page, limit: PAGE_SIZE })),
+          getMyClassroomsPage({ page: 1, limit: PAGE_SIZE }),
+        ]);
+        const activeClassrooms = classroomResponse.data.items.filter((classroom) => classroom.status === 'ACTIVE');
         const scheduleSessions = allSessions.map((session) => {
           let className = 'Lớp chưa đặt tên';
           if (session.classroom && session.classroom.name) {
@@ -311,6 +500,7 @@ export default function MySchedule() {
 
         if (isCurrentRequest) {
           setSessions(scheduleSessions);
+          setClassrooms(activeClassrooms);
         }
       } catch (requestError) {
         if (isCurrentRequest) {
@@ -339,6 +529,16 @@ export default function MySchedule() {
       })
       .sort((first, second) => new Date(first.start_time) - new Date(second.start_time));
   }, [sessions, weekStart]);
+  const activeClassIds = useMemo(() => new Set(classrooms.map((classroom) => String(classroom._id))), [classrooms]);
+  const activeClassSessions = useMemo(
+    () => sessions.filter((session) => activeClassIds.has(String(session.class_id))),
+    [activeClassIds, sessions],
+  );
+  const weekConflicts = useMemo(
+    () => getSessionConflicts(weekSessions.filter((session) => activeClassIds.has(String(session.class_id)))),
+    [activeClassIds, weekSessions],
+  );
+  const colorByClassId = useMemo(() => getClassColorMap(sessions), [sessions]);
 
   const moveWeek = (amount) => {
     setWeekStart((currentWeekStart) => {
@@ -367,6 +567,11 @@ export default function MySchedule() {
           </div>
         </div>
         <div className="schedule-toolbar-actions">
+          {classrooms.length > 0 && (
+            <button type="button" className="btn btn-primary btn-sm" onClick={() => setIsCreateOpen(true)}>
+              <Plus size={15} aria-hidden="true" /> Tạo buổi học
+            </button>
+          )}
           <button type="button" className="btn btn-outline btn-sm" onClick={goToCurrentWeek}>Hôm nay</button>
           <div className="schedule-week-arrows" aria-label="Đổi tuần">
             <button type="button" className="btn btn-outline btn-sm" onClick={() => moveWeek(-1)} aria-label="Tuần trước">
@@ -406,16 +611,32 @@ export default function MySchedule() {
       {!isLoading && !error && sessions.length > 0 && (
         <>
           <div className="schedule-calendar-card">
+            {weekConflicts.length > 0 && (
+              <Alert type="error">
+                <strong>Cảnh báo: có lịch học trùng giờ giữa các lớp.</strong>
+                <ul className="schedule-conflict-list">
+                  {weekConflicts.map((conflict) => <li key={`${conflict.firstSession._id}-${conflict.secondSession._id}`}>{formatConflict(conflict)}</li>)}
+                </ul>
+              </Alert>
+            )}
             {weekSessions.length === 0 && (
               <div className="schedule-week-empty">
                 <MapPin size={17} aria-hidden="true" />
                 <span>Tuần này chưa có buổi học. Dùng các nút mũi tên để xem tuần khác.</span>
               </div>
             )}
-            <CalendarWeek weekStart={weekStart} sessions={weekSessions} />
+            <CalendarWeek weekStart={weekStart} sessions={weekSessions} colorByClassId={colorByClassId} />
           </div>
           <p className="schedule-timezone-note">Giờ hiển thị theo múi giờ trên thiết bị của bạn.</p>
         </>
+      )}
+      {isCreateOpen && (
+        <CreateScheduleSessionModal
+          classrooms={classrooms}
+          sessions={activeClassSessions}
+          onClose={() => setIsCreateOpen(false)}
+          onCreated={() => setReloadKey((key) => key + 1)}
+        />
       )}
     </div>
   );

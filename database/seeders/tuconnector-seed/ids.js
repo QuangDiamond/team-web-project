@@ -22,10 +22,12 @@ const NAMES = [
   'agr_ha_minh', 'agr_tuan_lan',
   // Lớp học
   'class_toan9', 'class_toan8_minh', 'class_anh7_lan', 'class_anh8_lan', 'class_ly11_huy', 'class_ly10_huy',
-  'topic_dai_so', 'topic_hinh_hoc', 'mem_an', 'mem_ha', 'mem_binh_minh_toan8', 'mem_binh_lan_anh7',
+  'topic_dai_so', 'topic_hinh_hoc', 'topic_chapter3', 'mem_an', 'mem_ha', 'mem_binh_minh_toan8', 'mem_binh_lan_anh7',
   'mem_chi_lan_anh8', 'mem_chi_huy_ly11', 'mem_an_huy_ly10', 'ann_1', 'mat_1', 'mat_2',
+  'mat_meomeo', 'mat_zip_thu', 'mat_oke_roi', 'mat_adfasdf', 'mat_sdfa', 'mat_sdf',
   'asg_1', 'q_1', 'q_2', 'q_3', 'sub_an_1',
-  'rule_toan9', 'ses_1', 'ses_2', 'scr_1', 'rem_1', 'rem_2', 'cal_minh', 'sync_ses2_minh',
+  'rule_toan9', 'ses_1', 'ses_2', 'ses_hup_1113', 'ses_hup_1114', 'ses_meommeoe_1115',
+  'scr_1', 'rem_1', 'rem_2', 'cal_minh', 'sync_ses2_minh',
   // Thanh toán, credit
   'order_1', 'order_2', 'order_3',
   'tx_minh_grant', 'tx_minh_apply', 'tx_huy_grant', 'tx_huy_apply_1', 'tx_huy_apply_2', 'tx_lan_grant',
@@ -35,9 +37,24 @@ const NAMES = [
   'evt_chi', 'prt_tuan', 'sess_minh', 'audit_1', 'report_1',
 ];
 
+const FIXED_ID_VALUES = {
+  topic_chapter3: '6af5cf214abfef91af5e459a',
+  mat_meomeo: '6af5cf384abfef91af5e45a3',
+  mat_zip_thu: '6af5eb303576a53feee02103',
+  mat_oke_roi: '6af5ed013576a53feee02174',
+  mat_adfasdf: '6af5ede83576a53feee02197',
+  mat_sdfa: '6af5eeec3576a53feee021d2',
+  mat_sdf: '6af5f5d371cb9f64a6149dd2',
+  ses_hup_1113: '6af60716afbd064579414e44',
+  ses_hup_1114: '6af60824afbd064579414e4c',
+  ses_meommeoe_1115: '6af60829afbd064579414e54',
+};
+
 const ids = {};
 for (const n of NAMES) {
-  ids[n] = new ObjectId(crypto.createHash('md5').update('tuconnector:' + n).digest('hex').slice(0, 24));
+  const fixedId = FIXED_ID_VALUES[n];
+  const idHex = fixedId || crypto.createHash('md5').update('tuconnector:' + n).digest('hex').slice(0, 24);
+  ids[n] = new ObjectId(idHex);
 }
 module.exports = new Proxy(ids, {
   get(t, k) {

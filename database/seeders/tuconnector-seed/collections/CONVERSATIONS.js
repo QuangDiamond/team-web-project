@@ -27,4 +27,5 @@ module.exports = [
     updated_at: d('2026-10-15T20:00:00+07:00'),
     read_states: [{ user_id: ids.user_student_an, last_read_message_id: ids.msg_6, read_at: d('2026-10-15T21:00:00+07:00') }],
   },
+  ...require('../marketplaceFixture').conversations,
 ];

@@ -100,5 +100,3353 @@
     },
     "student_id": null,
     "tutor_requirements": "Gia sư nam hoặc nữ đều được, có kinh nghiệm dạy lớp 11"
+  },
+  {
+    "_id": {
+      "$oid": "0875e9cda5b5da66d24b47d9"
+    },
+    "parent_user_id": {
+      "$oid": "d7c49ac8156a92a523656c65"
+    },
+    "title": "Tìm gia sư Toán Lớp 9 — 1",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "200000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Cần gia sư Toán Lớp 9, hai buổi mỗi tuần. Mong có lộ trình rõ ràng, giúp học viên củng cố nền tảng và tự tin làm bài.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Kiên nhẫn, đúng giờ, cập nhật tiến độ hàng tuần.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "26a325cb897ed1296cfc4fc3"
+    },
+    "parent_user_id": {
+      "$oid": "a67e218361ef1feed139c922"
+    },
+    "title": "Tìm gia sư Tiếng Anh IELTS — 2",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "IELTS",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "250000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Cần gia sư Tiếng Anh IELTS, hai buổi mỗi tuần. Mong có lộ trình rõ ràng, giúp học viên củng cố nền tảng và tự tin làm bài.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Kiên nhẫn, đúng giờ, cập nhật tiến độ hàng tuần.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "9ec65cf14ba47ace5652d289"
+    },
+    "parent_user_id": {
+      "$oid": "5f5a29cb355122fc353d25c8"
+    },
+    "title": "Tìm gia sư Toán Lớp 12 — 3",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "300000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Cần gia sư Toán Lớp 12, hai buổi mỗi tuần. Mong có lộ trình rõ ràng, giúp học viên củng cố nền tảng và tự tin làm bài.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Kiên nhẫn, đúng giờ, cập nhật tiến độ hàng tuần.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "1b1d31abb0847c7f96896342"
+    },
+    "parent_user_id": {
+      "$oid": "0f78824c8e2c83ec41900ad7"
+    },
+    "title": "Tìm gia sư Tiếng Anh TOEIC — 4",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "TOEIC",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "200000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Cần gia sư Tiếng Anh TOEIC, hai buổi mỗi tuần. Mong có lộ trình rõ ràng, giúp học viên củng cố nền tảng và tự tin làm bài.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Kiên nhẫn, đúng giờ, cập nhật tiến độ hàng tuần.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "d2a5f52863c91956f895c709"
+    },
+    "parent_user_id": {
+      "$oid": "d7c49ac8156a92a523656c65"
+    },
+    "title": "Tìm gia sư Toán Lớp 9 — 5",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "250000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Cần gia sư Toán Lớp 9, hai buổi mỗi tuần. Mong có lộ trình rõ ràng, giúp học viên củng cố nền tảng và tự tin làm bài.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Kiên nhẫn, đúng giờ, cập nhật tiến độ hàng tuần.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "84a13165ebac171dbefb7f13"
+    },
+    "parent_user_id": {
+      "$oid": "a67e218361ef1feed139c922"
+    },
+    "title": "Tìm gia sư Tiếng Anh IELTS — 6",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "IELTS",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "300000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Cần gia sư Tiếng Anh IELTS, hai buổi mỗi tuần. Mong có lộ trình rõ ràng, giúp học viên củng cố nền tảng và tự tin làm bài.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Kiên nhẫn, đúng giờ, cập nhật tiến độ hàng tuần.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "91aae9e37ac0eaaf3b14db7a"
+    },
+    "parent_user_id": {
+      "$oid": "5f5a29cb355122fc353d25c8"
+    },
+    "title": "Tìm gia sư Toán Lớp 12 — 7",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "200000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Cần gia sư Toán Lớp 12, hai buổi mỗi tuần. Mong có lộ trình rõ ràng, giúp học viên củng cố nền tảng và tự tin làm bài.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Kiên nhẫn, đúng giờ, cập nhật tiến độ hàng tuần.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "d11c3c6c813cb44e65a71a06"
+    },
+    "parent_user_id": {
+      "$oid": "0f78824c8e2c83ec41900ad7"
+    },
+    "title": "Tìm gia sư Tiếng Anh TOEIC — 8",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "TOEIC",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "250000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Cần gia sư Tiếng Anh TOEIC, hai buổi mỗi tuần. Mong có lộ trình rõ ràng, giúp học viên củng cố nền tảng và tự tin làm bài.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Kiên nhẫn, đúng giờ, cập nhật tiến độ hàng tuần.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "563ab9e3a33f488966e5366e"
+    },
+    "parent_user_id": {
+      "$oid": "d7c49ac8156a92a523656c65"
+    },
+    "title": "Tìm gia sư Toán Lớp 9 — 9",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "300000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Cần gia sư Toán Lớp 9, hai buổi mỗi tuần. Mong có lộ trình rõ ràng, giúp học viên củng cố nền tảng và tự tin làm bài.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Kiên nhẫn, đúng giờ, cập nhật tiến độ hàng tuần.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "2078529826d0e7c88648a777"
+    },
+    "parent_user_id": {
+      "$oid": "a67e218361ef1feed139c922"
+    },
+    "title": "Tìm gia sư Tiếng Anh IELTS — 10",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "IELTS",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "200000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Cần gia sư Tiếng Anh IELTS, hai buổi mỗi tuần. Mong có lộ trình rõ ràng, giúp học viên củng cố nền tảng và tự tin làm bài.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Kiên nhẫn, đúng giờ, cập nhật tiến độ hàng tuần.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "e17efa55290841ee3d2921f5"
+    },
+    "parent_user_id": {
+      "$oid": "5f5a29cb355122fc353d25c8"
+    },
+    "title": "Tìm gia sư Toán Lớp 12 — 11",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "250000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Cần gia sư Toán Lớp 12, hai buổi mỗi tuần. Mong có lộ trình rõ ràng, giúp học viên củng cố nền tảng và tự tin làm bài.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Kiên nhẫn, đúng giờ, cập nhật tiến độ hàng tuần.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c63fc7e78420ec6959ef37f4"
+    },
+    "parent_user_id": {
+      "$oid": "0f78824c8e2c83ec41900ad7"
+    },
+    "title": "Tìm gia sư Tiếng Anh TOEIC — 12",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "TOEIC",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "300000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Cần gia sư Tiếng Anh TOEIC, hai buổi mỗi tuần. Mong có lộ trình rõ ràng, giúp học viên củng cố nền tảng và tự tin làm bài.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Kiên nhẫn, đúng giờ, cập nhật tiến độ hàng tuần.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "e198e18d57a3b84563efedb9"
+    },
+    "parent_user_id": {
+      "$oid": "f47de074a0e5096879e88013"
+    },
+    "title": "Toán Lớp 3 — Củng cố nền tảng",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 3",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "150000"
+    },
+    "schedule": "Thứ 2, 4 — 18:00 đến 19:30",
+    "description": "Giúp con hiểu bản chất, trình bày lời giải theo từng bước và tự kiểm tra kết quả. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5fe850ee59f351ab2a829ef7"
+    },
+    "parent_user_id": {
+      "$oid": "f47de074a0e5096879e88013"
+    },
+    "title": "Ngữ văn Lớp 6 — Học theo lộ trình cá nhân",
+    "subject_name": "Ngữ văn",
+    "grade_level": "Lớp 6",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "210000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Rèn đọc hiểu, lập dàn ý và viết bài có luận điểm rõ ràng; không học thuộc văn mẫu. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794292345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "88262f57049ba5abb5c4164c"
+    },
+    "parent_user_id": {
+      "$oid": "f47de074a0e5096879e88013"
+    },
+    "title": "Tiếng Anh Lớp 6 — Luyện tập có hướng dẫn",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "Lớp 6",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "310000"
+    },
+    "schedule": "Thứ 7 — 08:00 đến 10:00",
+    "description": "Đánh giá trình độ đầu vào và xây dựng lộ trình luyện nghe, nói, đọc, viết phù hợp với mục tiêu học. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794295945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "0274a4ff953326e493aac9f9"
+    },
+    "parent_user_id": {
+      "$oid": "f47de074a0e5096879e88013"
+    },
+    "title": "Vật lý Lớp 8 — Phát triển khả năng tự học",
+    "subject_name": "Vật lý",
+    "grade_level": "Lớp 8",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "290000"
+    },
+    "schedule": "Chủ nhật — 14:00 đến 16:00",
+    "description": "Giải thích hiện tượng bằng ví dụ thực tế, hướng dẫn phân tích đề và vận dụng công thức đúng. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794299545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "f2ea470d388bf532e11f7496"
+    },
+    "parent_user_id": {
+      "$oid": "1d18ea89b1def13018499437"
+    },
+    "title": "Hóa học Lớp 8 — Học theo lộ trình cá nhân",
+    "subject_name": "Hóa học",
+    "grade_level": "Lớp 8",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "230000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Hệ thống kiến thức, luyện phương trình phản ứng và cách suy luận khi làm bài tập. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794303145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "910d59d9fb0860c002294265"
+    },
+    "parent_user_id": {
+      "$oid": "1d18ea89b1def13018499437"
+    },
+    "title": "Sinh học Lớp 6 — Luyện tập có hướng dẫn",
+    "subject_name": "Sinh học",
+    "grade_level": "Lớp 6",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "240000"
+    },
+    "schedule": "Thứ 7 — 08:00 đến 10:00",
+    "description": "Dùng sơ đồ để giải thích kiến thức, liên hệ thực tế và luyện trả lời câu hỏi theo chủ đề. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794306745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "aa63bccd69cba8f5fd63b3a5"
+    },
+    "parent_user_id": {
+      "$oid": "1d18ea89b1def13018499437"
+    },
+    "title": "Tin học Lớp 6 — Phát triển khả năng tự học",
+    "subject_name": "Tin học",
+    "grade_level": "Lớp 6",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "290000"
+    },
+    "schedule": "Chủ nhật — 14:00 đến 16:00",
+    "description": "Củng cố kiến thức trong chương trình và hướng dẫn thực hành trên máy tính sau mỗi bài học. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794310345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "7dc068f01532f820aa59f4cc"
+    },
+    "parent_user_id": {
+      "$oid": "1d18ea89b1def13018499437"
+    },
+    "title": "Lập trình Cơ bản — Củng cố nền tảng",
+    "subject_name": "Lập trình",
+    "grade_level": "Cơ bản",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "300000"
+    },
+    "schedule": "Thứ 2, 6 — 20:00 đến 21:00",
+    "description": "Rèn tư duy thuật toán, đọc lỗi và tự hoàn thành bài tập hoặc dự án nhỏ phù hợp với trình độ. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794313945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "164bc1f7b981d5bd889e9ef9"
+    },
+    "parent_user_id": {
+      "$oid": "2dfa5f05df230dc1d3944d4a"
+    },
+    "title": "Tiếng Việt Lớp 1 — Luyện tập có hướng dẫn",
+    "subject_name": "Tiếng Việt",
+    "grade_level": "Lớp 1",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "180000"
+    },
+    "schedule": "Thứ 7 — 08:00 đến 10:00",
+    "description": "Luyện đọc thành tiếng, chính tả và diễn đạt câu văn; chia bài học thành các hoạt động ngắn. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794317545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "22a636bab545ffee1b69d1a1"
+    },
+    "parent_user_id": {
+      "$oid": "2dfa5f05df230dc1d3944d4a"
+    },
+    "title": "Lịch sử Lớp 6 — Phát triển khả năng tự học",
+    "subject_name": "Lịch sử",
+    "grade_level": "Lớp 6",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "240000"
+    },
+    "schedule": "Chủ nhật — 14:00 đến 16:00",
+    "description": "Kết nối sự kiện theo dòng thời gian, giải thích nguyên nhân và luyện cách tự tổng hợp kiến thức. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794321145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "874d27341b823112eca069a5"
+    },
+    "parent_user_id": {
+      "$oid": "2dfa5f05df230dc1d3944d4a"
+    },
+    "title": "Địa lý Lớp 6 — Củng cố nền tảng",
+    "subject_name": "Địa lý",
+    "grade_level": "Lớp 6",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "150000"
+    },
+    "schedule": "Thứ 2, 6 — 20:00 đến 21:00",
+    "description": "Hướng dẫn đọc bản đồ, phân tích biểu đồ và nhận xét bảng số liệu bằng ví dụ gần gũi. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794324745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "dd7f79dfdb87471817442937"
+    },
+    "parent_user_id": {
+      "$oid": "2dfa5f05df230dc1d3944d4a"
+    },
+    "title": "Tiếng Nhật JLPT N5 — Học theo lộ trình cá nhân",
+    "subject_name": "Tiếng Nhật",
+    "grade_level": "JLPT N5",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "330000"
+    },
+    "schedule": "Thứ 4, 7 — 17:00 đến 18:30",
+    "description": "Luyện phát âm, từ vựng và mẫu câu theo trình độ, kết hợp bài tập nghe và phản xạ hội thoại. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794328345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "bbb1202eb2349d74e1681cdd"
+    },
+    "parent_user_id": {
+      "$oid": "be1db7062a14c8302235536c"
+    },
+    "title": "Toán Lớp 5 — Phát triển khả năng tự học",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 5",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "240000"
+    },
+    "schedule": "Chủ nhật — 14:00 đến 16:00",
+    "description": "Giúp con hiểu bản chất, trình bày lời giải theo từng bước và tự kiểm tra kết quả. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794331945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "71d280c3dd35bdc584f3cfc1"
+    },
+    "parent_user_id": {
+      "$oid": "be1db7062a14c8302235536c"
+    },
+    "title": "Ngữ văn Lớp 9 — Củng cố nền tảng",
+    "subject_name": "Ngữ văn",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "180000"
+    },
+    "schedule": "Thứ 2, 6 — 20:00 đến 21:00",
+    "description": "Rèn đọc hiểu, lập dàn ý và viết bài có luận điểm rõ ràng; không học thuộc văn mẫu. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794335545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "065b80950afc0a91ee2ac60f"
+    },
+    "parent_user_id": {
+      "$oid": "be1db7062a14c8302235536c"
+    },
+    "title": "Tiếng Anh Lớp 10 — Học theo lộ trình cá nhân",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "Lớp 10",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "280000"
+    },
+    "schedule": "Thứ 4, 7 — 17:00 đến 18:30",
+    "description": "Đánh giá trình độ đầu vào và xây dựng lộ trình luyện nghe, nói, đọc, viết phù hợp với mục tiêu học. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794339145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c38c78c29e8a8ee116d0b99e"
+    },
+    "parent_user_id": {
+      "$oid": "be1db7062a14c8302235536c"
+    },
+    "title": "Vật lý Lớp 9 — Luyện tập có hướng dẫn",
+    "subject_name": "Vật lý",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "260000"
+    },
+    "schedule": "Thứ 3, 6 — 09:00 đến 10:30",
+    "description": "Giải thích hiện tượng bằng ví dụ thực tế, hướng dẫn phân tích đề và vận dụng công thức đúng. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794342745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "2c03bdb53cbb04bb93f8e14b"
+    },
+    "parent_user_id": {
+      "$oid": "e227c6b5af016b925d2219df"
+    },
+    "title": "Hóa học Lớp 9 — Củng cố nền tảng",
+    "subject_name": "Hóa học",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "200000"
+    },
+    "schedule": "Thứ 2, 6 — 20:00 đến 21:00",
+    "description": "Hệ thống kiến thức, luyện phương trình phản ứng và cách suy luận khi làm bài tập. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794346345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "b6c72537bda5771c6254e72b"
+    },
+    "parent_user_id": {
+      "$oid": "e227c6b5af016b925d2219df"
+    },
+    "title": "Sinh học Lớp 9 — Học theo lộ trình cá nhân",
+    "subject_name": "Sinh học",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "210000"
+    },
+    "schedule": "Thứ 4, 7 — 17:00 đến 18:30",
+    "description": "Dùng sơ đồ để giải thích kiến thức, liên hệ thực tế và luyện trả lời câu hỏi theo chủ đề. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794349945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6365ff8c68c1f5fadd4c0052"
+    },
+    "parent_user_id": {
+      "$oid": "e227c6b5af016b925d2219df"
+    },
+    "title": "Tin học Lớp 8 — Luyện tập có hướng dẫn",
+    "subject_name": "Tin học",
+    "grade_level": "Lớp 8",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "260000"
+    },
+    "schedule": "Thứ 3, 6 — 09:00 đến 10:30",
+    "description": "Củng cố kiến thức trong chương trình và hướng dẫn thực hành trên máy tính sau mỗi bài học. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794353545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c6ae6c7e9b05a09aa49cdf27"
+    },
+    "parent_user_id": {
+      "$oid": "e227c6b5af016b925d2219df"
+    },
+    "title": "Lập trình Nâng cao — Phát triển khả năng tự học",
+    "subject_name": "Lập trình",
+    "grade_level": "Nâng cao",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "390000"
+    },
+    "schedule": "Thứ 7, Chủ nhật — 19:00 đến 20:30",
+    "description": "Rèn tư duy thuật toán, đọc lỗi và tự hoàn thành bài tập hoặc dự án nhỏ phù hợp với trình độ. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794357145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "8187eb68c90ff32a4b8b430f"
+    },
+    "parent_user_id": {
+      "$oid": "2b97014df15e601fa00b51d2"
+    },
+    "title": "Tiếng Việt Lớp 2 — Học theo lộ trình cá nhân",
+    "subject_name": "Tiếng Việt",
+    "grade_level": "Lớp 2",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "150000"
+    },
+    "schedule": "Thứ 4, 7 — 17:00 đến 18:30",
+    "description": "Luyện đọc thành tiếng, chính tả và diễn đạt câu văn; chia bài học thành các hoạt động ngắn. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794360745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "d0f59b46a1abfe8759dfb000"
+    },
+    "parent_user_id": {
+      "$oid": "2b97014df15e601fa00b51d2"
+    },
+    "title": "Lịch sử Lớp 9 — Luyện tập có hướng dẫn",
+    "subject_name": "Lịch sử",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "210000"
+    },
+    "schedule": "Thứ 3, 6 — 09:00 đến 10:30",
+    "description": "Kết nối sự kiện theo dòng thời gian, giải thích nguyên nhân và luyện cách tự tổng hợp kiến thức. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794364345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "86e776172920d674b7112eea"
+    },
+    "parent_user_id": {
+      "$oid": "2b97014df15e601fa00b51d2"
+    },
+    "title": "Địa lý Lớp 9 — Phát triển khả năng tự học",
+    "subject_name": "Địa lý",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "240000"
+    },
+    "schedule": "Thứ 7, Chủ nhật — 19:00 đến 20:30",
+    "description": "Hướng dẫn đọc bản đồ, phân tích biểu đồ và nhận xét bảng số liệu bằng ví dụ gần gũi. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794367945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c6d399af1b84b9a0674ee55b"
+    },
+    "parent_user_id": {
+      "$oid": "2b97014df15e601fa00b51d2"
+    },
+    "title": "Tiếng Nhật JLPT N4 — Củng cố nền tảng",
+    "subject_name": "Tiếng Nhật",
+    "grade_level": "JLPT N4",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "300000"
+    },
+    "schedule": "Thứ 2, 4 — 18:00 đến 19:30",
+    "description": "Luyện phát âm, từ vựng và mẫu câu theo trình độ, kết hợp bài tập nghe và phản xạ hội thoại. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794371545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "e6145eaacaba7cfa75848990"
+    },
+    "parent_user_id": {
+      "$oid": "1c4285fd7d0ff06105b84b89"
+    },
+    "title": "Toán Lớp 8 — Luyện tập có hướng dẫn",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 8",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "210000"
+    },
+    "schedule": "Thứ 3, 6 — 09:00 đến 10:30",
+    "description": "Giúp con hiểu bản chất, trình bày lời giải theo từng bước và tự kiểm tra kết quả. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c06d1220ca6e18cb9a352ddd"
+    },
+    "parent_user_id": {
+      "$oid": "1c4285fd7d0ff06105b84b89"
+    },
+    "title": "Ngữ văn Lớp 10 — Phát triển khả năng tự học",
+    "subject_name": "Ngữ văn",
+    "grade_level": "Lớp 10",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "270000"
+    },
+    "schedule": "Thứ 7, Chủ nhật — 19:00 đến 20:30",
+    "description": "Rèn đọc hiểu, lập dàn ý và viết bài có luận điểm rõ ràng; không học thuộc văn mẫu. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794378745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6655a6bc16143958fa736de2"
+    },
+    "parent_user_id": {
+      "$oid": "1c4285fd7d0ff06105b84b89"
+    },
+    "title": "Tiếng Anh IELTS — Củng cố nền tảng",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "IELTS",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "250000"
+    },
+    "schedule": "Thứ 2, 4 — 18:00 đến 19:30",
+    "description": "Đánh giá trình độ đầu vào và xây dựng lộ trình luyện nghe, nói, đọc, viết phù hợp với mục tiêu học. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794382345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a04a1c49354940c01ab26c7d"
+    },
+    "parent_user_id": {
+      "$oid": "1c4285fd7d0ff06105b84b89"
+    },
+    "title": "Vật lý Lớp 11 — Học theo lộ trình cá nhân",
+    "subject_name": "Vật lý",
+    "grade_level": "Lớp 11",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "230000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Giải thích hiện tượng bằng ví dụ thực tế, hướng dẫn phân tích đề và vận dụng công thức đúng. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794385945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "8f59040a468f1839fbdca5c3"
+    },
+    "parent_user_id": {
+      "$oid": "d2b80ac3ea1b00c149d065f7"
+    },
+    "title": "Hóa học Lớp 10 — Phát triển khả năng tự học",
+    "subject_name": "Hóa học",
+    "grade_level": "Lớp 10",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "290000"
+    },
+    "schedule": "Thứ 7, Chủ nhật — 19:00 đến 20:30",
+    "description": "Hệ thống kiến thức, luyện phương trình phản ứng và cách suy luận khi làm bài tập. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794389545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "0ecc3a2358342731b3486258"
+    },
+    "parent_user_id": {
+      "$oid": "d2b80ac3ea1b00c149d065f7"
+    },
+    "title": "Sinh học Lớp 11 — Củng cố nền tảng",
+    "subject_name": "Sinh học",
+    "grade_level": "Lớp 11",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "180000"
+    },
+    "schedule": "Thứ 2, 4 — 18:00 đến 19:30",
+    "description": "Dùng sơ đồ để giải thích kiến thức, liên hệ thực tế và luyện trả lời câu hỏi theo chủ đề. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794393145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c95996acd2c00691aab3aadd"
+    },
+    "parent_user_id": {
+      "$oid": "d2b80ac3ea1b00c149d065f7"
+    },
+    "title": "Tin học Lớp 10 — Học theo lộ trình cá nhân",
+    "subject_name": "Tin học",
+    "grade_level": "Lớp 10",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "230000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Củng cố kiến thức trong chương trình và hướng dẫn thực hành trên máy tính sau mỗi bài học. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794396745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "003ae31fcb90196fc412da92"
+    },
+    "parent_user_id": {
+      "$oid": "d2b80ac3ea1b00c149d065f7"
+    },
+    "title": "Lập trình Lớp 10 — Luyện tập có hướng dẫn",
+    "subject_name": "Lập trình",
+    "grade_level": "Lớp 10",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "360000"
+    },
+    "schedule": "Thứ 7 — 08:00 đến 10:00",
+    "description": "Rèn tư duy thuật toán, đọc lỗi và tự hoàn thành bài tập hoặc dự án nhỏ phù hợp với trình độ. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794400345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "82f91b0188e1fac7b906953e"
+    },
+    "parent_user_id": {
+      "$oid": "93d90db4c499d525bea51c64"
+    },
+    "title": "Tiếng Việt Lớp 3 — Củng cố nền tảng",
+    "subject_name": "Tiếng Việt",
+    "grade_level": "Lớp 3",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "120000"
+    },
+    "schedule": "Thứ 2, 4 — 18:00 đến 19:30",
+    "description": "Luyện đọc thành tiếng, chính tả và diễn đạt câu văn; chia bài học thành các hoạt động ngắn. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794403945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "d0008764c7989e407b4ac76c"
+    },
+    "parent_user_id": {
+      "$oid": "93d90db4c499d525bea51c64"
+    },
+    "title": "Lịch sử Lớp 10 — Học theo lộ trình cá nhân",
+    "subject_name": "Lịch sử",
+    "grade_level": "Lớp 10",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "180000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Kết nối sự kiện theo dòng thời gian, giải thích nguyên nhân và luyện cách tự tổng hợp kiến thức. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794407545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "8e507dfa3a09373721e51c9a"
+    },
+    "parent_user_id": {
+      "$oid": "93d90db4c499d525bea51c64"
+    },
+    "title": "Địa lý Lớp 11 — Luyện tập có hướng dẫn",
+    "subject_name": "Địa lý",
+    "grade_level": "Lớp 11",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "210000"
+    },
+    "schedule": "Thứ 7 — 08:00 đến 10:00",
+    "description": "Hướng dẫn đọc bản đồ, phân tích biểu đồ và nhận xét bảng số liệu bằng ví dụ gần gũi. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794411145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "0b56719dfc88617816ce1df5"
+    },
+    "parent_user_id": {
+      "$oid": "93d90db4c499d525bea51c64"
+    },
+    "title": "Tiếng Nhật JLPT N3 — Phát triển khả năng tự học",
+    "subject_name": "Tiếng Nhật",
+    "grade_level": "JLPT N3",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "390000"
+    },
+    "schedule": "Chủ nhật — 14:00 đến 16:00",
+    "description": "Luyện phát âm, từ vựng và mẫu câu theo trình độ, kết hợp bài tập nghe và phản xạ hội thoại. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794414745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "71095c67ebd5514dd75eb7b5"
+    },
+    "parent_user_id": {
+      "$oid": "520e2b7d058becc3cae08643"
+    },
+    "title": "Toán Lớp 11 — Học theo lộ trình cá nhân",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 11",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "180000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Giúp con hiểu bản chất, trình bày lời giải theo từng bước và tự kiểm tra kết quả. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794418345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "14510cb31415f70615a8cb0b"
+    },
+    "parent_user_id": {
+      "$oid": "520e2b7d058becc3cae08643"
+    },
+    "title": "Ngữ văn Lớp 12 — Luyện tập có hướng dẫn",
+    "subject_name": "Ngữ văn",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "240000"
+    },
+    "schedule": "Thứ 7 — 08:00 đến 10:00",
+    "description": "Rèn đọc hiểu, lập dàn ý và viết bài có luận điểm rõ ràng; không học thuộc văn mẫu. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794421945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "237115c26877562dd2cefb77"
+    },
+    "parent_user_id": {
+      "$oid": "520e2b7d058becc3cae08643"
+    },
+    "title": "Tiếng Anh TOEIC — Phát triển khả năng tự học",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "TOEIC",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "340000"
+    },
+    "schedule": "Chủ nhật — 14:00 đến 16:00",
+    "description": "Đánh giá trình độ đầu vào và xây dựng lộ trình luyện nghe, nói, đọc, viết phù hợp với mục tiêu học. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794425545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "d6464682c5cb73ebdc41b4fd"
+    },
+    "parent_user_id": {
+      "$oid": "520e2b7d058becc3cae08643"
+    },
+    "title": "Vật lý Lớp 12 — Củng cố nền tảng",
+    "subject_name": "Vật lý",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "200000"
+    },
+    "schedule": "Thứ 2, 6 — 20:00 đến 21:00",
+    "description": "Giải thích hiện tượng bằng ví dụ thực tế, hướng dẫn phân tích đề và vận dụng công thức đúng. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794429145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "4fe8d4b94498e43701a85a63"
+    },
+    "parent_user_id": {
+      "$oid": "604ce68f7cff060c9d2f8c5a"
+    },
+    "title": "Hóa học Lớp 12 — Luyện tập có hướng dẫn",
+    "subject_name": "Hóa học",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "260000"
+    },
+    "schedule": "Thứ 7 — 08:00 đến 10:00",
+    "description": "Hệ thống kiến thức, luyện phương trình phản ứng và cách suy luận khi làm bài tập. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794432745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "26ffd9c37fa65e7a8a4301e9"
+    },
+    "parent_user_id": {
+      "$oid": "604ce68f7cff060c9d2f8c5a"
+    },
+    "title": "Sinh học Lớp 12 — Phát triển khả năng tự học",
+    "subject_name": "Sinh học",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "270000"
+    },
+    "schedule": "Chủ nhật — 14:00 đến 16:00",
+    "description": "Dùng sơ đồ để giải thích kiến thức, liên hệ thực tế và luyện trả lời câu hỏi theo chủ đề. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794436345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "75645f1a4bb686ec9316e5d6"
+    },
+    "parent_user_id": {
+      "$oid": "604ce68f7cff060c9d2f8c5a"
+    },
+    "title": "Tin học Lớp 12 — Củng cố nền tảng",
+    "subject_name": "Tin học",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "200000"
+    },
+    "schedule": "Thứ 2, 6 — 20:00 đến 21:00",
+    "description": "Củng cố kiến thức trong chương trình và hướng dẫn thực hành trên máy tính sau mỗi bài học. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794439945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "e4950a9e302910c90fa25fad"
+    },
+    "parent_user_id": {
+      "$oid": "604ce68f7cff060c9d2f8c5a"
+    },
+    "title": "Lập trình Lớp 12 — Học theo lộ trình cá nhân",
+    "subject_name": "Lập trình",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "330000"
+    },
+    "schedule": "Thứ 4, 7 — 17:00 đến 18:30",
+    "description": "Rèn tư duy thuật toán, đọc lỗi và tự hoàn thành bài tập hoặc dự án nhỏ phù hợp với trình độ. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794443545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "94877c6f6084ad98111703a6"
+    },
+    "parent_user_id": {
+      "$oid": "d7988b9d5938f84dbf3f03db"
+    },
+    "title": "Tiếng Việt Lớp 5 — Phát triển khả năng tự học",
+    "subject_name": "Tiếng Việt",
+    "grade_level": "Lớp 5",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "210000"
+    },
+    "schedule": "Chủ nhật — 14:00 đến 16:00",
+    "description": "Luyện đọc thành tiếng, chính tả và diễn đạt câu văn; chia bài học thành các hoạt động ngắn. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794447145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c83d97011cb976b199c51275"
+    },
+    "parent_user_id": {
+      "$oid": "d7988b9d5938f84dbf3f03db"
+    },
+    "title": "Lịch sử Lớp 12 — Củng cố nền tảng",
+    "subject_name": "Lịch sử",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "150000"
+    },
+    "schedule": "Thứ 2, 6 — 20:00 đến 21:00",
+    "description": "Kết nối sự kiện theo dòng thời gian, giải thích nguyên nhân và luyện cách tự tổng hợp kiến thức. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794450745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "b2e2dedcdfa067b3a034f768"
+    },
+    "parent_user_id": {
+      "$oid": "d7988b9d5938f84dbf3f03db"
+    },
+    "title": "Địa lý Lớp 12 — Học theo lộ trình cá nhân",
+    "subject_name": "Địa lý",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "180000"
+    },
+    "schedule": "Thứ 4, 7 — 17:00 đến 18:30",
+    "description": "Hướng dẫn đọc bản đồ, phân tích biểu đồ và nhận xét bảng số liệu bằng ví dụ gần gũi. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794454345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a8c4e24a4b9feb78a2b73905"
+    },
+    "parent_user_id": {
+      "$oid": "d7988b9d5938f84dbf3f03db"
+    },
+    "title": "Tiếng Nhật Giao tiếp — Luyện tập có hướng dẫn",
+    "subject_name": "Tiếng Nhật",
+    "grade_level": "Giao tiếp",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "360000"
+    },
+    "schedule": "Thứ 3, 6 — 09:00 đến 10:30",
+    "description": "Luyện phát âm, từ vựng và mẫu câu theo trình độ, kết hợp bài tập nghe và phản xạ hội thoại. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794457945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "56b28c7ba7c34ac5ad62d024"
+    },
+    "parent_user_id": {
+      "$oid": "dc7ecf5e46c2ce02f1875371"
+    },
+    "title": "Toán Lớp 3 — Củng cố nền tảng",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 3",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "150000"
+    },
+    "schedule": "Thứ 2, 6 — 20:00 đến 21:00",
+    "description": "Giúp con hiểu bản chất, trình bày lời giải theo từng bước và tự kiểm tra kết quả. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69f53c9b4842edf212df36a1"
+    },
+    "parent_user_id": {
+      "$oid": "dc7ecf5e46c2ce02f1875371"
+    },
+    "title": "Ngữ văn Lớp 6 — Học theo lộ trình cá nhân",
+    "subject_name": "Ngữ văn",
+    "grade_level": "Lớp 6",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "210000"
+    },
+    "schedule": "Thứ 4, 7 — 17:00 đến 18:30",
+    "description": "Rèn đọc hiểu, lập dàn ý và viết bài có luận điểm rõ ràng; không học thuộc văn mẫu. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794292345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "35bed7ec8ef6bbd3447d007c"
+    },
+    "parent_user_id": {
+      "$oid": "dc7ecf5e46c2ce02f1875371"
+    },
+    "title": "Tiếng Anh Lớp 6 — Luyện tập có hướng dẫn",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "Lớp 6",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "310000"
+    },
+    "schedule": "Thứ 3, 6 — 09:00 đến 10:30",
+    "description": "Đánh giá trình độ đầu vào và xây dựng lộ trình luyện nghe, nói, đọc, viết phù hợp với mục tiêu học. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794295945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ecb08f154ff850eb38add261"
+    },
+    "parent_user_id": {
+      "$oid": "dc7ecf5e46c2ce02f1875371"
+    },
+    "title": "Vật lý Lớp 8 — Phát triển khả năng tự học",
+    "subject_name": "Vật lý",
+    "grade_level": "Lớp 8",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "290000"
+    },
+    "schedule": "Thứ 7, Chủ nhật — 19:00 đến 20:30",
+    "description": "Giải thích hiện tượng bằng ví dụ thực tế, hướng dẫn phân tích đề và vận dụng công thức đúng. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794299545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c2a827234b78b82c50ab8402"
+    },
+    "parent_user_id": {
+      "$oid": "e39e8b8344a2b38b57502474"
+    },
+    "title": "Hóa học Lớp 8 — Học theo lộ trình cá nhân",
+    "subject_name": "Hóa học",
+    "grade_level": "Lớp 8",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "230000"
+    },
+    "schedule": "Thứ 4, 7 — 17:00 đến 18:30",
+    "description": "Hệ thống kiến thức, luyện phương trình phản ứng và cách suy luận khi làm bài tập. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794303145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "913fadde7615783b5477b4b1"
+    },
+    "parent_user_id": {
+      "$oid": "e39e8b8344a2b38b57502474"
+    },
+    "title": "Sinh học Lớp 6 — Luyện tập có hướng dẫn",
+    "subject_name": "Sinh học",
+    "grade_level": "Lớp 6",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "240000"
+    },
+    "schedule": "Thứ 3, 6 — 09:00 đến 10:30",
+    "description": "Dùng sơ đồ để giải thích kiến thức, liên hệ thực tế và luyện trả lời câu hỏi theo chủ đề. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794306745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "934a35279a337474835f484f"
+    },
+    "parent_user_id": {
+      "$oid": "e39e8b8344a2b38b57502474"
+    },
+    "title": "Tin học Lớp 6 — Phát triển khả năng tự học",
+    "subject_name": "Tin học",
+    "grade_level": "Lớp 6",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "290000"
+    },
+    "schedule": "Thứ 7, Chủ nhật — 19:00 đến 20:30",
+    "description": "Củng cố kiến thức trong chương trình và hướng dẫn thực hành trên máy tính sau mỗi bài học. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794310345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6adc42870064a9da2c652a91"
+    },
+    "parent_user_id": {
+      "$oid": "e39e8b8344a2b38b57502474"
+    },
+    "title": "Lập trình Cơ bản — Củng cố nền tảng",
+    "subject_name": "Lập trình",
+    "grade_level": "Cơ bản",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "300000"
+    },
+    "schedule": "Thứ 2, 4 — 18:00 đến 19:30",
+    "description": "Rèn tư duy thuật toán, đọc lỗi và tự hoàn thành bài tập hoặc dự án nhỏ phù hợp với trình độ. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794313945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "41f708cca4c88a10e2915761"
+    },
+    "parent_user_id": {
+      "$oid": "f95a9070372c1a318506ce06"
+    },
+    "title": "Tiếng Việt Lớp 1 — Luyện tập có hướng dẫn",
+    "subject_name": "Tiếng Việt",
+    "grade_level": "Lớp 1",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "180000"
+    },
+    "schedule": "Thứ 3, 6 — 09:00 đến 10:30",
+    "description": "Luyện đọc thành tiếng, chính tả và diễn đạt câu văn; chia bài học thành các hoạt động ngắn. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794317545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "f337a57f3de6537edb929f44"
+    },
+    "parent_user_id": {
+      "$oid": "f95a9070372c1a318506ce06"
+    },
+    "title": "Lịch sử Lớp 6 — Phát triển khả năng tự học",
+    "subject_name": "Lịch sử",
+    "grade_level": "Lớp 6",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "240000"
+    },
+    "schedule": "Thứ 7, Chủ nhật — 19:00 đến 20:30",
+    "description": "Kết nối sự kiện theo dòng thời gian, giải thích nguyên nhân và luyện cách tự tổng hợp kiến thức. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794321145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "32ba7dcd02d329e3591b0ed7"
+    },
+    "parent_user_id": {
+      "$oid": "f95a9070372c1a318506ce06"
+    },
+    "title": "Địa lý Lớp 6 — Củng cố nền tảng",
+    "subject_name": "Địa lý",
+    "grade_level": "Lớp 6",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "150000"
+    },
+    "schedule": "Thứ 2, 4 — 18:00 đến 19:30",
+    "description": "Hướng dẫn đọc bản đồ, phân tích biểu đồ và nhận xét bảng số liệu bằng ví dụ gần gũi. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794324745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5a2cbc30c9a095e23c906866"
+    },
+    "parent_user_id": {
+      "$oid": "f95a9070372c1a318506ce06"
+    },
+    "title": "Tiếng Nhật JLPT N5 — Học theo lộ trình cá nhân",
+    "subject_name": "Tiếng Nhật",
+    "grade_level": "JLPT N5",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "330000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Luyện phát âm, từ vựng và mẫu câu theo trình độ, kết hợp bài tập nghe và phản xạ hội thoại. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794328345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c3713e37037291704a602767"
+    },
+    "parent_user_id": {
+      "$oid": "bccdef99d11bbbdc504f846e"
+    },
+    "title": "Toán Lớp 5 — Phát triển khả năng tự học",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 5",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "240000"
+    },
+    "schedule": "Thứ 7, Chủ nhật — 19:00 đến 20:30",
+    "description": "Giúp con hiểu bản chất, trình bày lời giải theo từng bước và tự kiểm tra kết quả. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794331945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "254f84e317d9517ce23234fe"
+    },
+    "parent_user_id": {
+      "$oid": "bccdef99d11bbbdc504f846e"
+    },
+    "title": "Ngữ văn Lớp 9 — Củng cố nền tảng",
+    "subject_name": "Ngữ văn",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "180000"
+    },
+    "schedule": "Thứ 2, 4 — 18:00 đến 19:30",
+    "description": "Rèn đọc hiểu, lập dàn ý và viết bài có luận điểm rõ ràng; không học thuộc văn mẫu. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794335545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "7e727efa44b3977011c07113"
+    },
+    "parent_user_id": {
+      "$oid": "bccdef99d11bbbdc504f846e"
+    },
+    "title": "Tiếng Anh Lớp 10 — Học theo lộ trình cá nhân",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "Lớp 10",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "280000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Đánh giá trình độ đầu vào và xây dựng lộ trình luyện nghe, nói, đọc, viết phù hợp với mục tiêu học. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794339145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "9fc97d3f8e2afef83204a03b"
+    },
+    "parent_user_id": {
+      "$oid": "bccdef99d11bbbdc504f846e"
+    },
+    "title": "Vật lý Lớp 9 — Luyện tập có hướng dẫn",
+    "subject_name": "Vật lý",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "260000"
+    },
+    "schedule": "Thứ 7 — 08:00 đến 10:00",
+    "description": "Giải thích hiện tượng bằng ví dụ thực tế, hướng dẫn phân tích đề và vận dụng công thức đúng. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794342745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "8d387fffdb3492929258a842"
+    },
+    "parent_user_id": {
+      "$oid": "01b6ae1f3bc619dfd4cf0b3b"
+    },
+    "title": "Hóa học Lớp 9 — Củng cố nền tảng",
+    "subject_name": "Hóa học",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "200000"
+    },
+    "schedule": "Thứ 2, 4 — 18:00 đến 19:30",
+    "description": "Hệ thống kiến thức, luyện phương trình phản ứng và cách suy luận khi làm bài tập. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794346345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "3d6205b4cd82942478d3581b"
+    },
+    "parent_user_id": {
+      "$oid": "01b6ae1f3bc619dfd4cf0b3b"
+    },
+    "title": "Sinh học Lớp 9 — Học theo lộ trình cá nhân",
+    "subject_name": "Sinh học",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "210000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Dùng sơ đồ để giải thích kiến thức, liên hệ thực tế và luyện trả lời câu hỏi theo chủ đề. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794349945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "06543f1933e58ddb95298147"
+    },
+    "parent_user_id": {
+      "$oid": "01b6ae1f3bc619dfd4cf0b3b"
+    },
+    "title": "Tin học Lớp 8 — Luyện tập có hướng dẫn",
+    "subject_name": "Tin học",
+    "grade_level": "Lớp 8",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "260000"
+    },
+    "schedule": "Thứ 7 — 08:00 đến 10:00",
+    "description": "Củng cố kiến thức trong chương trình và hướng dẫn thực hành trên máy tính sau mỗi bài học. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794353545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a3791cd584662455d9882923"
+    },
+    "parent_user_id": {
+      "$oid": "01b6ae1f3bc619dfd4cf0b3b"
+    },
+    "title": "Lập trình Nâng cao — Phát triển khả năng tự học",
+    "subject_name": "Lập trình",
+    "grade_level": "Nâng cao",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "390000"
+    },
+    "schedule": "Chủ nhật — 14:00 đến 16:00",
+    "description": "Rèn tư duy thuật toán, đọc lỗi và tự hoàn thành bài tập hoặc dự án nhỏ phù hợp với trình độ. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794357145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ad56ed2ff8eada4914311439"
+    },
+    "parent_user_id": {
+      "$oid": "3bdecef99b6be9b6c14ca44b"
+    },
+    "title": "Tiếng Việt Lớp 2 — Học theo lộ trình cá nhân",
+    "subject_name": "Tiếng Việt",
+    "grade_level": "Lớp 2",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "150000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Luyện đọc thành tiếng, chính tả và diễn đạt câu văn; chia bài học thành các hoạt động ngắn. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794360745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "7e0bc863d20c388a0a140ef9"
+    },
+    "parent_user_id": {
+      "$oid": "3bdecef99b6be9b6c14ca44b"
+    },
+    "title": "Lịch sử Lớp 9 — Luyện tập có hướng dẫn",
+    "subject_name": "Lịch sử",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "210000"
+    },
+    "schedule": "Thứ 7 — 08:00 đến 10:00",
+    "description": "Kết nối sự kiện theo dòng thời gian, giải thích nguyên nhân và luyện cách tự tổng hợp kiến thức. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794364345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "959b78127cf9f6b209c4e5d2"
+    },
+    "parent_user_id": {
+      "$oid": "3bdecef99b6be9b6c14ca44b"
+    },
+    "title": "Địa lý Lớp 9 — Phát triển khả năng tự học",
+    "subject_name": "Địa lý",
+    "grade_level": "Lớp 9",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "240000"
+    },
+    "schedule": "Chủ nhật — 14:00 đến 16:00",
+    "description": "Hướng dẫn đọc bản đồ, phân tích biểu đồ và nhận xét bảng số liệu bằng ví dụ gần gũi. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794367945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c8838eed45a428f744dda3fa"
+    },
+    "parent_user_id": {
+      "$oid": "3bdecef99b6be9b6c14ca44b"
+    },
+    "title": "Tiếng Nhật JLPT N4 — Củng cố nền tảng",
+    "subject_name": "Tiếng Nhật",
+    "grade_level": "JLPT N4",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "300000"
+    },
+    "schedule": "Thứ 2, 6 — 20:00 đến 21:00",
+    "description": "Luyện phát âm, từ vựng và mẫu câu theo trình độ, kết hợp bài tập nghe và phản xạ hội thoại. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794371545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "aed37d66b1e789f35bc3e466"
+    },
+    "parent_user_id": {
+      "$oid": "5eed62c0e01c524390641f86"
+    },
+    "title": "Toán Lớp 8 — Luyện tập có hướng dẫn",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 8",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "210000"
+    },
+    "schedule": "Thứ 7 — 08:00 đến 10:00",
+    "description": "Giúp con hiểu bản chất, trình bày lời giải theo từng bước và tự kiểm tra kết quả. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "352f9dca86326a4b71364d5c"
+    },
+    "parent_user_id": {
+      "$oid": "5eed62c0e01c524390641f86"
+    },
+    "title": "Ngữ văn Lớp 10 — Phát triển khả năng tự học",
+    "subject_name": "Ngữ văn",
+    "grade_level": "Lớp 10",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "270000"
+    },
+    "schedule": "Chủ nhật — 14:00 đến 16:00",
+    "description": "Rèn đọc hiểu, lập dàn ý và viết bài có luận điểm rõ ràng; không học thuộc văn mẫu. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794378745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a61ece8f1222bafc513ed311"
+    },
+    "parent_user_id": {
+      "$oid": "5eed62c0e01c524390641f86"
+    },
+    "title": "Tiếng Anh IELTS — Củng cố nền tảng",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "IELTS",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "250000"
+    },
+    "schedule": "Thứ 2, 6 — 20:00 đến 21:00",
+    "description": "Đánh giá trình độ đầu vào và xây dựng lộ trình luyện nghe, nói, đọc, viết phù hợp với mục tiêu học. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794382345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ffec7f3663bfb92bdb1a8c2f"
+    },
+    "parent_user_id": {
+      "$oid": "5eed62c0e01c524390641f86"
+    },
+    "title": "Vật lý Lớp 11 — Học theo lộ trình cá nhân",
+    "subject_name": "Vật lý",
+    "grade_level": "Lớp 11",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "230000"
+    },
+    "schedule": "Thứ 4, 7 — 17:00 đến 18:30",
+    "description": "Giải thích hiện tượng bằng ví dụ thực tế, hướng dẫn phân tích đề và vận dụng công thức đúng. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794385945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "2f8c38a1a30d937a53fdb6ef"
+    },
+    "parent_user_id": {
+      "$oid": "5ecc8605cf238ae611b67f91"
+    },
+    "title": "Hóa học Lớp 10 — Phát triển khả năng tự học",
+    "subject_name": "Hóa học",
+    "grade_level": "Lớp 10",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "290000"
+    },
+    "schedule": "Chủ nhật — 14:00 đến 16:00",
+    "description": "Hệ thống kiến thức, luyện phương trình phản ứng và cách suy luận khi làm bài tập. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794389545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "d7bd639a148f7aad08b81803"
+    },
+    "parent_user_id": {
+      "$oid": "5ecc8605cf238ae611b67f91"
+    },
+    "title": "Sinh học Lớp 11 — Củng cố nền tảng",
+    "subject_name": "Sinh học",
+    "grade_level": "Lớp 11",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "180000"
+    },
+    "schedule": "Thứ 2, 6 — 20:00 đến 21:00",
+    "description": "Dùng sơ đồ để giải thích kiến thức, liên hệ thực tế và luyện trả lời câu hỏi theo chủ đề. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794393145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ee6b36945643111ac8c4dcee"
+    },
+    "parent_user_id": {
+      "$oid": "5ecc8605cf238ae611b67f91"
+    },
+    "title": "Tin học Lớp 10 — Học theo lộ trình cá nhân",
+    "subject_name": "Tin học",
+    "grade_level": "Lớp 10",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "230000"
+    },
+    "schedule": "Thứ 4, 7 — 17:00 đến 18:30",
+    "description": "Củng cố kiến thức trong chương trình và hướng dẫn thực hành trên máy tính sau mỗi bài học. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794396745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5a4852df2dd29453d893c1e5"
+    },
+    "parent_user_id": {
+      "$oid": "5ecc8605cf238ae611b67f91"
+    },
+    "title": "Lập trình Lớp 10 — Luyện tập có hướng dẫn",
+    "subject_name": "Lập trình",
+    "grade_level": "Lớp 10",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "360000"
+    },
+    "schedule": "Thứ 3, 6 — 09:00 đến 10:30",
+    "description": "Rèn tư duy thuật toán, đọc lỗi và tự hoàn thành bài tập hoặc dự án nhỏ phù hợp với trình độ. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794400345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "28fd971a9b523df37d9f8207"
+    },
+    "parent_user_id": {
+      "$oid": "216e02862ac0b7885bc1f754"
+    },
+    "title": "Tiếng Việt Lớp 3 — Củng cố nền tảng",
+    "subject_name": "Tiếng Việt",
+    "grade_level": "Lớp 3",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "120000"
+    },
+    "schedule": "Thứ 2, 6 — 20:00 đến 21:00",
+    "description": "Luyện đọc thành tiếng, chính tả và diễn đạt câu văn; chia bài học thành các hoạt động ngắn. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794403945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "50f54444ba62c59c4bea7949"
+    },
+    "parent_user_id": {
+      "$oid": "216e02862ac0b7885bc1f754"
+    },
+    "title": "Lịch sử Lớp 10 — Học theo lộ trình cá nhân",
+    "subject_name": "Lịch sử",
+    "grade_level": "Lớp 10",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "180000"
+    },
+    "schedule": "Thứ 4, 7 — 17:00 đến 18:30",
+    "description": "Kết nối sự kiện theo dòng thời gian, giải thích nguyên nhân và luyện cách tự tổng hợp kiến thức. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794407545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "7ec143de211accef977d5253"
+    },
+    "parent_user_id": {
+      "$oid": "216e02862ac0b7885bc1f754"
+    },
+    "title": "Địa lý Lớp 11 — Luyện tập có hướng dẫn",
+    "subject_name": "Địa lý",
+    "grade_level": "Lớp 11",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "210000"
+    },
+    "schedule": "Thứ 3, 6 — 09:00 đến 10:30",
+    "description": "Hướng dẫn đọc bản đồ, phân tích biểu đồ và nhận xét bảng số liệu bằng ví dụ gần gũi. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794411145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "fed0c0281b38b47f4c4a5c8c"
+    },
+    "parent_user_id": {
+      "$oid": "216e02862ac0b7885bc1f754"
+    },
+    "title": "Tiếng Nhật JLPT N3 — Phát triển khả năng tự học",
+    "subject_name": "Tiếng Nhật",
+    "grade_level": "JLPT N3",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "390000"
+    },
+    "schedule": "Thứ 7, Chủ nhật — 19:00 đến 20:30",
+    "description": "Luyện phát âm, từ vựng và mẫu câu theo trình độ, kết hợp bài tập nghe và phản xạ hội thoại. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794414745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "1479b70449be236068d60ae3"
+    },
+    "parent_user_id": {
+      "$oid": "11164a9b7bb52414d005d898"
+    },
+    "title": "Toán Lớp 11 — Học theo lộ trình cá nhân",
+    "subject_name": "Toán",
+    "grade_level": "Lớp 11",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "180000"
+    },
+    "schedule": "Thứ 4, 7 — 17:00 đến 18:30",
+    "description": "Giúp con hiểu bản chất, trình bày lời giải theo từng bước và tự kiểm tra kết quả. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Lê Chân, Hải Phòng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794418345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "db14ea3da9a15ddf5fb45225"
+    },
+    "parent_user_id": {
+      "$oid": "11164a9b7bb52414d005d898"
+    },
+    "title": "Ngữ văn Lớp 12 — Luyện tập có hướng dẫn",
+    "subject_name": "Ngữ văn",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "240000"
+    },
+    "schedule": "Thứ 3, 6 — 09:00 đến 10:30",
+    "description": "Rèn đọc hiểu, lập dàn ý và viết bài có luận điểm rõ ràng; không học thuộc văn mẫu. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794421945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "b5af5fa9f022314999a9fb23"
+    },
+    "parent_user_id": {
+      "$oid": "11164a9b7bb52414d005d898"
+    },
+    "title": "Tiếng Anh TOEIC — Phát triển khả năng tự học",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "TOEIC",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "340000"
+    },
+    "schedule": "Thứ 7, Chủ nhật — 19:00 đến 20:30",
+    "description": "Đánh giá trình độ đầu vào và xây dựng lộ trình luyện nghe, nói, đọc, viết phù hợp với mục tiêu học. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794425545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5c2fb2201cc12c3268f089ec"
+    },
+    "parent_user_id": {
+      "$oid": "11164a9b7bb52414d005d898"
+    },
+    "title": "Vật lý Lớp 12 — Củng cố nền tảng",
+    "subject_name": "Vật lý",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "200000"
+    },
+    "schedule": "Thứ 2, 4 — 18:00 đến 19:30",
+    "description": "Giải thích hiện tượng bằng ví dụ thực tế, hướng dẫn phân tích đề và vận dụng công thức đúng. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794429145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "135669e4256776762b88df46"
+    },
+    "parent_user_id": {
+      "$oid": "51950e79298b2cc02f22494e"
+    },
+    "title": "Hóa học Lớp 12 — Luyện tập có hướng dẫn",
+    "subject_name": "Hóa học",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "260000"
+    },
+    "schedule": "Thứ 3, 6 — 09:00 đến 10:30",
+    "description": "Hệ thống kiến thức, luyện phương trình phản ứng và cách suy luận khi làm bài tập. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Ninh Kiều, Cần Thơ",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794432745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "66049ac4d1c7832208bf6a8b"
+    },
+    "parent_user_id": {
+      "$oid": "51950e79298b2cc02f22494e"
+    },
+    "title": "Sinh học Lớp 12 — Phát triển khả năng tự học",
+    "subject_name": "Sinh học",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "270000"
+    },
+    "schedule": "Thứ 7, Chủ nhật — 19:00 đến 20:30",
+    "description": "Dùng sơ đồ để giải thích kiến thức, liên hệ thực tế và luyện trả lời câu hỏi theo chủ đề. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794436345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "862922c226e063379aa620f9"
+    },
+    "parent_user_id": {
+      "$oid": "51950e79298b2cc02f22494e"
+    },
+    "title": "Tin học Lớp 12 — Củng cố nền tảng",
+    "subject_name": "Tin học",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "200000"
+    },
+    "schedule": "Thứ 2, 4 — 18:00 đến 19:30",
+    "description": "Củng cố kiến thức trong chương trình và hướng dẫn thực hành trên máy tính sau mỗi bài học. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794439945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ce6ab76901a861bdbce37955"
+    },
+    "parent_user_id": {
+      "$oid": "51950e79298b2cc02f22494e"
+    },
+    "title": "Lập trình Lớp 12 — Học theo lộ trình cá nhân",
+    "subject_name": "Lập trình",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "330000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Rèn tư duy thuật toán, đọc lỗi và tự hoàn thành bài tập hoặc dự án nhỏ phù hợp với trình độ. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794443545932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "9ab7a5381a3ffe6b11861f9b"
+    },
+    "parent_user_id": {
+      "$oid": "b2508678ecaee134703a949c"
+    },
+    "title": "Tiếng Việt Lớp 5 — Phát triển khả năng tự học",
+    "subject_name": "Tiếng Việt",
+    "grade_level": "Lớp 5",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "210000"
+    },
+    "schedule": "Thứ 7, Chủ nhật — 19:00 đến 20:30",
+    "description": "Luyện đọc thành tiếng, chính tả và diễn đạt câu văn; chia bài học thành các hoạt động ngắn. Con muốn thử sức với bài tập mở rộng, cần gia sư đặt câu hỏi gợi mở thay vì giải sẵn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Thuận Hóa, Huế",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794447145932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c1d604f91cf7b023fc812142"
+    },
+    "parent_user_id": {
+      "$oid": "b2508678ecaee134703a949c"
+    },
+    "title": "Lịch sử Lớp 12 — Củng cố nền tảng",
+    "subject_name": "Lịch sử",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "150000"
+    },
+    "schedule": "Thứ 2, 4 — 18:00 đến 19:30",
+    "description": "Kết nối sự kiện theo dòng thời gian, giải thích nguyên nhân và luyện cách tự tổng hợp kiến thức. Con còn ngại hỏi khi chưa hiểu, cần thầy cô kiên nhẫn và kiểm tra lại kiến thức sau từng phần. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Cầu Giấy, Hà Nội",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794450745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "d54b49a748a8e43eb14175fe"
+    },
+    "parent_user_id": {
+      "$oid": "b2508678ecaee134703a949c"
+    },
+    "title": "Địa lý Lớp 12 — Học theo lộ trình cá nhân",
+    "subject_name": "Địa lý",
+    "grade_level": "Lớp 12",
+    "teaching_mode": "OFFLINE",
+    "budget": {
+      "$numberDecimal": "180000"
+    },
+    "schedule": "Thứ 3, 5 — 19:30 đến 21:00",
+    "description": "Hướng dẫn đọc bản đồ, phân tích biểu đồ và nhận xét bảng số liệu bằng ví dụ gần gũi. Gia đình mong có kế hoạch học theo tuần, bài tập vừa sức và báo cáo tiến độ định kỳ. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794454345932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "db5b5539e88f7bdbf433b916"
+    },
+    "parent_user_id": {
+      "$oid": "b2508678ecaee134703a949c"
+    },
+    "title": "Tiếng Nhật Giao tiếp — Luyện tập có hướng dẫn",
+    "subject_name": "Tiếng Nhật",
+    "grade_level": "Giao tiếp",
+    "teaching_mode": "HYBRID",
+    "budget": {
+      "$numberDecimal": "360000"
+    },
+    "schedule": "Thứ 7 — 08:00 đến 10:00",
+    "description": "Luyện phát âm, từ vựng và mẫu câu theo trình độ, kết hợp bài tập nghe và phản xạ hội thoại. Ưu tiên hướng dẫn con tự làm bài, phân tích lỗi sai và rèn thói quen học đều đặn. Gia đình mong trao đổi mục tiêu và học thử một buổi trước khi thống nhất lịch lâu dài. Có thể điều chỉnh lịch nếu hai bên báo trước.",
+    "location_address": "Hải Châu, Đà Nẵng",
+    "tutor_requirements": "Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.",
+    "status": "OPEN",
+    "image_urls": [],
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794457945932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
   }
 ]

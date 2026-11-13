@@ -27,4 +27,5 @@ module.exports = [
     student_id: null, // liên kết với học sinh Chi đang chờ chấp nhận nên chưa gán
     tutor_requirements: 'Gia sư nam hoặc nữ đều được, có kinh nghiệm dạy lớp 11',
   },
+  ...require('../marketplaceFixture').requests,
 ];

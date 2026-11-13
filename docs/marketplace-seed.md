@@ -1,3 +1,5 @@
+> Marketplace demo data is also included in the central seed.
+
 # Dữ liệu mẫu gia sư, bài đăng và kết nối
 
 Chạy trong `backend/`:

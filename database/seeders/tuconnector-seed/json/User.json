@@ -1,7 +1,7 @@
 [
   {
     "phone": null,
-    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "password_hash": "$2b$10$V7/lf4PrbpDbL.gaE5rM1OrXl3BgAb/RSqmkxfJ1Z.BDmSuLcRWb6",
     "email_verify_status": true,
     "is_onboarded": true,
     "created_at": {
@@ -52,7 +52,7 @@
   },
   {
     "phone": "0901000001",
-    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "password_hash": "$2b$10$V7/lf4PrbpDbL.gaE5rM1OrXl3BgAb/RSqmkxfJ1Z.BDmSuLcRWb6",
     "email_verify_status": true,
     "is_onboarded": true,
     "created_at": {
@@ -140,7 +140,7 @@
   },
   {
     "phone": "0901000002",
-    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "password_hash": "$2b$10$V7/lf4PrbpDbL.gaE5rM1OrXl3BgAb/RSqmkxfJ1Z.BDmSuLcRWb6",
     "email_verify_status": true,
     "is_onboarded": true,
     "created_at": {
@@ -224,7 +224,7 @@
   },
   {
     "phone": "0901000003",
-    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "password_hash": "$2b$10$V7/lf4PrbpDbL.gaE5rM1OrXl3BgAb/RSqmkxfJ1Z.BDmSuLcRWb6",
     "email_verify_status": true,
     "is_onboarded": true,
     "created_at": {
@@ -308,7 +308,7 @@
   },
   {
     "phone": "0902000001",
-    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "password_hash": "$2b$10$V7/lf4PrbpDbL.gaE5rM1OrXl3BgAb/RSqmkxfJ1Z.BDmSuLcRWb6",
     "email_verify_status": true,
     "is_onboarded": true,
     "created_at": {
@@ -392,7 +392,7 @@
   },
   {
     "phone": "0902000002",
-    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "password_hash": "$2b$10$V7/lf4PrbpDbL.gaE5rM1OrXl3BgAb/RSqmkxfJ1Z.BDmSuLcRWb6",
     "email_verify_status": true,
     "is_onboarded": true,
     "created_at": {
@@ -476,7 +476,7 @@
   },
   {
     "phone": null,
-    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "password_hash": "$2b$10$V7/lf4PrbpDbL.gaE5rM1OrXl3BgAb/RSqmkxfJ1Z.BDmSuLcRWb6",
     "email_verify_status": true,
     "is_onboarded": true,
     "created_at": {
@@ -530,7 +530,7 @@
   },
   {
     "phone": null,
-    "password_hash": "$2b$10$seedSeedSeedSeedSeedSeuQx1u9G1a3tF6Yp0mGz2t5bq8wQ9eDkC",
+    "password_hash": "$2b$10$V7/lf4PrbpDbL.gaE5rM1OrXl3BgAb/RSqmkxfJ1Z.BDmSuLcRWb6",
     "email_verify_status": true,
     "is_onboarded": true,
     "created_at": {
@@ -634,5 +634,2909 @@
     "full_name": "Phạm Bảo Chi",
     "email": "chi.student@gmail.com",
     "role": "STUDENT"
+  },
+  {
+    "_id": {
+      "$oid": "43dc75eb7404a691924708f2"
+    },
+    "full_name": "Nguyễn Minh Khang",
+    "email": "demo.tutor01@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "13"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "78da6f8996dc8494e6086627"
+    },
+    "full_name": "Trần Thu Trang",
+    "email": "demo.tutor02@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "12"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "b0c1867ee185a1bcdad620b1"
+    },
+    "full_name": "Lê Hoàng Nam",
+    "email": "demo.tutor03@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "11"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ee7540e9c97a16b3741655bc"
+    },
+    "full_name": "Phạm Ngọc Anh",
+    "email": "demo.tutor04@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "13"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "bd28f9debbe06de9dda5db51"
+    },
+    "full_name": "Vũ Đức Huy",
+    "email": "demo.tutor05@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "11"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "b86ea5252fc6a66848feea74"
+    },
+    "full_name": "Đặng Bảo Châu",
+    "email": "demo.tutor06@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "8"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "35bf3cf76a7ee227f3773fd0"
+    },
+    "full_name": "Bùi Quang Minh",
+    "email": "demo.tutor07@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "9"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "56946206da9e68ffd3f3fd12"
+    },
+    "full_name": "Đỗ Thanh Hà",
+    "email": "demo.tutor08@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "11"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "f7316d6840704f0280941204"
+    },
+    "full_name": "Nguyễn Khánh Linh",
+    "email": "demo.tutor09@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "13"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "cf2bc6d00b8e14accc0b37a5"
+    },
+    "full_name": "Trần Anh Tuấn",
+    "email": "demo.tutor10@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "12"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a536b54653bd80ff57663788"
+    },
+    "full_name": "Lê Thảo Vy",
+    "email": "demo.tutor11@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "11"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "03b01a7448279c806abf8838"
+    },
+    "full_name": "Phạm Hải Đăng",
+    "email": "demo.tutor12@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "13"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "380bbb3585f67e33bd77c803"
+    },
+    "full_name": "Võ Mai Phương",
+    "email": "demo.tutor13@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "11"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "f9149af99c53eeca3205466c"
+    },
+    "full_name": "Hoàng Gia Bảo",
+    "email": "demo.tutor14@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "8"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "652a2e101aac57b433c0052d"
+    },
+    "full_name": "Đinh Mỹ Duyên",
+    "email": "demo.tutor15@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "9"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60a43c386456a61b524ee414"
+    },
+    "full_name": "Dương Nhật Long",
+    "email": "demo.tutor16@example.com",
+    "role": "TUTOR",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "11"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "1bef1155471eff19914325ad"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "d7c49ac8156a92a523656c65"
+    },
+    "full_name": "Nguyễn Thu Hương",
+    "email": "demo.parent01@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "11"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a67e218361ef1feed139c922"
+    },
+    "full_name": "Trần Quốc Hùng",
+    "email": "demo.parent02@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "11"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5f5a29cb355122fc353d25c8"
+    },
+    "full_name": "Lê Ngọc Mai",
+    "email": "demo.parent03@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "11"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "0f78824c8e2c83ec41900ad7"
+    },
+    "full_name": "Phạm Anh Dũng",
+    "email": "demo.parent04@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "11"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "f47de074a0e5096879e88013"
+    },
+    "full_name": "Vũ Thị Thanh",
+    "email": "demo.parent05@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "1d18ea89b1def13018499437"
+    },
+    "full_name": "Đặng Minh Đức",
+    "email": "demo.parent06@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "2dfa5f05df230dc1d3944d4a"
+    },
+    "full_name": "Bùi Ngọc Lan",
+    "email": "demo.parent07@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "be1db7062a14c8302235536c"
+    },
+    "full_name": "Đỗ Quang Hải",
+    "email": "demo.parent08@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "e227c6b5af016b925d2219df"
+    },
+    "full_name": "Hoàng Thùy Dung",
+    "email": "demo.parent09@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "2b97014df15e601fa00b51d2"
+    },
+    "full_name": "Phan Anh Khoa",
+    "email": "demo.parent10@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "1c4285fd7d0ff06105b84b89"
+    },
+    "full_name": "Võ Thu Thảo",
+    "email": "demo.parent11@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "d2b80ac3ea1b00c149d065f7"
+    },
+    "full_name": "Đinh Văn Sơn",
+    "email": "demo.parent12@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "93d90db4c499d525bea51c64"
+    },
+    "full_name": "Dương Hải Yến",
+    "email": "demo.parent13@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "520e2b7d058becc3cae08643"
+    },
+    "full_name": "Mai Quốc Bảo",
+    "email": "demo.parent14@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "604ce68f7cff060c9d2f8c5a"
+    },
+    "full_name": "Trịnh Thị Hạnh",
+    "email": "demo.parent15@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "d7988b9d5938f84dbf3f03db"
+    },
+    "full_name": "Lý Minh Tuấn",
+    "email": "demo.parent16@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "dc7ecf5e46c2ce02f1875371"
+    },
+    "full_name": "Ngô Bích Ngọc",
+    "email": "demo.parent17@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "e39e8b8344a2b38b57502474"
+    },
+    "full_name": "Hồ Đức Thành",
+    "email": "demo.parent18@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "f95a9070372c1a318506ce06"
+    },
+    "full_name": "Cao Thanh Trúc",
+    "email": "demo.parent19@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "bccdef99d11bbbdc504f846e"
+    },
+    "full_name": "Tạ Anh Duy",
+    "email": "demo.parent20@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "01b6ae1f3bc619dfd4cf0b3b"
+    },
+    "full_name": "Lương Thu Hiền",
+    "email": "demo.parent21@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "3bdecef99b6be9b6c14ca44b"
+    },
+    "full_name": "Đoàn Việt Hưng",
+    "email": "demo.parent22@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5eed62c0e01c524390641f86"
+    },
+    "full_name": "Châu Mỹ Linh",
+    "email": "demo.parent23@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5ecc8605cf238ae611b67f91"
+    },
+    "full_name": "Tống Hoàng Phúc",
+    "email": "demo.parent24@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "216e02862ac0b7885bc1f754"
+    },
+    "full_name": "Hà Thị Hồng",
+    "email": "demo.parent25@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "11164a9b7bb52414d005d898"
+    },
+    "full_name": "Chu Gia Khánh",
+    "email": "demo.parent26@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "51950e79298b2cc02f22494e"
+    },
+    "full_name": "Lâm Ngọc Diệp",
+    "email": "demo.parent27@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "b2508678ecaee134703a949c"
+    },
+    "full_name": "Đào Quang Vinh",
+    "email": "demo.parent28@example.com",
+    "role": "PARENT",
+    "password_hash": "$2b$10$HS3VyCwsSRtfQmV07uQrTO6wjXWXloYuboRkkL768/HHNL8shHXH2",
+    "has_password": true,
+    "email_verify_status": true,
+    "is_onboarded": true,
+    "account_status": "ACTIVE",
+    "is_login_locked": false,
+    "failed_login_attempts": {
+      "$numberInt": "0"
+    },
+    "notification_preferences": {
+      "enable_email": false,
+      "enable_in_app": true
+    },
+    "credit_wallet": {
+      "balance": {
+        "$numberInt": "20"
+      },
+      "updated_at": {
+        "$date": {
+          "$numberLong": "1794461545932"
+        }
+      }
+    },
+    "subscription": {
+      "plan_id": {
+        "$oid": "8ce4d3438a6683a5053f4920"
+      },
+      "status": "ACTIVE",
+      "expires_at": null,
+      "ai_quota_used": {
+        "$numberInt": "0"
+      },
+      "start_date": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "created_at": {
+        "$date": {
+          "$numberLong": "1794288745932"
+        }
+      },
+      "ai_quota_reset_at": {
+        "$date": {
+          "$numberLong": "1794547945932"
+        }
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794461545932"
+      }
+    }
   }
 ]

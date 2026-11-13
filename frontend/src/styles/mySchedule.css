@@ -210,8 +210,10 @@
   gap: 3px;
   overflow: hidden;
   padding: 6px 7px;
-  border-left: 3px solid currentColor;
+  border-left: 3px solid var(--schedule-event-border);
   border-radius: 5px;
+  background: var(--schedule-event-background);
+  color: var(--schedule-event-text);
   font-size: 11px;
   line-height: 1.25;
 }
@@ -342,6 +344,15 @@
   border-bottom: 1px solid var(--color-border);
   color: var(--color-text-muted);
   font-size: 13px;
+}
+
+.schedule-conflict-list {
+  margin: 6px 0 0;
+  padding-left: 20px;
+}
+
+.schedule-conflict-list li + li {
+  margin-top: 4px;
 }
 
 .schedule-timezone-note {

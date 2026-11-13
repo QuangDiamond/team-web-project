@@ -77,4 +77,5 @@ module.exports = [
     google_account: { google_id: '109876543210987654321', google_email: 'chi.student@gmail.com' },
     student_profile: { full_name: 'Phạm Bảo Chi', grade_level: 'Lớp 11' },
   }),
+  ...require('../marketplaceFixture').users,
 ];

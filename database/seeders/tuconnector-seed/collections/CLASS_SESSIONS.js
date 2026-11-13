@@ -14,4 +14,22 @@ module.exports = [
     status: 'SCHEDULED', created_at: d('2026-10-11T09:20:00+07:00'), updated_at: d('2026-10-11T09:20:00+07:00'),
     attendance: [],
   },
+  {
+    _id: ids.ses_hup_1113, class_id: ids.class_toan9, tutor_profile_id: ids.tp_minh, rule_id: null, title: 'húp rồiiii',
+    start_time: d('2026-11-13T10:15:00+07:00'), end_time: d('2026-11-13T13:15:00+07:00'), meeting_link: null,
+    status: 'SCHEDULED', created_at: d('2026-11-13T01:36:06.799+07:00'), updated_at: d('2026-11-13T02:47:16.713+07:00'),
+    attendance: [],
+  },
+  {
+    _id: ids.ses_hup_1114, class_id: ids.class_toan9, tutor_profile_id: ids.tp_minh, rule_id: null, title: 'húp rồiiii',
+    start_time: d('2026-11-14T16:15:00+07:00'), end_time: d('2026-11-14T17:15:00+07:00'), meeting_link: null,
+    status: 'SCHEDULED', created_at: d('2026-11-13T01:40:36.353+07:00'), updated_at: d('2026-11-13T01:40:50.068+07:00'),
+    attendance: [],
+  },
+  {
+    _id: ids.ses_meommeoe_1115, class_id: ids.class_toan9, tutor_profile_id: ids.tp_minh, rule_id: null, title: 'meommeoe',
+    start_time: d('2026-11-15T19:15:00+07:00'), end_time: d('2026-11-15T20:15:00+07:00'), meeting_link: null,
+    status: 'SCHEDULED', created_at: d('2026-11-13T01:40:41.030+07:00'), updated_at: d('2026-11-13T01:40:41.030+07:00'),
+    attendance: [],
+  },
 ];

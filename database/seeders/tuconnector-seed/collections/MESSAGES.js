@@ -13,4 +13,5 @@ module.exports = [
     content: 'Các em xem trước đề cương buổi sau nhé.', created_at: d('2026-10-15T20:00:00+07:00'),
     attachments: [{ file_url: 'https://cdn.tuconnector.vn/chat/de-cuong-buoi-3.pdf', file_name: 'de-cuong-buoi-3.pdf', file_size: 245760, mime_type: 'application/pdf' }],
   }),
+  ...require('../marketplaceFixture').messages,
 ];

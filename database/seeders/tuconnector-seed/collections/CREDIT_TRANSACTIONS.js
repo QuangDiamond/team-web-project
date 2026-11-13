@@ -18,4 +18,5 @@ module.exports = [
   tx({ _id: ids.tx_ha_invite, user_id: ids.user_parent_ha, amount: -1, type: 'USED_INVITATION', related_invitation_id: ids.inv_minh_ly11, created_at: d('2026-10-15T21:00:00+07:00') }),
   tx({ _id: ids.tx_tuan_grant, user_id: ids.user_parent_tuan, amount: 3, type: 'MONTHLY_GRANT', expires_at: MONTH_END, created_at: d('2026-10-01T00:00:00+07:00') }),
   tx({ _id: ids.tx_tuan_invite, user_id: ids.user_parent_tuan, amount: -1, type: 'USED_INVITATION', related_invitation_id: ids.inv_lan_anh7, created_at: d('2026-10-08T19:00:00+07:00') }),
+  ...require('../marketplaceFixture').transactions,
 ];

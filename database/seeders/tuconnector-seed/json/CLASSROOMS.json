@@ -26,21 +26,10 @@
     },
     "updated_at": {
       "$date": {
-        "$numberLong": "1791684000000"
+        "$numberLong": "1794503450308"
       }
     },
     "topics": [
-      {
-        "_id": {
-          "$oid": "39fab13364f18a64ddbebe2b"
-        },
-        "name": "Chương 1: Căn bậc hai",
-        "created_at": {
-          "$date": {
-            "$numberLong": "1791684600000"
-          }
-        }
-      },
       {
         "_id": {
           "$oid": "5453609bb958230fd4d06146"
@@ -51,7 +40,168 @@
             "$numberLong": "1791684720000"
           }
         }
+      },
+      {
+        "_id": {
+          "$oid": "6af5cf214abfef91af5e459a"
+        },
+        "name": "Chapter 3",
+        "created_at": {
+          "$date": {
+            "$numberLong": "1794494241102"
+          }
+        }
       }
     ]
+  },
+  {
+    "_id": {
+      "$oid": "6a4b261ff1b9efa6c28d9717"
+    },
+    "tutor_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "agreement_id": null,
+    "name": "Toán 8 – Đại số nền tảng",
+    "subject": "Toán",
+    "grade": "Lớp 8",
+    "description": "Lớp học củng cố đại số cho học sinh lớp 8.",
+    "capacity": {
+      "$numberInt": "10"
+    },
+    "join_code": "MINHTOAN8",
+    "invite_link": "https://tuconnector.vn/join/MINHTOAN8",
+    "status": "ACTIVE",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792893600000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792893600000"
+      }
+    },
+    "topics": []
+  },
+  {
+    "_id": {
+      "$oid": "355efdf8c4a7ab87480162a9"
+    },
+    "tutor_profile_id": {
+      "$oid": "3ebe8b43a871d39bbbde35ba"
+    },
+    "agreement_id": null,
+    "name": "Tiếng Anh 7 – Giao tiếp và ngữ pháp",
+    "subject": "Tiếng Anh",
+    "grade": "Lớp 7",
+    "description": "Lớp học tiếng Anh lớp 7, tập trung giao tiếp và ngữ pháp.",
+    "capacity": {
+      "$numberInt": "10"
+    },
+    "join_code": "LANANH7",
+    "invite_link": "https://tuconnector.vn/join/LANANH7",
+    "status": "ACTIVE",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792893600000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792893600000"
+      }
+    },
+    "topics": []
+  },
+  {
+    "_id": {
+      "$oid": "98b78415828a6fcacc89670a"
+    },
+    "tutor_profile_id": {
+      "$oid": "3ebe8b43a871d39bbbde35ba"
+    },
+    "agreement_id": null,
+    "name": "Tiếng Anh 8 – Ôn tập học kỳ",
+    "subject": "Tiếng Anh",
+    "grade": "Lớp 8",
+    "description": "Lớp học tiếng Anh lớp 8, ôn tập và luyện kỹ năng.",
+    "capacity": {
+      "$numberInt": "10"
+    },
+    "join_code": "LANANH8",
+    "invite_link": "https://tuconnector.vn/join/LANANH8",
+    "status": "ACTIVE",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792893600000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792893600000"
+      }
+    },
+    "topics": []
+  },
+  {
+    "_id": {
+      "$oid": "cbc8bbcc6f1e0d625ebb8bef"
+    },
+    "tutor_profile_id": {
+      "$oid": "83a6b95dc906b13934f510c6"
+    },
+    "agreement_id": null,
+    "name": "Vật lý 11 – Điện học",
+    "subject": "Vật lý",
+    "grade": "Lớp 11",
+    "description": "Lớp học điện học và bài tập vận dụng cho học sinh lớp 11.",
+    "capacity": {
+      "$numberInt": "10"
+    },
+    "join_code": "HUYLY11",
+    "invite_link": "https://tuconnector.vn/join/HUYLY11",
+    "status": "ACTIVE",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792893600000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792893600000"
+      }
+    },
+    "topics": []
+  },
+  {
+    "_id": {
+      "$oid": "04bad262bb2ee5783a26ee60"
+    },
+    "tutor_profile_id": {
+      "$oid": "83a6b95dc906b13934f510c6"
+    },
+    "agreement_id": null,
+    "name": "Vật lý 10 – Cơ học cơ bản",
+    "subject": "Vật lý",
+    "grade": "Lớp 10",
+    "description": "Lớp học cơ học cơ bản và phương pháp giải bài tập.",
+    "capacity": {
+      "$numberInt": "10"
+    },
+    "join_code": "HUYLY10",
+    "invite_link": "https://tuconnector.vn/join/HUYLY10",
+    "status": "ACTIVE",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1792893600000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1792893600000"
+      }
+    },
+    "topics": []
   }
 ]

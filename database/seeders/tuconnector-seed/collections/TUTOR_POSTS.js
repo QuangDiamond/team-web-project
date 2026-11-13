@@ -21,4 +21,5 @@ module.exports = [
     schedule: 'Tối thứ 2, 4, 6', description: 'Dạy chắc lý thuyết, nhiều bài tập vận dụng.',
     image_urls: [], status: 'PUBLISHED', created_at: d('2026-10-04T09:00:00+07:00'), updated_at: d('2026-10-18T09:00:00+07:00'),
   },
+  ...require('../marketplaceFixture').posts,
 ];

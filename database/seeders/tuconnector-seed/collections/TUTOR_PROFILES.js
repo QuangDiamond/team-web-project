@@ -37,4 +37,5 @@ module.exports = [
     experiences: [], achievements: [],
     educations: [{ school: 'ĐH Bách khoa Hà Nội', degree: 'Kỹ sư Điện', graduation_year: 2023, description: null }],
   },
+  ...require('../marketplaceFixture').profiles,
 ];
