@@ -1,18 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import {
-  Bell,
-  CheckCheck,
-  Inbox,
-  Clock,
-  ArrowRight,
-  LoaderCircle,
-  FileText,
-  Mail,
-  Handshake,
-  Calendar,
-  BookOpen,
-  CreditCard,
   LayoutDashboard,
   LogIn,
   LogOut,
@@ -21,18 +9,11 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { getHomePathByRole } from '../utils/getHomePathByRole';
-import * as notiServiceModule from '../services/notificationService';
 import { getMyProfile } from '../services/tutorProfileService';
 import { getInitials } from '../utils/getInitials';
 import { getRoleLabel } from '../constants/dashboardNav';
 import FloatingChatWidget from '../components/chat/FloatingChatWidget';
-
-const getUnreadCount = notiServiceModule.getUnreadCount;
-const notificationService = notiServiceModule.notificationService || {
-  getNotifications: async () => ({ data: { items: [] } }),
-  markAsRead: async () => {},
-  markAllAsRead: async () => {}
-};
+import NotificationBell from '../components/common/NotificationBell';
 
 const AVATAR_PALETTE = ['#0284C7', '#6366F1', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#0D9488'];
 
@@ -45,24 +26,6 @@ const getAvatarBg = (name) => {
   return AVATAR_PALETTE[Math.abs(hash) % AVATAR_PALETTE.length];
 };
 
-const getRelativeTime = (isoString) => {
-  if (!isoString) return 'Gần đây';
-  const diff = Math.floor((new Date() - new Date(isoString)) / 1000);
-  if (diff < 60) return 'Vừa xong';
-  if (diff < 3600) return `${Math.floor(diff / 60)}p trước`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h trước`;
-  return `${Math.floor(diff / 86400)} ngày trước`;
-};
-
-const NOTI_ICONS = {
-  APPLICATION: FileText,
-  INVITATION: Mail,
-  CONVERSATION: Handshake,
-  SESSION: Calendar,
-  ASSIGNMENT: BookOpen,
-  SYSTEM: CreditCard
-};
-
 export default function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -70,13 +33,6 @@ export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [ownProfile, setOwnProfile] = useState(null);
-
-  // Notifications Popover Dropdown state
-  const [notiDropdownOpen, setNotiDropdownOpen] = useState(false);
-  const [recentNotis, setRecentNotis] = useState([]);
-  const [loadingNotis, setLoadingNotis] = useState(false);
-
-  const notiRef = useRef(null);
 
   const userId = user?.id || user?._id;
   const activeSection = location.pathname === '/' ? location.hash : null;
@@ -98,17 +54,6 @@ export default function Layout() {
     });
     return () => cancelAnimationFrame(frame);
   }, [location.pathname, location.hash, location.key]);
-
-  // Click outside listener for notification dropdown
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (notiRef.current && !notiRef.current.contains(e.target)) {
-        setNotiDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   // Fetch tutor profile if tutor
   useEffect(() => {
@@ -144,78 +89,6 @@ export default function Layout() {
     notificationsPath = `/${user.role.toLowerCase()}/notifications`;
     messagesPath = `/${user.role.toLowerCase()}/messages`;
   }
-
-  // Fetch Notification unread count periodically
-  useEffect(() => {
-    if (!user) {
-      setUnreadCount(0);
-      return;
-    }
-    const fetchUnread = () => {
-      getUnreadCount()
-        .then((res) => {
-          const count = res?.data?.unreadCount ?? res?.unreadCount;
-          if (typeof count === 'number') {
-            setUnreadCount(count);
-          }
-        })
-        .catch(() => {});
-    };
-
-    fetchUnread();
-    const timer = setInterval(fetchUnread, 5000);
-    return () => clearInterval(timer);
-  }, [user, location.pathname]);
-
-  // Handle opening notification dropdown
-  const handleToggleNotiDropdown = async () => {
-    const nextState = !notiDropdownOpen;
-    setNotiDropdownOpen(nextState);
-
-    if (nextState) {
-      setLoadingNotis(true);
-      try {
-        const res = await notificationService.getNotifications({ limit: 5 });
-        setRecentNotis(res.notifications || []);
-        if (typeof res.unreadCount === 'number') {
-          setUnreadCount(res.unreadCount);
-        }
-      } catch (err) {
-        console.error('Failed to load recent notifications:', err);
-      } finally {
-        setLoadingNotis(false);
-      }
-    }
-  };
-
-  const handleMarkAllNotisRead = async (e) => {
-    e.stopPropagation();
-    try {
-      await notificationService.markAllAsRead();
-      setRecentNotis((prev) => prev.map((n) => ({ ...n, is_read: true })));
-      setUnreadCount(0);
-    } catch (err) {
-      console.error('Failed to mark all as read:', err);
-    }
-  };
-
-  const handleNotiItemClick = async (item) => {
-    if (!item.is_read) {
-      try {
-        await notificationService.markAsRead(item._id);
-        setUnreadCount((c) => Math.max(0, c - 1));
-        setRecentNotis((prev) =>
-          prev.map((n) => (n._id === item._id ? { ...n, is_read: true } : n))
-        );
-      } catch {}
-    }
-    setNotiDropdownOpen(false);
-    if (item.deepLink) {
-      navigate(item.deepLink);
-    } else {
-      navigate(notificationsPath);
-    }
-  };
 
   const handleLogout = async () => {
     await logout();
@@ -274,95 +147,11 @@ export default function Layout() {
           <div className="nav-actions">
             {user ? (
               <>
-                {/* Notifications Popover Dropdown (Homepage Experience) */}
-                <div className="nav-dropdown-wrap" ref={notiRef}>
-                  <button
-                    type="button"
-                    className={`nav-noti-btn ${notiDropdownOpen ? 'active' : ''}`}
-                    onClick={handleToggleNotiDropdown}
-                    title="Thông báo hệ thống"
-                    aria-label="Thông báo hệ thống"
-                    aria-expanded={notiDropdownOpen}
-                  >
-                    <Bell size={19} />
-                    {unreadCount > 0 && (
-                      <span className="nav-noti-badge">
-                        {unreadCount > 9 ? '9+' : unreadCount}
-                      </span>
-                    )}
-                  </button>
-
-                  {notiDropdownOpen && (
-                    <div className="nav-popover">
-                      <div className="nav-popover-header">
-                        <div className="nav-popover-title">
-                          <span>Thông báo</span>
-                          {unreadCount > 0 && (
-                            <span className="nav-popover-count-tag">
-                              {unreadCount} mới
-                            </span>
-                          )}
-                        </div>
-                        {unreadCount > 0 && (
-                          <button
-                            type="button"
-                            className="nav-popover-action"
-                            onClick={handleMarkAllNotisRead}
-                          >
-                            <CheckCheck size={14} />
-                            <span>Đã đọc hết</span>
-                          </button>
-                        )}
-                      </div>
-
-                      {loadingNotis ? (
-                        <div className="nav-popover-empty">
-                          <LoaderCircle size={22} className="spin" color="#0284c7" />
-                          <span>Đang tải thông báo...</span>
-                        </div>
-                      ) : recentNotis.length === 0 ? (
-                        <div className="nav-popover-empty">
-                          <Inbox size={32} strokeWidth={1.5} color="#94a3b8" />
-                          <span>Không có thông báo mới nào</span>
-                        </div>
-                      ) : (
-                        <ul className="nav-popover-list">
-                          {recentNotis.map((item) => {
-                            const IconComponent = NOTI_ICONS[item.category] || CreditCard;
-                            const time = getRelativeTime(item.created_at);
-
-                            return (
-                              <li
-                                key={item._id}
-                                className={`nav-popover-item ${!item.is_read ? 'unread' : ''}`}
-                                onClick={() => handleNotiItemClick(item)}
-                              >
-                                <div className="nav-popover-icon">
-                                  <IconComponent size={17} />
-                                </div>
-                                <div className="nav-popover-content">
-                                  <div className="nav-popover-heading">
-                                    <span>{item.title}</span>
-                                    <span className="nav-popover-time">{time}</span>
-                                  </div>
-                                  <p className="nav-popover-desc">{item.body}</p>
-                                </div>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      )}
-
-                      <Link
-                        to={notificationsPath}
-                        className="nav-popover-footer"
-                        onClick={() => setNotiDropdownOpen(false)}
-                      >
-                        Xem tất cả thông báo trong Dashboard →
-                      </Link>
-                    </div>
-                  )}
-                </div>
+                <NotificationBell
+                  notificationsPath={notificationsPath}
+                  buttonClassName="nav-noti-btn"
+                  onUnreadCountChange={setUnreadCount}
+                />
 
                 <Link to={dashboardPath} className="btn btn-primary nav-round-action" aria-label="Bảng điều khiển" title="Bảng điều khiển">
                   <LayoutDashboard size={19} aria-hidden="true" />
