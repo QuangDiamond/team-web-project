@@ -7,7 +7,7 @@ export default function EditClassroomModal({ isOpen, onClose, classroom, onUpdat
     name: '',
     subject: '',
     grade: '',
-    capacity: 20,
+    capacity: 50,
     description: '',
   });
   const [submitting, setSubmitting] = useState(false);
@@ -19,7 +19,7 @@ export default function EditClassroomModal({ isOpen, onClose, classroom, onUpdat
         name: classroom.name || '',
         subject: classroom.subject_name || classroom.subject || '',
         grade: classroom.grade || '',
-        capacity: classroom.capacity || 20,
+        capacity: classroom.capacity || 50,
         description: classroom.description || '',
       });
     }

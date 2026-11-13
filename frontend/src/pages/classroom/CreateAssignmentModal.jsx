@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Pencil,
   ClipboardList,
@@ -11,8 +12,9 @@ import {
   X,
   Plus,
   Loader2,
+  ExternalLink,
 } from 'lucide-react';
-import { createAssignment, updateAssignment } from '../../services/classroomService';
+import { createAssignment, updateAssignment, generateAiQuestions } from '../../services/classroomService';
 
 export default function CreateAssignmentModal({
   isOpen,
@@ -20,6 +22,8 @@ export default function CreateAssignmentModal({
   classroomId,
   assignmentToEdit = null,
   classroomSubject = '',
+  classroomGrade = '',
+  studentCount = 0,
   onAssignmentCreated,
   showToast,
 }) {
@@ -36,6 +40,11 @@ export default function CreateAssignmentModal({
   const [isAiGenerated, setIsAiGenerated] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiTopic, setAiTopic] = useState('');
+  const [aiGrade, setAiGrade] = useState(classroomGrade || 'Lớp 10');
+  const [aiDifficulty, setAiDifficulty] = useState('MEDIUM');
+  const [aiNumQuestions, setAiNumQuestions] = useState(3);
+  const [aiSimulateTimeout, setAiSimulateTimeout] = useState(false);
+  const [aiError, setAiError] = useState(null);
   const [showAiPrompt, setShowAiPrompt] = useState(false);
 
   const [questions, setQuestions] = useState([
@@ -163,104 +172,108 @@ export default function CreateAssignmentModal({
     });
   };
 
-  // Tính năng UC26: Tạo câu hỏi bằng AI theo môn học / chủ đề
-  const handleGenerateAiQuestions = () => {
-    setAiLoading(true);
-    setTimeout(() => {
-      const subject = (aiTopic || classroomSubject || 'Toán học').trim();
-      let aiQuestions = [];
+  // Tính năng UC26: Tạo câu hỏi bằng AI theo môn học / chủ đề (Cases 5.2, 5.3, 5.4)
+  const handleGenerateAiQuestions = async () => {
+    if (!aiTopic.trim()) {
+      setAiError({ type: 'VALIDATION', message: 'Vui lòng nhập chủ đề / nội dung cần tạo câu hỏi bằng AI' });
+      return;
+    }
 
-      if (/toán|math/i.test(subject)) {
-        aiQuestions = [
-          {
-            question_type: 'MULTIPLE_CHOICE',
-            content: 'Nghiệm của phương trình bậc hai x² - 5x + 6 = 0 là gì?',
-            options: ['x = 2 hoặc x = 3', 'x = -2 hoặc x = -3', 'x = 1 hoặc x = 6', 'Vô nghiệm'],
-            correct_answer: 'A',
-            points: 3,
-          },
-          {
-            question_type: 'SHORT_ANSWER',
-            content: 'Nêu công thức tính biệt thức Delta (Δ) của phương trình ax² + bx + c = 0.',
-            options: [],
-            correct_answer: 'Delta = b^2 - 4ac',
-            points: 3,
-          },
-          {
-            question_type: 'FILE_UPLOAD',
-            content: 'Trình bày chi tiết lời giải bài toán vẽ đồ thị hàm số y = 2x - 3 lên giấy, chụp ảnh và đính kèm liên kết nộp bài.',
-            options: [],
-            correct_answer: '',
-            points: 4,
-          },
-        ];
-      } else if (/anh|english/i.test(subject)) {
-        aiQuestions = [
-          {
-            question_type: 'MULTIPLE_CHOICE',
-            content: 'Choose the correct form: If I had studied harder, I _____ the exam.',
-            options: ['would have passed', 'will pass', 'would pass', 'had passed'],
-            correct_answer: 'A',
-            points: 3,
-          },
-          {
-            question_type: 'SHORT_ANSWER',
-            content: 'Write a paragraph (50-70 words) introducing your favorite hobby.',
-            options: [],
-            correct_answer: '',
-            points: 4,
-          },
-          {
-            question_type: 'FILE_UPLOAD',
-            content: 'Record an audio file reading the passage in unit 3 and submit your recording link.',
-            options: [],
-            correct_answer: '',
-            points: 3,
-          },
-        ];
+    try {
+      setAiLoading(true);
+      setAiError(null);
+
+      const res = await generateAiQuestions({
+        topic: aiTopic.trim(),
+        grade: aiGrade,
+        difficulty: aiDifficulty,
+        num_questions: parseInt(aiNumQuestions, 10) || 3,
+        simulate_timeout: Boolean(aiSimulateTimeout),
+      });
+
+      const draft = res?.data;
+      if (draft?.questions && draft.questions.length > 0) {
+        setQuestions(
+          draft.questions.map((q, idx) => ({
+            question_number: idx + 1,
+            question_type: q.question_type || 'MULTIPLE_CHOICE',
+            content: q.content || '',
+            options: Array.isArray(q.options) && q.options.length === 4 ? q.options : ['', '', '', ''],
+            correct_answer: q.correct_answer || (q.question_type === 'MULTIPLE_CHOICE' ? 'A' : ''),
+            points: q.points || 2,
+          }))
+        );
+        setTitle((prev) => prev || draft.title || `Bài tập rèn luyện: ${aiTopic.trim()}`);
+        setInstructions((prev) => prev || draft.instructions || '');
+        setTotalPoints(draft.total_points || 10);
+        setIsAiGenerated(true);
+        setStatus('DRAFT'); // Luôn để DRAFT để sửa, không publish thẳng (Case 5.2)
+        setShowAiPrompt(false);
+        if (showToast) {
+          showToast(`Trợ lý AI đã tạo đề bài mẫu thành công! (Còn lại ${draft.ai_quota_left} lượt trong tháng)`);
+        }
+      }
+    } catch (err) {
+      const errStatus = err?.response?.status;
+      const data = err?.response?.data;
+      const msg = data?.message || err.message || 'Không thể tạo đề bằng AI';
+
+      if (errStatus === 403 || data?.code === 'AI_QUOTA_EXCEEDED' || /hạn mức AI/i.test(msg)) {
+        // Case 5.3: Hết hạn mức tháng -> Báo hết quota, gợi ý nâng gói, giữ editor thủ công
+        setAiError({
+          type: 'QUOTA',
+          message: msg,
+        });
+      } else if (errStatus === 504 || /timeout/i.test(msg)) {
+        // Case 5.4: Lỗi timeout -> Không trừ quota, giữ editor thủ công
+        setAiError({
+          type: 'TIMEOUT',
+          message: msg,
+        });
       } else {
-        // Chủ đề tổng quát
-        aiQuestions = [
-          {
-            question_type: 'MULTIPLE_CHOICE',
-            content: `Khái niệm cơ bản nào dưới đây là chính xác nhất đối với nội dung "${subject}"?`,
-            options: ['Khái niệm định nghĩa chuẩn', 'Phương án đối nghịch', 'Giả thuyết chưa chứng minh', 'Không có đáp án đúng'],
-            correct_answer: 'A',
-            points: 3,
-          },
-          {
-            question_type: 'SHORT_ANSWER',
-            content: `Hãy tóm tắt ngắn gọn 3 luận điểm chính đã học trong chủ đề "${subject}".`,
-            options: [],
-            correct_answer: '',
-            points: 3,
-          },
-          {
-            question_type: 'FILE_UPLOAD',
-            content: `Làm bài thu hoạch tổng quan về chuyên đề "${subject}" và đính kèm liên kết tài liệu.`,
-            options: [],
-            correct_answer: '',
-            points: 4,
-          },
-        ];
+        setAiError({
+          type: 'ERROR',
+          message: msg,
+        });
       }
-
-      setQuestions(aiQuestions);
-      setIsAiGenerated(true);
-      setTitle((prev) => prev || `Bài tập rèn luyện: ${subject}`);
-      setInstructions((prev) => prev || `Đề bài được sinh tự động bởi trợ lý AI theo nội dung ${subject}. Các em hoàn thành đầy đủ cả trắc nghiệm và tự luận.`);
-      setTotalPoints(10);
+    } finally {
       setAiLoading(false);
-      setShowAiPrompt(false);
-      if (showToast) {
-        showToast('Trợ lý AI đã tạo đề bài mẫu thành công! (Trừ 1 lượt hạn mức AI)');
-      }
-    }, 600);
+    }
   };
 
   const handleSubmit = async (submitStatus = status) => {
     if (!title.trim()) {
       return setError('Vui lòng nhập tiêu đề bài tập');
+    }
+
+    // Case 5.7: Lớp chưa có student -> Publish khi lớp trống thì báo lỗi precondition
+    if (submitStatus === 'PUBLISHED') {
+      if (studentCount === 0) {
+        return setError('Lớp học chưa có học sinh nào tham gia. Không thể xuất bản bài tập khi lớp chưa có học sinh.');
+      }
+
+      // Case 5.5: MCQ thiếu đáp án -> Publish MCQ không có answer key thì báo lỗi validation
+      if (!isQuestionLocked && Array.isArray(questions)) {
+        for (let i = 0; i < questions.length; i++) {
+          const q = questions[i];
+          if (q.question_type === 'MULTIPLE_CHOICE') {
+            if (!q.correct_answer || !String(q.correct_answer).trim()) {
+              return setError(`Câu hỏi trắc nghiệm số ${i + 1} chưa có đáp án đúng (answer key). Vui lòng chọn đáp án trước khi xuất bản.`);
+            }
+          }
+        }
+      }
+    }
+
+    // Case 5.6: Deadline quá khứ -> Đặt due date trong quá khứ thì báo lỗi
+    if (dueDate) {
+      const d = new Date(dueDate);
+      if (isNaN(d.getTime())) {
+        return setError('Hạn nộp bài (due date) không hợp lệ');
+      }
+      if (d.getTime() < Date.now() - 60000) {
+        return setError('Hạn nộp bài không được ở trong quá khứ. Vui lòng chọn thời điểm trong tương lai.');
+      }
     }
 
     try {
@@ -383,43 +396,157 @@ export default function CreateAssignmentModal({
               </div>
             )}
 
-            {/* AI topic input popup */}
+            {/* AI topic input popup (Cases 5.2, 5.3, 5.4) */}
             {showAiPrompt && !isQuestionLocked && (
               <div
                 style={{
                   background: '#f8fafc',
                   border: '1px solid #cbd5e1',
-                  borderRadius: '8px',
-                  padding: '12px',
+                  borderRadius: '10px',
+                  padding: '16px',
                   marginBottom: '16px',
-                  display: 'flex',
-                  gap: '8px',
-                  alignItems: 'center',
                 }}
               >
-                <input
-                  type="text"
-                  placeholder="Nhập môn học hoặc chủ đề đề bài (VD: Toán lớp 10, Tiếng Anh B1...)"
-                  value={aiTopic}
-                  onChange={(e) => setAiTopic(e.target.value)}
-                  style={{ flex: 1, padding: '7px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px' }}
-                />
-                <button
-                  type="button"
-                  className="btn-primary-orange"
-                  style={{ padding: '7px 14px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-                  onClick={handleGenerateAiQuestions}
-                  disabled={aiLoading}
-                >
-                  {aiLoading ? (
-                    <>
-                      <Loader2 size={13} className="spin" />
-                      <span>Đang sinh đề...</span>
-                    </>
-                  ) : (
-                    'Tạo đề ngay'
-                  )}
-                </button>
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '10px', marginBottom: '12px' }}>
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '4px' }}>
+                      Chủ đề bài học <span className="required">*</span>:
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="VD: Phương trình bậc hai, Thì quá khứ..."
+                      value={aiTopic}
+                      onChange={(e) => setAiTopic(e.target.value)}
+                      style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '4px' }}>
+                      Khối lớp:
+                    </label>
+                    <select
+                      value={aiGrade}
+                      onChange={(e) => setAiGrade(e.target.value)}
+                      style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px' }}
+                    >
+                      <option value="Lớp 6">Lớp 6</option>
+                      <option value="Lớp 7">Lớp 7</option>
+                      <option value="Lớp 8">Lớp 8</option>
+                      <option value="Lớp 9">Lớp 9</option>
+                      <option value="Lớp 10">Lớp 10</option>
+                      <option value="Lớp 11">Lớp 11</option>
+                      <option value="Lớp 12">Lớp 12</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '4px' }}>
+                      Độ khó:
+                    </label>
+                    <select
+                      value={aiDifficulty}
+                      onChange={(e) => setAiDifficulty(e.target.value)}
+                      style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px' }}
+                    >
+                      <option value="EASY">Cơ bản (Dễ)</option>
+                      <option value="MEDIUM">Trung bình</option>
+                      <option value="HARD">Nâng cao (Khó)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '4px' }}>
+                      Số câu hỏi:
+                    </label>
+                    <select
+                      value={aiNumQuestions}
+                      onChange={(e) => setAiNumQuestions(e.target.value)}
+                      style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px' }}
+                    >
+                      <option value={3}>3 câu</option>
+                      <option value={5}>5 câu</option>
+                      <option value={10}>10 câu</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#64748b', cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={aiSimulateTimeout}
+                      onChange={(e) => setAiSimulateTimeout(e.target.checked)}
+                    />
+                    <span>Mô phỏng timeout / lỗi AI (Kiểm thử Case 5.4)</span>
+                  </label>
+
+                  <button
+                    type="button"
+                    className="btn-primary-orange"
+                    style={{ padding: '8px 18px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                    onClick={handleGenerateAiQuestions}
+                    disabled={aiLoading}
+                  >
+                    {aiLoading ? (
+                      <>
+                        <Loader2 size={14} className="spin" />
+                        <span>Đang sinh đề...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles size={14} />
+                        <span>Tạo đề bằng AI</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Hiển thị lỗi AI (Hết hạn mức hoặc Timeout, Cases 5.3, 5.4) */}
+                {aiError && (
+                  <div
+                    style={{
+                      marginTop: '12px',
+                      padding: '10px 14px',
+                      borderRadius: '8px',
+                      background: aiError.type === 'QUOTA' ? '#fff1f2' : '#fffbeb',
+                      border: `1px solid ${aiError.type === 'QUOTA' ? '#fecdd3' : '#fef3c7'}`,
+                      color: aiError.type === 'QUOTA' ? '#be123c' : '#b45309',
+                      fontSize: '13px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '8px',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <AlertTriangle size={15} style={{ flexShrink: 0 }} />
+                      <span>{aiError.message}</span>
+                    </div>
+
+                    {aiError.type === 'QUOTA' && (
+                      <Link
+                        to="/tutor/checkout"
+                        style={{
+                          background: '#e11d48',
+                          color: '#ffffff',
+                          padding: '4px 10px',
+                          borderRadius: '6px',
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          textDecoration: 'none',
+                          whiteSpace: 'nowrap',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                        }}
+                      >
+                        <span>Nâng cấp gói ngay</span>
+                        <ExternalLink size={12} />
+                      </Link>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 

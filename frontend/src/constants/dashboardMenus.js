@@ -15,7 +15,6 @@ import {
   Send,
   Settings,
   ShieldAlert,
-  TrendingUp,
   User,
   Users,
   Video,
@@ -107,10 +106,8 @@ export const STUDENT_MENU = {
     {
       label: 'HỌC TẬP',
       items: [
-        { label: "Lịch sử làm bài", icon: History },
-        { label: "Bài tập", icon: ClipboardList },
-        { label: "Hoạt động học tập", icon: TrendingUp },
-        { label: "Lịch học", icon: CalendarDays },
+        { label: "Bài tập", to: '/student/assignments', icon: ClipboardList },
+        { label: "Lịch học", to: '/student/schedule', icon: CalendarDays },
       ],
     },
   ],

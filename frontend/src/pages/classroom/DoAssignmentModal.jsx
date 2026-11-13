@@ -33,15 +33,29 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
   const isBlockedByResubmit = mySubmission && !assignment?.allow_resubmission;
   const canSubmit = !isParent && !isBlockedByLate && !isBlockedByGraded && !isBlockedByResubmit;
 
+  const autoSaveKey = assignment?._id ? `draft_assignment_${assignment._id}_${user?._id || user?.id || 'guest'}` : null;
+
   const resetForm = () => {
     setResult(null);
     setError('');
-    // Pre-fill answers from previous submission if any
+    // Pre-fill answers from previous submission if any, otherwise load from localStorage (Case 6.2)
     const initialAnswers = {};
     if (mySubmission?.answers) {
       mySubmission.answers.forEach((ans) => {
         initialAnswers[ans.question_id] = ans.text_response || '';
       });
+    } else if (autoSaveKey) {
+      try {
+        const saved = localStorage.getItem(autoSaveKey);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && typeof parsed === 'object') {
+            Object.assign(initialAnswers, parsed);
+          }
+        }
+      } catch {
+        // ignore storage parse errors
+      }
     }
     setAnswers(initialAnswers);
   };
@@ -60,10 +74,20 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
   };
 
   const handleAnswerChange = (questionId, value) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [questionId]: value,
-    }));
+    setAnswers((prev) => {
+      const updated = {
+        ...prev,
+        [questionId]: value,
+      };
+      if (autoSaveKey && !mySubmission) {
+        try {
+          localStorage.setItem(autoSaveKey, JSON.stringify(updated));
+        } catch {
+          // ignore storage quota errors
+        }
+      }
+      return updated;
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -71,6 +95,21 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
 
     if (!canSubmit) {
       return setError('Không thể nộp bài tập do chính sách thời hạn hoặc số lần nộp');
+    }
+
+    // Case 6.6 & 6.7: Kiểm tra định dạng tệp và dung lượng
+    const DISALLOWED_EXTENSIONS = ['.exe', '.bat', '.cmd', '.sh', '.bin', '.msi', '.com'];
+    for (const q of assignment.questions || []) {
+      if (q.question_type === 'FILE_UPLOAD') {
+        const fileVal = answers[q._id];
+        if (fileVal && typeof fileVal === 'string') {
+          const lower = fileVal.trim().toLowerCase();
+          if (DISALLOWED_EXTENSIONS.some((ext) => lower.endsWith(ext) || lower.includes(`${ext}?`))) {
+            setError('Tệp đính kèm không hợp lệ. Hệ thống không cho phép tải lên tệp thực thi (.exe, .bat, ...)');
+            return;
+          }
+        }
+      }
     }
 
     const formattedAnswers = (assignment.questions || []).map((q) => ({
@@ -83,6 +122,16 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
       setError('');
       const res = await submitAssignment(assignment._id, formattedAnswers);
       setResult(res?.data || null);
+
+      // Case 6.2: Xóa draft khỏi localStorage sau khi nộp thành công
+      if (autoSaveKey) {
+        try {
+          localStorage.removeItem(autoSaveKey);
+        } catch {
+          // ignore
+        }
+      }
+
       if (showToast) {
         showToast('Nộp bài tập thành công!');
       }
@@ -427,8 +476,29 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                         />
                         <div style={{ fontSize: '12px', color: '#64748b', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <Info size={13} color="#0284c7" />
-                          <span>Hãy đảm bảo liên kết được đặt ở chế độ công khai (bất kỳ ai có liên kết đều có thể xem) để gia sư chấm điểm.</span>
+                          <span>Hỗ trợ tệp tài liệu, hình ảnh, mã nguồn (tối đa 20MB). Không chấp nhận tệp thực thi (.exe, .bat, ...). Hãy đảm bảo liên kết ở chế độ công khai để gia sư chấm bài.</span>
                         </div>
+                      </div>
+                    )}
+
+                    {/* Case 6.10: Hiển thị đáp án chính thức khi gia sư đã công bố kết quả */}
+                    {assignment.results_published_at && q.correct_answer && (
+                      <div
+                        style={{
+                          marginTop: '12px',
+                          padding: '8px 12px',
+                          background: '#f0fdf4',
+                          border: '1px solid #bbf7d0',
+                          borderRadius: '8px',
+                          fontSize: '13px',
+                          color: '#166534',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                        }}
+                      >
+                        <CheckCircle2 size={15} color="#16a34a" />
+                        <span><strong>Đáp án chuẩn của gia sư:</strong> {q.correct_answer}</span>
                       </div>
                     )}
                   </div>

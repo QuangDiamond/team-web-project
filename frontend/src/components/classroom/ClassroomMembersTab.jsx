@@ -38,11 +38,6 @@ export default function ClassroomMembersTab({
           </h3>
           <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>
             Sĩ số học viên: <strong>{studentCount}</strong> / {capacity} học sinh
-            {parentMembers.length > 0 && (
-              <span style={{ marginLeft: '8px', color: '#0284c7', fontWeight: 500 }}>
-                (kèm {parentMembers.length} phụ huynh theo dõi)
-              </span>
-            )}
           </p>
         </div>
 
@@ -130,7 +125,7 @@ export default function ClassroomMembersTab({
               }}
               onClick={() => setMemberFilter('ALL')}
             >
-              Tất cả ({members.length})
+              Tất cả
             </button>
             <button
               type="button"
@@ -148,7 +143,7 @@ export default function ClassroomMembersTab({
             >
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 <GraduationCap size={13} />
-                <span>Học sinh ({studentMembers.length})</span>
+                <span>Học sinh</span>
               </span>
             </button>
             <button
@@ -167,7 +162,7 @@ export default function ClassroomMembersTab({
             >
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 <Users size={13} />
-                <span>Phụ huynh ({parentMembers.length})</span>
+                <span>Phụ huynh</span>
               </span>
             </button>
           </div>
