@@ -70,6 +70,7 @@ const MESSAGES = {
   'You have already invited this tutor to this request': 'Bạn đã mời gia sư này vào yêu cầu này.',
   'Application not found': 'Không tìm thấy đơn ứng tuyển.',
   'Invitation not found': 'Không tìm thấy lời mời.',
+  'This invitation is no longer available': 'Lời mời này không còn khả dụng.',
   'Conversation not found': 'Không tìm thấy cuộc trò chuyện.',
   'Only parent and tutor accounts can use chat': 'Chỉ phụ huynh và gia sư được sử dụng trò chuyện.',
   'This conversation is closed': 'Cuộc trò chuyện này đã đóng.',

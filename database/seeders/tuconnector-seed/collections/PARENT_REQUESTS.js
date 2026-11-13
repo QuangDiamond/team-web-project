@@ -27,4 +27,13 @@ module.exports = [
     student_id: null, // liên kết với học sinh Chi đang chờ chấp nhận nên chưa gán
     tutor_requirements: 'Gia sư nam hoặc nữ đều được, có kinh nghiệm dạy lớp 11',
   },
+  {
+    // Bị gia sư Huy báo cáo (report_2) nên đang tạm ẩn chờ Admin kiểm duyệt
+    _id: ids.req_hoa10, parent_user_id: ids.user_parent_tuan, title: 'Tìm gia sư Hóa lớp 10 – liên hệ Zalo',
+    subject_name: 'Hóa học', grade_level: 'Lớp 10', teaching_mode: 'ONLINE', budget: money(200000),
+    schedule: 'Tối thứ 2, thứ 4', description: 'Cần ôn lại kiến thức nền. Liên hệ trực tiếp Zalo 0902 000 002 để trao đổi nhanh.',
+    location_address: 'Thanh Xuân, Hà Nội', image_urls: [], status: 'PENDING_MODERATION',
+    created_at: d('2026-11-09T19:00:00+07:00'), updated_at: d('2026-11-10T21:00:00+07:00'),
+    student_id: null, tutor_requirements: null,
+  },
 ];

@@ -133,6 +133,91 @@ export const getPublicHomeStats = async () => {
   };
 };
 
+const isWithinPeriod = (value, periodStart, periodEnd) => {
+  if (!value) {
+    return false;
+  }
+  const timestamp = new Date(value).getTime();
+  return timestamp >= periodStart.getTime() && timestamp <= periodEnd.getTime();
+};
+
+/**
+ * Tính các KPI phát sinh trong kỳ đã chọn (UC40 Normal Flow bước 2-3, SDS 9.4 StatsRepository).
+ * Khác với `kpis` (số tích lũy), các số ở đây chỉ đếm dữ liệu tạo ra trong khoảng [periodStart, periodEnd].
+ * Kỳ không có dữ liệu thì trả về 0 (E1).
+ * @param {Date} periodStart - đầu kỳ
+ * @param {Date} periodEnd - cuối kỳ (thời điểm gọi API)
+ * @param {Object[]} usersList - User (lean) gồm created_at, role
+ * @param {Object[]} paymentOrders - PaymentOrder SUCCESS (lean) gồm amount, item_type, paid_at
+ * @returns {Promise<Object>} newUsers, newUsersByRole, newRequests, applications, invitations,
+ *   conversationsOpened, confirmedAgreements, revenue, planUpgradeRevenue, creditPackRevenue
+ */
+export const getPeriodKpis = async (periodStart, periodEnd, usersList, paymentOrders) => {
+  const createdInPeriod = { created_at: { $gte: periodStart, $lte: periodEnd } };
+
+  const [newRequests, applications, invitations, conversationsOpened, confirmedAgreements] = await Promise.all([
+    ParentRequest.countDocuments(createdInPeriod),
+    ApplyRequest.countDocuments(createdInPeriod),
+    TutorInvitation.countDocuments(createdInPeriod),
+    Conversation.countDocuments({ ...createdInPeriod, type: ENUMS.ConversationsType.DIRECT }),
+    // SDS 9.4: thỏa thuận được xác nhận trong kỳ tính theo updated_at
+    TutoringAgreement.countDocuments({
+      status: ENUMS.TutoringAgreementsStatus.CONFIRMED,
+      updated_at: { $gte: periodStart, $lte: periodEnd },
+    }),
+  ]);
+
+  const newUsersByRole = {
+    [ENUMS.UserRole.PARENT]: 0,
+    [ENUMS.UserRole.TUTOR]: 0,
+    [ENUMS.UserRole.STUDENT]: 0,
+    [ENUMS.UserRole.ADMIN]: 0,
+  };
+  let newUsers = 0;
+  for (const user of usersList) {
+    if (isWithinPeriod(user.created_at, periodStart, periodEnd)) {
+      newUsers += 1;
+      if (newUsersByRole[user.role] !== undefined) {
+        newUsersByRole[user.role] += 1;
+      }
+    }
+  }
+
+  let revenue = 0;
+  let planUpgradeRevenue = 0;
+  let creditPackRevenue = 0;
+  for (const order of paymentOrders) {
+    if (!isWithinPeriod(order.paid_at, periodStart, periodEnd)) {
+      continue;
+    }
+    let amount = 0;
+    if (order.amount != null) {
+      amount = Number(order.amount.toString());
+    }
+    revenue += amount;
+    if (order.item_type === ENUMS.PaymentOrdersItemType.PLAN_UPGRADE) {
+      planUpgradeRevenue += amount;
+    } else if (order.item_type === ENUMS.PaymentOrdersItemType.CREDIT_PACK) {
+      creditPackRevenue += amount;
+    }
+  }
+
+  return {
+    from: periodStart.toISOString(),
+    to: periodEnd.toISOString(),
+    newUsers,
+    newUsersByRole,
+    newRequests,
+    applications,
+    invitations,
+    conversationsOpened,
+    confirmedAgreements,
+    revenue,
+    planUpgradeRevenue,
+    creditPackRevenue,
+  };
+};
+
 /**
  * Lấy số liệu thống kê toàn hệ thống cho Admin Dashboard (UC40/UC42)
  * @param {Object} adminUser - req.user { id, role }
@@ -256,8 +341,11 @@ export const getDashboardStats = async (adminUser, period = '30d') => {
       ? Number(((confirmedConnections / totalRequests) * 100).toFixed(1))
       : 0;
 
+  const periodKpis = await getPeriodKpis(new Date(windowStart), new Date(windowEnd), usersList, paymentOrders);
+
   return {
     period,
+    periodKpis,
     kpis: {
       totalUsers,
       activeTutors,

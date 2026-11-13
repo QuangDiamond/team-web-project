@@ -2,11 +2,17 @@ import { Link } from 'react-router-dom';
 import { BookOpen, CalendarDays, GraduationCap, Monitor } from 'lucide-react';
 import SectionCard from '../common/SectionCard';
 import Pagination from '../common/Pagination';
+import ReportContentButton from '../common/ReportContentButton';
 import { formatVnd } from '../../utils/formatCurrency';
 import { getModeLabel } from '../../constants/requestLabels';
 
-export default function ProfilePosts({ list, role, onPageChange, onApply, appliedIds }) {
+// canReport: người xem được báo cáo nội dung (phụ huynh xem bài đăng gia sư, gia sư xem yêu cầu của phụ huynh)
+export default function ProfilePosts({ list, role, onPageChange, onApply, appliedIds, canReport = false, onReported }) {
   const isTutor = role === 'TUTOR';
+  let reportTargetType = 'REQUEST';
+  if (isTutor) {
+    reportTargetType = 'POST';
+  }
   return (
     <SectionCard title={isTutor ? "Bài đăng và lịch dạy" : "Yêu cầu tìm gia sư đang mở"}>
       {list.items.length === 0 && <p className="item-meta">{isTutor ? "Chưa có bài đăng đã xuất bản." : "Hiện chưa có yêu cầu đang mở."}</p>}
@@ -24,6 +30,11 @@ export default function ProfilePosts({ list, role, onPageChange, onApply, applie
             </ul>
             <p className="public-profile-text">{item.description}</p>
             {item.schedule && <p className="public-profile-post-schedule"><CalendarDays size={16} aria-hidden="true" /><span>Lịch học: {item.schedule}</span></p>}
+            {isTutor && canReport && (
+              <div className="public-profile-report-row">
+                <ReportContentButton targetType={reportTargetType} targetId={item._id} targetTitle={item.title} onReported={onReported} />
+              </div>
+            )}
             {!isTutor && (
               <div className="public-profile-request-actions">
                 <Link to={`/tutor/requests/${item._id}`} className="btn btn-outline btn-sm">Xem yêu cầu</Link>
@@ -31,6 +42,7 @@ export default function ProfilePosts({ list, role, onPageChange, onApply, applie
                   disabled={appliedIds.includes(item._id)} onClick={() => onApply(item)}>
                   {appliedIds.includes(item._id) ? "Đã ứng tuyển" : "Ứng tuyển"}
                 </button>}
+                {canReport && <ReportContentButton targetType={reportTargetType} targetId={item._id} targetTitle={item.title} onReported={onReported} />}
               </div>
             )}
           </li>
