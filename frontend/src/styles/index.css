@@ -1886,6 +1886,33 @@ body {
   border-left-color: #0284c7;
 }
 
+/* NotificationBell: mỗi thông báo là một <button> nên cần bỏ style mặc định của button */
+button.nav-popover-item {
+  background: transparent;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 1px solid #f8fafc;
+  font: inherit;
+  text-align: left;
+}
+
+button.nav-popover-item:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+button.nav-popover-item .nav-popover-desc {
+  display: block;
+}
+
+/* Chuông trong header dashboard dùng style dashboard-icon-button, cần relative để đặt badge */
+.nav-dropdown-wrap .dashboard-icon-button {
+  position: relative;
+}
+
+.nav-dropdown-wrap .dashboard-icon-button.active {
+  color: var(--primary);
+}
 
 .nav-popover-icon {
   width: 36px;
