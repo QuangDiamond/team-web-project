@@ -3,6 +3,14 @@ import { AppError } from '../common/utils/AppError.js';
 import { buildPagination } from '../common/utils/pagination.js';
 import { ClassSession } from '../models/ClassSession.js';
 import { getOwnedActiveClassroom } from './topic.service.js';
+import { notifyParentsOfClassStudents } from './notification.service.js';
+import { ENUMS } from '../models/enums.js';
+
+const SESSION_NOTIFICATION_TITLES = {
+  CREATED: 'Lịch học mới',
+  UPDATED: 'Lịch học thay đổi',
+  CANCELLED: 'Buổi học bị hủy',
+};
 
 /**
  * Find a class session that belongs to the classroom
@@ -40,6 +48,44 @@ const toClassSessionDto = (classSession) => ({
   created_at: classSession.created_at,
   updated_at: classSession.updated_at,
 });
+
+/**
+ * Định dạng thời gian buổi học theo giờ Việt Nam để hiển thị trong thông báo
+ * @param {Date} value
+ * @returns {string}
+ */
+const formatSessionTime = (value) => {
+  return new Date(value).toLocaleString('vi-VN', {
+    timeZone: 'Asia/Ho_Chi_Minh',
+    hour: '2-digit',
+    minute: '2-digit',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+};
+
+/**
+ * Báo cho phụ huynh của học sinh trong lớp khi gia sư tạo / đổi / hủy buổi học
+ * @param {Object} classroom - Classroom document
+ * @param {Object} classSession - ClassSession document
+ * @param {'CREATED'|'UPDATED'|'CANCELLED'} action
+ * @returns {Promise<void>}
+ */
+const notifyParentsAboutSession = async (classroom, classSession, action) => {
+  const sessionTime = formatSessionTime(classSession.start_time);
+  await notifyParentsOfClassStudents({
+    classId: classroom._id,
+    category: ENUMS.NotificationsCategory.SESSION,
+    targetType: ENUMS.NotificationsTargetType.CLASSROOM,
+    targetId: classroom._id,
+    preferenceKey: 'notify_on_sessions',
+    buildContent: (childNames) => ({
+      title: `${SESSION_NOTIFICATION_TITLES[action]}: ${classSession.title}`,
+      body: `Lớp "${classroom.name}" của ${childNames.join(', ')} – buổi học lúc ${sessionTime}.`,
+    }),
+  });
+};
 
 /**
  * Ensure a newly scheduled session starts in the future
@@ -112,6 +158,7 @@ export const createClassSession = async (user, classId, data) => {
     status: data.status,
   });
 
+  await notifyParentsAboutSession(classroom, classSession, 'CREATED');
   return toClassSessionDto(classSession);
 };
 
@@ -144,6 +191,12 @@ export const updateClassSession = async (user, classId, sessionId, data) => {
   if (!updatedSession) {
     throw new AppError('Class session changed before update; reload and try again', 409);
   }
+
+  let sessionAction = 'UPDATED';
+  if (updatedSession.status === ENUMS.ClassSessionsStatus.CANCELLED) {
+    sessionAction = 'CANCELLED';
+  }
+  await notifyParentsAboutSession(classroom, updatedSession, sessionAction);
   return toClassSessionDto(updatedSession);
 };
 
@@ -171,5 +224,6 @@ export const deleteClassSession = async (user, classId, sessionId) => {
     throw new AppError('Class session changed before deletion; reload and try again', 409);
   }
 
+  await notifyParentsAboutSession(classroom, deletedSession, 'CANCELLED');
   return { _id: String(deletedSession._id) };
 };
