@@ -34,8 +34,10 @@ import RoleRoute from './RoleRoute';
 import StudentDashboard from '../pages/student/StudentDashboard';
 import StudentAssignmentsPage from '../pages/student/StudentAssignmentsPage';
 import StudentSchedulePage from '../pages/student/StudentSchedulePage';
+import ParentLinks from '../pages/student/ParentLinks';
 import AiTutorSuggestions from '../pages/parent/AiTutorSuggestions';
 import ParentDashboard from '../pages/parent/ParentDashboard';
+import ChildProgress from '../pages/parent/ChildProgress';
 import ChatPage from '../pages/chat/ChatPage';
 import TutorProfile from '../pages/tutor/TutorProfile';
 import TutorPosts from '../pages/tutor/TutorPosts';
@@ -143,6 +145,7 @@ export const router = createBrowserRouter([
           { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
           { path: 'schedule', element: <StudentSchedulePage />, handle: { title: "Lịch học của tôi" } },
           { path: 'assignments', element: <StudentAssignmentsPage />, handle: { title: "Tất cả bài tập" } },
+          { path: 'parent-links', element: <ParentLinks />, handle: { title: "Liên kết phụ huynh" } },
           { path: 'change-password', element: <ChangePassword />, handle: { title: "Bảo mật tài khoản" } },
           { path: 'notifications', element: <Notifications />, handle: { title: "Thông báo" } },
         ],
@@ -181,6 +184,9 @@ export const router = createBrowserRouter([
           { path: 'suggestions', element: <AiTutorSuggestions />, handle: { title: 'Gợi ý' } },
           { path: 'ai-suggestions', element: <SuggestionsRedirect /> },
           { path: 'invitations', element: <Invitations />, handle: { title: "Lời mời" } },
+          // UC35 – phụ huynh theo dõi tiến độ của con; childId trên URL chọn sẵn người con
+          { path: 'children', element: <ChildProgress />, handle: { title: 'Con và tiến độ học tập' } },
+          { path: 'children/:childId', element: <ChildProgress />, handle: { title: 'Con và tiến độ học tập' } },
           { path: 'messages', element: <ChatPage basePath="/parent/messages" />, handle: { title: "Tin nhắn" } },
           { path: 'messages/:conversationId', element: <ChatPage basePath="/parent/messages" />, handle: { title: "Tin nhắn" } },
           { path: 'contracts', element: <MyConnections />, handle: { title: "Thỏa thuận và kết nối" } },
