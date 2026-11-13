@@ -1,7 +1,7 @@
 import crypto from 'crypto';
+import { Buffer } from 'node:buffer';
 import fs from 'fs/promises';
 import path from 'path';
-import { Buffer } from 'node:buffer';
 import { fileURLToPath } from 'url';
 import { Classroom } from '../models/Classroom.js';
 import { Conversation } from '../models/Conversation.js';
@@ -23,6 +23,7 @@ import { generateAssignmentWithGemini } from './geminiClient.service.js';
 import { AppError } from '../common/utils/AppError.js';
 import { ENUMS } from '../models/enums.js';
 import { env } from '../config/environment.js';
+import { notifyParentsOfClassStudents } from './notification.service.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -979,6 +980,29 @@ export const createClassAnnouncement = async ({ classroomId, tutorProfile, data 
   } catch (notifErr) {
     console.warn('[UC22] Không thể tạo Notification tự động:', notifErr.message);
   }
+
+  // Báo cho phụ huynh của học sinh trong lớp (phụ huynh đã là thành viên lớp thì đã nhận ở trên)
+  const announcementMembers = await ClassMember.find({
+    class_id: classroom._id,
+    status: ENUMS.ClassMembersStatus.ACTIVE,
+  }).select('user_id').lean();
+  const trimmedContent = content.trim();
+  let announcementPreview = trimmedContent;
+  if (trimmedContent.length > 100) {
+    announcementPreview = `${trimmedContent.substring(0, 100)}...`;
+  }
+  await notifyParentsOfClassStudents({
+    classId: classroom._id,
+    category: ENUMS.NotificationsCategory.SYSTEM,
+    targetType: ENUMS.NotificationsTargetType.CLASSROOM,
+    targetId: classroom._id,
+    preferenceKey: null,
+    excludeUserIds: announcementMembers.map((member) => member.user_id),
+    buildContent: (childNames) => ({
+      title: `Lớp "${classroom.name}" của ${childNames.join(', ')} có thông báo mới`,
+      body: announcementPreview,
+    }),
+  });
 
   return announcement;
 };
@@ -2175,6 +2199,30 @@ export const createAssignment = async ({ classroomId, tutorProfile, data }) => {
       if (notifs.length > 0) {
         await Notification.insertMany(notifs);
       }
+
+      // Báo cho phụ huynh của học sinh trong lớp (phụ huynh đã là thành viên lớp thì đã nhận ở trên)
+      let dueDateText = 'Không giới hạn';
+      if (assignment.due_date) {
+        dueDateText = new Date(assignment.due_date).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+      }
+      const memberUserIds = [];
+      for (const member of members) {
+        if (member.user_id) {
+          memberUserIds.push(member.user_id._id || member.user_id);
+        }
+      }
+      await notifyParentsOfClassStudents({
+        classId: classroom._id,
+        category: ENUMS.NotificationsCategory.ASSIGNMENT,
+        targetType: ENUMS.NotificationsTargetType.ASSIGNMENT,
+        targetId: assignment._id,
+        preferenceKey: 'notify_on_assignments',
+        excludeUserIds: memberUserIds,
+        buildContent: (childNames) => ({
+          title: `Bài tập mới cho ${childNames.join(', ')}: ${assignment.title}`,
+          body: `Gia sư vừa giao bài tập trong lớp "${classroom.name}". Hạn nộp: ${dueDateText}.`,
+        }),
+      });
     } catch (err) {
       console.warn('[UC26] Lỗi thông báo bài tập mới:', err.message);
     }

@@ -47,6 +47,8 @@ function ProfileContent({ id, role }) {
   const isTutor = role === 'TUTOR';
   const canInvite = user?.role === 'PARENT' && isTutor;
   const canApply = user?.role === 'TUTOR' && !isTutor;
+  // UC38: phụ huynh báo cáo bài đăng gia sư, gia sư báo cáo yêu cầu của phụ huynh
+  const canReport = canInvite || canApply;
 
   return (
     <div className="public-profile-page">
@@ -70,11 +72,13 @@ function ProfileContent({ id, role }) {
             <ProfileSections activeSection={activeSection} onSectionChange={changeSection} reviewCount={data.reviews.pagination.total}>
               {activeSection === 'about' && <ProfileBackground profile={profile} />}
               {activeSection === 'reviews' && <ProfileReviews list={data.reviews} averageRating={profile.average_rating} onPageChange={setPage} />}
-              {activeSection === 'posts' && <ProfilePosts list={data.posts} role={role} onPageChange={setPage} appliedIds={appliedIds} />}
+              {activeSection === 'posts' && <ProfilePosts list={data.posts} role={role} onPageChange={setPage} appliedIds={appliedIds}
+                canReport={canReport} onReported={setNotice} />}
             </ProfileSections>
           ) : (
             <ProfilePosts list={data.requests} role={role} onPageChange={setPage}
-              onApply={canApply ? setApplying : null} appliedIds={appliedIds} />
+              onApply={canApply ? setApplying : null} appliedIds={appliedIds}
+              canReport={canReport} onReported={setNotice} />
           )}
         </div>
       </div>

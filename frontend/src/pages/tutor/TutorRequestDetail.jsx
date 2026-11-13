@@ -5,6 +5,7 @@ import { getTutorRequest, saveRequest, unsaveRequest } from '../../services/tuto
 import Alert from '../../components/common/Alert';
 import SectionCard from '../../components/common/SectionCard';
 import ApplyModal from '../../components/tutor/ApplyModal';
+import ReportContentButton from '../../components/common/ReportContentButton';
 import { formatBudget, getModeLabel } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 import '../../styles/tutorRequests.css';
@@ -130,6 +131,12 @@ export default function TutorRequestDetail() {
               <SaveIcon size={16} aria-hidden="true" />
               <span>{request.is_bookmarked ? "Đã lưu" : "Lưu yêu cầu"}</span>
             </button>
+            <ReportContentButton
+              targetType="REQUEST"
+              targetId={request._id}
+              targetTitle={request.title}
+              onReported={setNotice}
+            />
           </div>
         </SectionCard>
       </div>
