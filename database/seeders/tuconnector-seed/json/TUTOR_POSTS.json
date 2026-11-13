@@ -87,5 +87,34 @@
         "$numberLong": "1792288800000"
       }
     }
+  },
+  {
+    "_id": {
+      "$oid": "a51ae92ddc72787bd6db5afd"
+    },
+    "profile_id": {
+      "$oid": "3ebe8b43a871d39bbbde35ba"
+    },
+    "title": "Cam kết IELTS 8.0 sau 1 tháng – học phí siêu rẻ",
+    "subject_name": "Tiếng Anh",
+    "grade_level": "Lớp 10–12",
+    "teaching_mode": "ONLINE",
+    "price": {
+      "$numberDecimal": "100000"
+    },
+    "schedule": "Linh hoạt",
+    "description": "Đảm bảo 8.0 chỉ sau 4 tuần, không đạt hoàn 200% học phí.",
+    "image_urls": [],
+    "status": "PENDING_MODERATION",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794106800000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794364200000"
+      }
+    }
   }
 ]

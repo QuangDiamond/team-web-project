@@ -100,5 +100,37 @@
     },
     "student_id": null,
     "tutor_requirements": "Gia sư nam hoặc nữ đều được, có kinh nghiệm dạy lớp 11"
+  },
+  {
+    "_id": {
+      "$oid": "1a978726409c24eacc21cd33"
+    },
+    "parent_user_id": {
+      "$oid": "2b083b58a3f55796d955cfbd"
+    },
+    "title": "Tìm gia sư Hóa lớp 10 – liên hệ Zalo",
+    "subject_name": "Hóa học",
+    "grade_level": "Lớp 10",
+    "teaching_mode": "ONLINE",
+    "budget": {
+      "$numberDecimal": "200000"
+    },
+    "schedule": "Tối thứ 2, thứ 4",
+    "description": "Cần ôn lại kiến thức nền. Liên hệ trực tiếp Zalo 0902 000 002 để trao đổi nhanh.",
+    "location_address": "Thanh Xuân, Hà Nội",
+    "image_urls": [],
+    "status": "PENDING_MODERATION",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794225600000"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794319200000"
+      }
+    },
+    "student_id": null,
+    "tutor_requirements": null
   }
 ]
