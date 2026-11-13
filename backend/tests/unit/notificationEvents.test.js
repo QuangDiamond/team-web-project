@@ -112,3 +112,15 @@ test('getNotifications: thông báo tin nhắn 1-1 trỏ thẳng tới hội tho
   assert.equal(result.notifications[1].deepLink, '/tutor/contracts');
 });
 
+test('UC38 reportSchema: chỉ nhận POST/REQUEST, ObjectId hợp lệ và lý do 5-500 ký tự', async () => {
+  const { reportSchema } = await import('../../src/common/validator/reportSchema.js');
+  const valid = reportSchema.safeParse({ target_type: 'POST', target_id: newId(), reason: '  Spam hoặc trùng lặp  ' });
+  assert.equal(valid.success, true);
+  assert.equal(valid.data.reason, 'Spam hoặc trùng lặp');
+
+  assert.equal(reportSchema.safeParse({ target_type: 'MESSAGE', target_id: newId(), reason: 'Ngôn từ xấu' }).success, false);
+  assert.equal(reportSchema.safeParse({ target_type: 'REQUEST', target_id: 'abc', reason: 'Ngôn từ xấu' }).success, false);
+  assert.equal(reportSchema.safeParse({ target_type: 'REQUEST', target_id: newId(), reason: 'abc' }).success, false);
+  assert.equal(reportSchema.safeParse({ target_type: 'REQUEST', target_id: newId(), reason: 'x'.repeat(501) }).success, false);
+  assert.equal(reportSchema.safeParse({ target_type: 'REQUEST', target_id: newId(), reason: 'Ngôn từ xấu', status: 'RESOLVED' }).success, false);
+});

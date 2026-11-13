@@ -2213,3 +2213,42 @@ button.nav-popover-item .nav-popover-desc {
   .agreement-proposal-actions .btn { flex: 1 1 180px; }
 }
 
+/* ReportContentButton (UC38): nút báo cáo bài đăng / yêu cầu và hộp thoại chọn lý do */
+.report-content-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-muted);
+}
+
+.report-content-button:hover:not(:disabled) {
+  color: var(--color-error);
+}
+
+.report-content-form {
+  display: grid;
+  gap: 12px;
+}
+
+.report-content-target {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.report-content-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.report-content-submit {
+  background: var(--color-error);
+  color: var(--color-white);
+}
+
+.report-content-submit:hover:not(:disabled) {
+  background: #a51f1f;
+}
