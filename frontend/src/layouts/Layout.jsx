@@ -1,11 +1,30 @@
 import { useState, useEffect } from 'react';
-import { LayoutDashboard, LogIn, LogOut, UserRound, UserRoundPlus } from 'lucide-react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  LogIn,
+  LogOut,
+  UserRound,
+  UserRoundPlus
+} from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { getHomePathByRole } from '../utils/getHomePathByRole';
-import { getUnreadCount } from '../services/notificationService';
 import { getMyProfile } from '../services/tutorProfileService';
+import { getInitials } from '../utils/getInitials';
 import { getRoleLabel } from '../constants/dashboardNav';
+import FloatingChatWidget from '../components/chat/FloatingChatWidget';
+import NotificationBell from '../components/common/NotificationBell';
+
+const AVATAR_PALETTE = ['#0284C7', '#6366F1', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#0D9488'];
+
+const getAvatarBg = (name) => {
+  if (!name) return AVATAR_PALETTE[0];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_PALETTE[Math.abs(hash) % AVATAR_PALETTE.length];
+};
 
 export default function Layout() {
   const { user, logout } = useAuth();
@@ -14,6 +33,7 @@ export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [ownProfile, setOwnProfile] = useState(null);
+
   const userId = user?.id || user?._id;
   const activeSection = location.pathname === '/' ? location.hash : null;
 
@@ -35,6 +55,7 @@ export default function Layout() {
     return () => cancelAnimationFrame(frame);
   }, [location.pathname, location.hash, location.key]);
 
+  // Fetch tutor profile if tutor
   useEffect(() => {
     if (user?.role !== 'TUTOR' || !userId) return;
     let ignore = false;
@@ -62,24 +83,12 @@ export default function Layout() {
 
   let dashboardPath = '/login';
   let notificationsPath = '/login';
+  let messagesPath = '/login';
   if (user && user.role) {
     dashboardPath = getHomePathByRole(user.role);
     notificationsPath = `/${user.role.toLowerCase()}/notifications`;
+    messagesPath = `/${user.role.toLowerCase()}/messages`;
   }
-
-  useEffect(() => {
-    if (!user) {
-      setUnreadCount(0);
-      return;
-    }
-    getUnreadCount()
-      .then((res) => {
-        if (res && res.data && typeof res.data.unreadCount === 'number') {
-          setUnreadCount(res.data.unreadCount);
-        }
-      })
-      .catch(() => {});
-  }, [user, location.pathname]);
 
   const handleLogout = async () => {
     await logout();
@@ -106,27 +115,21 @@ export default function Layout() {
             <Link
               to="/#features"
               className={`nav-link ${activeSection === '#features' ? 'active' : ''}`}
-              aria-current={
-                activeSection === '#features' ? 'location' : undefined
-              }
+              aria-current={activeSection === '#features' ? 'location' : undefined}
             >
               Tính năng
             </Link>
             <Link
               to="/#featured-tutors"
               className={`nav-link ${activeSection === '#featured-tutors' ? 'active' : ''}`}
-              aria-current={
-                activeSection === '#featured-tutors' ? 'location' : undefined
-              }
+              aria-current={activeSection === '#featured-tutors' ? 'location' : undefined}
             >
               Gia sư tiêu biểu
             </Link>
             <Link
               to="/#how-it-works"
               className={`nav-link ${activeSection === '#how-it-works' ? 'active' : ''}`}
-              aria-current={
-                activeSection === '#how-it-works' ? 'location' : undefined
-              }
+              aria-current={activeSection === '#how-it-works' ? 'location' : undefined}
             >
               Cách hoạt động
             </Link>
@@ -144,30 +147,12 @@ export default function Layout() {
           <div className="nav-actions">
             {user ? (
               <>
-                <Link
-                  to={notificationsPath}
-                  className="nav-noti-btn"
-                  title="Thông báo hệ thống"
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                  </svg>
-                  {unreadCount > 0 && (
-                    <span className="nav-noti-badge">
-                      {unreadCount > 9 ? '9+' : unreadCount}
-                    </span>
-                  )}
-                </Link>
+                <NotificationBell
+                  notificationsPath={notificationsPath}
+                  buttonClassName="nav-noti-btn"
+                  onUnreadCountChange={setUnreadCount}
+                />
+
                 <Link to={dashboardPath} className="btn btn-primary nav-round-action" aria-label="Bảng điều khiển" title="Bảng điều khiển">
                   <LayoutDashboard size={19} aria-hidden="true" />
                 </Link>
@@ -301,11 +286,18 @@ export default function Layout() {
                     Vào bảng điều khiển ({getRoleLabel(user.role)})
                   </Link>
                   <Link
+                    to={messagesPath}
+                    className="btn btn-outline"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Tin nhắn
+                  </Link>
+                  <Link
                     to={notificationsPath}
                     className="btn btn-outline"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Thông báo ({unreadCount})
+                    Thông báo {unreadCount > 0 ? `(${unreadCount})` : ''}
                   </Link>
                   <button
                     type="button"
@@ -349,20 +341,20 @@ export default function Layout() {
       <footer className="site-footer">
         <div className="footer-container">
           <div className="footer-grid">
-            <div className="footer-brand">
-              <Link to="/" className="nav-brand">
+            <Link to="/" className="footer-brand">
+              <div className="footer-logo">
                 <div className="brand-icon">Tu</div>
                 <span>TuConnector</span>
-              </Link>
+              </div>
               <p>
                 Nền tảng kết nối gia sư và phụ huynh thông minh hàng đầu Việt
                 Nam. Ứng dụng AI ghép đôi chính xác và quản lý lịch dạy hiệu
                 quả.
               </p>
-            </div>
+            </Link>
 
-            <div className="footer-col">
-              <h4>Khám phá</h4>
+            <div className="footer-column">
+              <h4>Dành cho phụ huynh</h4>
               <ul>
                 <li>
                   <Link to="/">Trang chủ</Link>
@@ -379,8 +371,8 @@ export default function Layout() {
               </ul>
             </div>
 
-            <div className="footer-col">
-              <h4>Dành cho người dùng</h4>
+            <div className="footer-column">
+              <h4>Dành cho gia sư</h4>
               <ul>
                 <li>
                   <Link to={user ? dashboardPath : '/login'}>
@@ -396,8 +388,8 @@ export default function Layout() {
               </ul>
             </div>
 
-            <div className="footer-col">
-              <h4>Hỗ trợ</h4>
+            <div className="footer-column">
+              <h4>Hỗ trợ &amp; Quy định</h4>
               <ul>
                 <li>
                   <a href="/#how-it-works">Hướng dẫn sử dụng</a>
@@ -421,6 +413,9 @@ export default function Layout() {
           </div>
         </div>
       </footer>
+
+      {/* Draggable Floating Messenger Chat Widget */}
+      <FloatingChatWidget />
     </div>
   );
 }

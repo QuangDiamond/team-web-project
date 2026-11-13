@@ -18,7 +18,8 @@ test('navbar highlights only the selected section and links to the parent public
         if (active.length) assert.equal(active[0][1], path);
       }
       const page = render('/');
-      assert.match(page, /href="\\/parents\\/parent1"[^>]*>Test parent<\\/a>/);
+      assert.match(page, /href="\\/parents\\/parent1"/);
+      assert.match(page, /title="Test parent"/);
       globalThis.__navbarUser = { _id: 'tutor1', role: 'TUTOR', full_name: 'Test tutor' };
       const tutor = render('/');
       assert.match(tutor, /href="\\/tutor\\/profile"/);
@@ -33,6 +34,7 @@ test('navbar highlights only the selected section and links to the parent public
       build.onLoad({ filter: /.*/, namespace: 'navbar-mock' }, () => ({ contents: `
         export const useAuth = () => ({ user: globalThis.__navbarUser || { id: 'parent1', role: 'PARENT', full_name: 'Test parent' }, logout: async () => {} });
         export const getUnreadCount = async () => ({ data: { unreadCount: 0 } });
+        export const notificationService = { getNotifications: async () => ({ data: { items: [] } }), markAsRead: async () => {}, markAllAsRead: async () => {} };
         export const getMyProfile = async () => ({ data: { profile: null } });
       ` }));
     } }],
