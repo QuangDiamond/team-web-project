@@ -5,9 +5,10 @@ module.exports = [
   {
     _id: ids.conv_ha_minh, parent_user_id: ids.user_parent_ha, tutor_profile_id: ids.tp_minh, is_active: true,
     created_at: d('2026-10-06T20:00:00+07:00'), request_id: ids.req_toan9, class_id: null, type: 'DIRECT',
-    updated_at: d('2026-10-06T20:40:00+07:00'),
+    updated_at: d('2026-11-10T20:15:00+07:00'),
     read_states: [
-      { user_id: ids.user_parent_ha, last_read_message_id: ids.msg_3, read_at: d('2026-10-06T20:45:00+07:00') },
+      // msg_7 do phụ huynh Hà gửi; gia sư Minh chưa đọc
+      { user_id: ids.user_parent_ha, last_read_message_id: ids.msg_7, read_at: d('2026-11-10T20:15:00+07:00') },
       { user_id: ids.user_tutor_minh, last_read_message_id: ids.msg_3, read_at: d('2026-10-06T20:40:00+07:00') },
     ],
   },

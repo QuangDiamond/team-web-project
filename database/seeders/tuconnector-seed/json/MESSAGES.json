@@ -121,5 +121,24 @@
         "$numberLong": "1792069200000"
       }
     }
+  },
+  {
+    "message_type": "TEXT",
+    "attachments": [],
+    "_id": {
+      "$oid": "967bfd6207e02be514e95648"
+    },
+    "conversation_id": {
+      "$oid": "ae07b88f00137f2919b65c5a"
+    },
+    "sender_user_id": {
+      "$oid": "2c15f53000dfedc3e5f327a9"
+    },
+    "content": "Thầy ơi, tối thứ 5 tuần này con có lịch kiểm tra, thầy cho con học bù tối thứ 6 được không ạ?",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794316500000"
+      }
+    }
   }
 ]
