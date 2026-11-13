@@ -6,6 +6,7 @@ import {
   Send
 } from 'lucide-react';
 import Alert from '../common/Alert';
+import ChatAgreementButton from './ChatAgreementButton';
 import { formatDate, formatTime } from '../../utils/dateFormat';
 import { getInitials } from '../../utils/getInitials';
 
@@ -58,6 +59,7 @@ function Bubble({ message, otherName }) {
 export default function MessageThread({ thread, basePath }) {
   const [draft, setDraft] = useState('');
   const [sendError, setSendError] = useState('');
+  const [agreementNotice, setAgreementNotice] = useState('');
   const scrollRef = useRef(null);
   const stickToBottom = useRef(true);
 
@@ -94,6 +96,13 @@ export default function MessageThread({ thread, basePath }) {
     } catch (error) {
       setSendError(error.message);
     }
+  };
+
+  // UC16: thông báo gửi đề xuất thỏa thuận thành công, tự ẩn sau 4 giây
+  const showAgreementNotice = (message) => {
+    setSendError('');
+    setAgreementNotice(message);
+    setTimeout(() => setAgreementNotice(''), 4000);
   };
 
   const handleSubmit = (event) => {
@@ -183,6 +192,13 @@ export default function MessageThread({ thread, basePath }) {
 
             {/* Quick Context Action: Thỏa thuận */}
             <div className="chat-header-actions">
+              {!isClosed && (
+                <ChatAgreementButton
+                  conversationId={conversation._id}
+                  onProposed={showAgreementNotice}
+                  onError={setSendError}
+                />
+              )}
               <Link
                 to={basePath.startsWith('/parent') ? '/parent/connections' : '/tutor/connections'}
                 className="btn-chat-agreement"
@@ -238,6 +254,11 @@ export default function MessageThread({ thread, basePath }) {
       {sendError && (
         <div className="chat-send-error">
           <Alert type="error">{sendError}</Alert>
+        </div>
+      )}
+      {agreementNotice && (
+        <div className="chat-send-error">
+          <Alert type="success">{agreementNotice}</Alert>
         </div>
       )}
 

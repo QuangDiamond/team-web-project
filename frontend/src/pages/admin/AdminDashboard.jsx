@@ -6,6 +6,7 @@ import StatsOverview from '../../components/adminStats/StatsOverview';
 import StatsCharts from '../../components/adminStats/StatsCharts';
 import StatsDetails from '../../components/adminStats/StatsDetails';
 import StatsExportDialog from '../../components/adminStats/StatsExportDialog';
+import StatsPeriodSummary from '../../components/adminStats/StatsPeriodSummary';
 import useAdminStats from '../../hooks/useAdminStats';
 import { statsService } from '../../services/statsService';
 import '../../styles/AdminDashboard.css';
@@ -61,7 +62,7 @@ export default function AdminDashboard() {
         }
       />
       <div className="card admin-stats-toolbar">
-        <label htmlFor="admin-stats-period">Khoảng thời gian biểu đồ</label>
+        <label htmlFor="admin-stats-period">Khoảng thời gian thống kê</label>
         <select
           id="admin-stats-period"
           value={period}
@@ -106,9 +107,12 @@ export default function AdminDashboard() {
       {!stats.loading && stats.data && (
         <>
           <p className="admin-stats-meta">
-            Các chỉ số tổng quan là số liệu tích lũy; khoảng thời gian đã chọn áp dụng cho biểu đồ và bảng chi tiết.
+            Các chỉ số tổng quan là số liệu tích lũy; khoảng thời gian đã chọn áp dụng cho mục "Phát sinh trong kỳ" và biểu đồ.
           </p>
           <StatsOverview kpis={stats.data.kpis} />
+          {stats.data.periodKpis && (
+            <StatsPeriodSummary periodKpis={stats.data.periodKpis} periodLabel={periodLabel} />
+          )}
           <StatsCharts
             trends={stats.data.trends}
             roles={stats.data.roleDistribution}
