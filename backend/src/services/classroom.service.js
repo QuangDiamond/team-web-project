@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { Buffer } from 'node:buffer';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
