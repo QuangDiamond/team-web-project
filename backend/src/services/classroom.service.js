@@ -437,23 +437,20 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
     }
 
   } else if (user?.role === 'PARENT' && userId) {
-    // Với Parent: CHỈ lấy danh sách các lớp mà con của phụ huynh đang thực tế theo học (status: ACTIVE)
+    // Với Parent: Lấy danh sách lớp mà phụ huynh là thành viên trực tiếp HOẶC có con đang theo học
     const childLinks = await ParentChildLink.find({
       parent_user_id: userId,
       status: ENUMS.ParentChildLinksStatus.ACCEPTED,
     }).select('student_user_id').lean();
     const studentUserIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
 
-    if (studentUserIds.length === 0) {
-      filter._id = { $in: [] };
-    } else {
-      const memberships = await ClassMember.find({
-        user_id: { $in: studentUserIds },
-        status: ENUMS.ClassMembersStatus.ACTIVE,
-      }).select('class_id').lean();
-      const classIds = memberships.map((m) => m.class_id);
-      filter._id = { $in: classIds };
-    }
+    const relevantUserIds = [userId, ...studentUserIds];
+    const memberships = await ClassMember.find({
+      user_id: { $in: relevantUserIds },
+      status: ENUMS.ClassMembersStatus.ACTIVE,
+    }).select('class_id').lean();
+    const classIds = memberships.map((m) => m.class_id);
+    filter._id = { $in: classIds };
   } else if (user) {
     // Với Student: Lấy danh sách lớp đã tham gia thành công (ACTIVE)
     const memberships = await ClassMember.find({
@@ -589,20 +586,30 @@ export const getClassroomDetail = async ({ classroomId, tutorProfile, user }) =>
       });
       if (isMember) hasAccess = true;
     } else if (user?.role === 'PARENT' && user?._id) {
-      // Phụ huynh CHỈ có quyền truy cập nếu con của mình là học viên đang học trong lớp
-      const childLinks = await ParentChildLink.find({
-        parent_user_id: user._id,
-        status: ENUMS.ParentChildLinksStatus.ACCEPTED,
-      }).select('student_user_id').lean();
-      const studentIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
-      if (studentIds.length > 0) {
-        const isChildMember = await ClassMember.findOne({
-          class_id: classroomId,
-          user_id: { $in: studentIds },
-          status: ENUMS.ClassMembersStatus.ACTIVE,
-        });
-        if (isChildMember) {
-          hasAccess = true;
+      // 1. Kiểm tra nếu phụ huynh là thành viên trực tiếp của lớp (đã tham gia bằng mã hoặc gia sư thêm)
+      const isDirectMember = await ClassMember.findOne({
+        class_id: classroomId,
+        user_id: user._id,
+        status: ENUMS.ClassMembersStatus.ACTIVE,
+      });
+      if (isDirectMember) {
+        hasAccess = true;
+      } else {
+        // 2. Hoặc con của phụ huynh đang là học viên trong lớp
+        const childLinks = await ParentChildLink.find({
+          parent_user_id: user._id,
+          status: ENUMS.ParentChildLinksStatus.ACCEPTED,
+        }).select('student_user_id').lean();
+        const studentIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
+        if (studentIds.length > 0) {
+          const isChildMember = await ClassMember.findOne({
+            class_id: classroomId,
+            user_id: { $in: studentIds },
+            status: ENUMS.ClassMembersStatus.ACTIVE,
+          });
+          if (isChildMember) {
+            hasAccess = true;
+          }
         }
       }
     } else if (user?._id) {
@@ -615,7 +622,7 @@ export const getClassroomDetail = async ({ classroomId, tutorProfile, user }) =>
     }
 
     if (!hasAccess) {
-      throw new AppError('Bạn không có quyền truy cập lớp học này (lớp này không có con của bạn đang theo học)', 403);
+      throw new AppError('Bạn không có quyền truy cập lớp học này (bạn chưa tham gia lớp và không có con đang theo học)', 403);
     }
   }
 

@@ -82,7 +82,13 @@ export default function JoinClassPage() {
         navigate(getClassesUrl());
       }
     } catch (err) {
-      toast.error(err?.response?.data?.message || err.message || 'Không thể tham gia lớp học');
+      const msg = err?.response?.data?.message || err.message || 'Không thể tham gia lớp học';
+      if (msg.includes('đã là thành viên') && preview?._id) {
+        toast.info('Bạn đã là thành viên của lớp này. Đang chuyển hướng vào lớp...');
+        navigate(getClassDetailUrl(preview._id));
+        return;
+      }
+      toast.error(msg);
     } finally {
       setJoining(false);
     }
