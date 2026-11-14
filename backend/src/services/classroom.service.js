@@ -24,6 +24,7 @@ import { AppError } from '../common/utils/AppError.js';
 import { ENUMS } from '../models/enums.js';
 import { env } from '../config/environment.js';
 import { notifyParentsOfClassStudents } from './notification.service.js';
+import { assertClassroomMemberOrOwner } from './classSession.service.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -908,7 +909,8 @@ export const deleteClassroom = async ({ classroomId, tutorProfile }) => {
 /**
  * Lấy danh sách bảng tin / thông báo của lớp học (bài ghim lên đầu)
  */
-export const getClassAnnouncements = async ({ classroomId }) => {
+export const getClassAnnouncements = async ({ classroomId, user }) => {
+  await assertClassroomMemberOrOwner(user, classroomId);
   const announcements = await ClassAnnouncement.find({ class_id: classroomId })
     .populate({
       path: 'author_profile_id',
@@ -1084,7 +1086,8 @@ export const togglePinAnnouncement = async ({ announcementId, classroomId, tutor
 /**
  * Lấy danh sách thành viên trong lớp học kèm liên kết phụ huynh - học viên (UC23)
  */
-export const getClassMembers = async ({ classroomId }) => {
+export const getClassMembers = async ({ classroomId, user }) => {
+  await assertClassroomMemberOrOwner(user, classroomId);
   const members = await ClassMember.find({ class_id: classroomId })
     .populate({
       path: 'user_id',
@@ -1787,11 +1790,8 @@ export const sendClassChatMessage = async ({ classroomId, user, content, attachm
 /**
  * Lấy danh sách các nhóm trong lớp học (UC33)
  */
-export const getClassGroups = async ({ classroomId, user: _user }) => {
-  const classroom = await Classroom.findById(classroomId);
-  if (!classroom) {
-    throw new AppError('Không tìm thấy lớp học', 404);
-  }
+export const getClassGroups = async ({ classroomId, user }) => {
+  const classroom = await assertClassroomMemberOrOwner(user, classroomId);
 
   let groups = await ClassGroup.find({ class_id: classroomId })
     .populate('member_user_ids', 'full_name email avatar_url role')
@@ -2022,7 +2022,15 @@ export const updateClassroomChatSettings = async ({ classroomId, tutorProfile, d
  * Lấy danh sách bài tập của lớp (UC26, UC27)
  */
 export const getClassAssignments = async ({ classroomId, user }) => {
-  const assignments = await Assignment.find({ class_id: classroomId })
+  await assertClassroomMemberOrOwner(user, classroomId);
+
+  // Gia sư qua được bước kiểm tra trên là chủ lớp; học sinh / phụ huynh chỉ thấy bài đã xuất bản
+  const isTutorOwner = user?.role === 'TUTOR';
+  const filter = { class_id: classroomId };
+  if (!isTutorOwner) {
+    filter.status = ENUMS.AssignmentsStatus.PUBLISHED;
+  }
+  const assignments = await Assignment.find(filter)
     .sort({ created_at: -1 })
     .lean();
 
@@ -2073,6 +2081,7 @@ export const getClassAssignments = async ({ classroomId, user }) => {
 
       return {
         ...asg,
+        questions: hideAnswersUntilResultsPublished(asg, user),
         submission_count: submissionCount,
         my_submission: mySubmission,
       };
@@ -2232,6 +2241,25 @@ export const createAssignment = async ({ classroomId, tutorProfile, data }) => {
 };
 
 /**
+ * Case 6.10: giấu đáp án đúng với học sinh / phụ huynh cho đến khi gia sư công bố kết quả
+ * @param {Object} assignment - Bài tập (lean)
+ * @param {Object} user - Người dùng đang đăng nhập
+ * @returns {Object[]} Danh sách câu hỏi đã được lọc đáp án nếu cần
+ */
+const hideAnswersUntilResultsPublished = (assignment, user) => {
+  const questions = assignment.questions || [];
+  const isLearnerSide = user?.role === 'STUDENT' || user?.role === 'PARENT';
+  if (!isLearnerSide || assignment.results_published_at) {
+    return questions;
+  }
+  return questions.map((question) => {
+    const questionWithoutAnswer = { ...question };
+    delete questionWithoutAnswer.correct_answer;
+    return questionWithoutAnswer;
+  });
+};
+
+/**
  * Lấy chi tiết bài tập kèm câu hỏi (UC26, UC27)
  */
 export const getAssignmentDetail = async ({ assignmentId, user }) => {
@@ -2240,17 +2268,8 @@ export const getAssignmentDetail = async ({ assignmentId, user }) => {
     throw new AppError('Không tìm thấy bài tập', 404);
   }
 
-  // 1. Kiểm tra quyền truy cập của học sinh (Case 6.8: Phải là thành viên ACTIVE của lớp)
-  if (user?.role === 'STUDENT' && user?._id) {
-    const member = await ClassMember.findOne({
-      class_id: assignment.class_id,
-      user_id: user._id,
-      status: ENUMS.ClassMembersStatus.ACTIVE,
-    });
-    if (!member) {
-      throw new AppError('Chỉ học sinh là thành viên của lớp mới được xem bài tập', 403);
-    }
-  }
+  // 1. Case 6.8: chỉ gia sư chủ lớp, học sinh ACTIVE trong lớp hoặc phụ huynh của học sinh đó được xem
+  await assertClassroomMemberOrOwner(user, assignment.class_id);
 
   // 2. Kiểm tra trạng thái bài tập (Case 6.9: Bản nháp DRAFT chỉ gia sư chủ lớp được xem)
   if (assignment.status !== ENUMS.AssignmentsStatus.PUBLISHED) {
@@ -2289,19 +2308,9 @@ export const getAssignmentDetail = async ({ assignmentId, user }) => {
     }
   }
 
-  // 3. Case 6.10: Giấu đáp án đúng (correct_answer) nếu chưa công bố kết quả (results_published_at)
-  let sanitizedQuestions = assignment.questions || [];
-  if ((user?.role === 'STUDENT' || user?.role === 'PARENT') && !assignment.results_published_at) {
-    sanitizedQuestions = sanitizedQuestions.map((q) => {
-      const copy = { ...q };
-      delete copy.correct_answer;
-      return copy;
-    });
-  }
-
   return {
     ...assignment,
-    questions: sanitizedQuestions,
+    questions: hideAnswersUntilResultsPublished(assignment, user),
     my_submission: mySubmission,
   };
 };
