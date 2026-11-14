@@ -36,18 +36,17 @@ Lưu request đang mở. Gọi nhiều lần vẫn chỉ có một bookmark (uni
 Bỏ lưu (chỉ xóa bookmark của chính gia sư). Gọi lặp lại vẫn 200. Trả `{ is_bookmarked: false }`.
 
 ## GET `/suggestions` · POST `/suggestions/refresh`
-Gợi ý từ `TutorProfile.teaching_categories`, dùng nguồn danh mục đang bật.
+Gợi ý theo **hồ sơ** (`TutorProfile.teaching_categories`, danh mục đang bật) **hoặc bài đăng** `PUBLISHED` của gia sư.
 
-- Hồ sơ phải hoàn thiện và chọn ít nhất một môn học (`subjects`) hoặc cấp học/trình độ (`grades`) đang bật. Nếu thiếu, trả danh sách rỗng và hint cập nhật hồ sơ.
-- Chỉ cần khớp **môn học HOẶC trình độ**. Ví dụ hồ sơ có Toán vẫn nhận yêu cầu Toán Lớp 12 dù không chọn Lớp 12; hồ sơ có Lớp 9 nhận yêu cầu Lớp 9 dù khác môn. Không ghép chéo tên môn học với tên trình độ.
+- Hồ sơ phải hoàn thiện, và gia sư phải có ít nhất một danh mục giảng dạy đang bật hoặc một bài đăng `PUBLISHED`. Nếu thiếu, trả danh sách rỗng và hint cập nhật hồ sơ / đăng bài.
+- Một yêu cầu phù hợp khi khớp **cả môn học VÀ khối lớp**, theo một trong hai nguồn: (1) hồ sơ có cả môn và trình độ của yêu cầu; (2) một bài đăng `PUBLISHED` cùng môn và khối. Chỉ khớp một trong hai thì không gợi ý. Cùng quy tắc với phía phụ huynh.
 - Đối chiếu chính xác tên chuẩn hóa (bỏ dấu/khác biệt chữ hoa), bao gồm IELTS, TOEIC... Không suy diễn các số trong tên chứng chỉ thành khối lớp.
 - Chỉ yêu cầu OPEN, chưa quá 30 ngày; bỏ yêu cầu đã có đơn ứng tuyển chưa WITHDRAWN của tutor. Yêu cầu đã rút đơn có thể được gợi ý lại như trước.
 - Mỗi yêu cầu xuất hiện một lần, mới nhất trước; `_id` giảm dần để ổn định khi trùng thời gian.
 - GET nhận page/limit, phân trang toàn bộ kết quả, không cắt top 10 trước khi phân trang.
 - POST refresh nhận body rỗng/`{}`, trả trang 1 với limit 10. FE refresh dùng GET vì không còn cache.
 - Response `{ items, pagination, hint }`; item giữ dữ liệu request, trạng thái bookmark và application_count hiện có. Không trả ai_status/cached_until.
-- Không cần bài đăng, không gọi AI, không trừ quota hay credits khi xem/làm mới. Ứng tuyển vẫn theo luồng credits hiện có.
+- Không gọi AI, không trừ quota hay credits khi xem/làm mới. Ứng tuyển vẫn theo luồng credits hiện có.
 - Không đọc/ghi/xóa cache AI_POST_SUGGESTIONS cũ. Không migrate hoặc xóa dữ liệu lịch sử.
-- Quy tắc OR này dành cho gợi ý phía tutor; phía Parent vẫn yêu cầu gia sư khớp cả môn và trình độ của request.
 
 Frontend: `/tutor/requests/suggested`, nhãn sidebar/header và phần xem nhanh dashboard đều là **Gợi ý**. Trang có liên kết cập nhật danh mục giảng dạy trong hồ sơ.

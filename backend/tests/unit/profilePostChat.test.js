@@ -126,6 +126,9 @@ test('post schemas: create defaults to DRAFT, price coerced, system fields rejec
     assert.equal(createTutorPostSchema.safeParse({ ...validPost, ...extra }).success, false);
   }
   assert.equal(createTutorPostSchema.safeParse({ ...validPost, price: '0' }).success, false);
+  // Học phí phải lớn hơn 1.000đ: đúng 1000 bị từ chối, 1001 hợp lệ
+  assert.equal(createTutorPostSchema.safeParse({ ...validPost, price: '1000' }).success, false);
+  assert.equal(createTutorPostSchema.safeParse({ ...validPost, price: '1001' }).success, true);
   assert.equal(createTutorPostSchema.safeParse({ ...validPost, teaching_mode: 'EITHER' }).success, false);
   assert.equal(createTutorPostSchema.safeParse({ ...validPost, title: '  ' }).success, false);
 });

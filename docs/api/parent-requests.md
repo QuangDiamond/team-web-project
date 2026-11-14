@@ -50,9 +50,12 @@ Xóa **hẳn** request của chính phụ huynh cùng đơn ứng tuyển, lời
 |---|---|
 | 200 | Đã xóa, trả `{ _id }` |
 | 404 | Id sai, không tồn tại hoặc request của phụ huynh khác |
-| 409 | Request đã có hội thoại với gia sư (đã Continue / Accept) nên không xóa được |
+
+Request đã có hội thoại với gia sư vẫn xóa được: các hội thoại được giữ lại (lịch sử chat), chỉ bỏ liên kết `request_id` về `null`.
 
 Credit đã dùng cho đơn ứng tuyển / lời mời **không hoàn lại**. DB local là standalone (không có transaction): dữ liệu liên quan được xóa trước, request xóa sau cùng; lỗi giữa chừng thì request còn nguyên và xóa lại được.
+
+Ràng buộc khi tạo / sửa: `budget` phải lớn hơn 1000 (VND) và không quá 100.000.000, nếu không trả 422.
 
 ## Item trả về
 `_id, title, subject_name, grade_level, teaching_mode, budget` (number), `schedule, description, location_address, tutor_requirements, status, student_id, student` (`{_id, full_name, email, avatar_url}` hoặc null), `application_count` (không tính đơn đã rút), `is_expired` (OPEN quá 30 ngày, BR-05), `can_edit, created_at, updated_at`.
