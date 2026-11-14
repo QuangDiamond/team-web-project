@@ -8,6 +8,7 @@ import {
   FileText,
   History,
   LayoutDashboard,
+  Link2,
   KeyRound,
   Mail,
   MessageSquare,
@@ -101,6 +102,7 @@ export const STUDENT_MENU = {
         { label: "Tin nhắn", icon: MessageSquare },
         { label: "Thông báo", to: '/student/notifications', icon: Bell },
         { label: "Nhóm học tập", icon: Users },
+        { label: "Liên kết phụ huynh", to: '/student/parent-links', icon: Link2 },
       ],
     },
     {
@@ -133,7 +135,7 @@ export const PARENT_MENU = {
       label: 'CÔNG VIỆC',
       items: [
         ...createWorkItems('parent'),
-        { label: 'Con và tiến độ học tập', icon: Users },
+        { label: 'Con và tiến độ học tập', to: '/parent/children', icon: Users },
       ],
     },
     createPaymentGroup('parent'),
