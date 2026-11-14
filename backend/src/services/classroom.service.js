@@ -517,8 +517,9 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
 
       return {
         ...cls,
-        member_count: activeMembers.length,
+        member_count: studentCount,
         student_count: studentCount,
+        total_members: activeMembers.length,
         conversation_id: conversation?._id || null,
         is_owner: isOwner,
       };
@@ -628,9 +629,10 @@ export const getClassroomDetail = async ({ classroomId, tutorProfile, user }) =>
 
   return {
     ...classroom,
-    member_count: activeMembers.length,
+    member_count: studentCount,
     student_count: studentCount,
     parent_count: parentCount,
+    total_members: activeMembers.length,
     is_full: studentCount >= (classroom.capacity || 20),
     conversation,
     is_owner: isOwner,
@@ -1355,6 +1357,9 @@ export const getClassroomByJoinCode = async ({ joinCode }) => {
       full_name: m.user_id.full_name || m.user_id.email,
     }));
 
+  const studentCount = students.length;
+  const parentCount = activeMembers.filter((m) => m.user_id && m.user_id.role === 'PARENT').length;
+
   return {
     _id: classroom._id,
     name: classroom.name,
@@ -1363,8 +1368,11 @@ export const getClassroomByJoinCode = async ({ joinCode }) => {
     description: classroom.description,
     status: classroom.status,
     capacity: classroom.capacity,
-    member_count: activeMembers.length,
-    is_full: activeMembers.length >= classroom.capacity,
+    member_count: studentCount,
+    student_count: studentCount,
+    parent_count: parentCount,
+    total_members: activeMembers.length,
+    is_full: studentCount >= classroom.capacity,
     tutor: classroom.tutor_profile_id,
     tutor_user_id: classroom.tutor_profile_id?.user_id?._id || classroom.tutor_profile_id?.user_id || null,
     students,

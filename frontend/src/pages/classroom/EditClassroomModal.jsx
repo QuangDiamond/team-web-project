@@ -125,9 +125,16 @@ export default function EditClassroomModal({ isOpen, onClose, classroom, onUpdat
       return setError('Sĩ số tối đa phải từ 1 đến 200 học sinh');
     }
 
-    if (classroom.member_count && cap < classroom.member_count) {
+    const currentStudents =
+      typeof classroom.student_count === 'number'
+        ? classroom.student_count
+        : typeof classroom.member_count === 'number'
+        ? classroom.member_count
+        : 0;
+
+    if (currentStudents > 0 && cap < currentStudents) {
       return setError(
-        `Sĩ số tối đa không thể nhỏ hơn số học viên hiện tại trong lớp (${classroom.member_count} học viên)`
+        `Sĩ số tối đa không thể nhỏ hơn số học sinh hiện tại trong lớp (${currentStudents} học sinh)`
       );
     }
 
@@ -223,12 +230,12 @@ export default function EditClassroomModal({ isOpen, onClose, classroom, onUpdat
                 name="capacity"
                 value={formData.capacity}
                 onChange={handleChange}
-                min={classroom.member_count || 1}
+                min={typeof classroom.student_count === 'number' ? classroom.student_count : (classroom.member_count || 1)}
                 max={200}
                 required
               />
               <div className="form-help-text">
-                Hiện lớp có {classroom.member_count || 0} học viên. Sĩ số không được nhỏ hơn số học viên hiện tại.
+                Hiện lớp có {typeof classroom.student_count === 'number' ? classroom.student_count : (classroom.member_count || 0)} học sinh. Sĩ số không được nhỏ hơn số học sinh hiện tại.
               </div>
             </div>
 

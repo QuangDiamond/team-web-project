@@ -190,7 +190,7 @@ export default function JoinClassPage() {
               <div style={{ fontSize: '14px', color: 'var(--color-text-muted)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Users size={15} />
                 <span>
-                  Sĩ số hiện tại: <strong>{preview.member_count}</strong> / {preview.capacity} học viên
+                  Sĩ số hiện tại: <strong>{preview.student_count ?? preview.member_count}</strong> / {preview.capacity} học sinh
                 </span>
               </div>
 

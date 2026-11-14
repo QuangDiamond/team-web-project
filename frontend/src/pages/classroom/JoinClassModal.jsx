@@ -186,7 +186,7 @@ export default function JoinClassModal({ isOpen, onClose }) {
               <div style={{ fontSize: '13px', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Users size={14} />
                 <span>
-                  Sĩ số: <strong>{preview.member_count}</strong> / {preview.capacity} học viên
+                  Sĩ số: <strong>{preview.student_count ?? preview.member_count}</strong> / {preview.capacity} học sinh
                 </span>
               </div>
 
