@@ -3,7 +3,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Bookmark, BookmarkCheck, ChevronLeft, LoaderCircle } from 'lucide-react';
 import { getTutorRequest, saveRequest, unsaveRequest } from '../../services/tutorRequestService';
+import { acceptInvitation, declineInvitation } from '../../services/invitationService';
 import Alert from '../../components/common/Alert';
+import OpenChatLink from '../../components/common/OpenChatLink';
+import PriorityBadge from '../../components/common/PriorityBadge';
 import SectionCard from '../../components/common/SectionCard';
 import ApplyModal from '../../components/tutor/ApplyModal';
 import ReportContentButton from '../../components/common/ReportContentButton';
@@ -16,6 +19,8 @@ export default function TutorRequestDetail() {
   const { id } = useParams();
   const [state, setState] = useState({ loading: true, error: null, request: null });
   const [applying, setApplying] = useState(false);
+  const [invitationBusy, setInvitationBusy] = useState(false);
+  const [conversationId, setConversationId] = useState(null);
 
   const load = useCallback(async () => {
     setState({ loading: true, error: null, request: null });
@@ -53,6 +58,25 @@ export default function TutorRequestDetail() {
     setApplying(false);
   };
 
+  // Gia sư phản hồi lời mời ngay trên trang chi tiết; tải lại để lấy trạng thái thật từ server
+  const handleInvitationAction = async (action, successMessage) => {
+    setInvitationBusy(true);
+    try {
+      const response = await action(state.request.invitation._id);
+      if (response.data && response.data.conversation_id) {
+        setConversationId(response.data.conversation_id);
+      }
+      toast.success(successMessage);
+    } catch (error) {
+      toast.error(error.message);
+    }
+    const reloaded = await getTutorRequest(id).catch(() => null);
+    if (reloaded) {
+      setState({ loading: false, error: null, request: reloaded.data });
+    }
+    setInvitationBusy(false);
+  };
+
   if (state.loading) {
     return (
       <div className="page-loading-inline" role="status">
@@ -76,6 +100,21 @@ export default function TutorRequestDetail() {
 
   const request = state.request;
   const SaveIcon = request.is_bookmarked ? BookmarkCheck : Bookmark;
+
+  // Nút ứng tuyển đổi theo lời mời: đang chờ phản hồi / đã chấp nhận thì không ứng tuyển thêm; đã từ chối thì ứng tuyển bình thường
+  const invitation = request.invitation;
+  let applyLabel = "Ứng tuyển";
+  let applyDisabled = false;
+  if (request.has_applied) {
+    applyLabel = "Đã ứng tuyển";
+    applyDisabled = true;
+  } else if (invitation && invitation.status === 'PENDING') {
+    applyLabel = "Đang nhận được lời mời";
+    applyDisabled = true;
+  } else if (invitation && invitation.status === 'ACCEPTED') {
+    applyLabel = "Đã chấp nhận lời mời";
+    applyDisabled = true;
+  }
   const facts = [
     ["Môn học", request.subject_name],
     ["Khối lớp", request.grade_level],
@@ -94,6 +133,43 @@ export default function TutorRequestDetail() {
 
       <div className="tutor-detail-grid">
         <div className="tutor-detail-main">
+          {invitation && invitation.status !== 'DECLINED' && (
+            <SectionCard title="Lời mời từ phụ huynh">
+              <p className="item-meta">Nhận ngày {formatDate(invitation.created_at)}</p>
+              <PriorityBadge credits={invitation.credits_spent} />
+              {invitation.message ? (
+                <p className="tutor-detail-text">“{invitation.message}”</p>
+              ) : (
+                <p className="item-meta">Phụ huynh không để lại lời nhắn.</p>
+              )}
+              {invitation.status === 'PENDING' && (
+                <div className="tutor-detail-actions">
+                  <button
+                    type="button"
+                    className="btn btn-outline btn-sm"
+                    disabled={invitationBusy}
+                    onClick={() => handleInvitationAction(declineInvitation, "Đã từ chối lời mời.")}
+                  >
+                    Từ chối
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm"
+                    disabled={invitationBusy}
+                    onClick={() => handleInvitationAction(acceptInvitation, "Đã chấp nhận lời mời và mở cuộc trò chuyện.")}
+                  >
+                    Chấp nhận
+                  </button>
+                </div>
+              )}
+              {invitation.status === 'ACCEPTED' && (
+                <p className="item-meta">Đã mở cuộc trò chuyện.</p>
+              )}
+              {invitation.status === 'ACCEPTED' && conversationId && (
+                <OpenChatLink to={`/tutor/messages/${conversationId}`} />
+              )}
+            </SectionCard>
+          )}
           <SectionCard title={request.title}>
             <p className="item-meta">Đã đăng {formatDate(request.created_at)} bởi phụ huynh · {request.application_count} gia sư đã ứng tuyển</p>
             {request.parent_user_id && <Link to={`/parents/${request.parent_user_id}`} className="link">Xem hồ sơ phụ huynh</Link>}
@@ -118,10 +194,10 @@ export default function TutorRequestDetail() {
             <button
               type="button"
               className="btn btn-primary btn-block"
-              disabled={request.has_applied}
+              disabled={applyDisabled}
               onClick={() => setApplying(true)}
             >
-              {request.has_applied ? "Đã ứng tuyển" : "Ứng tuyển"}
+              {applyLabel}
             </button>
             <button type="button" className="btn btn-outline btn-block" onClick={handleToggleSave}>
               <SaveIcon size={16} aria-hidden="true" />

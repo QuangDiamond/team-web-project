@@ -3,6 +3,7 @@ import { ParentRequest } from '../models/ParentRequest.js';
 import { BookmarkedRequest } from '../models/BookmarkedRequest.js';
 import { ApplyRequest } from '../models/ApplyRequest.js';
 import { TutorPost } from '../models/TutorPost.js';
+import { TutorInvitation } from '../models/TutorInvitation.js';
 import { ENUMS } from '../models/enums.js';
 import { AppError } from '../common/utils/AppError.js';
 import { buildPagination } from '../common/utils/pagination.js';
@@ -193,7 +194,7 @@ export const getFilterOptions = async (user) => {
 };
 
 /**
- * Chi tiết một request đang mở
+ * Chi tiết một request đang mở, kèm `invitation` (lời mời của phụ huynh cho gia sư này, hoặc null)
  * @param {Object} user - req.user { id, role }
  * @param {string} requestId
  * @returns {Promise<Object>}
@@ -207,6 +208,23 @@ export const getRequestDetail = async (user, requestId) => {
     throw new AppError('Tutoring request not found', 404);
   }
   const [item] = await decorateRequests([request], profile);
+
+  // Lời mời phụ huynh đã gửi cho gia sư này về request (bỏ qua lời mời đã hủy, gia sư không được thấy)
+  const invitation = await TutorInvitation.findOne({
+    request_id: request._id,
+    tutor_profile_id: profile._id,
+    status: { $ne: ENUMS.TutorInvitationsStatus.CANCELLED },
+  }).lean();
+  item.invitation = null;
+  if (invitation) {
+    item.invitation = {
+      _id: String(invitation._id),
+      status: invitation.status,
+      message: invitation.message,
+      credits_spent: invitation.credits_spent ?? 1,
+      created_at: invitation.created_at,
+    };
+  }
   return item;
 };
 
