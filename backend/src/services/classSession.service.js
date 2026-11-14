@@ -376,6 +376,7 @@ export const createClassSession = async (user, classId, data) => {
     await notifyParentsAboutSession(classroom, s, 'CREATED');
   }
 
+  await notifyParentsAboutSession(classroom, createdSessions[0], 'CREATED');
   return toClassSessionDto(createdSessions[0]);
 };
 

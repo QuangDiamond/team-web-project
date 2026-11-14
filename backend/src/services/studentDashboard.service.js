@@ -107,7 +107,7 @@ const getTutorNames = async (tutorProfileIds) => {
  * @param {Array} classIds
  * @returns {Promise<Map<string, Object>>} class_id -> { _id, name, subject, tutor_name }
  */
-const getClassSummaries = async (classIds) => {
+export const getClassSummaries = async (classIds) => {
   const classSummaries = new Map();
   if (classIds.length === 0) {
     return classSummaries;

@@ -2139,8 +2139,9 @@ export const createAssignment = async ({ classroomId, tutorProfile, data }) => {
   const isPublishing = status === 'PUBLISHED';
 
   // Case 5.7: Ràng buộc UC26 - Chỉ được xuất bản bài tập khi lớp có ít nhất một học sinh
+  let activeMembers = [];
   if (isPublishing) {
-    const activeMembers = await ClassMember.find({
+    activeMembers = await ClassMember.find({
       class_id: classroom._id,
       status: ENUMS.ClassMembersStatus.ACTIVE,
     }).populate('user_id', 'role');
