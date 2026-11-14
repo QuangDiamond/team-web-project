@@ -23,7 +23,7 @@ const postFields = {
   teaching_mode: z.enum(Object.values(ENUMS.TutorPostsTeachingMode), 'Session mode must be ONLINE, OFFLINE or HYBRID'),
   price: z.coerce
     .number('Price must be a number')
-    .positive('Price must be greater than 0')
+    .gt(1000, 'Price must be greater than 1000')
     .max(100000000, 'Price is too large'),
   schedule: requiredText('Available schedule', 300),
   description: requiredText('Description', 2000),
