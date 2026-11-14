@@ -83,7 +83,7 @@ export function useChatThread(conversationId, onActivity) {
         if (onActivity) {
           onActivity();
         }
-      } catch (error) {
+      } catch {
         // Đánh dấu đã đọc lỗi không ảnh hưởng việc đọc tin; lần polling sau sẽ thử lại
         lastMarkedIncomingId.current = null;
       }
