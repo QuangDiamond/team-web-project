@@ -39,6 +39,7 @@ import {
   parseMinuteTime,
 } from '../../utils/sessionAvailability';
 import '../../styles/mySchedule.css';
+import '../../styles/legacyClassSchedule.css';
 import '../../styles/scheduleChangeRequests.css';
 
 const PAGE_SIZE = 100;
@@ -455,26 +456,6 @@ function CreateScheduleSessionModal({ classrooms, sessions, initialValues, onClo
   );
 }
 
-function getStatusClassName(status) {
-  if (status === 'CANCELLED') {
-    return 'status-cancelled';
-  }
-  if (status === 'COMPLETED') {
-    return 'status-completed';
-  }
-  return 'status-scheduled';
-}
-
-function getStatusLabel(status) {
-  if (status === 'CANCELLED') {
-    return 'Đã hủy';
-  }
-  if (status === 'COMPLETED') {
-    return 'Đã học xong';
-  }
-  return 'Sắp tới';
-}
-
 function ScheduleEvent({ event, onAttendanceClick, attendanceSessionId, onScheduleChangeClick, changeClassName = '' }) {
   const session = event.session;
   const activeStudentCount = session.classroom?.active_student_count || 0;
@@ -564,11 +545,6 @@ function ScheduleEvent({ event, onAttendanceClick, attendanceSessionId, onSchedu
         <Clock3 size={12} aria-hidden="true" />
         {formatTimeRange(session)}
       </span>
-      <div className="schedule-event-footer">
-        <span className={`schedule-status-pill ${getStatusClassName(session.status)}`}>
-          {getStatusLabel(session.status)}
-        </span>
-      </div>
     </article>
   );
 }
@@ -647,13 +623,7 @@ function CalendarWeek({
 
   return (
     <div className="schedule-calendar-scroll">
-      <div
-        className="schedule-calendar"
-        style={{
-          '--schedule-grid-height': `${gridHeight}px`,
-          '--schedule-hour-height': `${HOUR_HEIGHT}px`,
-        }}
-      >
+      <div className="schedule-calendar" style={{ '--schedule-grid-height': `${gridHeight}px` }}>
         <div className="schedule-calendar-corner" aria-hidden="true" />
         {days.map((day) => {
           const dayIsToday = isSameDay(day, today);
@@ -868,6 +838,7 @@ export default function MySchedule() {
   weekEnd.setDate(weekStart.getDate() + 6);
 
   return (
+    <div className="legacy-ui">
     <div className="page-stack my-schedule-page">
       <section ref={calendarSectionRef} className="schedule-toolbar" aria-label="Điều hướng lịch">
         <div className="schedule-toolbar-title">
@@ -902,7 +873,7 @@ export default function MySchedule() {
       {isLoading && (
         <div className="schedule-loading" role="status">
           <LoaderCircle size={24} className="spin" aria-hidden="true" />
-          <span>Đang tải lịch dạy và các buổi học...</span>
+          <span>Đang tải lớp học và buổi học...</span>
         </div>
       )}
 
@@ -919,7 +890,7 @@ export default function MySchedule() {
         <EmptyState
           icon={CalendarDays}
           title="Chưa có buổi học nào"
-          description="Các buổi học từ các lớp đang dạy sẽ hiển thị trên lịch tuần này."
+          description="Buổi học từ các lớp đang hoạt động sẽ xuất hiện trên lịch tuần này."
         />
       )}
 
@@ -944,7 +915,7 @@ export default function MySchedule() {
             {weekSessions.length === 0 && (
               <div className="schedule-week-empty">
                 <MapPin size={17} aria-hidden="true" />
-                <span>Không có buổi học nào trong tuần này. Sử dụng các mũi tên để xem tuần khác.</span>
+                <span>Tuần này chưa có buổi học. Dùng các nút mũi tên để xem tuần khác.</span>
               </div>
             )}
             {selectedSlotError && <p className="schedule-slot-error" role="status">{selectedSlotError}</p>}
@@ -1001,6 +972,7 @@ export default function MySchedule() {
           onSaved={handleScheduleChangeSaved}
         />
       )}
+    </div>
     </div>
   );
 }
