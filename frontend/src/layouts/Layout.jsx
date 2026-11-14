@@ -10,21 +10,9 @@ import {
 import { useAuth } from '../hooks/useAuth';
 import { getHomePathByRole } from '../utils/getHomePathByRole';
 import { getMyProfile } from '../services/tutorProfileService';
-import { getInitials } from '../utils/getInitials';
 import { getRoleLabel } from '../constants/dashboardNav';
 import FloatingChatWidget from '../components/chat/FloatingChatWidget';
 import NotificationBell from '../components/common/NotificationBell';
-
-const AVATAR_PALETTE = ['#0284C7', '#6366F1', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#0D9488'];
-
-const getAvatarBg = (name) => {
-  if (!name) return AVATAR_PALETTE[0];
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return AVATAR_PALETTE[Math.abs(hash) % AVATAR_PALETTE.length];
-};
 
 export default function Layout() {
   const { user, logout } = useAuth();
@@ -120,13 +108,6 @@ export default function Layout() {
               Tính năng
             </Link>
             <Link
-              to="/#featured-tutors"
-              className={`nav-link ${activeSection === '#featured-tutors' ? 'active' : ''}`}
-              aria-current={activeSection === '#featured-tutors' ? 'location' : undefined}
-            >
-              Gia sư tiêu biểu
-            </Link>
-            <Link
               to="/#how-it-works"
               className={`nav-link ${activeSection === '#how-it-works' ? 'active' : ''}`}
               aria-current={activeSection === '#how-it-works' ? 'location' : undefined}
@@ -141,6 +122,15 @@ export default function Layout() {
               }
             >
               Gia sư
+            </Link>
+            <Link
+              to="/requests"
+              className={`nav-link ${location.pathname === '/requests' ? 'active' : ''}`}
+              aria-current={
+                location.pathname === '/requests' ? 'page' : undefined
+              }
+            >
+              Yêu cầu
             </Link>
           </div>
 
@@ -236,18 +226,6 @@ export default function Layout() {
                   <span>Tính năng</span>
                 </Link>
                 <Link
-                  to="/#featured-tutors"
-                  className={`mobile-nav-item ${activeSection === '#featured-tutors' ? 'active' : ''}`}
-                  aria-current={
-                    activeSection === '#featured-tutors'
-                      ? 'location'
-                      : undefined
-                  }
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <span>Gia sư tiêu biểu</span>
-                </Link>
-                <Link
                   to="/#how-it-works"
                   className={`mobile-nav-item ${activeSection === '#how-it-works' ? 'active' : ''}`}
                   aria-current={
@@ -263,6 +241,13 @@ export default function Layout() {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span>Gia sư</span>
+                </Link>
+                <Link
+                  to="/requests"
+                  className={`mobile-nav-item ${location.pathname === '/requests' ? 'active' : ''}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span>Yêu cầu</span>
                 </Link>
               </div>
             </div>
@@ -363,7 +348,7 @@ export default function Layout() {
                   <a href="/#features">Tính năng nổi bật</a>
                 </li>
                 <li>
-                  <a href="/#featured-tutors">Gia sư tiêu biểu</a>
+                  <Link to="/requests">Yêu cầu tìm gia sư</Link>
                 </li>
                 <li>
                   <a href="/#how-it-works">Quy trình kết nối</a>

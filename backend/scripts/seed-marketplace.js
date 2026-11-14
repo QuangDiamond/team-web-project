@@ -14,11 +14,14 @@ import { CreditTransaction } from '../src/models/CreditTransaction.js';
 import { Subject } from '../src/models/Subject.js';
 import { GradeLevel } from '../src/models/GradeLevel.js';
 import { Plan } from '../src/models/Plan.js';
+import { TutoringAgreement } from '../src/models/TutoringAgreement.js';
+import { Review } from '../src/models/Review.js';
 
 export const marketplaceModels = {
   users: User, profiles: TutorProfile, posts: TutorPost, requests: ParentRequest,
   applications: ApplyRequest, invitations: TutorInvitation, conversations: Conversation,
   messages: Message, transactions: CreditTransaction,
+  agreements: TutoringAgreement, reviews: Review,
 };
 
 async function main() {
@@ -84,6 +87,16 @@ async function main() {
       upsert: true, timestamps: false,
     } })), { ordered: true, timestamps: false });
     console.log(`${Model.collection.name}: inserted ${result.upsertedCount}; existing documents preserved.`);
+  }
+  if (!dryRun) {
+    // Same formula as rateTutor: mean of APPROVED ratings, rounded to 2 decimals.
+    for (const profile of dataset.profiles) {
+      const reviews = await Review.find({ tutor_profile_id: profile._id, status: 'APPROVED' }).select('rating').lean();
+      if (reviews.length === 0) continue;
+      const average = reviews.reduce((sum, review) => sum + Number(review.rating || 0), 0) / reviews.length;
+      await TutorProfile.updateOne({ _id: profile._id }, { $set: { average_rating: Math.round(average * 100) / 100 } }, { timestamps: false });
+    }
+    console.log(`TUTOR_PROFILES: average_rating recalculated for ${dataset.profiles.length} demo tutors.`);
   }
   console.log(dryRun ? 'Dry run passed. No database connection or writes.' : 'Marketplace demo seed completed.');
 }

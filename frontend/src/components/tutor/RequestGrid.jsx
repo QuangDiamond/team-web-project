@@ -3,7 +3,7 @@ import ApplyModal from './ApplyModal';
 import RequestCard from './RequestCard';
 
 // Lưới request + thông báo + hộp thoại ứng tuyển, dùng chung cho Browse, Saved, Suggested (actions từ useRequestActions)
-export default function RequestGrid({ items, actions }) {
+export default function RequestGrid({ items, actions, readOnly = false }) {
   return (
     <>
       {actions.notice && <Alert type="success">{actions.notice}</Alert>}
@@ -11,7 +11,7 @@ export default function RequestGrid({ items, actions }) {
 
       <ul className="request-grid">
         {items.map((request) => (
-          <RequestCard key={request._id} request={request} onToggleSave={actions.toggleSave} onApply={actions.openApply} />
+          <RequestCard key={request._id} request={request} onToggleSave={actions.toggleSave} onApply={actions.openApply} readOnly={readOnly} />
         ))}
       </ul>
 

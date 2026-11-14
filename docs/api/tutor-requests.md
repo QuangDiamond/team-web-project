@@ -1,8 +1,8 @@
 # Tutor Requests API (`/api/tutor-requests/v1`) — Browse Requests & Suggestions
 
-Mọi endpoint cần đăng nhập, chỉ dành cho role `TUTOR`. Gia sư chưa có `TutorProfile` nhận **409** `Complete your tutor profile first` (hồ sơ là việc của UC khác, không tự tạo).
+Mọi endpoint cần đăng nhập, chỉ dành cho role `TUTOR`, trừ `GET /` (công khai, xem bên dưới). Gia sư chưa có `TutorProfile` nhận **409** `Complete your tutor profile first` (hồ sơ là việc của UC khác, không tự tạo).
 
-Middleware authentication → authorize('TUTOR') protects all routes. Suggestion refresh validates an empty body.
+Middleware authentication → authorize('TUTOR') protects all routes except `GET /` (optionalAuthentication). Suggestion refresh validates an empty body.
 
 | Status | Khi nào |
 |---|---|
@@ -14,6 +14,8 @@ Middleware authentication → authorize('TUTOR') protects all routes. Suggestion
 **Ẩn danh phụ huynh:** response không có tên, email, SĐT, `parent_user_id`, thông tin học sinh; chỉ có khu vực (`location_address`).
 
 ## GET `/`
+**Công khai** (không bắt buộc đăng nhập, dùng cho trang `/requests` ngoài trang chủ). Có token thì xác thực như thường; chỉ gia sư mới có `is_bookmarked` / `has_applied` thật, khách và role khác luôn nhận `false`.
+
 Chỉ request `OPEN` và tạo trong 30 ngày gần nhất (BR-05), mới nhất trước. Query (bỏ field rỗng): `q` (tìm trong tiêu đề / môn / mô tả), `subject`, `grade`, `area`, `mode` (`ONLINE|OFFLINE|HYBRID`), `minBudget`, `maxBudget`, `page`, `limit`. Từ khóa được escape nên ký tự đặc biệt không gây lỗi regex.
 
 Item: `_id, available, title, subject_name, grade_level, teaching_mode, budget, schedule, description, location_address, tutor_requirements, image_urls, application_count, is_bookmarked, has_applied, match_score (null ở danh sách thường), created_at`.

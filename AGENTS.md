@@ -6,7 +6,7 @@
 - `database/`: seeders for initializing / restoring the DB
 - Backend flow: `Route → Middleware → Controller → Service (business logic only) → Mongoose Model`
 - Frontend flow: `Page → Components/Hooks → Services → API`
-- Commands: backend `npm run dev | lint | test`; frontend `npm run dev | build`
+- Commands: backend `npm run dev | lint | test`; frontend `npm run dev | build | lint`
 - Git workflow and commit convention: see `CONTRIBUTING.md`
 
 ## 1. General rules
