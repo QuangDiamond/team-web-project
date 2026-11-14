@@ -37,7 +37,6 @@ import EditClassroomModal from './EditClassroomModal';
 import AddMemberModal from './AddMemberModal';
 import RemoveMemberModal from './RemoveMemberModal';
 import GradeSubmissionModal from './GradeSubmissionModal';
-import DoAssignmentModal from './DoAssignmentModal';
 import ClassroomAnnouncementsTab from '../../components/classroom/ClassroomAnnouncementsTab';
 import ClassroomMembersTab from '../../components/classroom/ClassroomMembersTab';
 import ClassroomAssignmentsTab from '../../components/classroom/ClassroomAssignmentsTab';
@@ -82,7 +81,6 @@ export default function ClassroomDetail() {
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
   const [removeMemberTarget, setRemoveMemberTarget] = useState(null);
   const [gradingAssignmentTarget, setGradingAssignmentTarget] = useState(null);
-  const [doAssignmentTarget, setDoAssignmentTarget] = useState(null);
 
   // Tab 1: Announcements State
   const [announcements, setAnnouncements] = useState([]);
@@ -314,6 +312,11 @@ export default function ClassroomDetail() {
     } catch (err) {
       toast.error(err?.response?.data?.message || err.message || 'Không thể xóa bài tập');
     }
+  };
+
+  const handleOpenDoAssignment = (asg) => {
+    const rolePrefix = user?.role === 'PARENT' ? 'parent' : user?.role === 'TUTOR' ? 'tutor' : 'student';
+    navigate(`/${rolePrefix}/classes/${id}/assignments/${asg._id}`);
   };
 
   if (loading) {
@@ -689,7 +692,7 @@ export default function ClassroomDetail() {
           onOpenEditAssignment={handleOpenEditAssignment}
           onDeleteAssignment={handleDeleteAssignment}
           onSelectGrading={(asg) => setGradingAssignmentTarget(asg)}
-          onSelectDoAssignment={(asg) => setDoAssignmentTarget(asg)}
+          onSelectDoAssignment={handleOpenDoAssignment}
         />
       )}
 
@@ -790,14 +793,6 @@ export default function ClassroomDetail() {
         onClose={() => setGradingAssignmentTarget(null)}
         assignment={gradingAssignmentTarget}
         onGraded={() => fetchAssignments()}
-      />
-
-      {/* Modal làm bài tập */}
-      <DoAssignmentModal
-        isOpen={Boolean(doAssignmentTarget)}
-        onClose={() => setDoAssignmentTarget(null)}
-        assignment={doAssignmentTarget}
-        onSubmitted={() => fetchAssignments()}
       />
     </div>
   );

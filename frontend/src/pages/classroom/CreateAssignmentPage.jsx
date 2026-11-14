@@ -82,7 +82,6 @@ export default function CreateAssignmentPage() {
   ]);
 
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
 
   const formatDateForInput = (dateStr) => {
     if (!dateStr) return '';
@@ -96,7 +95,6 @@ export default function CreateAssignmentPage() {
   const loadInitialData = useCallback(async () => {
     try {
       setLoadingData(true);
-      setError('');
       const classRes = await getClassroomDetail(classroomId);
       const cls = classRes?.data;
       setClassroom(cls);
@@ -226,11 +224,11 @@ export default function CreateAssignmentPage() {
             );
           }
         } else {
-          setError('Không tìm thấy bài tập cần chỉnh sửa.');
+          toast.error('Không tìm thấy bài tập cần chỉnh sửa.');
         }
       }
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || 'Không thể tải thông tin lớp học.');
+      toast.error(err?.response?.data?.message || err.message || 'Không thể tải thông tin lớp học.');
     } finally {
       setLoadingData(false);
     }
@@ -654,12 +652,19 @@ export default function CreateAssignmentPage() {
 
   const handleSubmit = async (submitStatus = status) => {
     if (!title.trim()) {
-      return setError('Vui lòng nhập tiêu đề bài tập');
+      toast.error('Vui lòng nhập tiêu đề bài tập');
+      const titleEl = document.getElementById('title');
+      if (titleEl) {
+        titleEl.focus();
+        titleEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
     }
 
     if (submitStatus === 'PUBLISHED') {
       if (studentCount === 0) {
-        return setError('Lớp học chưa có học sinh nào tham gia. Không thể xuất bản bài tập khi lớp chưa có học sinh.');
+        toast.error('Lớp học chưa có học sinh nào tham gia. Không thể xuất bản bài tập khi lớp chưa có học sinh.');
+        return;
       }
 
       if (!isQuestionLocked && Array.isArray(questions)) {
@@ -667,7 +672,8 @@ export default function CreateAssignmentPage() {
           const q = questions[i];
           if (q.question_type === 'MULTIPLE_CHOICE') {
             if (!q.correct_answer || !String(q.correct_answer).trim()) {
-              return setError(`Câu hỏi trắc nghiệm số ${i + 1} chưa có đáp án đúng (answer key). Vui lòng chọn đáp án trước khi xuất bản.`);
+              toast.error(`Câu hỏi trắc nghiệm số ${i + 1} chưa có đáp án đúng (answer key). Vui lòng chọn đáp án trước khi xuất bản.`);
+              return;
             }
           }
         }
@@ -677,16 +683,17 @@ export default function CreateAssignmentPage() {
     if (dueDate) {
       const d = new Date(dueDate);
       if (isNaN(d.getTime())) {
-        return setError('Hạn nộp bài (due date) không hợp lệ');
+        toast.error('Hạn nộp bài (due date) không hợp lệ');
+        return;
       }
       if (d.getTime() < Date.now() - 60000) {
-        return setError('Hạn nộp bài không được ở trong quá khứ. Vui lòng chọn thời điểm trong tương lai.');
+        toast.error('Hạn nộp bài không được ở trong quá khứ. Vui lòng chọn thời điểm trong tương lai.');
+        return;
       }
     }
 
     try {
       setSubmitting(true);
-      setError('');
 
       const payload = {
         title: title.trim(),
@@ -705,16 +712,22 @@ export default function CreateAssignmentPage() {
         payload.questions = questions;
       }
 
+      const successMsg =
+        submitStatus === 'PUBLISHED'
+          ? (isEditing ? 'Cập nhật và xuất bản bài tập thành công!' : 'Tạo và xuất bản bài tập thành công!')
+          : (isEditing ? 'Đã lưu cập nhật bản nháp bài tập thành công!' : 'Đã lưu bản nháp bài tập thành công!');
+
       if (isEditing) {
         await updateAssignment(assignmentId, payload);
       } else {
         await createAssignment(classroomId, payload);
       }
 
+      toast.success(successMsg);
+
       navigate(`/tutor/classes/${classroomId}?tab=assignments`, {
         state: {
           activeTab: 'assignments',
-          toastMessage: submitStatus === 'PUBLISHED' ? 'Tạo và xuất bản bài tập thành công!' : 'Đã lưu bản nháp bài tập!',
         },
       });
     } catch (err) {
@@ -768,13 +781,6 @@ export default function CreateAssignmentPage() {
           </p>
         </div>
       </div>
-
-      {error && (
-        <div className="error-alert" style={{ marginBottom: '20px' }}>
-          <AlertTriangle size={18} />
-          <span>{error}</span>
-        </div>
-      )}
 
       {/* AI Assistant Section */}
       {!isEditing && (
