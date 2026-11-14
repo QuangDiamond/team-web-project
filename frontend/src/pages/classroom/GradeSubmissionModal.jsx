@@ -13,6 +13,7 @@ import {
   Share2,
 } from 'lucide-react';
 import { getSubmissionsForAssignment, gradeSubmission, publishAssignmentResults } from '../../services/classroomService';
+import { getAttachmentUrl } from '../../utils/fileUrl';
 
 export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGraded }) {
   const [submissions, setSubmissions] = useState([]);
@@ -490,7 +491,7 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                                       <a
-                                        href={ans.file_url}
+                                        href={getAttachmentUrl(ans.file_url)}
                                         target="_blank"
                                         rel="noreferrer"
                                         style={{

@@ -2374,7 +2374,36 @@ export const submitAssignment = async ({ assignmentId, user, answers = [] }) => 
   const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
   for (const ans of answers) {
-    if (ans.file_url) {
+    // Nếu học sinh tải tệp trực tiếp từ máy (gửi kèm file_data dạng base64)
+    if (ans.file_data) {
+      const originalName = (ans.file_name || 'bai_lam').trim();
+      const ext = originalName.split('.').pop()?.toLowerCase() || '';
+      if (DISALLOWED_EXTENSIONS.some((bad) => `.${ext}` === bad || originalName.toLowerCase().endsWith(bad))) {
+        throw new AppError('Định dạng tệp không được hỗ trợ (không chấp nhận file thực thi .exe, .bat, ...)', 400);
+      }
+
+      let base64Data = ans.file_data;
+      if (base64Data.includes(',')) {
+        base64Data = base64Data.split(',')[1];
+      }
+      const buffer = Buffer.from(base64Data, 'base64');
+      const fileSize = buffer.length;
+
+      if (fileSize > MAX_FILE_SIZE) {
+        throw new AppError(`Tệp "${originalName}" vượt quá dung lượng tối đa cho phép là 20MB`, 400);
+      }
+
+      await fs.mkdir(uploadsDir, { recursive: true });
+      const safeBaseName = originalName
+        .replace(/[^a-zA-Z0-9._-]/g, '_')
+        .slice(0, 50);
+      const uniqueFileName = `sub-${Date.now()}-${crypto.randomBytes(4).toString('hex')}-${safeBaseName}`;
+      const targetPath = path.join(uploadsDir, uniqueFileName);
+
+      await fs.writeFile(targetPath, buffer);
+      ans.file_url = `/uploads/${uniqueFileName}`;
+      ans.file_size = fileSize;
+    } else if (ans.file_url) {
       const urlLower = ans.file_url.toLowerCase();
       const isDisallowed = DISALLOWED_EXTENSIONS.some((ext) => urlLower.endsWith(ext) || urlLower.includes(`${ext}?`));
       if (isDisallowed) {
