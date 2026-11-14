@@ -21,7 +21,6 @@ export default function CreateAssignmentModal({
   onClose,
   classroomId,
   assignmentToEdit = null,
-  classroomSubject = '',
   classroomGrade = '',
   studentCount = 0,
   onAssignmentCreated,

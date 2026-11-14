@@ -1,0 +1,2 @@
+# Hook chạy bằng sh: phải giữ LF, CRLF làm hỏng dòng #!/bin/sh
+.githooks/* text eol=lf

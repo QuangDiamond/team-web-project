@@ -62,7 +62,7 @@ export default function ChildProgress() {
           <h2 className="section-card-title">Liên kết với học sinh</h2>
           <ParentLinkPanel />
         </section>
-        <button type="button" className="btn btn-outline btn-sm" onClick={children.reload}>Kiểm tra lại danh sách</button>
+        <button type="button" className="btn btn-outline btn-sm child-progress-recheck" onClick={children.reload}>Kiểm tra lại danh sách</button>
       </div>
     );
   }

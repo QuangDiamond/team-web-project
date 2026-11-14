@@ -343,7 +343,6 @@ export default function ClassroomDetail() {
 
   const activeMembers = members.filter((m) => m.status === 'ACTIVE');
   const studentMembers = activeMembers.filter((m) => m.user_id?.role === 'STUDENT');
-  const parentMembers = activeMembers.filter((m) => m.user_id?.role === 'PARENT');
   const studentCount = typeof classroom.student_count === 'number' ? classroom.student_count : studentMembers.length;
   const capacity = classroom.capacity || 50;
   const percent = Math.min(Math.round((studentCount / capacity) * 100), 100);
@@ -637,8 +636,6 @@ export default function ClassroomDetail() {
           loadingMembers={loadingMembers}
           isOwner={isOwner}
           studentCount={studentCount}
-          parentMembers={parentMembers}
-          studentMembers={studentMembers}
           onOpenAddMember={() => setIsAddMemberOpen(true)}
           onSelectRemoveMember={(mem) => setRemoveMemberTarget(mem)}
           onCopy={handleCopy}

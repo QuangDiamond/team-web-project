@@ -68,7 +68,7 @@ function isSameDay(firstDate, secondDate) {
     && firstDate.getDate() === secondDate.getDate();
 }
 
-function getSessionLayout(sessions, hourStart, hourEnd) {
+function getSessionLayout(sessions, hourStart) {
   const events = sessions.map((session, index) => {
     const startTime = new Date(session.start_time);
     const endTime = new Date(session.end_time);
@@ -245,7 +245,7 @@ function CalendarWeek({ weekStart, sessions }) {
 
         {days.map((day) => {
           const daySessions = sessions.filter((session) => isSameDay(new Date(session.start_time), day));
-          const events = getSessionLayout(daySessions, hourStart, hourEnd);
+          const events = getSessionLayout(daySessions, hourStart);
           const dayIsToday = isSameDay(day, today);
           return (
             <div
