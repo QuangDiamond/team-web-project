@@ -1429,20 +1429,6 @@ export const joinClassroomByCode = async ({ joinCode, user, child_user_id }) => 
 
   // Quy tắc UC23: Thành viên đã bị xóa không thể tự vào lại lớp bằng mã mời hoặc link cũ
   if (member && member.status === ENUMS.ClassMembersStatus.REMOVED) {
-    if (process.env.NODE_ENV === 'development') {
-      // Trong môi trường development để hỗ trợ kiểm thử tiện lợi, cho phép kích hoạt lại
-      member.status = ENUMS.ClassMembersStatus.ACTIVE;
-      member.joined_at = new Date();
-      member.removal_reason = null;
-      await member.save();
-      return {
-        class_id: classroom._id,
-        name: classroom.name,
-        member_id: member._id,
-        role: user.role,
-        message: 'Tham gia lại lớp học thành công!',
-      };
-    }
     throw new AppError(
       'Bạn đã bị gỡ khỏi lớp học này và không thể tham gia lại bằng liên kết hoặc mã mời cũ. Vui lòng liên hệ gia sư phụ trách lớp.',
       403
