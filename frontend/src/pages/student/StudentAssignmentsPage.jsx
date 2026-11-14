@@ -208,7 +208,7 @@ export default function StudentAssignmentsPage() {
             </div>
           ) : error ? (
             <div className="assignment-state-box">
-              <div className="assignment-state-icon" style={{ background: '#fee2e2', color: '#ef4444' }}>
+              <div className="assignment-state-icon" style={{ background: 'var(--color-error-soft)', color: 'var(--color-error)' }}>
                 <AlertCircle size={28} />
               </div>
               <h3 className="assignment-state-title">Không thể tải bài tập</h3>
@@ -237,7 +237,7 @@ export default function StudentAssignmentsPage() {
                 <button
                   type="button"
                   className="btn-outline-gray"
-                  style={{ padding: '8px 16px', fontSize: '13px', background: '#fff' }}
+                  style={{ padding: '8px 16px', fontSize: '13px', background: 'var(--color-surface)' }}
                   onClick={() => {
                     setActiveTab('ALL');
                     setSearchQuery('');
@@ -319,7 +319,7 @@ export default function StudentAssignmentsPage() {
                         {item.status === 'OVERDUE' && (
                           <div
                             className="assignment-meta-row"
-                            style={{ color: item.can_submit ? '#d97706' : '#dc2626' }}
+                            style={{ color: item.can_submit ? 'var(--color-warning)' : 'var(--color-error)' }}
                           >
                             <AlertCircle size={14} />
                             <span className="assignment-meta-text">

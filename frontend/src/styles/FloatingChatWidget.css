@@ -6,7 +6,7 @@
   width: 58px;
   height: 58px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  background: var(--color-primary-strong);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -31,7 +31,7 @@
 }
 
 .floating-chat-bubble.is-open {
-  background: #0f172a;
+  background: var(--color-text);
 }
 
 .bubble-icon-wrap {
@@ -45,7 +45,7 @@
   position: absolute;
   top: -2px;
   right: -2px;
-  background: #ef4444;
+  background: var(--color-error);
   color: #ffffff;
   font-size: 11px;
   font-weight: 800;
@@ -70,9 +70,9 @@
   height: 530px;
   max-width: calc(100vw - 32px);
   max-height: calc(100vh - 100px);
-  background: #ffffff;
+  background: var(--color-surface);
   border-radius: 20px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   box-shadow: 0 16px 40px rgba(15, 23, 42, 0.22), 0 4px 12px rgba(0, 0, 0, 0.08);
   z-index: 9998;
   overflow: hidden;
@@ -95,8 +95,8 @@
 /* Header */
 .floating-window-header {
   padding: 12px 16px;
-  background: #ffffff;
-  border-bottom: 1px solid #f1f5f9;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-surface-subtle);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -112,7 +112,7 @@
 .header-title-text {
   font-size: 15px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .header-badge {
@@ -120,7 +120,7 @@
   font-weight: 700;
   padding: 1px 7px;
   border-radius: 999px;
-  background: #ef4444;
+  background: var(--color-error);
   color: #ffffff;
 }
 
@@ -134,7 +134,7 @@
 .btn-header-back {
   border: none;
   background: transparent;
-  color: #64748b;
+  color: var(--color-text-muted);
   cursor: pointer;
   padding: 2px;
   border-radius: 6px;
@@ -144,8 +144,8 @@
 }
 
 .btn-header-back:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--color-surface-subtle);
+  color: var(--color-text);
 }
 
 .header-avatar {
@@ -170,7 +170,7 @@
 .header-name {
   font-size: 13px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--color-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -178,7 +178,7 @@
 
 .header-sub {
   font-size: 10px;
-  color: #64748b;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   font-weight: 700;
 }
@@ -194,7 +194,7 @@
   height: 30px;
   border: none;
   background: transparent;
-  color: #64748b;
+  color: var(--color-text-muted);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -204,8 +204,8 @@
 }
 
 .btn-header-icon:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--color-surface-subtle);
+  color: var(--color-text);
 }
 
 /* Conversation List Container */
@@ -218,8 +218,8 @@
 
 .floating-search-bar {
   padding: 10px 14px;
-  border-bottom: 1px solid #f1f5f9;
-  background: #ffffff;
+  border-bottom: 1px solid var(--color-surface-subtle);
+  background: var(--color-surface);
 }
 
 .floating-search-wrap {
@@ -232,27 +232,25 @@
 .floating-search-icon {
   position: absolute;
   left: 10px;
-  color: #94a3b8;
+  color: var(--color-text-muted);
   pointer-events: none;
   flex-shrink: 0;
 }
 
 .floating-search-input {
   width: 100%;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 6px 10px 6px 32px;
-  background: #f8fafc;
+  background: var(--color-surface-subtle);
   font-size: 12px;
-  color: #0f172a;
+  color: var(--color-text);
   outline: none;
   transition: all 0.15s ease-in-out;
 }
 
 .floating-search-input:focus {
-  background: #ffffff;
-  border-color: #0284c7;
-  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+  background: var(--color-surface);
 }
 
 .floating-conv-scroll {
@@ -273,20 +271,20 @@
 }
 
 .floating-conv-row:hover {
-  background: #f8fafc;
+  background: var(--color-surface-subtle);
 }
 
 .floating-conv-row.unread {
-  background: #f0f9ff;
+  background: var(--color-info-soft);
 }
 
 .floating-conv-row.unread .conv-name {
   font-weight: 800;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .floating-conv-row.unread .conv-preview {
-  color: #0f172a;
+  color: var(--color-text);
   font-weight: 600;
 }
 
@@ -310,7 +308,7 @@
   right: 0;
   width: 10px;
   height: 10px;
-  background: #10b981;
+  background: var(--color-success);
   border: 2px solid #ffffff;
   border-radius: 50%;
 }
@@ -330,7 +328,7 @@
 .conv-name {
   font-size: 13px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -338,14 +336,14 @@
 
 .conv-time {
   font-size: 10px;
-  color: #94a3b8;
+  color: var(--color-text-muted);
   flex-shrink: 0;
 }
 
 .conv-preview {
   margin: 2px 0 0 0;
   font-size: 12px;
-  color: #64748b;
+  color: var(--color-text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -356,7 +354,7 @@
   font-weight: 800;
   padding: 1px 6px;
   border-radius: 999px;
-  background: #0284c7;
+  background: var(--color-info);
   color: #ffffff;
   flex-shrink: 0;
 }
@@ -368,14 +366,14 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  color: #94a3b8;
+  color: var(--color-text-muted);
   font-size: 13px;
 }
 
 .floating-window-footer {
   padding: 10px 14px;
-  border-top: 1px solid #f1f5f9;
-  background: #f8fafc;
+  border-top: 1px solid var(--color-surface-subtle);
+  background: var(--color-surface-subtle);
   text-align: center;
   flex-shrink: 0;
 }
@@ -383,7 +381,7 @@
 .btn-open-full {
   border: none;
   background: transparent;
-  color: #0284c7;
+  color: var(--color-info);
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
@@ -391,7 +389,7 @@
 }
 
 .btn-open-full:hover {
-  color: #0369a1;
+  color: var(--color-info);
 }
 
 /* Thread View Container */
@@ -400,7 +398,7 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  background: #f8fafc;
+  background: var(--color-surface-subtle);
 }
 
 .floating-messages-scroll {
@@ -418,7 +416,7 @@
   justify-content: center;
   gap: 8px;
   font-size: 12px;
-  color: #64748b;
+  color: var(--color-text-muted);
   padding: 12px;
 }
 
@@ -444,16 +442,15 @@
 }
 
 .floating-msg-row.is-mine .floating-msg-bubble {
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-  color: #ffffff;
+  background: var(--color-primary-soft);
+  color: var(--color-text);
   border-radius: 16px 16px 4px 16px;
-  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
 }
 
 .floating-msg-row.is-theirs .floating-msg-bubble {
-  background: #ffffff;
-  color: #0f172a;
-  border: 1px solid #e2e8f0;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
   border-radius: 16px 16px 16px 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
@@ -473,23 +470,23 @@
 
 .floating-msg-row.is-mine .floating-msg-time {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-muted);
 }
 
 .floating-msg-row.is-theirs .floating-msg-time {
   font-size: 10px;
-  color: #94a3b8;
+  color: var(--color-text-muted);
 }
 
 .floating-msg-check {
-  color: #38bdf8;
+  color: var(--color-primary-strong);
 }
 
 /* Composer */
 .floating-composer {
   padding: 8px 12px;
-  background: #ffffff;
-  border-top: 1px solid #f1f5f9;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-surface-subtle);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -498,20 +495,18 @@
 
 .floating-composer input {
   flex: 1;
-  border: 1px solid #cbd5e1;
-  background: #f8fafc;
+  border: 1px solid var(--color-control-border);
+  background: var(--color-surface-subtle);
   border-radius: 20px;
   padding: 7px 12px;
   font-size: 13px;
   outline: none;
-  color: #0f172a;
+  color: var(--color-text);
   transition: all 0.15s;
 }
 
 .floating-composer input:focus {
-  background: #ffffff;
-  border-color: #0284c7;
-  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+  background: var(--color-surface);
 }
 
 .floating-composer button {
@@ -519,7 +514,7 @@
   height: 32px;
   border-radius: 50%;
   border: none;
-  background: #0284c7;
+  background: var(--color-info);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -530,13 +525,13 @@
 }
 
 .floating-composer button:hover:not(:disabled) {
-  background: #0369a1;
+  background: var(--color-info);
   transform: scale(1.05);
 }
 
 .floating-composer button:disabled {
-  background: #cbd5e1;
-  color: #94a3b8;
+  background: var(--color-control-border);
+  color: var(--color-text-muted);
   cursor: not-allowed;
 }
 

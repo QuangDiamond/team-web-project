@@ -16,7 +16,7 @@ export default function RequestSearch() {
         <h1>Yêu cầu tìm gia sư đang mở</h1>
         <p>Xem các yêu cầu phụ huynh vừa đăng theo môn học, trình độ, khu vực và ngân sách.</p>
       </header>
-      <div className="directory-container"><RequestBrowser readOnly={!isTutor} /></div>
+      <div className="directory-container"><RequestBrowser readOnly={!isTutor} directory /></div>
     </div>
   );
 }

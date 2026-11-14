@@ -144,7 +144,7 @@ export default function Register() {
   }
 
   return (
-    <AuthLayout activeStep={step}>
+    <AuthLayout activeStep={step} panelClassName="register-intro">
       <RegisterStepper currentStep={step} />
 
       {step === 1 && (

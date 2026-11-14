@@ -7,7 +7,7 @@
   padding: 12px 20px;
   border: 1px solid var(--color-border);
   border-radius: 999px;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-muted);
   font: inherit;
   font-weight: 600;
@@ -27,7 +27,7 @@
 .category-table-wrapper { overflow-x: auto; }
 .category-table { width: 100%; border-collapse: collapse; text-align: left; }
 .category-table th, .category-table td { padding: 16px 12px; border-bottom: 1px solid var(--color-border); font-size: 14px; }
-.category-table thead { color: var(--color-text-muted); background: var(--color-surface); }
+.category-table thead { color: var(--color-text-muted); background: var(--color-surface-subtle); }
 .category-row-actions { display: flex; gap: 8px; }
 .category-delete-note { margin-bottom: 20px; line-height: 1.6; }
 @media (max-width: 640px) {

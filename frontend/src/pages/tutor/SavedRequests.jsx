@@ -26,7 +26,7 @@ export default function SavedRequests() {
           description: "Bấm nút lưu trên yêu cầu để dễ tìm lại sau.",
         }}
       >
-        {list.data && <RequestGrid items={list.data.items} actions={actions} />}
+        {list.data && <RequestGrid items={list.data.items} actions={actions} showApplicationCount />}
       </ListState>
 
       {list.data && <Pagination pagination={list.data.pagination} onPageChange={setPage} />}

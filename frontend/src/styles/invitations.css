@@ -39,14 +39,9 @@
   padding: 0 12px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: var(--color-white);
+  background: var(--color-surface);
   font: inherit;
   font-size: 14px;
-}
-
-.tutor-search input:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
 }
 
 .tutor-row-avatar {

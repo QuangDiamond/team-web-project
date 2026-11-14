@@ -368,19 +368,19 @@ export default function CreateAssignmentPage() {
   const renderTopicSelectorBar = (isAi = false) => (
     <div
       style={{
-        background: isAi ? '#ffffff' : '#f8fafc',
-        border: isAi ? '1px solid #fdba74' : '1px solid #e2e8f0',
+        background: isAi ? 'var(--color-white)' : 'var(--color-surface-subtle)',
+        border: isAi ? '1px solid #fdba74' : '1px solid var(--color-border)',
         borderRadius: '10px',
         padding: '14px 16px',
         marginBottom: '16px',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', marginBottom: '10px' }}>
-        <label style={{ fontSize: '13px', fontWeight: 600, color: isAi ? '#9a3412' : '#334155', display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}>
-          <BookOpen size={15} color="#ea580c" />
+        <label style={{ fontSize: '13px', fontWeight: 600, color: isAi ? 'var(--color-primary-strong-hover)' : 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}>
+          <BookOpen size={15} color="var(--color-primary-strong)" />
           <span>Thanh chọn nguồn chủ đề & tài liệu (Topic / Material):</span>
         </label>
-        <span style={{ fontSize: '12px', color: '#64748b' }}>
+        <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>
           {topicSource === 'TOPIC'
             ? `Chủ đề trong lớp (${topics.length})`
             : topicSource === 'MATERIAL'
@@ -400,9 +400,9 @@ export default function CreateAssignmentPage() {
             gap: '6px',
             padding: '7px 14px',
             borderRadius: '8px',
-            border: topicSource === 'TOPIC' ? '1px solid #ea580c' : '1px solid #cbd5e1',
-            background: topicSource === 'TOPIC' ? '#ea580c' : '#ffffff',
-            color: topicSource === 'TOPIC' ? '#ffffff' : '#334155',
+            border: topicSource === 'TOPIC' ? '1px solid var(--color-primary-strong)' : '1px solid var(--color-control-border)',
+            background: topicSource === 'TOPIC' ? 'var(--color-primary-strong)' : 'var(--color-white)',
+            color: topicSource === 'TOPIC' ? 'var(--color-white)' : 'var(--color-text)',
             fontSize: '13px',
             fontWeight: topicSource === 'TOPIC' ? 600 : 500,
             cursor: 'pointer',
@@ -422,9 +422,9 @@ export default function CreateAssignmentPage() {
             gap: '6px',
             padding: '7px 14px',
             borderRadius: '8px',
-            border: topicSource === 'MATERIAL' ? '1px solid #ea580c' : '1px solid #cbd5e1',
-            background: topicSource === 'MATERIAL' ? '#ea580c' : '#ffffff',
-            color: topicSource === 'MATERIAL' ? '#ffffff' : '#334155',
+            border: topicSource === 'MATERIAL' ? '1px solid var(--color-primary-strong)' : '1px solid var(--color-control-border)',
+            background: topicSource === 'MATERIAL' ? 'var(--color-primary-strong)' : 'var(--color-white)',
+            color: topicSource === 'MATERIAL' ? 'var(--color-white)' : 'var(--color-text)',
             fontSize: '13px',
             fontWeight: topicSource === 'MATERIAL' ? 600 : 500,
             cursor: 'pointer',
@@ -444,9 +444,9 @@ export default function CreateAssignmentPage() {
             gap: '6px',
             padding: '7px 14px',
             borderRadius: '8px',
-            border: topicSource === 'CUSTOM' ? '1px solid #ea580c' : '1px solid #cbd5e1',
-            background: topicSource === 'CUSTOM' ? '#ea580c' : '#ffffff',
-            color: topicSource === 'CUSTOM' ? '#ffffff' : '#334155',
+            border: topicSource === 'CUSTOM' ? '1px solid var(--color-primary-strong)' : '1px solid var(--color-control-border)',
+            background: topicSource === 'CUSTOM' ? 'var(--color-primary-strong)' : 'var(--color-white)',
+            color: topicSource === 'CUSTOM' ? 'var(--color-white)' : 'var(--color-text)',
             fontSize: '13px',
             fontWeight: topicSource === 'CUSTOM' ? 600 : 500,
             cursor: 'pointer',
@@ -470,9 +470,9 @@ export default function CreateAssignmentPage() {
                   width: '100%',
                   padding: '9px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #cbd5e1',
+                  border: '1px solid var(--color-control-border)',
                   fontSize: '13px',
-                  background: '#ffffff',
+                  background: 'var(--color-surface)',
                 }}
               >
                 <option value="">-- Chọn một chủ đề đã tạo trong lớp --</option>
@@ -484,7 +484,7 @@ export default function CreateAssignmentPage() {
               </select>
             </div>
           ) : (
-            <div style={{ padding: '9px 12px', background: '#f8fafc', borderRadius: '6px', border: '1px dashed #cbd5e1', fontSize: '13px', color: '#64748b' }}>
+            <div style={{ padding: '9px 12px', background: 'var(--color-surface-subtle)', borderRadius: '6px', border: '1px dashed var(--color-control-border)', fontSize: '13px', color: 'var(--color-text-muted)' }}>
               Lớp chưa có chủ đề nào được tạo. Bạn có thể chọn <strong>"Từ Tài liệu"</strong> hoặc <strong>"Tự nhập chủ đề khác"</strong>.
             </div>
           )}
@@ -503,9 +503,9 @@ export default function CreateAssignmentPage() {
                   width: '100%',
                   padding: '9px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #cbd5e1',
+                  border: '1px solid var(--color-control-border)',
                   fontSize: '13px',
-                  background: '#ffffff',
+                  background: 'var(--color-surface)',
                 }}
               >
                 <option value="">-- Chọn một tài liệu đã tải lên trong lớp --</option>
@@ -517,7 +517,7 @@ export default function CreateAssignmentPage() {
               </select>
             </div>
           ) : (
-            <div style={{ padding: '9px 12px', background: '#f8fafc', borderRadius: '6px', border: '1px dashed #cbd5e1', fontSize: '13px', color: '#64748b' }}>
+            <div style={{ padding: '9px 12px', background: 'var(--color-surface-subtle)', borderRadius: '6px', border: '1px dashed var(--color-control-border)', fontSize: '13px', color: 'var(--color-text-muted)' }}>
               Lớp chưa có tài liệu nào. Bạn có thể chọn <strong>"Từ Chủ đề"</strong> hoặc <strong>"Tự nhập chủ đề khác"</strong>.
             </div>
           )}
@@ -536,9 +536,9 @@ export default function CreateAssignmentPage() {
               width: '100%',
               padding: '9px 12px',
               borderRadius: '8px',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--color-control-border)',
               fontSize: '13px',
-              background: '#ffffff',
+              background: 'var(--color-surface)',
             }}
           />
         </div>
@@ -556,13 +556,13 @@ export default function CreateAssignmentPage() {
             alignItems: 'center',
             justifyContent: 'space-between',
             gap: '8px',
-            background: topicSource === 'MATERIAL' ? '#fffbeb' : topicSource === 'TOPIC' ? '#eff6ff' : '#f8fafc',
-            border: `1px solid ${topicSource === 'MATERIAL' ? '#fde68a' : topicSource === 'TOPIC' ? '#bfdbfe' : '#e2e8f0'}`,
-            color: topicSource === 'MATERIAL' ? '#92400e' : topicSource === 'TOPIC' ? '#1e40af' : '#334155',
+            background: topicSource === 'MATERIAL' ? 'var(--color-warning-soft)' : topicSource === 'TOPIC' ? 'var(--color-info-soft)' : 'var(--color-surface-subtle)',
+            border: `1px solid ${topicSource === 'MATERIAL' ? '#fde68a' : topicSource === 'TOPIC' ? '#bfdbfe' : 'var(--color-border)'}`,
+            color: topicSource === 'MATERIAL' ? 'var(--color-warning)' : topicSource === 'TOPIC' ? 'var(--color-info)' : 'var(--color-text)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            {topicSource === 'MATERIAL' ? <FileText size={15} color="#ea580c" /> : <BookOpen size={15} color="#0284c7" />}
+            {topicSource === 'MATERIAL' ? <FileText size={15} color="var(--color-primary-strong)" /> : <BookOpen size={15} color="var(--color-info)" />}
             <span>
               {topicSource === 'MATERIAL' ? 'Tài liệu đang chọn: ' : topicSource === 'TOPIC' ? 'Chủ đề đang chọn: ' : 'Chủ đề: '}
               <strong>{aiTopic}</strong>
@@ -579,7 +579,7 @@ export default function CreateAssignmentPage() {
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: '#64748b',
+                color: 'var(--color-text-muted)',
                 cursor: 'pointer',
                 fontSize: '12px',
                 textDecoration: 'underline',
@@ -727,8 +727,8 @@ export default function CreateAssignmentPage() {
   if (loadingData) {
     return (
       <div className="classroom-container" style={{ padding: '60px 20px', textAlign: 'center' }}>
-        <Loader2 size={32} className="spin" style={{ margin: '0 auto 12px auto', color: '#e85a2c' }} />
-        <p style={{ color: '#64748b' }}>Đang tải thông tin lớp học...</p>
+        <Loader2 size={32} className="spin" style={{ margin: '0 auto 12px auto', color: 'var(--color-primary-strong)' }} />
+        <p style={{ color: 'var(--color-text-muted)' }}>Đang tải thông tin lớp học...</p>
       </div>
     );
   }
@@ -748,7 +748,7 @@ export default function CreateAssignmentPage() {
         </Link>
 
         {classroom && (
-          <span style={{ fontSize: '13px', color: '#64748b' }}>
+          <span style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>
             Lớp: <strong>{classroom.name}</strong> • Môn {classroom.subject} ({classroom.grade})
           </span>
         )}
@@ -758,7 +758,7 @@ export default function CreateAssignmentPage() {
       <div className="classroom-header" style={{ marginBottom: '24px' }}>
         <div className="classroom-header-info">
           <h1 style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '24px' }}>
-            <ClipboardList size={28} style={{ color: '#e85a2c' }} />
+            <ClipboardList size={28} style={{ color: 'var(--color-primary-strong)' }} />
             <span>{isEditing ? 'Chỉnh sửa bài tập' : 'Tạo bài tập mới'}</span>
           </h1>
           <p>
@@ -780,7 +780,7 @@ export default function CreateAssignmentPage() {
       {!isEditing && (
         <div
           style={{
-            background: 'linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)',
+            background: 'linear-gradient(135deg, var(--color-primary-soft) 0%, var(--color-primary-soft) 100%)',
             border: '1px solid #fed7aa',
             borderRadius: '12px',
             padding: '18px 20px',
@@ -794,20 +794,20 @@ export default function CreateAssignmentPage() {
                   width: '36px',
                   height: '36px',
                   borderRadius: '8px',
-                  background: '#ea580c',
+                  background: 'var(--color-primary-strong)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#ffffff',
+                  color: 'var(--color-white)',
                 }}
               >
                 <Sparkles size={20} />
               </div>
               <div>
-                <h4 style={{ margin: 0, fontSize: '15px', color: '#9a3412', fontWeight: 600 }}>
+                <h4 style={{ margin: 0, fontSize: '15px', color: 'var(--color-primary-strong-hover)', fontWeight: 600 }}>
                   Trợ lý AI tạo đề tự động
                 </h4>
-                <p style={{ margin: 0, fontSize: '13px', color: '#c2410c' }}>
+                <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-primary-strong)' }}>
                   Nhập chủ đề và độ khó, AI sẽ tạo sẵn bộ câu hỏi trắc nghiệm & tự luận để bạn chỉnh sửa.
                 </p>
               </div>
@@ -828,13 +828,13 @@ export default function CreateAssignmentPage() {
               {aiError && (
                 <div
                   style={{
-                    background: aiError.type === 'QUOTA' ? '#fee2e2' : '#fef3c7',
+                    background: aiError.type === 'QUOTA' ? 'var(--color-error-soft)' : 'var(--color-warning-soft)',
                     border: `1px solid ${aiError.type === 'QUOTA' ? '#fca5a5' : '#fcd34d'}`,
                     borderRadius: '8px',
                     padding: '12px 14px',
                     marginBottom: '14px',
                     fontSize: '13px',
-                    color: aiError.type === 'QUOTA' ? '#991b1b' : '#92400e',
+                    color: aiError.type === 'QUOTA' ? 'var(--color-error)' : 'var(--color-warning)',
                   }}
                 >
                   <div style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -933,8 +933,8 @@ export default function CreateAssignmentPage() {
       )}
 
       {/* Main Assignment Form */}
-      <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '24px', marginBottom: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-        <h3 style={{ margin: '0 0 16px 0', fontSize: '16px', color: '#0f172a' }}>1. Thông tin chung bài tập</h3>
+      <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '24px', marginBottom: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+        <h3 style={{ margin: '0 0 16px 0', fontSize: '16px', color: 'var(--color-text)' }}>1. Thông tin chung bài tập</h3>
 
         {/* Thanh chọn Topic & Material */}
         {renderTopicSelectorBar(false)}
@@ -989,7 +989,7 @@ export default function CreateAssignmentPage() {
         </div>
 
         <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', marginTop: '8px' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', color: '#334155' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', color: 'var(--color-text)' }}>
             <input
               type="checkbox"
               checked={allowLate}
@@ -998,7 +998,7 @@ export default function CreateAssignmentPage() {
             <span>Cho phép nộp muộn (sau hạn vẫn nộp được và đánh dấu Late)</span>
           </label>
 
-          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', color: '#334155' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', color: 'var(--color-text)' }}>
             <input
               type="checkbox"
               checked={allowResubmission}
@@ -1010,14 +1010,14 @@ export default function CreateAssignmentPage() {
       </div>
 
       {/* Questions Section */}
-      <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '24px', marginBottom: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+      <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '24px', marginBottom: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
           <div>
-            <h3 style={{ margin: 0, fontSize: '16px', color: '#0f172a' }}>
+            <h3 style={{ margin: 0, fontSize: '16px', color: 'var(--color-text)' }}>
               2. Danh sách câu hỏi ({questions.length})
             </h3>
             {isQuestionLocked && (
-              <span style={{ fontSize: '12px', color: '#dc2626', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
+              <span style={{ fontSize: '12px', color: 'var(--color-error)', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
                 <Lock size={13} /> Bài tập đã công bố kết quả, câu hỏi đang ở chế độ khóa để bảo toàn dữ liệu.
               </span>
             )}
@@ -1057,11 +1057,11 @@ export default function CreateAssignmentPage() {
           <div
             key={idx}
             style={{
-              border: '1px solid #e2e8f0',
+              border: '1px solid var(--color-border)',
               borderRadius: '10px',
               padding: '16px',
               marginBottom: '16px',
-              background: '#f8fafc',
+              background: 'var(--color-surface-subtle)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
@@ -1071,8 +1071,8 @@ export default function CreateAssignmentPage() {
                     width: '26px',
                     height: '26px',
                     borderRadius: '50%',
-                    background: '#e2e8f0',
-                    color: '#334155',
+                    background: 'var(--color-border)',
+                    color: 'var(--color-text)',
                     fontSize: '13px',
                     fontWeight: 600,
                     display: 'flex',
@@ -1096,7 +1096,7 @@ export default function CreateAssignmentPage() {
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#64748b' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: 'var(--color-text-muted)' }}>
                   <span>Điểm:</span>
                   <input
                     type="number"
@@ -1112,7 +1112,7 @@ export default function CreateAssignmentPage() {
                 {!isQuestionLocked && questions.length > 1 && (
                   <button
                     type="button"
-                    style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '4px' }}
+                    style={{ background: 'transparent', border: 'none', color: 'var(--color-error)', cursor: 'pointer', padding: '4px' }}
                     onClick={() => handleRemoveQuestion(idx)}
                     title="Xóa câu hỏi này"
                   >
@@ -1135,8 +1135,8 @@ export default function CreateAssignmentPage() {
 
             {/* MCQ Options & Answer Key */}
             {q.question_type === 'MULTIPLE_CHOICE' && (
-              <div style={{ background: '#ffffff', borderRadius: '8px', padding: '12px', border: '1px solid #e2e8f0' }}>
-                <div style={{ fontSize: '12px', fontWeight: 600, color: '#475569', marginBottom: '8px' }}>
+              <div style={{ background: 'var(--color-surface)', borderRadius: '8px', padding: '12px', border: '1px solid var(--color-border)' }}>
+                <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: '8px' }}>
                   Các phương án lựa chọn (Chọn nút tròn để đặt đáp án đúng):
                 </div>
 
@@ -1163,9 +1163,9 @@ export default function CreateAssignmentPage() {
                           flex: 1,
                           padding: '8px 12px',
                           borderRadius: '8px',
-                          border: '1px solid #cbd5e1',
+                          border: '1px solid var(--color-control-border)',
                           fontSize: '13px',
-                          background: isQuestionLocked ? '#f8fafc' : '#ffffff',
+                          background: isQuestionLocked ? 'var(--color-surface-subtle)' : 'var(--color-white)',
                         }}
                       />
                     </div>
@@ -1176,8 +1176,8 @@ export default function CreateAssignmentPage() {
 
             {/* Short Answer Key */}
             {q.question_type === 'SHORT_ANSWER' && (
-              <div style={{ background: '#ffffff', borderRadius: '8px', padding: '14px', border: '1px solid #e2e8f0' }}>
-                <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '8px' }}>
+              <div style={{ background: 'var(--color-surface)', borderRadius: '8px', padding: '14px', border: '1px solid var(--color-border)' }}>
+                <label style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text)', display: 'block', marginBottom: '8px' }}>
                   Đáp án chuẩn / Gợi ý chấm điểm:
                 </label>
                 <textarea
@@ -1190,16 +1190,16 @@ export default function CreateAssignmentPage() {
                     width: '100%',
                     padding: '10px 14px',
                     borderRadius: '8px',
-                    border: '1px solid #cbd5e1',
+                    border: '1px solid var(--color-control-border)',
                     fontSize: '13px',
                     lineHeight: '1.5',
-                    background: isQuestionLocked ? '#f8fafc' : '#ffffff',
+                    background: isQuestionLocked ? 'var(--color-surface-subtle)' : 'var(--color-white)',
                     resize: 'vertical',
                     boxSizing: 'border-box',
                     fontFamily: 'inherit',
                   }}
                 />
-                <span style={{ fontSize: '12px', color: '#64748b', marginTop: '6px', display: 'block' }}>
+                <span style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '6px', display: 'block' }}>
                   Gợi ý đáp án này dùng để đối chiếu khi gia sư chấm bài tự luận của học sinh.
                 </span>
               </div>
@@ -1207,7 +1207,7 @@ export default function CreateAssignmentPage() {
 
             {/* File Upload Note */}
             {q.question_type === 'FILE_UPLOAD' && (
-              <div style={{ background: '#f0fdf4', borderRadius: '8px', padding: '12px', border: '1px solid #bbf7d0', fontSize: '13px', color: '#166534' }}>
+              <div style={{ background: 'var(--color-success-soft)', borderRadius: '8px', padding: '12px', border: '1px solid #bbf7d0', fontSize: '13px', color: 'var(--color-success)' }}>
                 Học sinh sẽ được yêu cầu đính kèm tệp làm bài (hình ảnh, tài liệu PDF, Word tối đa 20MB). Bạn sẽ chấm điểm trực tiếp và viết phản hồi sau khi học sinh nộp bài.
               </div>
             )}
@@ -1230,8 +1230,8 @@ export default function CreateAssignmentPage() {
       {/* Sticky Bottom Actions Bar */}
       <div
         style={{
-          background: '#ffffff',
-          border: '1px solid #e2e8f0',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-border)',
           borderRadius: '12px',
           padding: '16px 20px',
           display: 'flex',

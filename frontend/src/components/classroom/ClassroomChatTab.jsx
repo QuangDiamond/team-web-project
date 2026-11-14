@@ -142,16 +142,16 @@ export default function ClassroomChatTab({
             style={{
               margin: '0 0 4px 0',
               fontSize: '18px',
-              color: '#0f172a',
+              color: 'var(--color-text)',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
             }}
           >
-            <MessageSquare size={20} style={{ color: '#e85a2c' }} />
+            <MessageSquare size={20} style={{ color: 'var(--color-primary-strong)' }} />
             Phòng chat nhóm lớp học
           </h3>
-          <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>
+          <p style={{ margin: 0, fontSize: '14px', color: 'var(--color-text-muted)' }}>
             Kênh trao đổi học tập trực tiếp giữa Gia sư và toàn thể học sinh, phụ huynh lớp{' '}
             <strong>{classroom.name}</strong>.
           </p>
@@ -203,14 +203,14 @@ export default function ClassroomChatTab({
                 style={{
                   textAlign: 'center',
                   margin: 'auto',
-                  color: '#94a3b8',
+                  color: 'var(--color-text-muted)',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   gap: '8px',
                 }}
               >
-                <MessageSquare size={32} style={{ color: '#cbd5e1' }} />
+                <MessageSquare size={32} style={{ color: 'var(--color-control-border)' }} />
                 <span>Chưa có tin nhắn nào trong nhóm chat lớp. Hãy gửi tin nhắn hoặc tài liệu đầu tiên!</span>
               </div>
             ) : (
@@ -290,7 +290,7 @@ export default function ClassroomChatTab({
                     <div
                       style={{
                         fontSize: '10px',
-                        color: isMine ? '#ffedd5' : '#94a3b8',
+                        color: 'var(--color-text-muted)',
                         marginTop: '4px',
                         textAlign: 'right',
                       }}
@@ -312,8 +312,8 @@ export default function ClassroomChatTab({
             <div
               style={{
                 width: '260px',
-                borderLeft: '1px solid #e2e8f0',
-                background: '#ffffff',
+                borderLeft: '1px solid var(--color-border)',
+                background: 'var(--color-surface)',
                 padding: '14px',
                 overflowY: 'auto',
               }}
@@ -326,10 +326,10 @@ export default function ClassroomChatTab({
                   marginBottom: '12px',
                 }}
               >
-                <h4 style={{ margin: 0, fontSize: '14px', color: '#334155' }}>
+                <h4 style={{ margin: 0, fontSize: '14px', color: 'var(--color-text)' }}>
                   Thành viên
                 </h4>
-                <span style={{ fontSize: '11px', color: '#16a34a', fontWeight: 600 }}>
+                <span style={{ fontSize: '11px', color: 'var(--color-success)', fontWeight: 600 }}>
                   ● Đang hoạt động
                 </span>
               </div>
@@ -344,8 +344,8 @@ export default function ClassroomChatTab({
                       justifyContent: 'space-between',
                       padding: '8px 10px',
                       borderRadius: '8px',
-                      background: '#f8fafc',
-                      border: '1px solid #f1f5f9',
+                      background: 'var(--color-surface-subtle)',
+                      border: '1px solid var(--color-surface-subtle)',
                     }}
                   >
                     <div style={{ overflow: 'hidden' }}>
@@ -353,7 +353,7 @@ export default function ClassroomChatTab({
                         style={{
                           fontWeight: 600,
                           fontSize: '13px',
-                          color: '#0f172a',
+                          color: 'var(--color-text)',
                           textOverflow: 'ellipsis',
                           overflow: 'hidden',
                           whiteSpace: 'nowrap',
@@ -361,7 +361,7 @@ export default function ClassroomChatTab({
                       >
                         {m.user?.full_name || m.user?.email || 'Người dùng'}
                       </div>
-                      <div style={{ fontSize: '11px', color: '#64748b' }}>
+                      <div style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>
                         {m.is_owner
                           ? 'Gia sư chủ nhóm'
                           : m.role === 'PARENT'
@@ -377,7 +377,7 @@ export default function ClassroomChatTab({
                         style={{
                           border: 'none',
                           background: 'transparent',
-                          color: '#ef4444',
+                          color: 'var(--color-error)',
                           cursor: 'pointer',
                           padding: '2px 4px',
                           display: 'flex',
@@ -402,7 +402,7 @@ export default function ClassroomChatTab({
               <div key={idx} className="chat-preview-file-tag">
                 {isImageAttachment(file) ? <ImageIcon size={14} /> : <FileText size={14} />}
                 <span className="chat-preview-file-name">{file.file_name}</span>
-                <span style={{ fontSize: '11px', color: '#64748b' }}>
+                <span style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>
                   ({formatFileSize(file.file_size)})
                 </span>
                 <button
@@ -439,8 +439,8 @@ export default function ClassroomChatTab({
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              color: selectedFiles.length > 0 ? '#e85a2c' : '#64748b',
-              borderColor: selectedFiles.length > 0 ? '#e85a2c' : '#cbd5e1',
+              color: selectedFiles.length > 0 ? 'var(--color-primary-strong)' : 'var(--color-text-muted)',
+              borderColor: selectedFiles.length > 0 ? 'var(--color-primary-strong)' : 'var(--color-control-border)',
             }}
             onClick={() => fileInputRef.current?.click()}
             title="Đính kèm tệp (PDF, Word, Excel, PowerPoint, Ảnh, Video, Zip - tối đa 20MB)"

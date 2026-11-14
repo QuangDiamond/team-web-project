@@ -143,20 +143,20 @@ export default function ClassroomScheduleTab({ classId, classroom }) {
     const end = new Date(session.end_time);
 
     if (session.status === 'CANCELLED') {
-      return <span style={{ padding: '3px 8px', borderRadius: '12px', background: '#fee2e2', color: '#b91c1c', fontSize: '12px', fontWeight: 600 }}>Đã hủy</span>;
+      return <span style={{ padding: '3px 8px', borderRadius: '12px', background: 'var(--color-error-soft)', color: 'var(--color-error)', fontSize: '12px', fontWeight: 600 }}>Đã hủy</span>;
     }
     if (now >= start && now <= end) {
-      return <span style={{ padding: '3px 8px', borderRadius: '12px', background: '#dcfce7', color: '#15803d', fontSize: '12px', fontWeight: 600 }}>Đang diễn ra</span>;
+      return <span style={{ padding: '3px 8px', borderRadius: '12px', background: 'var(--color-success-soft)', color: 'var(--color-success)', fontSize: '12px', fontWeight: 600 }}>Đang diễn ra</span>;
     }
     if (now > end || session.status === 'COMPLETED') {
-      return <span style={{ padding: '3px 8px', borderRadius: '12px', background: '#f1f5f9', color: '#64748b', fontSize: '12px', fontWeight: 600 }}>Đã hoàn thành</span>;
+      return <span style={{ padding: '3px 8px', borderRadius: '12px', background: 'var(--color-surface-subtle)', color: 'var(--color-text-muted)', fontSize: '12px', fontWeight: 600 }}>Đã hoàn thành</span>;
     }
-    return <span style={{ padding: '3px 8px', borderRadius: '12px', background: '#e0f2fe', color: '#0369a1', fontSize: '12px', fontWeight: 600 }}>Sắp tới</span>;
+    return <span style={{ padding: '3px 8px', borderRadius: '12px', background: 'var(--color-info-soft)', color: 'var(--color-info)', fontSize: '12px', fontWeight: 600 }}>Sắp tới</span>;
   };
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '260px', gap: '10px', color: '#64748b' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '260px', gap: '10px', color: 'var(--color-text-muted)' }}>
         <Loader2 size={24} className="spin" />
         <span>Đang tải lịch học của lớp...</span>
       </div>
@@ -165,12 +165,12 @@ export default function ClassroomScheduleTab({ classId, classroom }) {
 
   if (error) {
     return (
-      <div style={{ padding: '24px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', color: '#991b1b', textAlign: 'center' }}>
+      <div style={{ padding: '24px', background: 'var(--color-error-soft)', border: '1px solid #fecaca', borderRadius: '8px', color: 'var(--color-error)', textAlign: 'center' }}>
         <p style={{ margin: '0 0 12px', fontWeight: 600 }}>{error}</p>
         <button
           type="button"
           onClick={loadSessions}
-          style={{ padding: '6px 14px', borderRadius: '6px', border: '1px solid #dc2626', background: '#fff', color: '#dc2626', cursor: 'pointer', fontWeight: 600 }}
+          style={{ padding: '6px 14px', borderRadius: '6px', border: '1px solid var(--color-error)', background: 'var(--color-surface)', color: 'var(--color-error)', cursor: 'pointer', fontWeight: 600 }}
         >
           Thử lại
         </button>
@@ -187,10 +187,10 @@ export default function ClassroomScheduleTab({ classId, classroom }) {
             <CalendarDays size={20} />
           </span>
           <div>
-            <h2 style={{ fontSize: '18px', fontWeight: 700, margin: 0, color: '#0f172a' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 700, margin: 0, color: 'var(--color-text)' }}>
               {MONTH_YEAR_FORMATTER.format(weekStart)}
             </h2>
-            <p style={{ margin: '2px 0 0', fontSize: '13px', color: '#64748b' }}>
+            <p style={{ margin: '2px 0 0', fontSize: '13px', color: 'var(--color-text-muted)' }}>
               {weekStart.toLocaleDateString('vi-VN', { day: 'numeric', month: 'numeric' })}
               {' - '}
               {new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6).toLocaleDateString('vi-VN', { day: 'numeric', month: 'numeric', year: 'numeric' })}
@@ -200,18 +200,18 @@ export default function ClassroomScheduleTab({ classId, classroom }) {
 
         <div className="schedule-toolbar-actions">
           {/* Switch Grid / List */}
-          <div style={{ display: 'flex', background: '#f1f5f9', padding: '3px', borderRadius: '8px' }}>
+          <div style={{ display: 'flex', background: 'var(--color-surface-subtle)', padding: '3px', borderRadius: '8px' }}>
             <button
               type="button"
               onClick={() => setViewMode('GRID')}
               style={{
                 border: 'none',
-                background: viewMode === 'GRID' ? '#fff' : 'transparent',
+                background: viewMode === 'GRID' ? 'var(--color-white)' : 'transparent',
                 padding: '6px 12px',
                 borderRadius: '6px',
                 fontSize: '13px',
                 fontWeight: viewMode === 'GRID' ? 700 : 500,
-                color: viewMode === 'GRID' ? '#e85a2c' : '#64748b',
+                color: viewMode === 'GRID' ? 'var(--color-primary-strong)' : 'var(--color-text-muted)',
                 cursor: 'pointer',
                 boxShadow: viewMode === 'GRID' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
               }}
@@ -223,12 +223,12 @@ export default function ClassroomScheduleTab({ classId, classroom }) {
               onClick={() => setViewMode('LIST')}
               style={{
                 border: 'none',
-                background: viewMode === 'LIST' ? '#fff' : 'transparent',
+                background: viewMode === 'LIST' ? 'var(--color-white)' : 'transparent',
                 padding: '6px 12px',
                 borderRadius: '6px',
                 fontSize: '13px',
                 fontWeight: viewMode === 'LIST' ? 700 : 500,
-                color: viewMode === 'LIST' ? '#e85a2c' : '#64748b',
+                color: viewMode === 'LIST' ? 'var(--color-primary-strong)' : 'var(--color-text-muted)',
                 cursor: 'pointer',
                 boxShadow: viewMode === 'LIST' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
               }}
@@ -270,8 +270,8 @@ export default function ClassroomScheduleTab({ classId, classroom }) {
       {viewMode === 'GRID' && (
         <div className="schedule-calendar-card">
           {weekSessions.length === 0 && (
-            <div className="schedule-week-empty" style={{ padding: '36px', textAlign: 'center', color: '#64748b' }}>
-              <CalendarCheck size={36} style={{ color: '#cbd5e1', marginBottom: '8px' }} />
+            <div className="schedule-week-empty" style={{ padding: '36px', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+              <CalendarCheck size={36} style={{ color: 'var(--color-control-border)', marginBottom: '8px' }} />
               <p style={{ margin: 0, fontWeight: 500 }}>Không có buổi học nào trong tuần này.</p>
             </div>
           )}
@@ -393,8 +393,8 @@ export default function ClassroomScheduleTab({ classId, classroom }) {
       {viewMode === 'LIST' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {weekSessions.length === 0 ? (
-            <div style={{ padding: '40px', textAlign: 'center', background: '#fff', borderRadius: '10px', border: '1px solid #e2e8f0', color: '#64748b' }}>
-              <CalendarCheck size={40} style={{ color: '#cbd5e1', marginBottom: '8px' }} />
+            <div style={{ padding: '40px', textAlign: 'center', background: 'var(--color-surface)', borderRadius: '10px', border: '1px solid var(--color-border)', color: 'var(--color-text-muted)' }}>
+              <CalendarCheck size={40} style={{ color: 'var(--color-control-border)', marginBottom: '8px' }} />
               <p style={{ margin: 0, fontWeight: 500 }}>Không có buổi học nào trong tuần này.</p>
             </div>
           ) : (
@@ -408,8 +408,8 @@ export default function ClassroomScheduleTab({ classId, classroom }) {
                   style={{
                     padding: '16px 20px',
                     borderRadius: '10px',
-                    border: '1px solid #e2e8f0',
-                    background: '#fff',
+                    border: '1px solid var(--color-border)',
+                    background: 'var(--color-surface)',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
@@ -423,8 +423,8 @@ export default function ClassroomScheduleTab({ classId, classroom }) {
                         width: '42px',
                         height: '42px',
                         borderRadius: '10px',
-                        background: '#fff7ed',
-                        color: '#ea580c',
+                        background: 'var(--color-primary-soft)',
+                        color: 'var(--color-primary-strong)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -434,10 +434,10 @@ export default function ClassroomScheduleTab({ classId, classroom }) {
                       <CalendarDays size={20} />
                     </div>
                     <div>
-                      <h4 style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: 700, color: '#0f172a' }}>
+                      <h4 style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: 700, color: 'var(--color-text)' }}>
                         {session.title || 'Buổi học'}
                       </h4>
-                      <p style={{ margin: 0, fontSize: '13px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <span>{dateStr}</span>
                         <span>•</span>
                         <Clock size={13} />
@@ -485,7 +485,7 @@ export default function ClassroomScheduleTab({ classId, classroom }) {
         >
           <div
             style={{
-              background: '#fff',
+              background: 'var(--color-surface)',
               borderRadius: '12px',
               maxWidth: '480px',
               width: '100%',
@@ -496,10 +496,10 @@ export default function ClassroomScheduleTab({ classId, classroom }) {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
               <div>
-                <h3 style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 700, color: '#0f172a' }}>
+                <h3 style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 700, color: 'var(--color-text)' }}>
                   {selectedSession.title || 'Chi tiết buổi học'}
                 </h3>
-                <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>
+                <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-text-muted)' }}>
                   {classroom?.name || 'Lớp học'}
                 </p>
               </div>
@@ -507,8 +507,8 @@ export default function ClassroomScheduleTab({ classId, classroom }) {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', margin: '20px 0', fontSize: '14px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#334155' }}>
-                <Clock size={16} style={{ color: '#64748b' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--color-text)' }}>
+                <Clock size={16} style={{ color: 'var(--color-text-muted)' }} />
                 <span>
                   <strong>Thời gian:</strong> {formatSessionTime(selectedSession)} (
                   {new Date(selectedSession.start_time).toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })}
@@ -517,15 +517,15 @@ export default function ClassroomScheduleTab({ classId, classroom }) {
               </div>
 
               {selectedSession.meeting_link && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#334155' }}>
-                  <Video size={16} style={{ color: '#0284c7' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--color-text)' }}>
+                  <Video size={16} style={{ color: 'var(--color-info)' }} />
                   <span>
                     <strong>Link trực tuyến:</strong>{' '}
                     <a
                       href={selectedSession.meeting_link}
                       target="_blank"
                       rel="noreferrer"
-                      style={{ color: '#0284c7', textDecoration: 'underline', wordBreak: 'break-all' }}
+                      style={{ color: 'var(--color-info)', textDecoration: 'underline', wordBreak: 'break-all' }}
                     >
                       {selectedSession.meeting_link}
                     </a>
@@ -546,7 +546,7 @@ export default function ClassroomScheduleTab({ classId, classroom }) {
                 <button
                   type="button"
                   className="btn btn-outline btn-sm"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#ea580c', borderColor: '#ea580c' }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--color-primary-strong)', borderColor: 'var(--color-primary-strong)' }}
                   onClick={() => {
                     const target = selectedSession;
                     setSelectedSession(null);

@@ -44,7 +44,7 @@ export default function RemoveMemberModal({ isOpen, onClose, classroomId, member
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#dc2626' }}>
+          <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--color-error)' }}>
             <AlertTriangle size={20} />
             <span>Xác nhận xóa thành viên</span>
           </h2>
@@ -56,7 +56,7 @@ export default function RemoveMemberModal({ isOpen, onClose, classroomId, member
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
 
-            <p style={{ margin: '0 0 16px 0', fontSize: '15px', color: '#334155' }}>
+            <p style={{ margin: '0 0 16px 0', fontSize: '15px', color: 'var(--color-text)' }}>
               Bạn có chắc chắn muốn xóa học viên <strong>{userName}</strong> khỏi lớp học không?
             </p>
 
@@ -80,7 +80,7 @@ export default function RemoveMemberModal({ isOpen, onClose, classroomId, member
             <button
               type="submit"
               className="btn-primary-orange"
-              style={{ backgroundColor: '#dc2626', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              style={{ backgroundColor: 'var(--color-error)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               disabled={submitting}
             >
               <Trash2 size={15} />

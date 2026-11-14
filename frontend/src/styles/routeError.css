@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  background: var(--color-surface);
+  background: var(--color-canvas);
 }
 
 .route-error-card {
@@ -14,7 +14,7 @@
   max-width: 480px;
   padding: 32px 24px;
   text-align: center;
-  background: var(--color-white);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
 }

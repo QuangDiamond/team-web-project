@@ -385,15 +385,15 @@ export default function ClassroomTopicsAndMaterials({
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '4px',
-                        color: '#ea580c',
+                        color: 'var(--color-primary-strong)',
                         borderColor: '#fdba74',
-                        background: '#fff7ed',
+                        background: 'var(--color-primary-soft)',
                         textDecoration: 'none',
                         fontWeight: 600,
                       }}
                       title={`Tạo bài tập tự động bằng AI từ chủ đề "${topic.name}"`}
                     >
-                      <Sparkles size={14} color="#ea580c" aria-hidden="true" />
+                      <Sparkles size={14} color="var(--color-primary-strong)" aria-hidden="true" />
                       <span>AI tạo bài tập</span>
                     </Link>
                   )}
@@ -465,15 +465,15 @@ export default function ClassroomTopicsAndMaterials({
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '4px',
-                      color: '#ea580c',
+                      color: 'var(--color-primary-strong)',
                       borderColor: '#fdba74',
-                      background: '#fff7ed',
+                      background: 'var(--color-primary-soft)',
                       textDecoration: 'none',
                       fontWeight: 600,
                     }}
                     title="Tạo bài tập tự động bằng AI từ tài liệu này"
                   >
-                    <Sparkles size={14} color="#ea580c" aria-hidden="true" />
+                    <Sparkles size={14} color="var(--color-primary-strong)" aria-hidden="true" />
                     <span>AI tạo bài tập</span>
                   </Link>
                 )}

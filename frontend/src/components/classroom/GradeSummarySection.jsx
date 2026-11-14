@@ -22,7 +22,7 @@ export default function GradeSummarySection({
         </h4>
 
         {isGraded && gradedAt && (
-          <span style={{ fontSize: '12px', color: '#166534', background: '#dcfce7', padding: '3px 8px', borderRadius: '6px', fontWeight: 600 }}>
+          <span style={{ fontSize: '12px', color: 'var(--color-success)', background: 'var(--color-success-soft)', padding: '3px 8px', borderRadius: '6px', fontWeight: 600 }}>
             Đã chấm lúc: {new Date(gradedAt).toLocaleString('vi-VN')}
           </span>
         )}
@@ -31,7 +31,7 @@ export default function GradeSummarySection({
       <div className="grade-summary-grid">
         {/* Điểm tổng kết */}
         <div>
-          <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
+          <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: 'var(--color-text)', marginBottom: '6px' }}>
             Tổng điểm chính thức (Tối đa {totalPoints}đ):
           </label>
           <input
@@ -70,7 +70,7 @@ export default function GradeSummarySection({
 
         {/* Nhận xét của gia sư */}
         <div>
-          <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
+          <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: 'var(--color-text)', marginBottom: '6px' }}>
             Nhận xét & Lời khuyên (sẽ gửi thông báo cho cả Học sinh & Phụ huynh):
           </label>
           <textarea
@@ -84,7 +84,7 @@ export default function GradeSummarySection({
       </div>
 
       <div className="grade-submit-btn-row">
-        <span style={{ fontSize: '12px', color: '#64748b' }}>
+        <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>
           * Điểm và nhận xét sẽ được lưu và gửi thông báo trực tiếp đến tài khoản học viên và phụ huynh liên kết.
         </span>
 

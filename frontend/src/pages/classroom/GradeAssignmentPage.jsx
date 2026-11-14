@@ -199,8 +199,8 @@ export default function GradeAssignmentPage() {
   if (loading) {
     return (
       <div className="grade-page-container" style={{ textAlign: 'center', padding: '100px 20px' }}>
-        <Loader2 size={32} className="spin" style={{ color: '#e85a2c', margin: '0 auto 12px' }} />
-        <p style={{ color: '#64748b', fontSize: '15px' }}>Đang tải giao diện chấm điểm bài tập...</p>
+        <Loader2 size={32} className="spin" style={{ color: 'var(--color-primary-strong)', margin: '0 auto 12px' }} />
+        <p style={{ color: 'var(--color-text-muted)', fontSize: '15px' }}>Đang tải giao diện chấm điểm bài tập...</p>
       </div>
     );
   }
@@ -248,8 +248,8 @@ export default function GradeAssignmentPage() {
               fontSize: '13px',
               padding: '6px 12px',
               borderRadius: '8px',
-              background: '#dcfce7',
-              color: '#166534',
+              background: 'var(--color-success-soft)',
+              color: 'var(--color-success)',
               fontWeight: 600,
             }}
           >
@@ -263,9 +263,9 @@ export default function GradeAssignmentPage() {
             onClick={handlePublishAll}
             disabled={publishing}
             style={{
-              color: '#0284c7',
+              color: 'var(--color-info)',
               borderColor: '#93c5fd',
-              background: '#f0f9ff',
+              background: 'var(--color-info-soft)',
               fontWeight: 600,
             }}
           >
@@ -289,11 +289,11 @@ export default function GradeAssignmentPage() {
         <div className="grade-header-title-row">
           <div>
             <h1 className="grade-assignment-title">
-              <BarChart3 size={24} color="#e85a2c" />
+              <BarChart3 size={24} color="var(--color-primary-strong)" />
               <span>Chấm điểm: {assignment.title}</span>
             </h1>
             {assignment.instructions && (
-              <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#64748b' }}>
+              <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: 'var(--color-text-muted)' }}>
                 {assignment.instructions}
               </p>
             )}
@@ -332,16 +332,16 @@ export default function GradeAssignmentPage() {
       {submissions.length === 0 ? (
         <div
           style={{
-            background: '#ffffff',
+            background: 'var(--color-surface)',
             borderRadius: '12px',
-            border: '1px solid #e2e8f0',
+            border: '1px solid var(--color-border)',
             padding: '60px 20px',
             textAlign: 'center',
-            color: '#64748b',
+            color: 'var(--color-text-muted)',
           }}
         >
-          <FileText size={40} style={{ margin: '0 auto 12px', color: '#94a3b8' }} />
-          <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', margin: '0 0 6px 0' }}>
+          <FileText size={40} style={{ margin: '0 auto 12px', color: 'var(--color-text-muted)' }} />
+          <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text)', margin: '0 0 6px 0' }}>
             Chưa có học sinh nào nộp bài
           </h3>
           <p style={{ margin: 0, fontSize: '14px' }}>
@@ -381,8 +381,8 @@ export default function GradeAssignmentPage() {
                     fontSize: '12px',
                     padding: '4px 10px',
                     borderRadius: '8px',
-                    background: selectedSub.timeliness === 'LATE' ? '#fee2e2' : '#dcfce7',
-                    color: selectedSub.timeliness === 'LATE' ? '#991b1b' : '#166534',
+                    background: selectedSub.timeliness === 'LATE' ? 'var(--color-error-soft)' : 'var(--color-success-soft)',
+                    color: selectedSub.timeliness === 'LATE' ? 'var(--color-error)' : 'var(--color-success)',
                     fontWeight: 600,
                     display: 'inline-flex',
                     alignItems: 'center',

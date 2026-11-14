@@ -176,27 +176,27 @@ export default function StudentSchedulePage() {
 
     if (session.status === 'CANCELLED') {
       return (
-        <span style={{ padding: '3px 8px', borderRadius: '12px', background: '#fee2e2', color: '#b91c1c', fontSize: '12px', fontWeight: 600 }}>
+        <span style={{ padding: '3px 8px', borderRadius: '12px', background: 'var(--color-error-soft)', color: 'var(--color-error)', fontSize: '12px', fontWeight: 600 }}>
           Đã hủy
         </span>
       );
     }
     if (now >= start && now <= end) {
       return (
-        <span style={{ padding: '3px 8px', borderRadius: '12px', background: '#dcfce7', color: '#15803d', fontSize: '12px', fontWeight: 600 }}>
+        <span style={{ padding: '3px 8px', borderRadius: '12px', background: 'var(--color-success-soft)', color: 'var(--color-success)', fontSize: '12px', fontWeight: 600 }}>
           Đang diễn ra
         </span>
       );
     }
     if (now > end || session.status === 'COMPLETED') {
       return (
-        <span style={{ padding: '3px 8px', borderRadius: '12px', background: '#f1f5f9', color: '#64748b', fontSize: '12px', fontWeight: 600 }}>
+        <span style={{ padding: '3px 8px', borderRadius: '12px', background: 'var(--color-surface-subtle)', color: 'var(--color-text-muted)', fontSize: '12px', fontWeight: 600 }}>
           Đã học xong
         </span>
       );
     }
     return (
-      <span style={{ padding: '3px 8px', borderRadius: '12px', background: '#e0f2fe', color: '#0369a1', fontSize: '12px', fontWeight: 600 }}>
+      <span style={{ padding: '3px 8px', borderRadius: '12px', background: 'var(--color-info-soft)', color: 'var(--color-info)', fontSize: '12px', fontWeight: 600 }}>
         Sắp tới
       </span>
     );
@@ -207,35 +207,35 @@ export default function StudentSchedulePage() {
       {/* Page Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h1 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 700, color: '#0f172a' }}>
+          <h1 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 700, color: 'var(--color-text)' }}>
             Lịch học của tôi
           </h1>
-          <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>
+          <p style={{ margin: 0, fontSize: '14px', color: 'var(--color-text-muted)' }}>
             Theo dõi thời khóa biểu hàng tuần và tham gia các buổi học trực tuyến
           </p>
         </div>
 
         {/* Quick Stats */}
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <CalendarDays size={18} style={{ color: '#ea580c' }} />
+          <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '10px', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <CalendarDays size={18} style={{ color: 'var(--color-primary-strong)' }} />
             <div>
-              <p style={{ margin: 0, fontSize: '11px', color: '#64748b' }}>Tuần này</p>
-              <strong style={{ fontSize: '15px', color: '#0f172a' }}>{sessions.length} buổi</strong>
+              <p style={{ margin: 0, fontSize: '11px', color: 'var(--color-text-muted)' }}>Tuần này</p>
+              <strong style={{ fontSize: '15px', color: 'var(--color-text)' }}>{sessions.length} buổi</strong>
             </div>
           </div>
-          <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Clock size={18} style={{ color: '#0284c7' }} />
+          <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '10px', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Clock size={18} style={{ color: 'var(--color-info)' }} />
             <div>
-              <p style={{ margin: 0, fontSize: '11px', color: '#64748b' }}>Sắp tới</p>
-              <strong style={{ fontSize: '15px', color: '#0284c7' }}>{stats.upcomingCount} buổi</strong>
+              <p style={{ margin: 0, fontSize: '11px', color: 'var(--color-text-muted)' }}>Sắp tới</p>
+              <strong style={{ fontSize: '15px', color: 'var(--color-info)' }}>{stats.upcomingCount} buổi</strong>
             </div>
           </div>
-          <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <CheckCircle2 size={18} style={{ color: '#16a34a' }} />
+          <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '10px', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <CheckCircle2 size={18} style={{ color: 'var(--color-success)' }} />
             <div>
-              <p style={{ margin: 0, fontSize: '11px', color: '#64748b' }}>Đã học xong</p>
-              <strong style={{ fontSize: '15px', color: '#16a34a' }}>{stats.completedCount} buổi</strong>
+              <p style={{ margin: 0, fontSize: '11px', color: 'var(--color-text-muted)' }}>Đã học xong</p>
+              <strong style={{ fontSize: '15px', color: 'var(--color-success)' }}>{stats.completedCount} buổi</strong>
             </div>
           </div>
         </div>
@@ -248,10 +248,10 @@ export default function StudentSchedulePage() {
             <CalendarDays size={20} />
           </span>
           <div>
-            <h2 style={{ fontSize: '18px', fontWeight: 700, margin: 0, color: '#0f172a' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 700, margin: 0, color: 'var(--color-text)' }}>
               {MONTH_YEAR_FORMATTER.format(weekStart)}
             </h2>
-            <p style={{ margin: '2px 0 0', fontSize: '13px', color: '#64748b' }}>
+            <p style={{ margin: '2px 0 0', fontSize: '13px', color: 'var(--color-text-muted)' }}>
               {weekStart.toLocaleDateString('vi-VN', { day: 'numeric', month: 'numeric' })}
               {' - '}
               {new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6).toLocaleDateString('vi-VN', { day: 'numeric', month: 'numeric', year: 'numeric' })}
@@ -262,18 +262,17 @@ export default function StudentSchedulePage() {
         <div className="schedule-toolbar-actions" style={{ flexWrap: 'wrap', gap: '10px' }}>
           {/* Lọc theo lớp học */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <BookOpen size={15} style={{ color: '#64748b' }} />
+            <BookOpen size={15} style={{ color: 'var(--color-text-muted)' }} />
             <select
               value={selectedClassId}
               onChange={(e) => setSelectedClassId(e.target.value)}
               style={{
                 padding: '6px 12px',
                 borderRadius: '6px',
-                border: '1px solid #cbd5e1',
+                border: '1px solid var(--color-control-border)',
                 fontSize: '13px',
-                background: '#fff',
-                color: '#334155',
-                outline: 'none',
+                background: 'var(--color-surface)',
+                color: 'var(--color-text)',
               }}
             >
               <option value="">Tất cả lớp học</option>
@@ -287,18 +286,17 @@ export default function StudentSchedulePage() {
 
           {/* Lọc trạng thái */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Filter size={15} style={{ color: '#64748b' }} />
+            <Filter size={15} style={{ color: 'var(--color-text-muted)' }} />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               style={{
                 padding: '6px 12px',
                 borderRadius: '6px',
-                border: '1px solid #cbd5e1',
+                border: '1px solid var(--color-control-border)',
                 fontSize: '13px',
-                background: '#fff',
-                color: '#334155',
-                outline: 'none',
+                background: 'var(--color-surface)',
+                color: 'var(--color-text)',
               }}
             >
               <option value="ALL">Tất cả trạng thái</option>
@@ -308,18 +306,18 @@ export default function StudentSchedulePage() {
           </div>
 
           {/* View switcher */}
-          <div style={{ display: 'flex', background: '#f1f5f9', padding: '3px', borderRadius: '8px' }}>
+          <div style={{ display: 'flex', background: 'var(--color-surface-subtle)', padding: '3px', borderRadius: '8px' }}>
             <button
               type="button"
               onClick={() => setViewMode('GRID')}
               style={{
                 border: 'none',
-                background: viewMode === 'GRID' ? '#fff' : 'transparent',
+                background: viewMode === 'GRID' ? 'var(--color-white)' : 'transparent',
                 padding: '6px 12px',
                 borderRadius: '6px',
                 fontSize: '13px',
                 fontWeight: viewMode === 'GRID' ? 700 : 500,
-                color: viewMode === 'GRID' ? '#e85a2c' : '#64748b',
+                color: viewMode === 'GRID' ? 'var(--color-primary-strong)' : 'var(--color-text-muted)',
                 cursor: 'pointer',
                 boxShadow: viewMode === 'GRID' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
               }}
@@ -331,12 +329,12 @@ export default function StudentSchedulePage() {
               onClick={() => setViewMode('LIST')}
               style={{
                 border: 'none',
-                background: viewMode === 'LIST' ? '#fff' : 'transparent',
+                background: viewMode === 'LIST' ? 'var(--color-white)' : 'transparent',
                 padding: '6px 12px',
                 borderRadius: '6px',
                 fontSize: '13px',
                 fontWeight: viewMode === 'LIST' ? 700 : 500,
-                color: viewMode === 'LIST' ? '#e85a2c' : '#64748b',
+                color: viewMode === 'LIST' ? 'var(--color-primary-strong)' : 'var(--color-text-muted)',
                 cursor: 'pointer',
                 boxShadow: viewMode === 'LIST' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
               }}
@@ -376,7 +374,7 @@ export default function StudentSchedulePage() {
 
       {/* Loading state */}
       {loading && (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px', gap: '10px', color: '#64748b' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px', gap: '10px', color: 'var(--color-text-muted)' }}>
           <Loader2 size={26} className="spin" />
           <span>Đang tải lịch học của bạn...</span>
         </div>
@@ -384,13 +382,13 @@ export default function StudentSchedulePage() {
 
       {/* Error state */}
       {!loading && error && (
-        <div style={{ padding: '24px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '10px', color: '#991b1b', textAlign: 'center' }}>
-          <AlertCircle size={28} style={{ color: '#dc2626', marginBottom: '8px' }} />
+        <div style={{ padding: '24px', background: 'var(--color-error-soft)', border: '1px solid #fecaca', borderRadius: '10px', color: 'var(--color-error)', textAlign: 'center' }}>
+          <AlertCircle size={28} style={{ color: 'var(--color-error)', marginBottom: '8px' }} />
           <p style={{ margin: '0 0 12px', fontWeight: 600 }}>{error}</p>
           <button
             type="button"
             onClick={fetchSchedule}
-            style={{ padding: '7px 16px', borderRadius: '6px', border: '1px solid #dc2626', background: '#fff', color: '#dc2626', cursor: 'pointer', fontWeight: 600 }}
+            style={{ padding: '7px 16px', borderRadius: '6px', border: '1px solid var(--color-error)', background: 'var(--color-surface)', color: 'var(--color-error)', cursor: 'pointer', fontWeight: 600 }}
           >
             Thử lại
           </button>
@@ -401,8 +399,8 @@ export default function StudentSchedulePage() {
       {!loading && !error && viewMode === 'GRID' && (
         <div className="schedule-calendar-card">
           {sessions.length === 0 && (
-            <div className="schedule-week-empty" style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>
-              <CalendarCheck size={40} style={{ color: '#cbd5e1', marginBottom: '8px' }} />
+            <div className="schedule-week-empty" style={{ padding: '40px', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+              <CalendarCheck size={40} style={{ color: 'var(--color-control-border)', marginBottom: '8px' }} />
               <p style={{ margin: 0, fontWeight: 500 }}>Không có buổi học nào trong khoảng thời gian này.</p>
             </div>
           )}
@@ -527,8 +525,8 @@ export default function StudentSchedulePage() {
       {!loading && !error && viewMode === 'LIST' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {sessions.length === 0 ? (
-            <div style={{ padding: '40px', textAlign: 'center', background: '#fff', borderRadius: '10px', border: '1px solid #e2e8f0', color: '#64748b' }}>
-              <CalendarCheck size={40} style={{ color: '#cbd5e1', marginBottom: '8px' }} />
+            <div style={{ padding: '40px', textAlign: 'center', background: 'var(--color-surface)', borderRadius: '10px', border: '1px solid var(--color-border)', color: 'var(--color-text-muted)' }}>
+              <CalendarCheck size={40} style={{ color: 'var(--color-control-border)', marginBottom: '8px' }} />
               <p style={{ margin: 0, fontWeight: 500 }}>Không có buổi học nào trong khoảng thời gian này.</p>
             </div>
           ) : (
@@ -542,8 +540,8 @@ export default function StudentSchedulePage() {
                   style={{
                     padding: '18px 22px',
                     borderRadius: '12px',
-                    border: '1px solid #e2e8f0',
-                    background: '#fff',
+                    border: '1px solid var(--color-border)',
+                    background: 'var(--color-surface)',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
@@ -557,8 +555,8 @@ export default function StudentSchedulePage() {
                         width: '46px',
                         height: '46px',
                         borderRadius: '12px',
-                        background: '#fff7ed',
-                        color: '#ea580c',
+                        background: 'var(--color-primary-soft)',
+                        color: 'var(--color-primary-strong)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -569,20 +567,20 @@ export default function StudentSchedulePage() {
                     </div>
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#0f172a' }}>
+                        <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: 'var(--color-text)' }}>
                           {session.title || 'Buổi học'}
                         </h4>
                         {session.class?.subject && (
-                          <span style={{ fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '6px', background: '#eff6ff', color: '#2563eb' }}>
+                          <span style={{ fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '6px', background: 'var(--color-info-soft)', color: 'var(--color-info)' }}>
                             {session.class.subject}
                           </span>
                         )}
                       </div>
-                      <p style={{ margin: '0 0 4px', fontSize: '13px', color: '#475569' }}>
+                      <p style={{ margin: '0 0 4px', fontSize: '13px', color: 'var(--color-text-muted)' }}>
                         Lớp: <strong>{session.class?.name || '---'}</strong>
                         {session.class?.tutor_name && ` • Gia sư: ${session.class.tutor_name}`}
                       </p>
-                      <p style={{ margin: 0, fontSize: '12px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <p style={{ margin: 0, fontSize: '12px', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <span>{dateStr}</span>
                         <span>•</span>
                         <Clock size={12} />
@@ -630,7 +628,7 @@ export default function StudentSchedulePage() {
         >
           <div
             style={{
-              background: '#fff',
+              background: 'var(--color-surface)',
               borderRadius: '12px',
               maxWidth: '500px',
               width: '100%',
@@ -641,10 +639,10 @@ export default function StudentSchedulePage() {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
               <div>
-                <h3 style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 700, color: '#0f172a' }}>
+                <h3 style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 700, color: 'var(--color-text)' }}>
                   {selectedSession.title || 'Chi tiết buổi học'}
                 </h3>
-                <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>
+                <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-text-muted)' }}>
                   {selectedSession.class?.name || 'Lớp học'} ({selectedSession.class?.subject || 'Môn học'})
                 </p>
               </div>
@@ -652,8 +650,8 @@ export default function StudentSchedulePage() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', margin: '20px 0', fontSize: '14px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#334155' }}>
-                <Clock size={16} style={{ color: '#64748b' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--color-text)' }}>
+                <Clock size={16} style={{ color: 'var(--color-text-muted)' }} />
                 <span>
                   <strong>Thời gian:</strong> {formatSessionTime(selectedSession)} (
                   {new Date(selectedSession.start_time).toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })}
@@ -662,8 +660,8 @@ export default function StudentSchedulePage() {
               </div>
 
               {selectedSession.class?.tutor_name && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#334155' }}>
-                  <Sparkles size={16} style={{ color: '#ea580c' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--color-text)' }}>
+                  <Sparkles size={16} style={{ color: 'var(--color-primary-strong)' }} />
                   <span>
                     <strong>Gia sư phụ trách:</strong> {selectedSession.class.tutor_name}
                   </span>
@@ -671,15 +669,15 @@ export default function StudentSchedulePage() {
               )}
 
               {selectedSession.meeting_link && (
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', color: '#334155' }}>
-                  <Video size={16} style={{ color: '#0284c7', marginTop: '2px' }} />
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', color: 'var(--color-text)' }}>
+                  <Video size={16} style={{ color: 'var(--color-info)', marginTop: '2px' }} />
                   <div>
                     <strong>Link trực tuyến:</strong>{' '}
                     <a
                       href={selectedSession.meeting_link}
                       target="_blank"
                       rel="noreferrer"
-                      style={{ color: '#0284c7', textDecoration: 'underline', wordBreak: 'break-all' }}
+                      style={{ color: 'var(--color-info)', textDecoration: 'underline', wordBreak: 'break-all' }}
                     >
                       {selectedSession.meeting_link}
                     </a>
@@ -700,7 +698,7 @@ export default function StudentSchedulePage() {
                 <button
                   type="button"
                   className="btn btn-outline btn-sm"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#ea580c', borderColor: '#fdba74' }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--color-primary-strong)', borderColor: '#fdba74' }}
                   onClick={() => {
                     const target = selectedSession;
                     setSelectedSession(null);

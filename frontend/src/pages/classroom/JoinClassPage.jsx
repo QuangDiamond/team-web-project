@@ -92,8 +92,8 @@ export default function JoinClassPage() {
     <div className="classroom-container" style={{ maxWidth: '600px', marginTop: '48px' }}>
       <div
         style={{
-          background: '#ffffff',
-          border: '1px solid #e2e8f0',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-border)',
           borderRadius: '16px',
           padding: '32px',
           boxShadow: '0 8px 24px rgba(15, 23, 42, 0.06)',
@@ -101,12 +101,12 @@ export default function JoinClassPage() {
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
-          <KeyRound size={48} color="#e85a2c" />
+          <KeyRound size={48} color="var(--color-primary-strong)" />
         </div>
-        <h2 style={{ fontSize: '24px', fontWeight: 700, margin: '0 0 8px 0', color: '#0f172a' }}>
+        <h2 style={{ fontSize: '24px', fontWeight: 700, margin: '0 0 8px 0', color: 'var(--color-text)' }}>
           Tham gia lớp học
         </h2>
-        <p style={{ color: '#64748b', fontSize: '15px', margin: '0 0 24px 0' }}>
+        <p style={{ color: 'var(--color-text-muted)', fontSize: '15px', margin: '0 0 24px 0' }}>
           Nhập mã tham gia do gia sư cung cấp để kết nối và bắt đầu buổi học.
         </p>
 
@@ -128,7 +128,7 @@ export default function JoinClassPage() {
                 flex: 1,
                 padding: '12px 16px',
                 borderRadius: '10px',
-                border: '1px solid #cbd5e1',
+                border: '1px solid var(--color-control-border)',
                 fontSize: '16px',
                 fontWeight: 700,
                 letterSpacing: '1px',
@@ -161,8 +161,8 @@ export default function JoinClassPage() {
           {preview && (
             <div
               style={{
-                background: '#f8fafc',
-                border: '1px solid #e2e8f0',
+                background: 'var(--color-surface-subtle)',
+                border: '1px solid var(--color-border)',
                 borderRadius: '12px',
                 padding: '20px',
                 textAlign: 'left',
@@ -177,17 +177,17 @@ export default function JoinClassPage() {
                 </span>
               </div>
 
-              <h3 style={{ fontSize: '20px', margin: '0 0 8px 0', color: '#0f172a' }}>
+              <h3 style={{ fontSize: '20px', margin: '0 0 8px 0', color: 'var(--color-text)' }}>
                 {preview.name}
               </h3>
 
               {preview.description && (
-                <p style={{ fontSize: '14px', color: '#64748b', margin: '0 0 12px 0' }}>
+                <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', margin: '0 0 12px 0' }}>
                   {preview.description}
                 </p>
               )}
 
-              <div style={{ fontSize: '14px', color: '#475569', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ fontSize: '14px', color: 'var(--color-text-muted)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Users size={15} />
                 <span>
                   Sĩ số hiện tại: <strong>{preview.member_count}</strong> / {preview.capacity} học viên
@@ -196,8 +196,8 @@ export default function JoinClassPage() {
 
               {/* Luồng UC24: Nếu là Phụ huynh, cho phép chọn và liên kết con đang ở trong lớp */}
               {user?.role === 'PARENT' && (
-                <div style={{ marginTop: '12px', marginBottom: '12px', padding: '12px', background: '#ffffff', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>
+                <div style={{ marginTop: '12px', marginBottom: '12px', padding: '12px', background: 'var(--color-surface)', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--color-text)', marginBottom: '6px' }}>
                     <Users size={15} />
                     <span>Bạn đang tham gia với vai trò Phụ huynh. Chọn con đang học trong lớp:</span>
                   </label>
@@ -209,9 +209,9 @@ export default function JoinClassPage() {
                         width: '100%',
                         padding: '8px 10px',
                         borderRadius: '6px',
-                        border: '1px solid #cbd5e1',
+                        border: '1px solid var(--color-control-border)',
                         fontSize: '13px',
-                        background: '#fff',
+                        background: 'var(--color-surface)',
                       }}
                     >
                       <option value="">-- Chưa liên kết con / Tham gia theo dõi chung --</option>
@@ -222,7 +222,7 @@ export default function JoinClassPage() {
                       ))}
                     </select>
                   ) : (
-                    <div style={{ fontSize: '12px', color: '#64748b', fontStyle: 'italic' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
                       (Lớp hiện chưa có học sinh nào, bạn có thể tham gia trước hoặc liên kết sau)
                     </div>
                   )}
@@ -230,7 +230,7 @@ export default function JoinClassPage() {
               )}
 
               {preview.is_full ? (
-                <div style={{ color: '#dc2626', fontSize: '14px', fontWeight: 600, marginTop: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ color: 'var(--color-error)', fontSize: '14px', fontWeight: 600, marginTop: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <AlertTriangle size={15} />
                   <span>Lớp học đã đạt sĩ số tối đa.</span>
                 </div>
@@ -239,11 +239,11 @@ export default function JoinClassPage() {
                   style={{
                     marginTop: '16px',
                     padding: '16px',
-                    background: '#fffbeb',
+                    background: 'var(--color-warning-soft)',
                     borderRadius: '10px',
-                    border: '1px solid #fef3c7',
+                    border: '1px solid var(--color-warning-soft)',
                     fontSize: '14px',
-                    color: '#b45309',
+                    color: 'var(--color-warning)',
                     textAlign: 'center',
                   }}
                 >
@@ -274,19 +274,19 @@ export default function JoinClassPage() {
                     style={{
                       marginTop: '16px',
                       padding: '18px',
-                      background: '#fff7ed',
+                      background: 'var(--color-primary-soft)',
                       borderRadius: '12px',
                       border: '1px solid #fed7aa',
                       textAlign: 'center',
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
-                      <GraduationCap size={36} color="#c2410c" />
+                      <GraduationCap size={36} color="var(--color-primary-strong)" />
                     </div>
-                    <h4 style={{ color: '#c2410c', margin: '0 0 6px 0', fontSize: '16px', fontWeight: 700 }}>
+                    <h4 style={{ color: 'var(--color-primary-strong)', margin: '0 0 6px 0', fontSize: '16px', fontWeight: 700 }}>
                       Bạn là Gia sư phụ trách lớp học này
                     </h4>
-                    <p style={{ color: '#9a3412', fontSize: '14px', margin: '0 0 16px 0', lineHeight: 1.5 }}>
+                    <p style={{ color: 'var(--color-primary-strong-hover)', fontSize: '14px', margin: '0 0 16px 0', lineHeight: 1.5 }}>
                       Liên kết mời và mã tham gia này dành cho Học sinh & Phụ huynh của bạn.
                     </p>
                     <Link
@@ -303,19 +303,19 @@ export default function JoinClassPage() {
                     style={{
                       marginTop: '16px',
                       padding: '18px',
-                      background: '#fef2f2',
+                      background: 'var(--color-error-soft)',
                       borderRadius: '12px',
                       border: '1px solid #fecaca',
                       textAlign: 'center',
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
-                      <AlertTriangle size={36} color="#dc2626" />
+                      <AlertTriangle size={36} color="var(--color-error)" />
                     </div>
-                    <h4 style={{ color: '#dc2626', margin: '0 0 6px 0', fontSize: '16px', fontWeight: 700 }}>
+                    <h4 style={{ color: 'var(--color-error)', margin: '0 0 6px 0', fontSize: '16px', fontWeight: 700 }}>
                       Không thể tham gia với tài khoản Gia sư
                     </h4>
-                    <p style={{ color: '#991b1b', fontSize: '14px', margin: '0 0 8px 0', lineHeight: 1.5 }}>
+                    <p style={{ color: 'var(--color-error)', fontSize: '14px', margin: '0 0 8px 0', lineHeight: 1.5 }}>
                       Tài khoản Gia sư không thể tham gia lớp học với vai trò học sinh hoặc phụ huynh. Vui lòng đăng nhập bằng tài khoản Học sinh hoặc Phụ huynh.
                     </p>
                   </div>
@@ -345,7 +345,7 @@ export default function JoinClassPage() {
           )}
 
           <div style={{ marginTop: '20px', fontSize: '14px' }}>
-            <Link to={getClassesUrl()} style={{ color: '#64748b', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <Link to={getClassesUrl()} style={{ color: 'var(--color-text-muted)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
               <ArrowLeft size={14} />
               <span>Quay lại danh sách lớp học của tôi</span>
             </Link>

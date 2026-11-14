@@ -73,7 +73,7 @@ export default function PendingAssignmentList({ section, onRetry }) {
           <SectionCount section={section} label="Cần làm" />
           <Link
             to="/student/assignments"
-            style={{ fontSize: '13px', color: '#c9441a', fontWeight: 600, textDecoration: 'none' }}
+            style={{ fontSize: '13px', color: 'var(--color-primary-strong)', fontWeight: 600, textDecoration: 'none' }}
           >
             Xem tất cả bài tập →
           </Link>

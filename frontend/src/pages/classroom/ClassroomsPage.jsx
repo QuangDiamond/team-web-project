@@ -93,7 +93,7 @@ export default function ClassroomsPage() {
       <div className="classroom-header">
         <div className="classroom-header-info">
           <h1 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <GraduationCap size={26} style={{ color: '#e85a2c' }} />
+            <GraduationCap size={26} style={{ color: 'var(--color-primary-strong)' }} />
             <span>Lớp học của tôi</span>
           </h1>
           <p>
@@ -158,7 +158,7 @@ export default function ClassroomsPage() {
 
         <div className="classroom-search-box">
           <span className="search-icon" style={{ display: 'flex', alignItems: 'center' }}>
-            <Search size={15} style={{ color: '#94a3b8' }} />
+            <Search size={15} style={{ color: 'var(--color-text-muted)' }} />
           </span>
           <input
             type="text"
@@ -179,9 +179,9 @@ export default function ClassroomsPage() {
 
       {/* Loading state */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '60px', color: '#64748b' }}>
+        <div style={{ textAlign: 'center', padding: '60px', color: 'var(--color-text-muted)' }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
-            <LoaderCircle size={32} className="spin" style={{ color: '#e85a2c' }} />
+            <LoaderCircle size={32} className="spin" style={{ color: 'var(--color-primary-strong)' }} />
           </div>
           <p>Đang tải danh sách lớp học của bạn...</p>
         </div>
@@ -191,7 +191,7 @@ export default function ClassroomsPage() {
           {searchQuery ? (
             <>
               <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center' }}>
-                <Search size={42} style={{ color: '#94a3b8' }} />
+                <Search size={42} style={{ color: 'var(--color-text-muted)' }} />
               </div>
               <h3>Không tìm thấy lớp học phù hợp</h3>
               <p>Không tìm thấy lớp học nào khớp với từ khóa "{searchQuery}". Vui lòng thử tìm kiếm khác.</p>
@@ -206,7 +206,7 @@ export default function ClassroomsPage() {
           ) : activeTab === 'ARCHIVED' ? (
             <>
               <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center' }}>
-                <Archive size={42} style={{ color: '#94a3b8' }} />
+                <Archive size={42} style={{ color: 'var(--color-text-muted)' }} />
               </div>
               <h3>Chưa có lớp học nào được lưu trữ</h3>
               <p>
@@ -223,7 +223,7 @@ export default function ClassroomsPage() {
           ) : (
             <>
               <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center' }}>
-                <BookOpen size={42} style={{ color: '#94a3b8' }} />
+                <BookOpen size={42} style={{ color: 'var(--color-text-muted)' }} />
               </div>
               <h3>Chưa có lớp học nào</h3>
               <p>
@@ -273,15 +273,15 @@ export default function ClassroomsPage() {
                       {cls.status === 'ACTIVE' ? 'Đang hoạt động' : 'Đã lưu trữ'}
                     </span>
                     {cls.is_owner || user?.role === 'TUTOR' ? (
-                      <span className="badge" style={{ background: '#fff7ed', color: '#c2410c', border: '1px solid #fed7aa', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <span className="badge" style={{ background: 'var(--color-primary-soft)', color: 'var(--color-primary-strong)', border: '1px solid #fed7aa', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                         <GraduationCap size={13} /> Bạn là Gia sư
                       </span>
                     ) : user?.role === 'PARENT' ? (
-                      <span className="badge" style={{ background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <span className="badge" style={{ background: 'var(--color-info-soft)', color: 'var(--color-info)', border: '1px solid #bfdbfe', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                         <Users size={13} /> Bạn là Phụ huynh
                       </span>
                     ) : (
-                      <span className="badge" style={{ background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <span className="badge" style={{ background: 'var(--color-success-soft)', color: 'var(--color-success)', border: '1px solid #bbf7d0', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                         <UserCheck size={13} /> Bạn là Học sinh
                       </span>
                     )}

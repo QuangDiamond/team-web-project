@@ -4,7 +4,7 @@ import ApplyModal from './ApplyModal';
 import RequestCard from './RequestCard';
 
 // Lưới request + thông báo + hộp thoại ứng tuyển, dùng chung cho Browse, Saved, Suggested (actions từ useRequestActions)
-export default function RequestGrid({ items, actions, readOnly = false }) {
+export default function RequestGrid({ items, actions, readOnly = false, showApplicationCount = false }) {
   useEffect(() => {
     if (actions.notice) {
       toast.success(actions.notice, { id: 'request-action-success' });
@@ -22,7 +22,7 @@ export default function RequestGrid({ items, actions, readOnly = false }) {
 
       <ul className="request-grid">
         {items.map((request) => (
-          <RequestCard key={request._id} request={request} onToggleSave={actions.toggleSave} onApply={actions.openApply} readOnly={readOnly} />
+          <RequestCard key={request._id} request={request} onToggleSave={actions.toggleSave} onApply={actions.openApply} readOnly={readOnly} showApplicationCount={showApplicationCount} />
         ))}
       </ul>
 

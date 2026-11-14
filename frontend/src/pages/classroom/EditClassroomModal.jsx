@@ -97,7 +97,7 @@ export default function EditClassroomModal({ isOpen, onClose, classroom, onUpdat
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Settings size={20} style={{ color: '#e85a2c' }} />
+            <Settings size={20} style={{ color: 'var(--color-primary-strong)' }} />
             <span>Chỉnh sửa thông tin lớp học</span>
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>

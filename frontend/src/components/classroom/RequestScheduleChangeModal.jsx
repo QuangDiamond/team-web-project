@@ -108,7 +108,7 @@ export default function RequestScheduleChangeModal({
     >
       <div
         style={{
-          background: '#fff',
+          background: 'var(--color-surface)',
           borderRadius: '14px',
           maxWidth: '520px',
           width: '100%',
@@ -119,26 +119,26 @@ export default function RequestScheduleChangeModal({
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
           <div>
-            <h3 style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 700, color: '#0f172a' }}>
+            <h3 style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 700, color: 'var(--color-text)' }}>
               Xin đổi / hủy lịch học
             </h3>
-            <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>
+            <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-text-muted)' }}>
               Buổi: <strong>{session.title || 'Buổi học'}</strong> ({new Date(session.start_time).toLocaleDateString('vi-VN')})
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#64748b', padding: '4px' }}
+            style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--color-text-muted)', padding: '4px' }}
           >
             <X size={20} />
           </button>
         </div>
 
         {isUrgent ? (
-          <div style={{ padding: '16px', borderRadius: '8px', background: '#fffbeb', border: '1px solid #fef3c7', color: '#92400e', fontSize: '13px', lineHeight: 1.5, marginBottom: '16px' }}>
+          <div style={{ padding: '16px', borderRadius: '8px', background: 'var(--color-warning-soft)', border: '1px solid var(--color-warning-soft)', color: 'var(--color-warning)', fontSize: '13px', lineHeight: 1.5, marginBottom: '16px' }}>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <AlertCircle size={18} style={{ color: '#d97706', flexShrink: 0, marginTop: '2px' }} />
+              <AlertCircle size={18} style={{ color: 'var(--color-warning)', flexShrink: 0, marginTop: '2px' }} />
               <div>
                 <strong>Quy định đổi lịch cận giờ (BR-10 & UC27):</strong>
                 <p style={{ margin: '4px 0 0' }}>
@@ -148,8 +148,8 @@ export default function RequestScheduleChangeModal({
             </div>
           </div>
         ) : (
-          <div style={{ padding: '10px 14px', borderRadius: '8px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#475569', fontSize: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Clock size={15} style={{ color: '#e85a2c' }} />
+          <div style={{ padding: '10px 14px', borderRadius: '8px', background: 'var(--color-surface-subtle)', border: '1px solid var(--color-border)', color: 'var(--color-text-muted)', fontSize: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Clock size={15} style={{ color: 'var(--color-primary-strong)' }} />
             <span>Quy định: Yêu cầu đổi lịch phải được gửi trước giờ học ít nhất 12 tiếng.</span>
           </div>
         )}
@@ -157,7 +157,7 @@ export default function RequestScheduleChangeModal({
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Chọn loại yêu cầu */}
           <div>
-            <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--color-text)', marginBottom: '6px' }}>
               Loại yêu cầu
             </label>
             <div style={{ display: 'flex', gap: '12px' }}>
@@ -169,12 +169,12 @@ export default function RequestScheduleChangeModal({
                   gap: '8px',
                   padding: '10px 14px',
                   borderRadius: '8px',
-                  border: requestType === 'MOVE' ? '2px solid #ea580c' : '1px solid #cbd5e1',
-                  background: requestType === 'MOVE' ? '#fff7ed' : '#fff',
+                  border: requestType === 'MOVE' ? '2px solid var(--color-primary-strong)' : '1px solid var(--color-control-border)',
+                  background: requestType === 'MOVE' ? 'var(--color-primary-soft)' : 'var(--color-white)',
                   cursor: 'pointer',
                   fontSize: '13px',
                   fontWeight: 600,
-                  color: requestType === 'MOVE' ? '#ea580c' : '#334155',
+                  color: requestType === 'MOVE' ? 'var(--color-primary-strong)' : 'var(--color-text)',
                 }}
               >
                 <input
@@ -183,7 +183,7 @@ export default function RequestScheduleChangeModal({
                   value="MOVE"
                   checked={requestType === 'MOVE'}
                   onChange={() => setRequestType('MOVE')}
-                  style={{ accentColor: '#ea580c' }}
+                  style={{ accentColor: 'var(--color-primary-strong)' }}
                 />
                 <span>Dời sang giờ khác</span>
               </label>
@@ -196,12 +196,12 @@ export default function RequestScheduleChangeModal({
                   gap: '8px',
                   padding: '10px 14px',
                   borderRadius: '8px',
-                  border: requestType === 'CANCEL' ? '2px solid #dc2626' : '1px solid #cbd5e1',
-                  background: requestType === 'CANCEL' ? '#fef2f2' : '#fff',
+                  border: requestType === 'CANCEL' ? '2px solid var(--color-error)' : '1px solid var(--color-control-border)',
+                  background: requestType === 'CANCEL' ? 'var(--color-error-soft)' : 'var(--color-white)',
                   cursor: 'pointer',
                   fontSize: '13px',
                   fontWeight: 600,
-                  color: requestType === 'CANCEL' ? '#dc2626' : '#334155',
+                  color: requestType === 'CANCEL' ? 'var(--color-error)' : 'var(--color-text)',
                 }}
               >
                 <input
@@ -210,7 +210,7 @@ export default function RequestScheduleChangeModal({
                   value="CANCEL"
                   checked={requestType === 'CANCEL'}
                   onChange={() => setRequestType('CANCEL')}
-                  style={{ accentColor: '#dc2626' }}
+                  style={{ accentColor: 'var(--color-error)' }}
                 />
                 <span>Xin nghỉ / Hủy buổi học</span>
               </label>
@@ -219,9 +219,9 @@ export default function RequestScheduleChangeModal({
 
           {/* Nếu chọn dời lịch: Khung giờ đề xuất */}
           {requestType === 'MOVE' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', background: '#f8fafc', padding: '14px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', background: 'var(--color-surface-subtle)', padding: '14px', borderRadius: '10px', border: '1px solid var(--color-border)' }}>
               <div>
-                <label htmlFor={dateId} style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#334155', marginBottom: '4px' }}>
+                <label htmlFor={dateId} style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>
                   Ngày học đề xuất mới
                 </label>
                 <input
@@ -229,7 +229,7 @@ export default function RequestScheduleChangeModal({
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px' }}
+                  style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--color-control-border)', fontSize: '13px' }}
                   required={requestType === 'MOVE'}
                   disabled={submitting || isUrgent}
                 />
@@ -237,7 +237,7 @@ export default function RequestScheduleChangeModal({
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label htmlFor={startId} style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#334155', marginBottom: '4px' }}>
+                  <label htmlFor={startId} style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>
                     Giờ bắt đầu
                   </label>
                   <input
@@ -245,13 +245,13 @@ export default function RequestScheduleChangeModal({
                     type="time"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px' }}
+                    style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--color-control-border)', fontSize: '13px' }}
                     required={requestType === 'MOVE'}
                     disabled={submitting || isUrgent}
                   />
                 </div>
                 <div>
-                  <label htmlFor={endId} style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#334155', marginBottom: '4px' }}>
+                  <label htmlFor={endId} style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>
                     Giờ kết thúc
                   </label>
                   <input
@@ -259,7 +259,7 @@ export default function RequestScheduleChangeModal({
                     type="time"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px' }}
+                    style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--color-control-border)', fontSize: '13px' }}
                     required={requestType === 'MOVE'}
                     disabled={submitting || isUrgent}
                   />
@@ -270,8 +270,8 @@ export default function RequestScheduleChangeModal({
 
           {/* Lý do */}
           <div>
-            <label htmlFor={reasonId} style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>
-              Lý do xin đổi / nghỉ học <span style={{ color: '#dc2626' }}>*</span>
+            <label htmlFor={reasonId} style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--color-text)', marginBottom: '6px' }}>
+              Lý do xin đổi / nghỉ học <span style={{ color: 'var(--color-error)' }}>*</span>
             </label>
             <textarea
               id={reasonId}
@@ -282,12 +282,12 @@ export default function RequestScheduleChangeModal({
               maxLength={500}
               required
               disabled={submitting || isUrgent}
-              style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '13px', outline: 'none' }}
+              style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid var(--color-control-border)', fontSize: '13px' }}
             />
           </div>
 
           {error && (
-            <div style={{ padding: '10px 14px', borderRadius: '8px', background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', fontSize: '13px' }}>
+            <div style={{ padding: '10px 14px', borderRadius: '8px', background: 'var(--color-error-soft)', border: '1px solid #fecaca', color: 'var(--color-error)', fontSize: '13px' }}>
               {error}
             </div>
           )}

@@ -32,7 +32,7 @@
 }
 
 .result-icon-gray {
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
   color: var(--color-text-muted);
 }
 
@@ -59,7 +59,7 @@
   margin: 24px 0 0;
   padding: 16px 20px;
   border-radius: 16px;
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
   text-align: left;
 }
 
@@ -83,6 +83,7 @@
 }
 
 .order-details .order-details-amount {
+  color: var(--color-price);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }

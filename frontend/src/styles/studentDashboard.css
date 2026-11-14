@@ -12,8 +12,8 @@
 .student-welcome-banner {
   padding: 24px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(90deg, var(--color-primary-strong), #e0663c);
-  color: var(--color-white);
+  background: var(--color-hero);
+  color: var(--color-text);
 }
 
 .student-welcome-eyebrow {
@@ -92,7 +92,7 @@
   padding: 12px;
   border: 1px solid transparent;
   border-radius: var(--radius-md);
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
 }
 
 .student-list-row.is-top-aligned {
@@ -101,7 +101,7 @@
 
 .student-list-row.is-overdue {
   border-color: var(--color-error-soft);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .student-row-icon {
@@ -163,7 +163,7 @@
   height: 48px;
   padding: 0 6px;
   border-radius: var(--radius-md);
-  background: var(--color-white);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   font-size: 13px;
   font-weight: 800;
@@ -195,7 +195,7 @@
 }
 
 .student-score-bar-fill.tone-warning {
-  background: #d97706;
+  background: var(--color-warning);
 }
 
 .student-score-bar-fill.tone-error {
@@ -211,7 +211,7 @@
   margin: 8px 0 0;
   padding: 8px 10px;
   border-radius: var(--radius-sm);
-  background: var(--color-white);
+  background: var(--color-surface);
   font-size: 13px;
   line-height: 1.5;
   overflow-wrap: anywhere;
@@ -256,7 +256,7 @@
 
 .activity-mode-toggle {
   display: inline-flex;
-  background: #f1f5f9;
+  background: var(--color-surface-subtle);
   padding: 3px;
   border-radius: 8px;
 }
@@ -269,17 +269,17 @@
   padding: 5px 11px;
   border-radius: 6px;
   cursor: pointer;
-  color: #64748b;
+  color: var(--color-text-muted);
   transition: all 0.15s ease;
 }
 
 .activity-mode-btn:hover {
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .activity-mode-btn.is-active {
-  background: #ffffff;
-  color: #0f172a;
+  background: var(--color-surface);
+  color: var(--color-text);
   font-weight: 600;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
@@ -291,17 +291,13 @@
 
 .activity-period-select {
   padding: 5px 10px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--color-control-border);
   border-radius: 8px;
   font-size: 12px;
-  color: #334155;
-  background-color: #ffffff;
+  color: var(--color-text);
+  background-color: var(--color-surface);
   outline: none;
   cursor: pointer;
-}
-
-.activity-period-select:focus {
-  border-color: var(--color-primary, #f26b3a);
 }
 
 .activity-summary-chips {
@@ -316,9 +312,9 @@
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  background: #f8fafc;
+  background: var(--color-surface-subtle);
   border-radius: 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
 }
 
 .activity-chip-icon {
@@ -332,18 +328,18 @@
 }
 
 .activity-chip-icon.tone-primary {
-  background: #fff1eb;
-  color: #c9441a;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
 }
 
 .activity-chip-icon.tone-success {
-  background: #ecfdf5;
-  color: #059669;
+  background: var(--color-success-soft);
+  color: var(--color-success);
 }
 
 .activity-chip-icon.tone-info {
-  background: #f0f9ff;
-  color: #0284c7;
+  background: var(--color-info-soft);
+  color: var(--color-info);
 }
 
 .activity-chip-icon.tone-purple {
@@ -358,7 +354,7 @@
 .activity-chip-label {
   margin: 0;
   font-size: 12px;
-  color: #64748b;
+  color: var(--color-text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -368,14 +364,14 @@
   margin: 2px 0 0;
   font-size: 15px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text);
   white-space: nowrap;
 }
 
 .activity-svg-container {
   position: relative;
   width: 100%;
-  background: #ffffff;
+  background: var(--color-surface);
   padding-top: 8px;
 }
 
@@ -385,7 +381,7 @@
   justify-content: flex-end;
   margin-bottom: 6px;
   font-size: 12px;
-  color: #64748b;
+  color: var(--color-text-muted);
   flex-wrap: wrap;
 }
 
@@ -403,11 +399,11 @@
 }
 
 .legend-dot.is-score {
-  background: #ea580c;
+  background: var(--color-primary-strong);
 }
 
 .legend-dot.is-activity {
-  background: #0284c7;
+  background: var(--color-info);
 }
 
 .activity-svg-chart {
@@ -419,12 +415,12 @@
 
 .chart-axis-text {
   font-size: 11px;
-  fill: #94a3b8;
+  fill: var(--color-text-muted);
   font-weight: 500;
 }
 
 .chart-axis-text.is-active-label {
-  fill: #0f172a;
+  fill: var(--color-text);
   font-weight: 700;
 }
 
@@ -432,7 +428,7 @@
   position: absolute;
   top: 36px;
   transform: translateX(-50%);
-  background: #0f172a;
+  background: var(--color-text);
   color: #ffffff;
   padding: 10px 14px;
   border-radius: 8px;
@@ -463,7 +459,7 @@
   font-weight: 600;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   padding-bottom: 4px;
-  color: #e2e8f0;
+  color: var(--color-border);
 }
 
 .tooltip-metrics {
@@ -486,21 +482,21 @@
 }
 
 .tooltip-dot.is-score {
-  background: #fb923c;
+  background: var(--color-primary-strong);
 }
 
 .tooltip-dot.is-activity {
-  background: #38bdf8;
+  background: var(--color-info);
 }
 
 .tooltip-dot.is-session {
-  background: #4ade80;
+  background: var(--color-success);
 }
 
 .activity-chart-state {
   text-align: center;
   padding: 40px 20px;
-  color: #64748b;
+  color: var(--color-text-muted);
   display: flex;
   flex-direction: column;
   align-items: center;

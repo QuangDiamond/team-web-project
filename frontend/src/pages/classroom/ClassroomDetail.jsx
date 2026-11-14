@@ -319,9 +319,9 @@ export default function ClassroomDetail() {
     return (
       <div className="classroom-container" style={{ textAlign: 'center', padding: '80px' }}>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
-          <LoaderCircle size={36} className="spin" style={{ color: '#e85a2c' }} />
+          <LoaderCircle size={36} className="spin" style={{ color: 'var(--color-primary-strong)' }} />
         </div>
-        <p style={{ color: '#64748b' }}>Đang tải thông tin lớp học...</p>
+        <p style={{ color: 'var(--color-text-muted)' }}>Đang tải thông tin lớp học...</p>
       </div>
     );
   }
@@ -351,8 +351,8 @@ export default function ClassroomDetail() {
     <div className="classroom-container">
 
       {/* Breadcrumb Navigation */}
-      <div style={{ marginBottom: '16px', fontSize: '14px', color: '#64748b' }}>
-        <Link to={backUrl} style={{ color: '#e85a2c', textDecoration: 'none', fontWeight: 600 }}>
+      <div style={{ marginBottom: '16px', fontSize: '14px', color: 'var(--color-text-muted)' }}>
+        <Link to={backUrl} style={{ color: 'var(--color-primary-strong)', textDecoration: 'none', fontWeight: 600 }}>
           Lớp học của tôi
         </Link>{' '}
         / <span>{classroom.name}</span>
@@ -361,8 +361,8 @@ export default function ClassroomDetail() {
       {/* Classroom Banner Header */}
       <div
         style={{
-          background: '#ffffff',
-          border: '1px solid #e2e8f0',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-border)',
           borderRadius: '16px',
           padding: '28px',
           marginBottom: '24px',
@@ -381,15 +381,15 @@ export default function ClassroomDetail() {
               {classroom.status === 'ACTIVE' ? 'Đang hoạt động' : 'Đã lưu trữ'}
             </span>
             {isOwner ? (
-              <span className="badge" style={{ background: '#fff7ed', color: '#c2410c', border: '1px solid #fed7aa', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <span className="badge" style={{ background: 'var(--color-primary-soft)', color: 'var(--color-primary-strong)', border: '1px solid #fed7aa', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 <GraduationCap size={13} /> Bạn là Gia sư phụ trách lớp
               </span>
             ) : user?.role === 'PARENT' ? (
-              <span className="badge" style={{ background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <span className="badge" style={{ background: 'var(--color-info-soft)', color: 'var(--color-info)', border: '1px solid #bfdbfe', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 <Users size={13} /> Bạn là Phụ huynh theo dõi lớp
               </span>
             ) : (
-              <span className="badge" style={{ background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <span className="badge" style={{ background: 'var(--color-success-soft)', color: 'var(--color-success)', border: '1px solid #bbf7d0', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 <UserCheck size={13} /> Bạn là Học viên trong lớp
               </span>
             )}
@@ -400,32 +400,32 @@ export default function ClassroomDetail() {
             <div
               className="archived-notice-banner"
               style={{
-                background: '#f8fafc',
-                border: '1px solid #cbd5e1',
-                borderLeft: '4px solid #64748b',
+                background: 'var(--color-surface-subtle)',
+                border: '1px solid var(--color-control-border)',
+                borderLeft: '4px solid var(--color-text-muted)',
                 padding: '10px 14px',
                 borderRadius: '8px',
                 marginBottom: '14px',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                color: '#334155',
+                color: 'var(--color-text)',
                 fontSize: '13px',
               }}
             >
-              <Archive size={16} style={{ color: '#64748b', flexShrink: 0 }} />
+              <Archive size={16} style={{ color: 'var(--color-text-muted)', flexShrink: 0 }} />
               <div>
                 <strong>Lớp học đã lưu trữ (Chỉ đọc)</strong>: Thành viên có thể xem lại tài liệu và lịch sử bài tập, không thể nộp bài hoặc đăng nội dung mới.
               </div>
             </div>
           )}
 
-          <h1 style={{ fontSize: '26px', fontWeight: 700, margin: '0 0 10px 0', color: '#0f172a' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: 700, margin: '0 0 10px 0', color: 'var(--color-text)' }}>
             {classroom.name}
           </h1>
 
           {classroom.description && (
-            <p style={{ color: '#64748b', fontSize: '15px', margin: '0 0 16px 0', lineHeight: 1.5 }}>
+            <p style={{ color: 'var(--color-text-muted)', fontSize: '15px', margin: '0 0 16px 0', lineHeight: 1.5 }}>
               {classroom.description}
             </p>
           )}
@@ -492,7 +492,7 @@ export default function ClassroomDetail() {
               <button
                 type="button"
                 className="btn-outline-gray"
-                style={{ color: '#dc2626', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                style={{ color: 'var(--color-error)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 onClick={handleDeleteClassroom}
                 title="Xóa lớp học (chỉ khi không còn thành viên/buổi học)"
               >
@@ -506,8 +506,8 @@ export default function ClassroomDetail() {
         {/* Join Code Quick Access Card */}
         <div
           style={{
-            background: '#f8fafc',
-            border: '1px dashed #cbd5e1',
+            background: 'var(--color-surface-subtle)',
+            border: '1px dashed var(--color-control-border)',
             borderRadius: '12px',
             padding: '16px 20px',
             minWidth: '260px',

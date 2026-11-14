@@ -5,6 +5,7 @@ import { useRequestActions } from '../../hooks/useRequestActions';
 import { browseRequests } from '../../services/tutorRequestService';
 import ListState from '../common/ListState';
 import Pagination from '../common/Pagination';
+import RequestDirectoryFilters from './RequestDirectoryFilters';
 import RequestFilters from './RequestFilters';
 import RequestGrid from './RequestGrid';
 
@@ -21,12 +22,13 @@ const toQueryParams = (filters) => {
   return params;
 };
 
-// UC11 – duyệt các yêu cầu đang mở với bộ lọc và phân trang. readOnly: khách / không phải gia sư, ẩn lưu và ứng tuyển
-export default function RequestBrowser({ readOnly = false }) {
+// UC11 – duyệt các yêu cầu đang mở với bộ lọc và phân trang. readOnly: khách / không phải gia sư, ẩn lưu và ứng tuyển.
+// directory: bố cục giống trang tìm gia sư, dùng cho trang công khai /requests
+export default function RequestBrowser({ readOnly = false, directory = false }) {
   const [filters, setFilters] = useState({});
   const [page, setPage] = useState(1);
 
-  const params = useMemo(() => ({ ...toQueryParams(filters), page: page, limit: PAGE_SIZE }), [filters, page]);
+  const params = useMemo(() => ({ ...toQueryParams(filters), page, limit: PAGE_SIZE }), [filters, page]);
   const list = usePagedList(browseRequests, params);
   const actions = useRequestActions({ patchItem: list.patchItem });
 
@@ -35,16 +37,29 @@ export default function RequestBrowser({ readOnly = false }) {
     setPage(1);
   };
 
-  let total = 0;
+  let total = null;
   if (list.data) {
     total = list.data.pagination.total;
   }
 
-  return (
-    <div className="page-stack">
+  let filtersBlock = (
+    <>
       <RequestFilters onApply={handleApplyFilters} />
+      {total !== null && <p className="item-meta" aria-live="polite">{total} yêu cầu đang mở được tìm thấy</p>}
+    </>
+  );
+  if (directory) {
+    filtersBlock = <RequestDirectoryFilters onApply={handleApplyFilters} total={total} />;
+  }
 
-      {list.data && <p className="item-meta" aria-live="polite">{total} yêu cầu đang mở được tìm thấy</p>}
+  let wrapperClassName = 'page-stack';
+  if (directory) {
+    wrapperClassName = 'request-directory page-stack';
+  }
+
+  return (
+    <div className={wrapperClassName}>
+      {filtersBlock}
 
       <ListState
         list={list}
@@ -53,7 +68,7 @@ export default function RequestBrowser({ readOnly = false }) {
         {list.data && <RequestGrid items={list.data.items} actions={actions} readOnly={readOnly} />}
       </ListState>
 
-      {list.data && <Pagination pagination={list.data.pagination} onPageChange={setPage} />}
+      {list.data && <Pagination pagination={list.data.pagination} onPageChange={setPage} disabled={list.loading} numbered={directory} />}
     </div>
   );
 }

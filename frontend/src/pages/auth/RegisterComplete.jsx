@@ -81,7 +81,7 @@ export default function RegisterComplete() {
   // Ticket hỏng / hết hạn: phải đăng nhập Google lại để lấy ticket mới
   if (!googleProfile || ticketExpired) {
     return (
-      <AuthLayout activeStep={2}>
+      <AuthLayout activeStep={2} panelClassName="register-intro">
         <h1 className="auth-title">Phiên đăng ký đã hết hạn</h1>
         <p className="auth-subtitle">Phiên đăng ký bằng Google không hợp lệ hoặc đã hết hạn. Vui lòng tiếp tục với Google một lần nữa.</p>
         <GoogleButton href={getGoogleLoginUrl()} />
@@ -102,7 +102,7 @@ export default function RegisterComplete() {
   }
 
   return (
-    <AuthLayout activeStep={2}>
+    <AuthLayout activeStep={2} panelClassName="register-intro">
       <RegisterStepper currentStep={2} />
       <RegisterConfirmStep
         fullName={googleProfile.full_name}

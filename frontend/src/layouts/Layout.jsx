@@ -43,6 +43,12 @@ export default function Layout() {
     return () => cancelAnimationFrame(frame);
   }, [location.pathname, location.hash, location.key]);
 
+  // Sang trang khác (vd từ trang chủ bấm Gia sư / Yêu cầu) thì về đầu trang; đổi bộ lọc trên cùng trang thì giữ vị trí
+  useEffect(() => {
+    if (location.pathname === '/') return;
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   // Fetch tutor profile if tutor
   useEffect(() => {
     if (user?.role !== 'TUTOR' || !userId) return;
@@ -291,7 +297,7 @@ export default function Layout() {
                       handleLogout();
                     }}
                     className="btn btn-ghost"
-                    style={{ color: '#EF4444' }}
+                    style={{ color: 'var(--color-error)' }}
                   >
                     Đăng xuất
                   </button>

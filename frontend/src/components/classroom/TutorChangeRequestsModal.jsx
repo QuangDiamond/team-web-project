@@ -107,7 +107,7 @@ export default function TutorChangeRequestsModal({
     >
       <div
         style={{
-          backgroundColor: '#ffffff',
+          backgroundColor: 'var(--color-surface)',
           borderRadius: '16px',
           width: '100%',
           maxWidth: '680px',
@@ -123,11 +123,11 @@ export default function TutorChangeRequestsModal({
         <div
           style={{
             padding: '18px 24px',
-            borderBottom: '1px solid #e2e8f0',
+            borderBottom: '1px solid var(--color-border)',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            backgroundColor: '#f8fafc',
+            backgroundColor: 'var(--color-surface-subtle)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -140,16 +140,16 @@ export default function TutorChangeRequestsModal({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#ea580c',
+                color: 'var(--color-primary-strong)',
               }}
             >
               <RotateCcw size={20} />
             </div>
             <div>
-              <h2 style={{ fontSize: '17px', fontWeight: 700, margin: 0, color: '#0f172a' }}>
+              <h2 style={{ fontSize: '17px', fontWeight: 700, margin: 0, color: 'var(--color-text)' }}>
                 Yêu cầu đổi / hủy lịch học
               </h2>
-              <p style={{ fontSize: '13px', margin: 0, color: '#64748b' }}>
+              <p style={{ fontSize: '13px', margin: 0, color: 'var(--color-text-muted)' }}>
                 Xét duyệt các yêu cầu thay đổi lịch học từ học viên theo quy định BR-10 / UC28.
               </p>
             </div>
@@ -161,7 +161,7 @@ export default function TutorChangeRequestsModal({
               border: 'none',
               background: 'transparent',
               cursor: 'pointer',
-              color: '#94a3b8',
+              color: 'var(--color-text-muted)',
               padding: '4px',
               display: 'flex',
             }}
@@ -176,8 +176,8 @@ export default function TutorChangeRequestsModal({
             display: 'flex',
             gap: '8px',
             padding: '12px 24px',
-            borderBottom: '1px solid #e2e8f0',
-            backgroundColor: '#ffffff',
+            borderBottom: '1px solid var(--color-border)',
+            backgroundColor: 'var(--color-surface)',
           }}
         >
           <button
@@ -193,16 +193,16 @@ export default function TutorChangeRequestsModal({
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              backgroundColor: activeTab === 'PENDING' ? '#0f172a' : '#f1f5f9',
-              color: activeTab === 'PENDING' ? '#ffffff' : '#475569',
+              backgroundColor: activeTab === 'PENDING' ? 'var(--color-text)' : 'var(--color-surface-subtle)',
+              color: activeTab === 'PENDING' ? 'var(--color-white)' : 'var(--color-text-muted)',
             }}
           >
             <span>Chờ xét duyệt</span>
             {pendingCount > 0 && (
               <span
                 style={{
-                  backgroundColor: activeTab === 'PENDING' ? '#ef4444' : '#e2e8f0',
-                  color: activeTab === 'PENDING' ? '#ffffff' : '#0f172a',
+                  backgroundColor: activeTab === 'PENDING' ? 'var(--color-error)' : 'var(--color-border)',
+                  color: activeTab === 'PENDING' ? 'var(--color-white)' : 'var(--color-text)',
                   padding: '1px 6px',
                   borderRadius: '10px',
                   fontSize: '11px',
@@ -222,8 +222,8 @@ export default function TutorChangeRequestsModal({
               fontSize: '13px',
               fontWeight: 600,
               cursor: 'pointer',
-              backgroundColor: activeTab === 'ALL' ? '#0f172a' : '#f1f5f9',
-              color: activeTab === 'ALL' ? '#ffffff' : '#475569',
+              backgroundColor: activeTab === 'ALL' ? 'var(--color-text)' : 'var(--color-surface-subtle)',
+              color: activeTab === 'ALL' ? 'var(--color-white)' : 'var(--color-text-muted)',
             }}
           >
             Tất cả yêu cầu ({requests.length})
@@ -233,7 +233,7 @@ export default function TutorChangeRequestsModal({
         {/* Content Body */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '40px 0', color: '#64748b' }}>
+            <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--color-text-muted)' }}>
               <Loader2 size={28} className="spin" style={{ margin: '0 auto 12px' }} />
               <p style={{ margin: 0, fontSize: '14px' }}>Đang tải danh sách yêu cầu...</p>
             </div>
@@ -241,8 +241,8 @@ export default function TutorChangeRequestsModal({
             <div
               style={{
                 padding: '14px',
-                backgroundColor: '#fef2f2',
-                color: '#dc2626',
+                backgroundColor: 'var(--color-error-soft)',
+                color: 'var(--color-error)',
                 borderRadius: '8px',
                 fontSize: '13px',
                 display: 'flex',
@@ -254,7 +254,7 @@ export default function TutorChangeRequestsModal({
               <span>{error}</span>
             </div>
           ) : filteredRequests.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '40px 0', color: '#94a3b8' }}>
+            <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--color-text-muted)' }}>
               <CalendarDays size={36} style={{ margin: '0 auto 12px', opacity: 0.5 }} />
               <p style={{ margin: 0, fontSize: '14px', fontWeight: 500 }}>
                 {activeTab === 'PENDING' ? 'Hiện không có yêu cầu nào chờ duyệt.' : 'Chưa có yêu cầu đổi lịch nào.'}
@@ -271,10 +271,10 @@ export default function TutorChangeRequestsModal({
                   <div
                     key={req._id}
                     style={{
-                      border: '1px solid #e2e8f0',
+                      border: '1px solid var(--color-border)',
                       borderRadius: '12px',
                       padding: '16px',
-                      backgroundColor: isPending ? '#f8fafc' : '#ffffff',
+                      backgroundColor: isPending ? 'var(--color-surface-subtle)' : 'var(--color-white)',
                     }}
                   >
                     {/* Item Header */}
@@ -294,17 +294,17 @@ export default function TutorChangeRequestsModal({
                               borderRadius: '4px',
                               fontSize: '11px',
                               fontWeight: 700,
-                              backgroundColor: isMove ? '#eff6ff' : '#fef2f2',
-                              color: isMove ? '#2563eb' : '#dc2626',
+                              backgroundColor: isMove ? 'var(--color-info-soft)' : 'var(--color-error-soft)',
+                              color: isMove ? 'var(--color-info)' : 'var(--color-error)',
                             }}
                           >
                             {isMove ? 'DỜI LỊCH HỌC' : 'HỦY BUỔI HỌC'}
                           </span>
-                          <strong style={{ fontSize: '14px', color: '#0f172a' }}>
+                          <strong style={{ fontSize: '14px', color: 'var(--color-text)' }}>
                             {req.session_id?.title || 'Buổi học'}
                           </strong>
                         </div>
-                        <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#64748b' }}>
+                        <p style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--color-text-muted)' }}>
                           Học viên yêu cầu:{' '}
                           <strong>{req.requested_by?.full_name || req.requested_by?.email || 'Học viên'}</strong> • Gửi{' '}
                           {formatDate(req.created_at)}
@@ -343,15 +343,15 @@ export default function TutorChangeRequestsModal({
                     {/* Schedule Comparison */}
                     <div
                       style={{
-                        backgroundColor: '#ffffff',
-                        border: '1px solid #f1f5f9',
+                        backgroundColor: 'var(--color-surface)',
+                        border: '1px solid var(--color-surface-subtle)',
                         borderRadius: '8px',
                         padding: '10px 12px',
                         margin: '10px 0',
                         fontSize: '13px',
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748b' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--color-text-muted)' }}>
                         <Clock size={14} />
                         <span>
                           <strong>Lịch ban đầu:</strong>{' '}
@@ -365,7 +365,7 @@ export default function TutorChangeRequestsModal({
                             display: 'flex',
                             alignItems: 'center',
                             gap: '8px',
-                            color: '#0284c7',
+                            color: 'var(--color-info)',
                             marginTop: '6px',
                             fontWeight: 600,
                           }}
@@ -381,14 +381,14 @@ export default function TutorChangeRequestsModal({
 
                     {/* Reason */}
                     {req.reason && (
-                      <p style={{ margin: '6px 0', fontSize: '13px', color: '#334155' }}>
+                      <p style={{ margin: '6px 0', fontSize: '13px', color: 'var(--color-text)' }}>
                         <strong>Lý do từ học viên:</strong> {req.reason}
                       </p>
                     )}
 
                     {/* Tutor feedback if resolved */}
                     {req.tutor_comment && (
-                      <p style={{ margin: '6px 0', fontSize: '12px', color: '#64748b', fontStyle: 'italic' }}>
+                      <p style={{ margin: '6px 0', fontSize: '12px', color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
                         <strong>Phản hồi của gia sư:</strong> {req.tutor_comment}
                       </p>
                     )}
@@ -402,13 +402,13 @@ export default function TutorChangeRequestsModal({
                           gap: '8px',
                           marginTop: '12px',
                           paddingTop: '10px',
-                          borderTop: '1px solid #f1f5f9',
+                          borderTop: '1px solid var(--color-surface-subtle)',
                         }}
                       >
                         <button
                           type="button"
                           className="btn btn-outline btn-sm"
-                          style={{ color: '#dc2626', borderColor: '#fca5a5' }}
+                          style={{ color: 'var(--color-error)', borderColor: '#fca5a5' }}
                           onClick={() => setRejectingId(req._id)}
                           disabled={Boolean(processingId)}
                         >
@@ -437,7 +437,7 @@ export default function TutorChangeRequestsModal({
                         style={{
                           marginTop: '10px',
                           padding: '12px',
-                          backgroundColor: '#fef2f2',
+                          backgroundColor: 'var(--color-error-soft)',
                           borderRadius: '8px',
                         }}
                       >
@@ -447,7 +447,7 @@ export default function TutorChangeRequestsModal({
                             display: 'block',
                             fontSize: '12px',
                             fontWeight: 600,
-                            color: '#991b1b',
+                            color: 'var(--color-error)',
                             marginBottom: '6px',
                           }}
                         >
@@ -482,7 +482,7 @@ export default function TutorChangeRequestsModal({
                           <button
                             type="button"
                             className="btn btn-primary btn-sm"
-                            style={{ backgroundColor: '#dc2626', borderColor: '#dc2626' }}
+                            style={{ backgroundColor: 'var(--color-error)', borderColor: 'var(--color-error)' }}
                             onClick={() => handleRespond(req._id, 'REJECTED', rejectionNote)}
                             disabled={Boolean(processingId)}
                           >
@@ -507,10 +507,10 @@ export default function TutorChangeRequestsModal({
         <div
           style={{
             padding: '12px 24px',
-            borderTop: '1px solid #e2e8f0',
+            borderTop: '1px solid var(--color-border)',
             display: 'flex',
             justifyContent: 'flex-end',
-            backgroundColor: '#f8fafc',
+            backgroundColor: 'var(--color-surface-subtle)',
           }}
         >
           <button type="button" className="btn btn-outline btn-sm" onClick={onClose}>

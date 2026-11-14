@@ -71,17 +71,17 @@ export default function GradeSubmissionsList({
               padding: '6px 10px 6px 30px',
               fontSize: '13px',
               borderRadius: '6px',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--color-control-border)',
             }}
           />
-          <Search size={14} color="#94a3b8" style={{ position: 'absolute', left: '9px', top: '8px' }} />
+          <Search size={14} color="var(--color-text-muted)" style={{ position: 'absolute', left: '9px', top: '8px' }} />
         </div>
       )}
 
       {/* Submissions List */}
       <div className="grade-submissions-list">
         {filteredSubmissions.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '24px 10px', color: '#94a3b8', fontSize: '13px' }}>
+          <div style={{ textAlign: 'center', padding: '24px 10px', color: 'var(--color-text-muted)', fontSize: '13px' }}>
             Không tìm thấy bài nộp phù hợp.
           </div>
         ) : (
@@ -103,7 +103,7 @@ export default function GradeSubmissionsList({
                     <div className="grade-item-name" title={studentName}>
                       {studentName}
                     </div>
-                    <div style={{ fontSize: '11px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                    <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
                       <Clock size={11} />
                       <span>{new Date(sub.submitted_at).toLocaleDateString('vi-VN')}</span>
                       <span>• Lần #{sub.attempt_number || 1}</span>
@@ -114,11 +114,11 @@ export default function GradeSubmissionsList({
                 <div className="grade-item-footer">
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
                     {isGraded ? (
-                      <span style={{ color: '#16a34a', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                      <span style={{ color: 'var(--color-success)', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
                         <Award size={13} /> {sub.final_score}/{totalPoints}đ
                       </span>
                     ) : (
-                      <span style={{ color: '#ea580c' }}>
+                      <span style={{ color: 'var(--color-primary-strong)' }}>
                         Tạm: {sub.provisional_score || 0}/{totalPoints}đ
                       </span>
                     )}
