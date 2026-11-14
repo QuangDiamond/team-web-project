@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import Modal from '../common/Modal';
 import FormInput from '../common/FormInput';
@@ -42,7 +43,7 @@ export default function AgreementProposalModal({ conversations, role, onSubmit, 
     try {
       await onSubmit({ conversationId: form.conversationId, agreedSubject: form.subject.trim(), agreedSchedule: form.schedule.trim(), agreedPrice: Number(form.price) });
     } catch (failure) {
-      setError(failure.message || 'Không thể gửi đề xuất thỏa thuận.');
+      toast.error(failure.message || 'Không thể gửi đề xuất thỏa thuận.');
     } finally {
       setSubmitting(false);
     }

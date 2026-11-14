@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft,
@@ -20,7 +21,6 @@ import Alert from '../../components/common/Alert';
 import FormInput from '../../components/common/FormInput';
 import FormSelect from '../../components/common/FormSelect';
 import Modal from '../../components/common/Modal';
-import Toast from '../../components/common/Toast';
 import ClassroomTopicsAndMaterials from '../../components/tutorClassroom/ClassroomTopicsAndMaterials';
 import AttendanceModal from '../../components/classroom/AttendanceModal';
 import TutorChangeRequestsModal from '../../components/classroom/TutorChangeRequestsModal';
@@ -274,7 +274,7 @@ function ClassSessionFormModal({ session, initialValues, onClose, onSave, onSucc
       onClose();
       return;
     }
-    setFormError(result.message);
+    toast.error(result.message);
   };
 
   return (
@@ -472,7 +472,7 @@ function ClassSessionFormModal({ session, initialValues, onClose, onSave, onSucc
   );
 }
 
-function ClassSchedule({ classId, sessions, isLoading, error, onRetry, onSaveSession, onDeleteSession, showToast }) {
+function ClassSchedule({ classId, sessions, isLoading, error, onRetry, onSaveSession, onDeleteSession }) {
   const [weekStart, setWeekStart] = useState(() => getWeekStart(new Date()));
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -481,7 +481,6 @@ function ClassSchedule({ classId, sessions, isLoading, error, onRetry, onSaveSes
   const [attendanceSession, setAttendanceSession] = useState(null);
   const [isChangeRequestsOpen, setIsChangeRequestsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState('');
   const days = getWeekDays(weekStart);
   const today = new Date();
   const weekSessions = useMemo(() => sessions
@@ -580,14 +579,13 @@ function ClassSchedule({ classId, sessions, isLoading, error, onRetry, onSaveSes
       return;
     }
     setIsDeleting(true);
-    setDeleteError('');
     const result = await onDeleteSession(sessionToDelete._id);
     setIsDeleting(false);
     if (result.success) {
       setSessionToDelete(null);
       return;
     }
-    setDeleteError(result.message);
+    toast.error(result.message);
   };
 
   if (isLoading) {
@@ -735,7 +733,6 @@ function ClassSchedule({ classId, sessions, isLoading, error, onRetry, onSaveSes
                               type="button"
                               className="schedule-event-action schedule-event-delete-action"
                               onClick={() => {
-                                setDeleteError('');
                                 setSessionToDelete(event.session);
                               }}
                               disabled={sessionHasStarted}
@@ -831,7 +828,6 @@ function ClassSchedule({ classId, sessions, isLoading, error, onRetry, onSaveSes
           <p className="class-session-delete-copy">
             Bạn có chắc muốn xóa buổi học “{sessionToDelete.title || 'Buổi học'}”? Thao tác này không thể hoàn tác.
           </p>
-          {deleteError && <Alert type="error"><p>{deleteError}</p></Alert>}
           <div className="class-session-form-actions">
             <button
               type="button"
@@ -862,7 +858,6 @@ function ClassSchedule({ classId, sessions, isLoading, error, onRetry, onSaveSes
         onSuccess={() => {
           onRetry();
         }}
-        showToast={(msg) => showToast && showToast('success', msg)}
       />
 
       {/* Modal xét duyệt yêu cầu đổi / hủy lịch học từ học viên (UC27 & UC28) */}
@@ -873,7 +868,6 @@ function ClassSchedule({ classId, sessions, isLoading, error, onRetry, onSaveSes
         onSuccess={() => {
           onRetry();
         }}
-        showToast={(msg) => showToast && showToast('success', msg)}
       />
     </section>
   );
@@ -890,13 +884,9 @@ export default function MyClassDetail({
   const classId = providedClassId || routeParams.classId;
   const [localActiveTab, setLocalActiveTab] = useState('materials');
   const activeTab = embedded ? providedActiveTab : localActiveTab;
-  const [toast, setToast] = useState(null);
   const [topics, setTopics] = useState([]);
   const [topicsLoading, setTopicsLoading] = useState(true);
   const [topicsError, setTopicsError] = useState('');
-  const [createTopicError, setCreateTopicError] = useState('');
-  const [topicActionError, setTopicActionError] = useState('');
-  const [createMaterialError, setCreateMaterialError] = useState('');
   const [materials, setMaterials] = useState([]);
   const [materialsLoading, setMaterialsLoading] = useState(true);
   const [materialsError, setMaterialsError] = useState('');
@@ -905,12 +895,6 @@ export default function MyClassDetail({
   const [sessionsError, setSessionsError] = useState('');
   const classroom = embedded ? providedClassroom : location.state && location.state.classroom;
   const canLoadClassroom = classroom && String(classroom._id) === classId;
-
-  const showToast = (type, message) => {
-    setToast({ id: Date.now(), type: type, message: message });
-  };
-
-  const closeToast = () => setToast(null);
 
   useEffect(() => {
     if (!canLoadClassroom) {
@@ -996,99 +980,85 @@ export default function MyClassDetail({
   }
 
   const handleCreateTopic = async (topicName) => {
-    setCreateTopicError('');
     try {
       const response = await createClassTopic(classId, { name: topicName });
       setTopics((currentTopics) => [...currentTopics, response.data]);
-      showToast('success', response.message);
+      toast.success(response.message);
       return true;
     } catch (error) {
-      setCreateTopicError(error.message);
-      showToast('error', error.message);
+      toast.error(error.message);
       return false;
     }
   };
 
   const handleUpdateTopic = async (topicId, topicName) => {
-    setTopicActionError('');
     try {
       const response = await updateClassTopic(classId, topicId, { name: topicName });
       setTopics((currentTopics) => currentTopics.map((topic) => (
         topic._id === topicId ? response.data : topic
       )));
-      showToast('success', response.message);
+      toast.success(response.message);
       return true;
     } catch (error) {
-      setTopicActionError(error.message);
-      showToast('error', error.message);
+      toast.error(error.message);
       return false;
     }
   };
 
   const handleDeleteTopic = async (topicId) => {
-    setTopicActionError('');
     try {
       const response = await deleteClassTopic(classId, topicId);
       setTopics((currentTopics) => currentTopics.filter((topic) => topic._id !== topicId));
-      showToast('success', response.message);
+      toast.success(response.message);
       return true;
     } catch (error) {
-      setTopicActionError(error.message);
-      showToast('error', error.message);
+      toast.error(error.message);
       return false;
     }
   };
 
   const handleCreateMaterial = async (formData) => {
-    setCreateMaterialError('');
     try {
       const response = await createClassMaterial(classId, formData);
       setMaterials((currentMaterials) => [...currentMaterials, response.data]);
-      showToast('success', response.message);
+      toast.success(response.message);
       return true;
     } catch (error) {
-      setCreateMaterialError(error.message);
-      showToast('error', error.message);
+      toast.error(error.message);
       return false;
     }
   };
 
   const handleUpdateMaterial = async (materialId, formData) => {
-    setCreateMaterialError('');
     try {
       const response = await updateClassMaterial(classId, materialId, formData);
       setMaterials((currentMaterials) => currentMaterials.map((material) => (
         material._id === materialId ? response.data : material
       )));
       if (!response.data.old_file_deleted) {
-        setCreateMaterialError(response.message);
-        showToast('error', response.message);
+        toast.error(response.message);
       } else {
-        showToast('success', response.message);
+        toast.success(response.message);
       }
       return true;
     } catch (error) {
-      setCreateMaterialError(error.message);
-      showToast('error', error.message);
+      toast.error(error.message);
       return false;
     }
   };
 
   const handleDeleteMaterial = async (materialId) => {
-    setCreateMaterialError('');
     try {
       const response = await deleteClassMaterial(classId, materialId);
       setMaterials((currentMaterials) => currentMaterials.filter((material) => material._id !== materialId));
       if (!response.data.cloudinary_deleted) {
-        setCreateMaterialError(response.message);
-        showToast('error', response.message);
+        toast.error(response.message);
       } else {
-        showToast('success', response.message);
+        toast.success(response.message);
       }
       return true;
     } catch (error) {
-      setCreateMaterialError(error.message);
-      showToast('error', error.message);
+      toast.error(error.message);
       return false;
     }
   };
@@ -1140,7 +1110,7 @@ export default function MyClassDetail({
           ));
         });
       }
-      showToast('success', response.message);
+      toast.success(response.message);
       return { success: true, message: response.message, session: response.data };
     } catch (error) {
       return { success: false, message: error.message };
@@ -1151,7 +1121,7 @@ export default function MyClassDetail({
     try {
       const response = await deleteClassSession(classId, sessionId);
       setSessions((currentSessions) => currentSessions.filter((session) => session._id !== sessionId));
-      showToast('success', response.message);
+      toast.success(response.message);
       return { success: true, message: response.message };
     } catch (error) {
       return { success: false, message: error.message };
@@ -1169,7 +1139,6 @@ export default function MyClassDetail({
   if (embedded) {
     return (
       <>
-        <Toast toast={toast} onClose={closeToast} />
         {activeTab === 'materials' && (
           <ClassroomTopicsAndMaterials
             classId={classId}
@@ -1177,14 +1146,11 @@ export default function MyClassDetail({
             materials={materials}
             topicsLoading={topicsLoading}
             topicsError={topicsError}
-            createTopicError={createTopicError}
-            topicActionError={topicActionError}
             onRetryTopics={handleRetryLoadingTopics}
             onCreateTopic={handleCreateTopic}
             onUpdateTopic={handleUpdateTopic}
             onDeleteTopic={handleDeleteTopic}
             onCreateMaterial={handleCreateMaterial}
-            createMaterialError={createMaterialError}
             materialsLoading={materialsLoading}
             materialsError={materialsError}
             onRetryMaterials={handleRetryLoadingMaterials}
@@ -1201,7 +1167,6 @@ export default function MyClassDetail({
             onRetry={handleRetryLoadingSessions}
             onSaveSession={handleSaveSession}
             onDeleteSession={handleDeleteSession}
-            showToast={showToast}
           />
         )}
       </>
@@ -1210,7 +1175,6 @@ export default function MyClassDetail({
 
   return (
     <div className="class-detail-page">
-      <Toast toast={toast} onClose={closeToast} />
       <Link to="/tutor/classes" className="class-detail-back-link">
         <ArrowLeft size={16} aria-hidden="true" />
         <span>Quay lại Lớp của tôi</span>
@@ -1261,14 +1225,11 @@ export default function MyClassDetail({
             materials={materials}
             topicsLoading={topicsLoading}
             topicsError={topicsError}
-            createTopicError={createTopicError}
-            topicActionError={topicActionError}
             onRetryTopics={handleRetryLoadingTopics}
             onCreateTopic={handleCreateTopic}
             onUpdateTopic={handleUpdateTopic}
             onDeleteTopic={handleDeleteTopic}
             onCreateMaterial={handleCreateMaterial}
-            createMaterialError={createMaterialError}
             materialsLoading={materialsLoading}
             materialsError={materialsError}
             onRetryMaterials={handleRetryLoadingMaterials}
@@ -1285,7 +1246,6 @@ export default function MyClassDetail({
             onRetry={handleRetryLoadingSessions}
             onSaveSession={handleSaveSession}
             onDeleteSession={handleDeleteSession}
-            showToast={showToast}
           />
         )}
       </div>

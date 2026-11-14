@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState, useRef } from 'react';
 import {
   MessageSquare,
@@ -88,13 +89,13 @@ export default function ClassroomChatTab({
     for (const file of files) {
       const ext = file.name.split('.').pop()?.toLowerCase();
       if (!ALLOWED_EXTENSIONS.includes(ext)) {
-        alert(
+        toast.error(
           `Tệp "${file.name}" không hợp lệ. Chỉ chấp nhận các định dạng: pdf, doc/docx, ppt/pptx, xls/xlsx, jpg, png, mp4, zip.`
         );
         continue;
       }
       if (file.size > MAX_FILE_SIZE) {
-        alert(`Tệp "${file.name}" vượt quá dung lượng tối đa cho phép là 20MB.`);
+        toast.error(`Tệp "${file.name}" vượt quá dung lượng tối đa cho phép là 20MB.`);
         continue;
       }
       try {
@@ -106,7 +107,7 @@ export default function ClassroomChatTab({
           file_data: base64,
         });
       } catch {
-        alert(`Không thể đọc tệp "${file.name}". Vui lòng thử lại.`);
+        toast.error(`Không thể đọc tệp "${file.name}". Vui lòng thử lại.`);
       }
     }
 

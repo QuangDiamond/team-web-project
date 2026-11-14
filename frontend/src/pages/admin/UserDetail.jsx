@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ChevronLeft, LoaderCircle } from 'lucide-react';
@@ -16,7 +17,6 @@ export default function UserDetail() {
   const { user: currentUser } = useAuth();
   const [detail, setDetail] = useState(null);
   const [loadError, setLoadError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState('');
   // Thao tác đang mở hộp thoại: 'SUSPEND' | 'BAN' | 'REACTIVATE' | null
   const [openAction, setOpenAction] = useState(null);
 
@@ -36,7 +36,7 @@ export default function UserDetail() {
 
   const handleSaved = async (message) => {
     setOpenAction(null);
-    setSuccessMessage(message);
+    toast.success(message);
     await loadDetail();
     // Nút đã mở hộp thoại (vd Suspend) biến mất sau khi đổi trạng thái -> đưa focus về tiêu đề khối trạng thái
     const heading = document.getElementById('user-actions-title');
@@ -46,7 +46,7 @@ export default function UserDetail() {
   };
 
   const openStatusDialog = (actionKey) => {
-    setSuccessMessage('');
+
     setOpenAction(actionKey);
   };
 
@@ -87,7 +87,6 @@ export default function UserDetail() {
   return (
     <div className="user-detail">
       {backLink}
-      {successMessage && <Alert type="success">{successMessage}</Alert>}
 
       <div className="user-detail-grid">
         <UserProfileCard user={detail.user} />

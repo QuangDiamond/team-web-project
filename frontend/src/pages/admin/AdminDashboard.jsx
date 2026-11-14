@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { Download, LoaderCircle, RefreshCw } from 'lucide-react';
 import PageHeader from '../../components/common/PageHeader';
@@ -22,18 +23,17 @@ export default function AdminDashboard() {
   const [period, setPeriod] = useState('30d');
   const [report, setReport] = useState(null);
   const [exporting, setExporting] = useState(false);
-  const [exportError, setExportError] = useState('');
   const stats = useAdminStats(period);
   const periodLabel = PERIODS.find((option) => option.value === period).label;
 
   const exportReport = async () => {
     setExporting(true);
-    setExportError('');
+
     try {
       const result = await statsService.exportReport(period);
       setReport(result);
     } catch (error) {
-      setExportError(error.message || 'Không thể xuất báo cáo. Vui lòng thử lại.');
+      toast.error(error.message || 'Không thể xuất báo cáo. Vui lòng thử lại.');
     } finally {
       setExporting(false);
     }
@@ -85,7 +85,7 @@ export default function AdminDashboard() {
           Làm mới
         </button>
       </div>
-      {exportError && <Alert type="error">{exportError}</Alert>}
+
       {stats.loading && (
         <p role="status" className="admin-stats-loading">
           <LoaderCircle size={20} className="spin" aria-hidden="true" />

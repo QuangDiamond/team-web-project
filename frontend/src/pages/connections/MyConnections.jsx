@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
@@ -7,6 +8,7 @@ import {
   proposeAgreement,
   rateTutor,
 } from '../../services/agreementService';
+import Alert from '../../components/common/Alert';
 import AgreementProposalModal from '../../components/connections/AgreementProposalModal';
 import ConnectionCard from '../../components/connections/ConnectionCard';
 import ConnectionStats from '../../components/connections/ConnectionStats';
@@ -50,6 +52,7 @@ export default function MyConnections() {
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [connections, setConnections] = useState([]);
   const [activeConversations, setActiveConversations] = useState([]);
   const [activeTab, setActiveTab] = useState('ALL');
@@ -57,26 +60,21 @@ export default function MyConnections() {
   const [processingId, setProcessingId] = useState(null);
   const [proposeModalOpen, setProposeModalOpen] = useState(false);
   const [ratingModalTarget, setRatingModalTarget] = useState(null);
-  const [toast, setToast] = useState(null);
 
   let messagesBasePath = '/parent/messages';
   if (user && user.role === 'TUTOR') {
     messagesBasePath = '/tutor/messages';
   }
 
-  const showToast = (message, type = 'success') => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 4000);
-  };
-
   const loadData = async () => {
     try {
       setLoading(true);
+      setLoadError('');
       const data = await getConnections();
       setConnections(data?.connections || []);
       setActiveConversations(data?.activeConversations || []);
     } catch (err) {
-      showToast(err.message || 'Lỗi tải danh sách kết nối', 'error');
+      setLoadError(err.message || 'Lỗi tải danh sách kết nối');
     } finally {
       setLoading(false);
     }
@@ -99,10 +97,10 @@ export default function MyConnections() {
 
     try {
       const res = await confirmAgreement(agreement._id, action);
-      showToast(res?.message || fallbackMessage);
+      toast.success(res?.message || fallbackMessage);
       await loadData();
     } catch (err) {
-      showToast(err.message || 'Lỗi cập nhật thỏa thuận', 'error');
+      toast.error(err.message || 'Lỗi cập nhật thỏa thuận');
     } finally {
       setProcessingId(null);
     }
@@ -111,7 +109,7 @@ export default function MyConnections() {
   const handleProposeSubmit = async (payload) => {
     const res = await proposeAgreement(payload);
     setProposeModalOpen(false);
-    showToast(res?.message || 'Đã gửi đề xuất thỏa thuận kết nối!');
+    toast.success(res?.message || 'Đã gửi đề xuất thỏa thuận kết nối!');
     await loadData();
   };
 
@@ -119,11 +117,11 @@ export default function MyConnections() {
     if (!ratingModalTarget) return;
     try {
       const res = await rateTutor(ratingModalTarget._id, payload);
-      showToast(res?.message || 'Cảm ơn bạn đã gửi đánh giá!');
+      toast.success(res?.message || 'Cảm ơn bạn đã gửi đánh giá!');
       setRatingModalTarget(null);
       await loadData();
     } catch (err) {
-      showToast(err.message || 'Lỗi gửi đánh giá', 'error');
+      toast.error(err.message || 'Lỗi gửi đánh giá');
     }
   };
 
@@ -144,6 +142,13 @@ export default function MyConnections() {
       <div className="conn-empty-state">
         <p>Đang tải danh sách thỏa thuận kết nối từ hệ thống...</p>
       </div>
+    );
+  } else if (loadError) {
+    listContent = (
+      <Alert type="error">
+        <p>{loadError}</p>
+        <button type="button" className="btn btn-outline btn-sm" onClick={loadData}>Thử lại</button>
+      </Alert>
     );
   } else if (filteredConnections.length === 0) {
     listContent = (
@@ -174,11 +179,6 @@ export default function MyConnections() {
 
   return (
     <div className="connections-page">
-      {toast && (
-        <div className={`toast-alert ${toast.type}`}>
-          <span>{toast.message}</span>
-        </div>
-      )}
 
       <div className="conn-header-row">
         <div>

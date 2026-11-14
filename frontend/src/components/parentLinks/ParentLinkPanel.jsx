@@ -1,9 +1,9 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { Link2Off, Send, Undo2, Users } from 'lucide-react';
 import { usePagedList } from '../../hooks/usePagedList';
 import { getMyParentLinks, inviteStudentByEmail, removeParentLink } from '../../services/parentLinkService';
 import { validateEmail } from '../../utils/authValidators';
-import Alert from '../common/Alert';
 import FormInput from '../common/FormInput';
 import ListState from '../common/ListState';
 import Pagination from '../common/Pagination';
@@ -18,7 +18,6 @@ export default function ParentLinkPanel({ onChanged }) {
   const list = usePagedList(getMyParentLinks, {}, page);
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [message, setMessage] = useState(null);
   const [busyId, setBusyId] = useState('');
   const [isSending, setIsSending] = useState(false);
 
@@ -31,15 +30,14 @@ export default function ParentLinkPanel({ onChanged }) {
     }
 
     setIsSending(true);
-    setMessage(null);
     try {
       const response = await inviteStudentByEmail(email.trim());
-      setMessage({ type: 'success', text: response.message });
+      toast.success(response.message);
       setEmail('');
       setPage(1);
       list.reload();
     } catch (error) {
-      setMessage({ type: 'error', text: error.message });
+      toast.error(error.message);
     } finally {
       setIsSending(false);
     }
@@ -55,7 +53,6 @@ export default function ParentLinkPanel({ onChanged }) {
     }
 
     setBusyId(link._id);
-    setMessage(null);
     try {
       await removeParentLink(link._id);
       list.reload();
@@ -63,7 +60,7 @@ export default function ParentLinkPanel({ onChanged }) {
         onChanged();
       }
     } catch (error) {
-      setMessage({ type: 'error', text: error.message });
+      toast.error(error.message);
     } finally {
       setBusyId('');
     }
@@ -89,8 +86,6 @@ export default function ParentLinkPanel({ onChanged }) {
         </button>
       </form>
       <p className="parent-link-hint">Học sinh sẽ nhận được thông báo và cần xác nhận. Sau khi liên kết, bạn xem được mọi lớp em tham gia mà không cần vào lớp.</p>
-
-      {message && <Alert type={message.type}><p>{message.text}</p></Alert>}
 
       <ListState list={list} empty={EMPTY_LIST}>
         {list.data && (

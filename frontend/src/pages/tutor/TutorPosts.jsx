@@ -1,9 +1,9 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Plus } from 'lucide-react';
 import { usePagedList } from '../../hooks/usePagedList';
 import { changePostStatus, deletePost, getMyPosts } from '../../services/tutorPostService';
-import Alert from '../../components/common/Alert';
 import ListState from '../../components/common/ListState';
 import Modal from '../../components/common/Modal';
 import Pagination from '../../components/common/Pagination';
@@ -16,37 +16,33 @@ const PAGE_SIZE = 10;
 export default function TutorPosts() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
-  const [notice, setNotice] = useState('');
-  const [actionError, setActionError] = useState('');
   const [postToDelete, setPostToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const list = usePagedList(getMyPosts, { page: page, limit: PAGE_SIZE });
 
   const handleChangeStatus = async (post, status) => {
-    setNotice('');
-    setActionError('');
+
     try {
       await changePostStatus(post._id, status);
       if (status === 'PUBLISHED') {
-        setNotice(`"${post.title}" đã được đăng.`);
+        toast.success(`"${post.title}" đã được đăng.`);
       } else {
-        setNotice(`"${post.title}" đã được ẩn.`);
+        toast.success(`"${post.title}" đã được ẩn.`);
       }
     } catch (error) {
-      setActionError(error.message);
+      toast.error(error.message);
     }
     await list.reload();
   };
 
   const confirmDelete = async () => {
     setDeleting(true);
-    setNotice('');
-    setActionError('');
+
     try {
       await deletePost(postToDelete._id);
-      setNotice(`"${postToDelete.title}" đã được xóa.`);
+      toast.success(`"${postToDelete.title}" đã được xóa.`);
     } catch (error) {
-      setActionError(error.message);
+      toast.error(error.message);
     }
     setDeleting(false);
     setPostToDelete(null);
@@ -62,9 +58,6 @@ export default function TutorPosts() {
           <span>Bài đăng mới</span>
         </button>
       </div>
-
-      {notice && <Alert type="success">{notice}</Alert>}
-      {actionError && <Alert type="error">{actionError}</Alert>}
 
       <ListState
         list={list}

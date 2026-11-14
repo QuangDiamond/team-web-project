@@ -1,8 +1,8 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { Check, Link2Off, UsersRound, X } from 'lucide-react';
 import { usePagedList } from '../../hooks/usePagedList';
 import { getMyParentLinks, removeParentLink, respondToParentLink } from '../../services/parentLinkService';
-import Alert from '../../components/common/Alert';
 import ListState from '../../components/common/ListState';
 import Pagination from '../../components/common/Pagination';
 import SectionCard from '../../components/common/SectionCard';
@@ -18,23 +18,21 @@ export default function ParentLinks() {
   const [acceptedPage, setAcceptedPage] = useState(1);
   const pendingList = usePagedList(getMyParentLinks, { status: 'PENDING' }, pendingPage);
   const acceptedList = usePagedList(getMyParentLinks, { status: 'ACCEPTED' }, acceptedPage);
-  const [message, setMessage] = useState(null);
   const [busyId, setBusyId] = useState('');
 
   const handleRespond = async (link, action) => {
     setBusyId(link._id);
-    setMessage(null);
     try {
       await respondToParentLink(link._id, action);
       if (action === 'ACCEPT') {
-        setMessage({ type: 'success', text: 'Đã chấp nhận. Phụ huynh có thể theo dõi tiến độ học tập của bạn.' });
+        toast.success('Đã chấp nhận. Phụ huynh có thể theo dõi tiến độ học tập của bạn.');
       } else {
-        setMessage({ type: 'success', text: 'Đã từ chối lời mời liên kết.' });
+        toast.success('Đã từ chối lời mời liên kết.');
       }
       pendingList.reload();
       acceptedList.reload();
     } catch (error) {
-      setMessage({ type: 'error', text: error.message });
+      toast.error(error.message);
     } finally {
       setBusyId('');
     }
@@ -45,12 +43,11 @@ export default function ParentLinks() {
       return;
     }
     setBusyId(link._id);
-    setMessage(null);
     try {
       await removeParentLink(link._id);
       acceptedList.reload();
     } catch (error) {
-      setMessage({ type: 'error', text: error.message });
+      toast.error(error.message);
     } finally {
       setBusyId('');
     }
@@ -58,7 +55,6 @@ export default function ParentLinks() {
 
   return (
     <div className="page-stack">
-      {message && <Alert type={message.type}><p>{message.text}</p></Alert>}
 
       <SectionCard title="Lời mời đang chờ">
         <ListState list={pendingList} empty={PENDING_EMPTY}>

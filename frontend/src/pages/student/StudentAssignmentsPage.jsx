@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState, useEffect, useCallback, useId } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -6,7 +7,6 @@ import {
   BookOpen,
   Clock,
   Award,
-  CheckCircle2,
   AlertCircle,
   RotateCcw,
   PenTool,
@@ -51,17 +51,9 @@ export default function StudentAssignmentsPage() {
   // Target modal
   const [doAssignmentTarget, setDoAssignmentTarget] = useState(null);
   const [loadingDetailId, setLoadingDetailId] = useState(null);
-  const [toastMessage, setToastMessage] = useState('');
 
   const searchInputId = useId();
   const classSelectId = useId();
-
-  const showToast = (msg) => {
-    setToastMessage(msg);
-    setTimeout(() => {
-      setToastMessage('');
-    }, 3000);
-  };
 
   // 1. Tải danh sách lớp để lọc
   useEffect(() => {
@@ -130,7 +122,7 @@ export default function StudentAssignmentsPage() {
         setDoAssignmentTarget(res.data);
       }
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || 'Không thể tải chi tiết bài tập');
+      toast.error(err?.response?.data?.message || err.message || 'Không thể tải chi tiết bài tập');
     } finally {
       setLoadingDetailId(null);
     }
@@ -138,29 +130,6 @@ export default function StudentAssignmentsPage() {
 
   return (
     <div className="student-assignments-page">
-      {/* Toast thông báo */}
-      {toastMessage && (
-        <div
-          style={{
-            position: 'fixed',
-            bottom: '24px',
-            right: '24px',
-            background: '#0f172a',
-            color: '#ffffff',
-            padding: '12px 20px',
-            borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            zIndex: 9999,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            fontSize: '14px',
-          }}
-        >
-          <CheckCircle2 size={16} color="#4ade80" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
 
       {/* Header */}
       <div className="student-assignments-header">
@@ -471,10 +440,8 @@ export default function StudentAssignmentsPage() {
         onClose={() => setDoAssignmentTarget(null)}
         assignment={doAssignmentTarget}
         onSubmitted={() => {
-          showToast('Nộp bài tập thành công!');
           fetchAssignments(pagination.page);
         }}
-        showToast={showToast}
       />
     </div>
   );

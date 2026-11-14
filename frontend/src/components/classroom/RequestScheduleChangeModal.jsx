@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState, useId } from 'react';
 import { Clock, AlertCircle, CalendarDays, Loader2, X, Send } from 'lucide-react';
 import { createScheduleChangeRequest } from '../../services/classroomService';
@@ -10,7 +11,6 @@ export default function RequestScheduleChangeModal({
   session,
   classId,
   onSuccess,
-  showToast,
 }) {
   const [requestType, setRequestType] = useState('MOVE'); // 'MOVE' | 'CANCEL'
   const [date, setDate] = useState('');
@@ -82,11 +82,11 @@ export default function RequestScheduleChangeModal({
       setSubmitting(true);
       const targetClassId = classId || session.class_id || session.class?._id;
       const res = await createScheduleChangeRequest(targetClassId, session._id, payload);
-      if (showToast) showToast('Gửi yêu cầu đổi lịch học thành công! Gia sư sẽ xem xét và phản hồi.');
+      toast.success('Gửi yêu cầu đổi lịch học thành công! Gia sư sẽ xem xét và phản hồi.');
       if (onSuccess) onSuccess(res?.data);
       onClose();
     } catch (err) {
-      setError(err.message || 'Lỗi gửi yêu cầu đổi lịch');
+      toast.error(err.message || 'Lỗi gửi yêu cầu đổi lịch');
     } finally {
       setSubmitting(false);
     }

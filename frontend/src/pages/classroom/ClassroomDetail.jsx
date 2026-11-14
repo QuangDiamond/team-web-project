@@ -1,10 +1,10 @@
+import { toast } from 'sonner';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   AlertTriangle,
   BookOpen,
   CalendarDays,
-  Sparkles,
   GraduationCap,
   Users,
   UserCheck,
@@ -68,7 +68,13 @@ export default function ClassroomDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState(initialTab); // announcements, members, assignments, chat
-  const [toastMessage, setToastMessage] = useState('');
+
+  useEffect(() => {
+    if (location.state?.toastMessage) {
+      toast.success(location.state.toastMessage, { id: `classroom-result-${location.key}` });
+      navigate(location.pathname + location.search, { replace: true, state: null });
+    }
+  }, [location.key, location.pathname, location.search, location.state?.toastMessage, navigate]);
 
   // Modals State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -95,13 +101,6 @@ export default function ClassroomDetail() {
   const [chatInput, setChatInput] = useState('');
   const [sendingChat, setSendingChat] = useState(false);
   const chatBottomRef = useRef(null);
-
-  const showToast = (msg) => {
-    setToastMessage(msg);
-    setTimeout(() => {
-      setToastMessage('');
-    }, 3000);
-  };
 
   // 1. Fetch Classroom Detail
   const fetchDetail = useCallback(async () => {
@@ -195,7 +194,7 @@ export default function ClassroomDetail() {
   const handleCopy = (text, label) => {
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(text);
-      showToast(`Đã sao chép ${label}!`);
+      toast.success(`Đã sao chép ${label}!`);
     }
   };
 
@@ -213,9 +212,9 @@ export default function ClassroomDetail() {
     try {
       const res = await updateClassroomStatus(classroom._id, newStatus);
       setClassroom(res?.data || { ...classroom, status: newStatus });
-      showToast(`Lớp học đã chuyển sang trạng thái ${newStatus === 'ACTIVE' ? 'Hoạt động' : 'Đã lưu trữ'}`);
+      toast.success(`Lớp học đã chuyển sang trạng thái ${newStatus === 'ACTIVE' ? 'Hoạt động' : 'Đã lưu trữ'}`);
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || 'Lỗi khi đổi trạng thái');
+      toast.error(err?.response?.data?.message || err.message || 'Lỗi khi đổi trạng thái');
     }
   };
 
@@ -231,9 +230,9 @@ export default function ClassroomDetail() {
         join_code: res?.data?.join_code,
         invite_link: res?.data?.invite_link,
       }));
-      showToast('Đã cấp mã tham gia và liên kết mời mới thành công!');
+      toast.success('Đã cấp mã tham gia và liên kết mời mới thành công!');
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || 'Lỗi khi cấp lại mã');
+      toast.error(err?.response?.data?.message || err.message || 'Lỗi khi cấp lại mã');
     }
   };
 
@@ -262,10 +261,10 @@ export default function ClassroomDetail() {
 
     try {
       await deleteClassroom(classroom._id);
-      showToast('Đã xóa lớp học thành công!');
+      toast.success('Đã xóa lớp học thành công!');
       navigate(backUrl);
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || 'Không thể xóa lớp học');
+      toast.error(err?.response?.data?.message || err.message || 'Không thể xóa lớp học');
     }
   };
 
@@ -281,7 +280,7 @@ export default function ClassroomDetail() {
       setChatInput('');
       return true;
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || 'Lỗi gửi tin nhắn');
+      toast.error(err?.response?.data?.message || err.message || 'Lỗi gửi tin nhắn');
       return false;
     } finally {
       setSendingChat(false);
@@ -309,10 +308,10 @@ export default function ClassroomDetail() {
     }
     try {
       await deleteAssignment(asgId);
-      showToast('Đã xóa bài tập thành công!');
+      toast.success('Đã xóa bài tập thành công!');
       fetchAssignments();
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || 'Không thể xóa bài tập');
+      toast.error(err?.response?.data?.message || err.message || 'Không thể xóa bài tập');
     }
   };
 
@@ -350,12 +349,6 @@ export default function ClassroomDetail() {
 
   return (
     <div className="classroom-container">
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className="copy-toast" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <Sparkles size={16} /> {toastMessage}
-        </div>
-      )}
 
       {/* Breadcrumb Navigation */}
       <div style={{ marginBottom: '16px', fontSize: '14px', color: '#64748b' }}>
@@ -622,7 +615,6 @@ export default function ClassroomDetail() {
           announcements={announcements}
           setAnnouncements={setAnnouncements}
           isOwner={isOwner}
-          showToast={showToast}
         />
       )}
 
@@ -710,7 +702,6 @@ export default function ClassroomDetail() {
           <ClassroomScheduleTab
             classId={id}
             classroom={classroom}
-            showToast={showToast}
           />
         )
       )}
@@ -725,7 +716,6 @@ export default function ClassroomDetail() {
         onClose={() => setIsEditModalOpen(false)}
         classroom={classroom}
         onUpdated={(updated) => setClassroom(updated)}
-        showToast={showToast}
       />
 
       {/* Modal thêm học viên */}
@@ -734,7 +724,6 @@ export default function ClassroomDetail() {
         onClose={() => setIsAddMemberOpen(false)}
         classroomId={classroom._id}
         onMemberAdded={() => fetchMembers()}
-        showToast={showToast}
       />
 
       {/* Modal xóa học viên */}
@@ -744,7 +733,6 @@ export default function ClassroomDetail() {
         classroomId={classroom._id}
         member={removeMemberTarget}
         onMemberRemoved={() => fetchMembers()}
-        showToast={showToast}
       />
 
       {/* Modal chấm điểm bài tập */}
@@ -753,7 +741,6 @@ export default function ClassroomDetail() {
         onClose={() => setGradingAssignmentTarget(null)}
         assignment={gradingAssignmentTarget}
         onGraded={() => fetchAssignments()}
-        showToast={showToast}
       />
 
       {/* Modal làm bài tập */}
@@ -762,7 +749,6 @@ export default function ClassroomDetail() {
         onClose={() => setDoAssignmentTarget(null)}
         assignment={doAssignmentTarget}
         onSubmitted={() => fetchAssignments()}
-        showToast={showToast}
       />
     </div>
   );

@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { LockKeyhole } from 'lucide-react';
@@ -17,7 +18,6 @@ export default function ResetPassword() {
   const navigate = useNavigate();
   const [values, setValues] = useState({ new_password: '', confirm_password: '' });
   const [errors, setErrors] = useState({});
-  const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [invalidLink, setInvalidLink] = useState(!/^[a-f\d]{64}$/i.test(token));
 
@@ -34,7 +34,7 @@ export default function ResetPassword() {
       focusFirstInvalidField(['new_password', 'confirm_password'], nextErrors);
       return;
     }
-    setFormError('');
+
     setSubmitting(true);
     try {
       await resetPassword({ token, ...values });
@@ -43,7 +43,7 @@ export default function ResetPassword() {
       setErrors(toFieldErrors(error.errors));
       if ([404, 410].includes(error.status) || error.errors?.token) setInvalidLink(true);
       focusFirstInvalidField(['new_password', 'confirm_password'], toFieldErrors(error.errors));
-      setFormError(error.message);
+      toast.error(error.message);
       setSubmitting(false);
     }
   };
@@ -54,7 +54,7 @@ export default function ResetPassword() {
         <span className="password-recovery-icon" aria-hidden="true"><LockKeyhole size={26} /></span>
         <h1 className="auth-title">Tạo mật khẩu mới</h1>
         <p className="auth-subtitle">Chọn mật khẩu mới. Bạn cần đăng nhập lại sau khi đặt lại mật khẩu.</p>
-        {formError && <Alert type="error">{formError}</Alert>}
+
         {invalidLink ? <Alert type="error">Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn. <Link to="/forgot-password" className="link">Yêu cầu liên kết mới</Link>.</Alert> : (
           <form onSubmit={handleSubmit} noValidate>
             <NewPasswordFields values={values} errors={errors} onChange={handleChange} disabled={submitting} />

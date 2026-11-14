@@ -58,7 +58,7 @@ const materialTopicOptions = (topics) => [MATERIAL_TOPIC_NONE, ...topics.map((to
   label: topic.name,
 }))];
 
-function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material, error }) {
+function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material }) {
   const [title, setTitle] = useState(material ? material.title : '');
   const [materialType, setMaterialType] = useState(material ? material.material_type : '');
   const [topicId, setTopicId] = useState(material && material.topic_id ? material.topic_id : '');
@@ -133,7 +133,6 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material, er
   return (
     <Modal title={material ? 'Thay thế tài liệu lớp học' : 'Tải lên tài liệu lớp học'} onClose={onClose}>
       <form className="class-create-form" onSubmit={handleSubmit}>
-        {error && <Alert type="error"><strong>Không thể tải tài liệu lên</strong><p>{error}</p></Alert>}
         <FormInput
           id="material-title"
           label="Tiêu đề tài liệu"
@@ -208,7 +207,7 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material, er
   );
 }
 
-function DeleteMaterialModal({ material, onClose, onDelete, error }) {
+function DeleteMaterialModal({ material, onClose, onDelete }) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = () => {
@@ -223,7 +222,6 @@ function DeleteMaterialModal({ material, onClose, onDelete, error }) {
     <Modal title="Xóa tài liệu" onClose={onClose}>
       <div className="class-create-form">
         <p>Bạn có chắc muốn xóa “{material.title}” khỏi lớp học này?</p>
-        {error && <Alert type="error"><p>{error}</p></Alert>}
         <div className="modal-actions">
           <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={isDeleting}>Hủy</button>
           <button type="button" className="btn btn-outline btn-sm class-delete-confirm-button" onClick={handleDelete} disabled={isDeleting}>{isDeleting ? 'Đang xóa...' : 'Xác nhận xóa'}</button>
@@ -233,7 +231,7 @@ function DeleteMaterialModal({ material, onClose, onDelete, error }) {
   );
 }
 
-function CreateTopicModal({ onClose, onCreate, error }) {
+function CreateTopicModal({ onClose, onCreate }) {
   const [topicName, setTopicName] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
@@ -261,7 +259,6 @@ function CreateTopicModal({ onClose, onCreate, error }) {
           placeholder="Ví dụ: Chương 1: Đạo hàm và Ứng dụng"
           autoComplete="off"
         />
-        {error && <Alert type="error"><p>{error}</p></Alert>}
         <p className="class-form-note">Chủ đề này sẽ được lưu vào lộ trình học tập của lớp.</p>
         <div className="modal-actions">
           <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={isSaving}>Hủy</button>
@@ -272,7 +269,7 @@ function CreateTopicModal({ onClose, onCreate, error }) {
   );
 }
 
-function EditTopicModal({ topic, onClose, onUpdate, error }) {
+function EditTopicModal({ topic, onClose, onUpdate }) {
   const [topicName, setTopicName] = useState(topic.name);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -298,7 +295,6 @@ function EditTopicModal({ topic, onClose, onUpdate, error }) {
           onChange={(event) => setTopicName(event.target.value)}
           autoComplete="off"
         />
-        {error && <Alert type="error"><p>{error}</p></Alert>}
         <div className="modal-actions">
           <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={isSaving}>Hủy</button>
           <button type="submit" className="btn btn-primary btn-sm" disabled={!topicName.trim() || isSaving}>{isSaving ? 'Đang lưu...' : 'Lưu thay đổi'}</button>
@@ -308,7 +304,7 @@ function EditTopicModal({ topic, onClose, onUpdate, error }) {
   );
 }
 
-function DeleteTopicModal({ topic, onClose, onDelete, error }) {
+function DeleteTopicModal({ topic, onClose, onDelete }) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = () => {
@@ -323,7 +319,6 @@ function DeleteTopicModal({ topic, onClose, onDelete, error }) {
     <Modal title="Xóa chủ đề" onClose={onClose}>
       <div className="class-create-form">
         <p>Bạn có chắc muốn xóa “{topic.name}”? Các tài liệu thuộc chủ đề này vẫn được giữ lại nhưng sẽ không còn liên kết chủ đề.</p>
-        {error && <Alert type="error"><p>{error}</p></Alert>}
         <div className="modal-actions">
           <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={isDeleting}>Hủy</button>
           <button type="button" className="btn btn-outline btn-sm class-delete-confirm-button" onClick={handleDelete} disabled={isDeleting}>{isDeleting ? 'Đang xóa...' : 'Xác nhận xóa'}</button>
@@ -339,14 +334,11 @@ export default function ClassroomTopicsAndMaterials({
   materials,
   topicsLoading,
   topicsError,
-  createTopicError,
-  topicActionError,
   onRetryTopics,
   onCreateTopic,
   onUpdateTopic,
   onDeleteTopic,
   onCreateMaterial,
-  createMaterialError,
   materialsLoading,
   materialsError,
   onRetryMaterials,
@@ -369,8 +361,6 @@ export default function ClassroomTopicsAndMaterials({
             <span>Thêm chủ đề</span>
           </button>
         </div>
-        {createTopicError && <Alert type="error"><p>{createTopicError}</p></Alert>}
-        {topicActionError && <Alert type="error"><p>{topicActionError}</p></Alert>}
         {topicsError ? (
           <Alert type="error">
             <p>{topicsError}</p>
@@ -444,7 +434,6 @@ export default function ClassroomTopicsAndMaterials({
             <span>Thêm tài liệu</span>
           </button>
         </div>
-        {createMaterialError && <Alert type="error"><p>{createMaterialError}</p></Alert>}
         {materialsError ? (
           <Alert type="error">
             <p>{materialsError}</p>
@@ -514,13 +503,13 @@ export default function ClassroomTopicsAndMaterials({
         )}
       </section>
 
-      {modal === 'topic' && <CreateTopicModal onClose={() => setModal('')} onCreate={onCreateTopic} error={createTopicError} />}
+      {modal === 'topic' && <CreateTopicModal onClose={() => setModal('')} onCreate={onCreateTopic} />}
       {modal === 'material' && (
         <CreateMaterialModal
           onClose={() => setModal('')}
           onCreate={onCreateMaterial}
           topics={topics}
-          error={createMaterialError}
+
         />
       )}
       {modal.type === 'edit-material' && (
@@ -530,7 +519,7 @@ export default function ClassroomTopicsAndMaterials({
           onUpdate={onUpdateMaterial}
           topics={topics}
           material={modal.material}
-          error={createMaterialError}
+
         />
       )}
       {modal.type === 'delete-material' && (
@@ -538,11 +527,11 @@ export default function ClassroomTopicsAndMaterials({
           material={modal.material}
           onClose={() => setModal('')}
           onDelete={onDeleteMaterial}
-          error={createMaterialError}
+
         />
       )}
-      {modal.type === 'edit-topic' && <EditTopicModal topic={modal.topic} onClose={() => setModal('')} onUpdate={onUpdateTopic} error={topicActionError} />}
-      {modal.type === 'delete-topic' && <DeleteTopicModal topic={modal.topic} onClose={() => setModal('')} onDelete={onDeleteTopic} error={topicActionError} />}
+      {modal.type === 'edit-topic' && <EditTopicModal topic={modal.topic} onClose={() => setModal('')} onUpdate={onUpdateTopic} />}
+      {modal.type === 'delete-topic' && <DeleteTopicModal topic={modal.topic} onClose={() => setModal('')} onDelete={onDeleteTopic} />}
     </div>
   );
 }

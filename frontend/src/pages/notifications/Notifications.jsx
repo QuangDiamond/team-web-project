@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { toast } from 'sonner';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCheck, Inbox, Settings2 } from 'lucide-react';
 import PageHeader from '../../components/common/PageHeader';
@@ -14,12 +15,33 @@ export default function Notifications() {
   const navigate = useNavigate();
   const data = useNotifications();
   const [showPreferences, setShowPreferences] = useState(false);
+  const [actionFailed, setActionFailed] = useState(false);
+  const { message, setMessage } = data;
+  useEffect(() => {
+    if (message) {
+      toast.success(message, { id: 'notification-action-success' });
+      setMessage('');
+    }
+  }, [message, setMessage]);
+
+  useEffect(() => {
+    if (actionFailed && data.error) {
+      toast.error(data.error, { id: 'notification-action-error' });
+    }
+  }, [actionFailed, data.error]);
+
+  const handleAction = async (action) => {
+    setActionFailed(false);
+    const succeeded = await action();
+    setActionFailed(!succeeded);
+  };
+
   const open = async (item) => {
-    if (!item.is_read) await data.markRead(item._id);
+    if (!item.is_read) await handleAction(() => data.markRead(item._id));
     if (item.deepLink) navigate(item.deepLink);
   };
   const saved = (message) => {
-    data.setMessage(message);
+    toast.success(message);
     setShowPreferences(false);
   };
 
@@ -34,7 +56,7 @@ export default function Notifications() {
               <button
                 type="button"
                 className="btn btn-outline"
-                onClick={data.markAll}
+                onClick={() => handleAction(data.markAll)}
                 disabled={data.busy || data.loading}
               >
                 <CheckCheck size={18} aria-hidden="true" />
@@ -52,7 +74,7 @@ export default function Notifications() {
           </>
         }
       />
-      {data.message && <Alert type="success">{data.message}</Alert>}
+
       <section className="card noti-filters" aria-label="Bộ lọc thông báo">
         <div className="noti-categories" role="group" aria-label="Loại thông báo">
           {NOTIFICATION_CATEGORIES.map(({ key, label, Icon }) => (
@@ -61,7 +83,10 @@ export default function Notifications() {
               key={key}
               className="noti-filter-button"
               aria-pressed={data.category === key}
-              onClick={() => data.setCategory(key)}
+              onClick={() => {
+                setActionFailed(false);
+                data.setCategory(key);
+              }}
             >
               <Icon size={18} aria-hidden="true" />
               {label}
@@ -79,7 +104,10 @@ export default function Notifications() {
               type="button"
               className="noti-filter-button"
               aria-pressed={data.readFilter === option.value}
-              onClick={() => data.setReadFilter(option.value)}
+              onClick={() => {
+                setActionFailed(false);
+                data.setReadFilter(option.value);
+              }}
             >
               {option.label}
             </button>
@@ -87,10 +115,13 @@ export default function Notifications() {
         </div>
       </section>
       {data.loading && <p role="status" className="noti-muted">Đang tải thông báo...</p>}
-      {data.error && (
+      {data.error && !actionFailed && (
         <Alert type="error">
           {data.error}
-          <button type="button" className="btn btn-outline btn-sm" onClick={data.reload}>
+          <button type="button" className="btn btn-outline btn-sm" onClick={() => {
+            setActionFailed(false);
+            data.reload();
+          }}>
             Thử lại
           </button>
         </Alert>
@@ -112,8 +143,8 @@ export default function Notifications() {
               item={item}
               busy={data.busy}
               onOpen={open}
-              onRead={data.markRead}
-              onDelete={data.remove}
+              onRead={(id) => handleAction(() => data.markRead(id))}
+              onDelete={(id) => handleAction(() => data.remove(id))}
             />
           ))}
         </div>

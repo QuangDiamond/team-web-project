@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { useCreditBalance } from '../../hooks/useCreditBalance';
@@ -20,7 +21,6 @@ export default function ApplyModal({ request, onClose, onApplied }) {
   const [note, setNote] = useState('');
   const [creditsToSpend, setCreditsToSpend] = useState('1');
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
 
   const hasNoCredit = !credits.loading && credits.balance === 0;
   const amount = Number(creditsToSpend);
@@ -29,7 +29,7 @@ export default function ApplyModal({ request, onClose, onApplied }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError('');
+
     setSubmitting(true);
     try {
       const payload = { request_id: request._id, credits: amount };
@@ -39,7 +39,7 @@ export default function ApplyModal({ request, onClose, onApplied }) {
       const response = await applyToRequest(payload);
       onApplied(response.data);
     } catch (submitError) {
-      setError(submitError.message);
+      toast.error(submitError.message);
       setSubmitting(false);
     }
   };
@@ -76,7 +76,6 @@ export default function ApplyModal({ request, onClose, onApplied }) {
         />
 
         {hasNoCredit && <Alert type="error">Bạn cần ít nhất 1 credits để ứng tuyển.</Alert>}
-        {error && <Alert type="error">{error}</Alert>}
 
         <FormTextarea
           id="apply-note"

@@ -52,7 +52,7 @@ function formatSessionTime(session) {
   return `${TIME_FORMATTER.format(startTime)} - ${TIME_FORMATTER.format(endTime)}`;
 }
 
-export default function ClassroomScheduleTab({ classId, classroom, showToast }) {
+export default function ClassroomScheduleTab({ classId, classroom }) {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -580,7 +580,6 @@ export default function ClassroomScheduleTab({ classId, classroom, showToast }) 
         onClose={() => setChangeRequestSession(null)}
         session={changeRequestSession}
         classId={classId}
-        showToast={showToast}
         onSuccess={() => loadSessions()}
       />
     </div>

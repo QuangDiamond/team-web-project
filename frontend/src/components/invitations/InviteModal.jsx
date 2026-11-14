@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { useCreditBalance } from '../../hooks/useCreditBalance';
@@ -19,7 +20,6 @@ export default function InviteModal({ requestId, requestTitle, tutorProfileId, t
   const [message, setMessage] = useState('');
   const [creditsToSpend, setCreditsToSpend] = useState('1');
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
 
   const hasNoCredit = !credits.loading && credits.balance === 0;
   const amount = Number(creditsToSpend);
@@ -28,7 +28,7 @@ export default function InviteModal({ requestId, requestTitle, tutorProfileId, t
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError('');
+
     setSubmitting(true);
     try {
       const payload = { request_id: requestId, tutor_profile_id: tutorProfileId, credits: amount };
@@ -38,7 +38,7 @@ export default function InviteModal({ requestId, requestTitle, tutorProfileId, t
       const response = await inviteTutor(payload);
       onInvited(response.data);
     } catch (submitError) {
-      setError(submitError.message);
+      toast.error(submitError.message);
       setSubmitting(false);
     }
   };
@@ -73,7 +73,6 @@ export default function InviteModal({ requestId, requestTitle, tutorProfileId, t
         />
 
         {hasNoCredit && <Alert type="error">Bạn cần ít nhất 1 credits để mời gia sư.</Alert>}
-        {error && <Alert type="error">{error}</Alert>}
 
         <FormTextarea
           id="invite-message"

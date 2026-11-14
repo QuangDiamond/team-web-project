@@ -1,7 +1,7 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { deleteRequest } from '../../services/parentRequestService';
-import Alert from '../common/Alert';
 import Modal from '../common/Modal';
 
 // Lỗi 409 của server khi request đã có hội thoại với gia sư; hiện lại bằng tiếng Việt
@@ -15,16 +15,15 @@ const HAS_CONVERSATION_MESSAGE_VI = 'Yêu cầu này đã có hội thoại vớ
  */
 export default function DeleteRequestModal({ request, onClose, onDeleted }) {
   const [deleting, setDeleting] = useState(false);
-  const [error, setError] = useState('');
 
   const handleDelete = async () => {
-    setError('');
+
     setDeleting(true);
     try {
       await deleteRequest(request._id);
       onDeleted();
     } catch (deleteError) {
-      setError(deleteError.message);
+      toast.error(deleteError.message);
       setDeleting(false);
     }
   };
@@ -35,7 +34,7 @@ export default function DeleteRequestModal({ request, onClose, onDeleted }) {
         <strong>{request.title}</strong> sẽ bị xóa cùng với các đơn ứng tuyển và lời mời liên quan. Không thể hoàn tác,
         và credit đã dùng sẽ không được hoàn lại.
       </p>
-      {error && <Alert type="error">{error}</Alert>}
+
       <div className="modal-actions">
         <button type="button" className="btn btn-outline btn-sm" disabled={deleting} onClick={onClose}>Hủy</button>
         <button type="button" className="btn btn-primary btn-sm" disabled={deleting} onClick={handleDelete}>

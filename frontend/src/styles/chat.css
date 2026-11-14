@@ -521,11 +521,6 @@ button.btn-chat-agreement:disabled {
 }
 
 /* Errors & Closed states */
-.chat-send-error {
-  padding: 0 20px;
-  margin-bottom: 8px;
-}
-
 .chat-closed-notice {
   padding: 16px;
   text-align: center;
