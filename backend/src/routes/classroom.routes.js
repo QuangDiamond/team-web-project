@@ -51,6 +51,12 @@ classroomRoutes.delete('/assignments/:assignmentId', requireTutorAuth, classroom
 // UC26: Chấm điểm bài nộp của học sinh (Gia sư chủ lớp)
 classroomRoutes.post('/submissions/:submissionId/grade', requireTutorAuth, classroomController.gradeSubmission);
 
+// UC26: Công bố điểm bài tập cho cả lớp (Gia sư chủ lớp)
+classroomRoutes.post('/assignments/:assignmentId/publish-results', requireTutorAuth, classroomController.publishAssignmentResults);
+
+// UC26: Trợ lý AI tạo câu hỏi bài tập mẫu (Gia sư)
+classroomRoutes.post('/assignments/generate-ai', requireTutorAuth, classroomController.generateAiQuestions);
+
 // ==========================================
 // 4. CÁC TÁC VỤ THEO LỚP HỌC (/:id/...)
 // ==========================================
@@ -70,10 +76,18 @@ classroomRoutes.delete('/:id/members/:memberId', requireTutorAuth, classroomCont
 classroomRoutes.get('/:id/assignments', requireUserAuth, classroomController.getClassAssignments);
 classroomRoutes.post('/:id/assignments', requireTutorAuth, classroomController.createAssignment);
 
-// Phòng chat nhóm lớp học (UC33)
+// Phòng chat nhóm lớp học & Quản lý các nhóm (UC33)
 classroomRoutes.get('/:id/chat', requireUserAuth, classroomController.getClassGroupChat);
 classroomRoutes.post('/:id/chat', requireUserAuth, classroomController.sendClassChatMessage);
 classroomRoutes.post('/:id/chat/init', requireTutorAuth, classroomController.createClassGroupChat);
+classroomRoutes.patch('/:id/chat/settings', requireTutorAuth, classroomController.updateClassroomChatSettings);
+
+// Quản lý các nhóm trong lớp học (UC33, Cases 7.1 - 7.7)
+classroomRoutes.get('/:id/groups', requireUserAuth, classroomController.getClassGroups);
+classroomRoutes.post('/:id/groups', requireTutorAuth, classroomController.createClassGroup);
+classroomRoutes.post('/:id/groups/:groupId/members', requireTutorAuth, classroomController.addMemberToClassGroup);
+classroomRoutes.delete('/:id/groups/:groupId/members/:memberUserId', requireTutorAuth, classroomController.removeMemberFromClassGroup);
+classroomRoutes.patch('/:id/groups/:groupId/settings', requireTutorAuth, classroomController.updateClassGroupSettings);
 
 // Quản lý trạng thái và mã mời lớp học (UC22)
 classroomRoutes.patch('/:id/status', requireTutorAuth, classroomController.updateClassroomStatus);

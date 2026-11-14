@@ -25,6 +25,26 @@ const assertParticipant = (user, parentUserId, tutorUserId) => {
 };
 
 /**
+ * Đổi trạng thái thỏa thuận chỉ khi trạng thái hiện tại nằm trong `fromStatuses`.
+ * Điều kiện status nằm trong filter nên hai thao tác đồng thời (ví dụ Confirm và Cancel) chỉ một bên thắng.
+ * @param {ObjectId} agreementId
+ * @param {string[]} fromStatuses - các trạng thái được phép đổi
+ * @param {Object} changes - các field cần $set, ví dụ { status: 'CONFIRMED', accepted_by_user_id }
+ * @returns {Promise<Object>} thỏa thuận sau khi đổi (lean)
+ */
+const changeAgreementStatus = async (agreementId, fromStatuses, changes) => {
+  const updated = await TutoringAgreement.findOneAndUpdate(
+    { _id: agreementId, status: { $in: fromStatuses } },
+    { $set: changes },
+    { new: true }
+  ).lean();
+  if (!updated) {
+    throw new AppError('Thỏa thuận vừa được cập nhật bởi người khác. Vui lòng tải lại để xem trạng thái mới nhất.', 409);
+  }
+  return updated;
+};
+
+/**
  * Lấy danh sách kết nối & thỏa thuận dạy học của người dùng hiện tại (UC16/UC18)
  * @param {Object} user - req.user { id, role }
  * @returns {Promise<{ connections: Object[], activeConversations: Object[] }>}
@@ -318,14 +338,17 @@ export const confirmAgreement = async (user, agreementId, { action }) => {
     if (proposerId !== currentUserId) {
       throw new AppError('Chỉ người tạo đề xuất mới có quyền hủy bỏ đề xuất thỏa thuận này (UC16 A3).', 403);
     }
-    agreement.status = ENUMS.TutoringAgreementsStatus.CANCELLED;
-    await agreement.save();
+    const cancelledAgreement = await changeAgreementStatus(
+      agreement._id,
+      [ENUMS.TutoringAgreementsStatus.PENDING, ENUMS.TutoringAgreementsStatus.DRAFT],
+      { status: ENUMS.TutoringAgreementsStatus.CANCELLED }
+    );
 
     return {
       success: true,
       action: 'CANCEL',
       message: 'Đã hủy đề xuất thỏa thuận thành công (UC16 A3).',
-      agreement,
+      agreement: cancelledAgreement,
     };
   }
 
@@ -342,8 +365,11 @@ export const confirmAgreement = async (user, agreementId, { action }) => {
   }
 
   if (action === 'REJECT') {
-    agreement.status = ENUMS.TutoringAgreementsStatus.REJECTED;
-    await agreement.save();
+    const rejectedAgreement = await changeAgreementStatus(
+      agreement._id,
+      [ENUMS.TutoringAgreementsStatus.PENDING],
+      { status: ENUMS.TutoringAgreementsStatus.REJECTED }
+    );
 
     if (agreement.proposer_user_id?._id) {
       await Notification.create({
@@ -369,20 +395,39 @@ export const confirmAgreement = async (user, agreementId, { action }) => {
       success: true,
       action: 'REJECT',
       message: 'Đã từ chối thỏa thuận. Kết nối vẫn giữ mở để hai bên trao đổi thêm.',
-      agreement,
+      agreement: rejectedAgreement,
     };
   }
 
-  agreement.status = ENUMS.TutoringAgreementsStatus.CONFIRMED;
-  agreement.accepted_by_user_id = user.id;
-  await agreement.save();
+  // UC16 E1: request đã đóng (ví dụ một thỏa thuận khác vừa được xác nhận) thì không cho xác nhận nữa
+  const request = conv?.request_id;
+  if (request && request.status === ENUMS.ParentRequestsStatus.CLOSED) {
+    throw new AppError('Yêu cầu tìm gia sư này đã đóng (E1). Không thể xác nhận thỏa thuận.', 409);
+  }
+
+  const confirmedAgreement = await changeAgreementStatus(
+    agreement._id,
+    [ENUMS.TutoringAgreementsStatus.PENDING],
+    { status: ENUMS.TutoringAgreementsStatus.CONFIRMED, accepted_by_user_id: user.id }
+  );
 
   // UC16 Step 4 & SDS 3.7 Queries 05-07: Đóng bài yêu cầu và đóng tự động các thỏa thuận đang mở khác của cùng yêu cầu
-  if (conv?.request_id?._id) {
-    const requestId = conv.request_id._id;
-    await ParentRequest.findByIdAndUpdate(requestId, {
-      status: ENUMS.ParentRequestsStatus.CLOSED,
-    });
+  if (request && request._id) {
+    const requestId = request._id;
+    // Chỉ đóng khi request chưa CLOSED: hai thỏa thuận của cùng request được xác nhận đồng thời thì chỉ một bên thắng
+    const closedRequest = await ParentRequest.findOneAndUpdate(
+      { _id: requestId, status: { $ne: ENUMS.ParentRequestsStatus.CLOSED } },
+      { $set: { status: ENUMS.ParentRequestsStatus.CLOSED } },
+      { new: true }
+    ).lean();
+    if (!closedRequest) {
+      // Trả thỏa thuận về PENDING vì request đã bị đóng bởi thỏa thuận khác
+      await TutoringAgreement.updateOne(
+        { _id: agreement._id },
+        { $set: { status: ENUMS.TutoringAgreementsStatus.PENDING, accepted_by_user_id: null } }
+      );
+      throw new AppError('Yêu cầu tìm gia sư này đã đóng (E1). Không thể xác nhận thỏa thuận.', 409);
+    }
 
     const relatedConversationIds = await Conversation.find({ request_id: requestId }).distinct('_id');
     const otherOpenAgreements = await TutoringAgreement.find({
@@ -454,7 +499,7 @@ export const confirmAgreement = async (user, agreementId, { action }) => {
     success: true,
     action: 'CONFIRM',
     message: 'Thỏa thuận kết nối dạy học đã được xác nhận thành công (POST-1)! Bài yêu cầu đã được đóng.',
-    agreement,
+    agreement: confirmedAgreement,
     canRate: true,
     canCreateClassroom: true,
   };

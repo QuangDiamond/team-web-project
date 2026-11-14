@@ -26,6 +26,8 @@ const classroomSchema = new Schema(
     // Đường dẫn mời tham gia lớp độc nhất
     invite_link:      { type: String, default: null },
     status:           { type: String, enum: Object.values(ENUMS.ClassroomsStatus), default: null },
+    // Chế độ nhóm chat: Chỉ gia sư được đăng tin (UC33, Case 7.5)
+    only_tutor_can_post: { type: Boolean, default: false },
     // EMBED từ bảng MATERIAL_TOPICS: ít thư mục mỗi lớp; giữ _id để CLASS_MATERIALS.topic_id tham chiếu
     topics:           { type: [materialTopicSchema], default: [] },
   },

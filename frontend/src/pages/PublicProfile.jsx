@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { LoaderCircle } from 'lucide-react';
@@ -25,7 +26,6 @@ function ProfileContent({ id, role }) {
   const [inviting, setInviting] = useState(false);
   const [applying, setApplying] = useState(null);
   const [appliedIds, setAppliedIds] = useState([]);
-  const [notice, setNotice] = useState('');
 
   useEffect(() => {
     if (user) clearPublicProfileReturn();
@@ -47,10 +47,12 @@ function ProfileContent({ id, role }) {
   const isTutor = role === 'TUTOR';
   const canInvite = user?.role === 'PARENT' && isTutor;
   const canApply = user?.role === 'TUTOR' && !isTutor;
+  // UC38: phụ huynh báo cáo bài đăng gia sư, gia sư báo cáo yêu cầu của phụ huynh
+  const canReport = canInvite || canApply;
 
   return (
     <div className="public-profile-page">
-      {notice && <Alert type="success">{notice}</Alert>}
+
       <div className="public-profile-grid">
         <div className="public-profile-sidebar">
           <ProfileIdentity profile={profile} role={role} reviewCount={isTutor ? data.reviews.pagination.total : 0}>
@@ -70,22 +72,24 @@ function ProfileContent({ id, role }) {
             <ProfileSections activeSection={activeSection} onSectionChange={changeSection} reviewCount={data.reviews.pagination.total}>
               {activeSection === 'about' && <ProfileBackground profile={profile} />}
               {activeSection === 'reviews' && <ProfileReviews list={data.reviews} averageRating={profile.average_rating} onPageChange={setPage} />}
-              {activeSection === 'posts' && <ProfilePosts list={data.posts} role={role} onPageChange={setPage} appliedIds={appliedIds} />}
+              {activeSection === 'posts' && <ProfilePosts list={data.posts} role={role} onPageChange={setPage} appliedIds={appliedIds}
+                canReport={canReport} onReported={toast.success} />}
             </ProfileSections>
           ) : (
             <ProfilePosts list={data.requests} role={role} onPageChange={setPage}
-              onApply={canApply ? setApplying : null} appliedIds={appliedIds} />
+              onApply={canApply ? setApplying : null} appliedIds={appliedIds}
+              canReport={canReport} onReported={toast.success} />
           )}
         </div>
       </div>
       {inviting && <InviteTutorDialog profile={profile} onClose={() => setInviting(false)} onInvited={(result) => {
         setInviting(false);
-        setNotice(`Đã gửi lời mời. Bạn còn ${result.remaining_credits} credits.`);
+        toast.success(`Đã gửi lời mời. Bạn còn ${result.remaining_credits} credits.`);
       }} />}
       {applying && <ApplyModal request={applying} onClose={() => setApplying(null)} onApplied={(result) => {
         setAppliedIds([...appliedIds, applying._id]);
         setApplying(null);
-        setNotice(`Đã gửi đơn ứng tuyển. Bạn còn ${result.remaining_credits} credits.`);
+        toast.success(`Đã gửi đơn ứng tuyển. Bạn còn ${result.remaining_credits} credits.`);
       }} />}
     </div>
   );

@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import {
   Pencil,
@@ -20,7 +21,6 @@ export default function ClassroomAnnouncementsTab({
   announcements,
   setAnnouncements,
   isOwner,
-  showToast,
 }) {
   const [announcementContent, setAnnouncementContent] = useState('');
   const [isPinned, setIsPinned] = useState(false);
@@ -42,9 +42,9 @@ export default function ClassroomAnnouncementsTab({
       setAnnouncements((prev) => [res?.data, ...prev]);
       setAnnouncementContent('');
       setIsPinned(false);
-      showToast('Đã đăng thông báo lên bảng tin!');
+      toast.success('Đã đăng thông báo lên bảng tin!');
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || 'Không thể đăng thông báo');
+      toast.error(err?.response?.data?.message || err.message || 'Không thể đăng thông báo');
     } finally {
       setPostingAnnouncement(false);
     }
@@ -59,9 +59,9 @@ export default function ClassroomAnnouncementsTab({
           .map((a) => (a._id === announcementId ? { ...a, is_pinned: res?.data?.is_pinned } : a))
           .sort((a, b) => (b.is_pinned ? 1 : 0) - (a.is_pinned ? 1 : 0))
       );
-      showToast(res?.data?.is_pinned ? 'Đã ghim thông báo lên đầu trang!' : 'Đã bỏ ghim thông báo');
+      toast.success(res?.data?.is_pinned ? 'Đã ghim thông báo lên đầu trang!' : 'Đã bỏ ghim thông báo');
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || 'Lỗi khi ghim thông báo');
+      toast.error(err?.response?.data?.message || err.message || 'Lỗi khi ghim thông báo');
     }
   };
 
@@ -71,9 +71,9 @@ export default function ClassroomAnnouncementsTab({
     try {
       await deleteClassAnnouncement(classroomId, announcementId);
       setAnnouncements((prev) => prev.filter((a) => a._id !== announcementId));
-      showToast('Đã xóa thông báo');
+      toast.success('Đã xóa thông báo');
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || 'Lỗi khi xóa');
+      toast.error(err?.response?.data?.message || err.message || 'Lỗi khi xóa');
     }
   };
 
@@ -86,9 +86,9 @@ export default function ClassroomAnnouncementsTab({
         prev.map((a) => (a._id === announcementId ? { ...a, content: res?.data?.content } : a))
       );
       setEditingAnnouncementId(null);
-      showToast('Đã cập nhật thông báo');
+      toast.success('Đã cập nhật thông báo');
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || 'Lỗi khi cập nhật');
+      toast.error(err?.response?.data?.message || err.message || 'Lỗi khi cập nhật');
     }
   };
 
@@ -98,7 +98,7 @@ export default function ClassroomAnnouncementsTab({
       {isOwner && (
         <form className="announcement-composer" onSubmit={handlePostAnnouncement}>
           <div className="composer-header" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Pencil size={16} color="#e85a2c" />
+            <Pencil size={16} color="var(--color-primary-strong)" />
             <span>Đăng thông báo mới cho lớp học</span>
           </div>
           <textarea
@@ -151,7 +151,7 @@ export default function ClassroomAnnouncementsTab({
         {announcements.length === 0 ? (
           <div className="classroom-empty-state" style={{ padding: '40px 20px' }}>
             <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
-              <Megaphone size={44} color="#94a3b8" />
+              <Megaphone size={44} color="var(--color-text-muted)" />
             </div>
             <h3>Chưa có thông báo nào trên bảng tin</h3>
             <p>Hãy đăng bài đầu tiên để chào mừng học sinh hoặc dặn dò lịch học!</p>

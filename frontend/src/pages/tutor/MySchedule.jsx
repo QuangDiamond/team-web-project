@@ -30,7 +30,7 @@ import Modal from '../../components/common/Modal';
 import SessionAttendance from './SessionAttendance';
 import { createClassSession, getMyClassroomsPage } from '../../services/classroomService';
 import { getUserSessions } from '../../services/sessionService';
-import { getClassColorMap, getClassColorStyle } from '../../utils/classScheduleColors';
+import { getClassColorMap } from '../../utils/classScheduleColors';
 import {
   findSessionConflict,
   formatMinuteTime,
@@ -337,7 +337,7 @@ function CreateScheduleSessionModal({ classrooms, sessions, initialValues, onClo
 
     setIsSubmitting(true);
     try {
-      const response = await createClassSession(values.class_id, {
+      await createClassSession(values.class_id, {
         title: values.title.trim(),
         start_time: startTime.toISOString(),
         end_time: endTime.toISOString(),
@@ -455,6 +455,26 @@ function CreateScheduleSessionModal({ classrooms, sessions, initialValues, onClo
   );
 }
 
+function getStatusClassName(status) {
+  if (status === 'CANCELLED') {
+    return 'status-cancelled';
+  }
+  if (status === 'COMPLETED') {
+    return 'status-completed';
+  }
+  return 'status-scheduled';
+}
+
+function getStatusLabel(status) {
+  if (status === 'CANCELLED') {
+    return 'Đã hủy';
+  }
+  if (status === 'COMPLETED') {
+    return 'Đã học xong';
+  }
+  return 'Sắp tới';
+}
+
 function ScheduleEvent({ event, onAttendanceClick, attendanceSessionId, onScheduleChangeClick, changeClassName = '' }) {
   const session = event.session;
   const activeStudentCount = session.classroom?.active_student_count || 0;
@@ -544,6 +564,11 @@ function ScheduleEvent({ event, onAttendanceClick, attendanceSessionId, onSchedu
         <Clock3 size={12} aria-hidden="true" />
         {formatTimeRange(session)}
       </span>
+      <div className="schedule-event-footer">
+        <span className={`schedule-status-pill ${getStatusClassName(session.status)}`}>
+          {getStatusLabel(session.status)}
+        </span>
+      </div>
     </article>
   );
 }
@@ -622,7 +647,13 @@ function CalendarWeek({
 
   return (
     <div className="schedule-calendar-scroll">
-      <div className="schedule-calendar" style={{ '--schedule-grid-height': `${gridHeight}px` }}>
+      <div
+        className="schedule-calendar"
+        style={{
+          '--schedule-grid-height': `${gridHeight}px`,
+          '--schedule-hour-height': `${HOUR_HEIGHT}px`,
+        }}
+      >
         <div className="schedule-calendar-corner" aria-hidden="true" />
         {days.map((day) => {
           const dayIsToday = isSameDay(day, today);
@@ -871,7 +902,7 @@ export default function MySchedule() {
       {isLoading && (
         <div className="schedule-loading" role="status">
           <LoaderCircle size={24} className="spin" aria-hidden="true" />
-          <span>Đang tải lớp học và buổi học...</span>
+          <span>Đang tải lịch dạy và các buổi học...</span>
         </div>
       )}
 
@@ -888,7 +919,7 @@ export default function MySchedule() {
         <EmptyState
           icon={CalendarDays}
           title="Chưa có buổi học nào"
-          description="Buổi học từ các lớp đang hoạt động sẽ xuất hiện trên lịch tuần này."
+          description="Các buổi học từ các lớp đang dạy sẽ hiển thị trên lịch tuần này."
         />
       )}
 
@@ -913,7 +944,7 @@ export default function MySchedule() {
             {weekSessions.length === 0 && (
               <div className="schedule-week-empty">
                 <MapPin size={17} aria-hidden="true" />
-                <span>Tuần này chưa có buổi học. Dùng các nút mũi tên để xem tuần khác.</span>
+                <span>Không có buổi học nào trong tuần này. Sử dụng các mũi tên để xem tuần khác.</span>
               </div>
             )}
             {selectedSlotError && <p className="schedule-slot-error" role="status">{selectedSlotError}</p>}

@@ -1,6 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { paginationQuerySchema } from '../../src/common/validator/studentDashboardSchema.js';
+import {
+  activityQuerySchema,
+  paginationQuerySchema,
+  studentAssignmentsQuerySchema,
+  studentScheduleQuerySchema,
+  submissionHistoryQuerySchema,
+} from '../../src/common/validator/studentDashboardSchema.js';
 import {
   assertStudent,
   getAssignmentProgress,
@@ -17,6 +23,70 @@ test('pagination query rejects invalid values', () => {
   assert.equal(paginationQuerySchema.safeParse({ limit: '101' }).success, false);
   assert.equal(paginationQuerySchema.safeParse({ limit: 'abc' }).success, false);
   assert.equal(paginationQuerySchema.safeParse({ page: '1.5' }).success, false);
+});
+
+test('studentAssignmentsQuerySchema validates status enum and defaults', () => {
+  const parsed = studentAssignmentsQuerySchema.parse({});
+  assert.equal(parsed.status, 'ALL');
+  assert.equal(parsed.page, 1);
+  assert.equal(parsed.limit, 10);
+
+  const custom = studentAssignmentsQuerySchema.parse({
+    status: 'SUBMITTED',
+    classId: '507f1f77bcf86cd799439011',
+    search: 'Toán học',
+  });
+  assert.equal(custom.status, 'SUBMITTED');
+  assert.equal(custom.classId, '507f1f77bcf86cd799439011');
+  assert.equal(custom.search, 'Toán học');
+
+  assert.equal(studentAssignmentsQuerySchema.safeParse({ status: 'INVALID' }).success, false);
+});
+
+test('activityQuerySchema validates weeks boundaries and defaults', () => {
+  assert.deepEqual(activityQuerySchema.parse({}), { weeks: 6 });
+  assert.deepEqual(activityQuerySchema.parse({ weeks: '8' }), { weeks: 8 });
+  assert.equal(activityQuerySchema.safeParse({ weeks: '3' }).success, false);
+  assert.equal(activityQuerySchema.safeParse({ weeks: '13' }).success, false);
+  assert.equal(activityQuerySchema.safeParse({ weeks: 'abc' }).success, false);
+});
+
+test('submissionHistoryQuerySchema validates status enum and defaults', () => {
+  const parsed = submissionHistoryQuerySchema.parse({});
+  assert.equal(parsed.status, 'ALL');
+  assert.equal(parsed.page, 1);
+  assert.equal(parsed.limit, 10);
+
+  const custom = submissionHistoryQuerySchema.parse({
+    status: 'GRADED',
+    classId: '507f1f77bcf86cd799439011',
+    search: 'Hóa 10',
+  });
+  assert.equal(custom.status, 'GRADED');
+  assert.equal(custom.classId, '507f1f77bcf86cd799439011');
+  assert.equal(custom.search, 'Hóa 10');
+
+  assert.equal(submissionHistoryQuerySchema.safeParse({ status: 'PENDING' }).success, false);
+});
+
+test('studentScheduleQuerySchema validates fields and status enum', () => {
+  const parsed = studentScheduleQuerySchema.parse({});
+  assert.equal(parsed.status, 'ALL');
+  assert.equal(parsed.startDate, undefined);
+  assert.equal(parsed.endDate, undefined);
+
+  const custom = studentScheduleQuerySchema.parse({
+    startDate: '2026-11-01',
+    endDate: '2026-11-30',
+    classId: '507f1f77bcf86cd799439011',
+    status: 'SCHEDULED',
+  });
+  assert.equal(custom.startDate, '2026-11-01');
+  assert.equal(custom.endDate, '2026-11-30');
+  assert.equal(custom.classId, '507f1f77bcf86cd799439011');
+  assert.equal(custom.status, 'SCHEDULED');
+
+  assert.equal(studentScheduleQuerySchema.safeParse({ status: 'INVALID' }).success, false);
 });
 
 test('buildPagination follows the AGENTS.md format', () => {

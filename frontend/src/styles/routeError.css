@@ -1,0 +1,73 @@
+/* Trang lỗi khi một trang bị lỗi lúc chạy (errorElement của router) */
+
+.route-error {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: var(--color-canvas);
+}
+
+.route-error-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 32px 24px;
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.route-error-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+  color: var(--color-primary-strong);
+  background: var(--color-primary-soft);
+  border-radius: 50%;
+}
+
+.route-error-card h1 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  color: var(--color-text);
+}
+
+.route-error-card p {
+  margin: 0 0 20px;
+  color: var(--color-text-muted);
+}
+
+.route-error-details {
+  margin-bottom: 20px;
+  text-align: left;
+  color: var(--color-text-muted);
+}
+
+.route-error-details pre {
+  margin: 8px 0 0;
+  padding: 12px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  font-size: 13px;
+  color: var(--color-error);
+  background: var(--color-error-soft);
+  border-radius: var(--radius-sm);
+}
+
+.route-error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.route-error-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}

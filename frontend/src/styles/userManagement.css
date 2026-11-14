@@ -96,16 +96,10 @@
   padding: 0 14px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
   font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
   font-size: 16px;
   color: var(--color-text);
-}
-
-.temp-password-value:focus-visible {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: var(--focus-ring);
 }
 
 .temp-password-warning {

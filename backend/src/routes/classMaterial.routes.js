@@ -39,7 +39,7 @@ classMaterialRoutes.post(
 classMaterialRoutes.get(
   '/:classId/materials',
   authentication,
-  authorize('TUTOR', 'STUDENT'),
+  authorize('TUTOR', 'STUDENT', 'PARENT'),
   getClassMaterials);
 
 // hàm update

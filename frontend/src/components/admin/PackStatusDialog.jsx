@@ -1,6 +1,6 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import Modal from '../common/Modal';
-import Alert from '../common/Alert';
 import ReasonField from './ReasonField';
 import DialogActions from './DialogActions';
 import { updateCreditPackStatus } from '../../services/adminService';
@@ -12,7 +12,6 @@ export default function PackStatusDialog({ pack, onClose, onSaved }) {
   const willEnable = !pack.is_active;
   const [reason, setReason] = useState('');
   const [reasonError, setReasonError] = useState('');
-  const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const handleReasonChange = (event) => {
@@ -24,7 +23,6 @@ export default function PackStatusDialog({ pack, onClose, onSaved }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setFormError('');
 
     const newReasonError = validateReason(reason);
     setReasonError(newReasonError);
@@ -46,7 +44,7 @@ export default function PackStatusDialog({ pack, onClose, onSaved }) {
       if (fieldErrors.reason) {
         setReasonError(fieldErrors.reason);
       }
-      setFormError(error.message);
+      toast.error(error.message);
       setSubmitting(false);
     }
   };
@@ -63,7 +61,7 @@ export default function PackStatusDialog({ pack, onClose, onSaved }) {
   return (
     <Modal id="pack-status" title={title} description={description} onClose={onClose}>
       <form onSubmit={handleSubmit} noValidate>
-        {formError && <Alert type="error">{formError}</Alert>}
+
         <ReasonField value={reason} onChange={handleReasonChange} error={reasonError} disabled={submitting} />
         <DialogActions
           submitLabel={submitLabel}

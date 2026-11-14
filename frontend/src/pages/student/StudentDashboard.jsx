@@ -2,6 +2,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useStudentDashboard } from '../../hooks/useStudentDashboard';
 import WelcomeBanner from '../../components/studentDashboard/WelcomeBanner';
 import StudentStats from '../../components/studentDashboard/StudentStats';
+import LearningActivityChart from '../../components/studentDashboard/LearningActivityChart';
 import UpcomingSessionList from '../../components/studentDashboard/UpcomingSessionList';
 import PendingAssignmentList from '../../components/studentDashboard/PendingAssignmentList';
 import JoinedClassList from '../../components/studentDashboard/JoinedClassList';
@@ -28,6 +29,9 @@ export default function StudentDashboard() {
         assignments={dashboard.assignments}
         grades={dashboard.grades}
       />
+
+      {/* Khối Hoạt động học tập: Biểu đồ đường (Line chart) */}
+      <LearningActivityChart />
 
       <div className="student-dashboard-grid">
         <div className="student-dashboard-column">

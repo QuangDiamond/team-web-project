@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, Star, Users } from 'lucide-react';
@@ -6,7 +7,6 @@ import { usePagedList } from '../../hooks/usePagedList';
 import { searchTutors } from '../../services/discoveryService';
 import { formatBudget } from '../../constants/requestLabels';
 import { getInitials } from '../../utils/getInitials';
-import Alert from '../common/Alert';
 import ListState from '../common/ListState';
 import Pagination from '../common/Pagination';
 import InviteTutorDialog from '../publicProfile/InviteTutorDialog';
@@ -50,10 +50,12 @@ function TutorRow({ tutor, onInvite }) {
       ) : <p className="directory-card-subject">Chưa cập nhật danh mục giảng dạy</p>}
       <div className="directory-card-meta">
         <RatingText rating={tutor.average_rating} />
-        {tutor.availability_status === 'AVAILABLE' && <span>Đang nhận lớp</span>}
+        {tutor.availability_status === 'AVAILABLE' && <span className="directory-availability">Đang nhận lớp</span>}
       </div>
       <p className="directory-card-description">{tutor.headline || 'Xem hồ sơ để tìm hiểu kinh nghiệm và phương pháp giảng dạy.'}</p>
-      <p className="directory-card-price">{priceText || 'Liên hệ học phí'}</p>
+      <p className="directory-card-price">
+        {priceText ? <span className="directory-price-tag">{priceText}</span> : 'Liên hệ học phí'}
+      </p>
       <div className="directory-card-actions">
         <Link to={`/tutors/${tutor.profile_id}`} className="btn btn-outline btn-sm">Xem hồ sơ</Link>
         <button type="button" className="btn btn-primary btn-sm" onClick={() => onInvite(tutor)}>Mời</button>
@@ -69,8 +71,6 @@ export default function TutorDirectory() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filters, setFilters] = useState(() => Object.fromEntries(searchParams));
   const [invitingTutor, setInvitingTutor] = useState(null);
-  const [notice, setNotice] = useState('');
-  const [noticeType, setNoticeType] = useState('success');
 
   const params = { ...Object.fromEntries(searchParams), limit: PAGE_SIZE };
   delete params.area;
@@ -91,8 +91,7 @@ export default function TutorDirectory() {
       return;
     }
     if (user.role !== 'PARENT') {
-      setNoticeType('info');
-      setNotice('Chỉ tài khoản phụ huynh mới có thể gửi lời mời gia sư.');
+      toast.info('Chỉ tài khoản phụ huynh mới có thể gửi lời mời gia sư.');
       return;
     }
     setInvitingTutor(tutor);
@@ -105,8 +104,7 @@ export default function TutorDirectory() {
   };
 
   const handleInvited = (result) => {
-    setNoticeType('success');
-    setNotice(`Đã gửi lời mời tới ${invitingTutor.full_name}. Bạn còn ${result.remaining_credits} credits.`);
+    toast.success(`Đã gửi lời mời tới ${invitingTutor.full_name}. Bạn còn ${result.remaining_credits} credits.`);
     setInvitingTutor(null);
   };
 
@@ -142,8 +140,6 @@ export default function TutorDirectory() {
           </div>
         </form>
 
-      {notice && <Alert type={noticeType}>{notice}</Alert>}
-
       <ListState
         list={list}
         empty={{ icon: Users, title: 'Không tìm thấy gia sư', description: 'Hãy thử từ khóa khác hoặc giảm bớt bộ lọc.' }}
@@ -157,7 +153,7 @@ export default function TutorDirectory() {
         )}
       </ListState>
 
-      {list.data && <Pagination pagination={list.data.pagination} onPageChange={handlePageChange} disabled={list.loading} />}
+      {list.data && <Pagination pagination={list.data.pagination} onPageChange={handlePageChange} disabled={list.loading} numbered />}
 
       {invitingTutor && (
         <InviteTutorDialog

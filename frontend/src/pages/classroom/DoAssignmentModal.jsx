@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import {
   Eye,
@@ -18,7 +19,7 @@ import {
 import { submitAssignment } from '../../services/classroomService';
 import { useAuth } from '../../hooks/useAuth.jsx';
 
-export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmitted, showToast }) {
+export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmitted }) {
   const { user } = useAuth();
   const isParent = user?.role === 'PARENT';
   const [answers, setAnswers] = useState({});
@@ -33,15 +34,29 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
   const isBlockedByResubmit = mySubmission && !assignment?.allow_resubmission;
   const canSubmit = !isParent && !isBlockedByLate && !isBlockedByGraded && !isBlockedByResubmit;
 
+  const autoSaveKey = assignment?._id ? `draft_assignment_${assignment._id}_${user?._id || user?.id || 'guest'}` : null;
+
   const resetForm = () => {
     setResult(null);
     setError('');
-    // Pre-fill answers from previous submission if any
+    // Pre-fill answers from previous submission if any, otherwise load from localStorage (Case 6.2)
     const initialAnswers = {};
     if (mySubmission?.answers) {
       mySubmission.answers.forEach((ans) => {
         initialAnswers[ans.question_id] = ans.text_response || '';
       });
+    } else if (autoSaveKey) {
+      try {
+        const saved = localStorage.getItem(autoSaveKey);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && typeof parsed === 'object') {
+            Object.assign(initialAnswers, parsed);
+          }
+        }
+      } catch {
+        // ignore storage parse errors
+      }
     }
     setAnswers(initialAnswers);
   };
@@ -60,10 +75,20 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
   };
 
   const handleAnswerChange = (questionId, value) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [questionId]: value,
-    }));
+    setAnswers((prev) => {
+      const updated = {
+        ...prev,
+        [questionId]: value,
+      };
+      if (autoSaveKey && !mySubmission) {
+        try {
+          localStorage.setItem(autoSaveKey, JSON.stringify(updated));
+        } catch {
+          // ignore storage quota errors
+        }
+      }
+      return updated;
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -71,6 +96,21 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
 
     if (!canSubmit) {
       return setError('Không thể nộp bài tập do chính sách thời hạn hoặc số lần nộp');
+    }
+
+    // Case 6.6 & 6.7: Kiểm tra định dạng tệp và dung lượng
+    const DISALLOWED_EXTENSIONS = ['.exe', '.bat', '.cmd', '.sh', '.bin', '.msi', '.com'];
+    for (const q of assignment.questions || []) {
+      if (q.question_type === 'FILE_UPLOAD') {
+        const fileVal = answers[q._id];
+        if (fileVal && typeof fileVal === 'string') {
+          const lower = fileVal.trim().toLowerCase();
+          if (DISALLOWED_EXTENSIONS.some((ext) => lower.endsWith(ext) || lower.includes(`${ext}?`))) {
+            setError('Tệp đính kèm không hợp lệ. Hệ thống không cho phép tải lên tệp thực thi (.exe, .bat, ...)');
+            return;
+          }
+        }
+      }
     }
 
     const formattedAnswers = (assignment.questions || []).map((q) => ({
@@ -83,14 +123,22 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
       setError('');
       const res = await submitAssignment(assignment._id, formattedAnswers);
       setResult(res?.data || null);
-      if (showToast) {
-        showToast('Nộp bài tập thành công!');
+
+      // Case 6.2: Xóa draft khỏi localStorage sau khi nộp thành công
+      if (autoSaveKey) {
+        try {
+          localStorage.removeItem(autoSaveKey);
+        } catch {
+          // ignore
+        }
       }
+
+      toast.success('Nộp bài tập thành công!');
       if (onSubmitted) {
         onSubmitted();
       }
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || 'Không thể nộp bài tập');
+      toast.error(err?.response?.data?.message || err.message || 'Không thể nộp bài tập');
     } finally {
       setSubmitting(false);
     }
@@ -103,12 +151,12 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
           <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {isParent ? (
               <>
-                <Eye size={20} color="#0284c7" />
+                <Eye size={20} color="var(--color-info)" />
                 <span>Xem đề bài tập: {assignment.title}</span>
               </>
             ) : (
               <>
-                <PenTool size={20} color="#e85a2c" />
+                <PenTool size={20} color="var(--color-primary-strong)" />
                 <span>Làm bài tập: {assignment.title}</span>
               </>
             )}
@@ -122,15 +170,15 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
           <div className="modal-body">
             <div className="success-container" style={{ textAlign: 'center', padding: '20px' }}>
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
-                <CheckCircle2 size={48} color="#16a34a" />
+                <CheckCircle2 size={48} color="var(--color-success)" />
               </div>
-              <h3 style={{ margin: '0 0 8px 0', color: '#0f172a' }}>Đã nộp bài tập thành công!</h3>
-              <p style={{ color: '#64748b', margin: '0 0 20px 0' }}>Hệ thống đã ghi nhận bài làm của bạn.</p>
+              <h3 style={{ margin: '0 0 8px 0', color: 'var(--color-text)' }}>Đã nộp bài tập thành công!</h3>
+              <p style={{ color: 'var(--color-text-muted)', margin: '0 0 20px 0' }}>Hệ thống đã ghi nhận bài làm của bạn.</p>
 
               <div
                 style={{
-                  background: '#f8fafc',
-                  border: '1px solid #e2e8f0',
+                  background: 'var(--color-surface-subtle)',
+                  border: '1px solid var(--color-border)',
                   borderRadius: '12px',
                   padding: '20px',
                   textAlign: 'left',
@@ -140,24 +188,24 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
               >
                 <div style={{ marginBottom: '8px' }}>
                   <strong>Điểm tự động (Trắc nghiệm):</strong>{' '}
-                  <span style={{ fontSize: '18px', color: '#16a34a', fontWeight: 700 }}>
+                  <span style={{ fontSize: '18px', color: 'var(--color-success)', fontWeight: 700 }}>
                     {result.provisional_score || 0} / {assignment.total_points} điểm
                   </span>
                 </div>
-                <div style={{ marginBottom: '8px', fontSize: '14px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ marginBottom: '8px', fontSize: '14px', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <span>Trạng thái:</span>
                   {result.timeliness === 'LATE' ? (
-                    <span style={{ color: '#b45309', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ color: 'var(--color-warning)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                       <AlertTriangle size={14} /> Nộp muộn
                     </span>
                   ) : (
-                    <span style={{ color: '#16a34a', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ color: 'var(--color-success)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                       <CheckCircle2 size={14} /> Đúng hạn
                     </span>
                   )}{' '}
                   <span>(Lần nộp #{result.attempt_number || 1})</span>
                 </div>
-                <div style={{ fontSize: '13px', color: '#64748b' }}>
+                <div style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>
                   Gia sư sẽ chấm các câu tự luận / file và công bố điểm chính thức sớm nhất.
                 </div>
               </div>
@@ -185,10 +233,10 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                   style={{
                     marginBottom: '16px',
                     padding: '12px 16px',
-                    background: '#eff6ff',
+                    background: 'var(--color-info-soft)',
                     border: '1px solid #bfdbfe',
                     borderRadius: '10px',
-                    color: '#1d4ed8',
+                    color: 'var(--color-info)',
                     fontSize: '13px',
                     display: 'flex',
                     alignItems: 'center',
@@ -208,9 +256,9 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
               {isBlockedByGraded && !isParent && (
                 <div
                   style={{
-                    background: '#fef3c7',
+                    background: 'var(--color-warning-soft)',
                     border: '1px solid #fde68a',
-                    color: '#92400e',
+                    color: 'var(--color-warning)',
                     padding: '12px',
                     borderRadius: '8px',
                     marginBottom: '14px',
@@ -230,9 +278,9 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
               {isBlockedByLate && !isBlockedByGraded && !isParent && (
                 <div
                   style={{
-                    background: '#fee2e2',
+                    background: 'var(--color-error-soft)',
                     border: '1px solid #fca5a5',
-                    color: '#991b1b',
+                    color: 'var(--color-error)',
                     padding: '12px',
                     borderRadius: '8px',
                     marginBottom: '14px',
@@ -250,9 +298,9 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
               {isBlockedByResubmit && !isParent && (
                 <div
                   style={{
-                    background: '#eff6ff',
+                    background: 'var(--color-info-soft)',
                     border: '1px solid #bfdbfe',
-                    color: '#1e40af',
+                    color: 'var(--color-info)',
                     padding: '12px',
                     borderRadius: '8px',
                     marginBottom: '14px',
@@ -270,8 +318,8 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
               {mySubmission && (
                 <div
                   style={{
-                    background: '#f8fafc',
-                    border: '1px solid #e2e8f0',
+                    background: 'var(--color-surface-subtle)',
+                    border: '1px solid var(--color-border)',
                     borderRadius: '8px',
                     padding: '12px 16px',
                     marginBottom: '16px',
@@ -279,7 +327,7 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 600, color: '#334155', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontWeight: 600, color: 'var(--color-text)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                       <ClipboardList size={14} />
                       {isParent
                         ? `Bài nộp của con (${mySubmission.student_user_id?.full_name || 'Học sinh'}): Lần #${mySubmission.attempt_number}`
@@ -288,7 +336,7 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                     </span>
                     <span
                       style={{
-                        color: mySubmission.status === 'GRADED' ? '#16a34a' : '#e85a2c',
+                        color: mySubmission.status === 'GRADED' ? 'var(--color-success)' : 'var(--color-primary-strong)',
                         fontWeight: 600,
                         display: 'inline-flex',
                         alignItems: 'center',
@@ -306,7 +354,7 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                     </span>
                   </div>
                   {mySubmission.overall_feedback && (
-                    <div style={{ marginTop: '8px', padding: '8px', background: '#ffffff', borderRadius: '6px', borderLeft: '3px solid #0284c7' }}>
+                    <div style={{ marginTop: '8px', padding: '8px', background: 'var(--color-surface)', borderRadius: '6px', borderLeft: '3px solid var(--color-info)' }}>
                       <strong>Nhận xét của gia sư:</strong> {mySubmission.overall_feedback}
                     </div>
                   )}
@@ -316,13 +364,13 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
               {assignment.instructions && (
                 <div
                   style={{
-                    background: '#eff6ff',
+                    background: 'var(--color-info-soft)',
                     border: '1px solid #bfdbfe',
                     borderRadius: '8px',
                     padding: '12px 16px',
                     marginBottom: '16px',
                     fontSize: '14px',
-                    color: '#1e40af',
+                    color: 'var(--color-info)',
                   }}
                 >
                   <strong>Hướng dẫn:</strong> {assignment.instructions}
@@ -334,15 +382,15 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                   <div
                     key={q._id || idx}
                     style={{
-                      background: '#f8fafc',
-                      border: '1px solid #e2e8f0',
+                      background: 'var(--color-surface-subtle)',
+                      border: '1px solid var(--color-border)',
                       borderRadius: '12px',
                       padding: '16px',
                     }}
                   >
-                    <div style={{ fontWeight: 700, fontSize: '15px', color: '#0f172a', marginBottom: '10px' }}>
+                    <div style={{ fontWeight: 700, fontSize: '15px', color: 'var(--color-text)', marginBottom: '10px' }}>
                       Câu {idx + 1}: {q.content}{' '}
-                      <span style={{ fontWeight: 400, color: '#64748b', fontSize: '13px' }}>
+                      <span style={{ fontWeight: 400, color: 'var(--color-text-muted)', fontSize: '13px' }}>
                         ({q.points || 1} điểm - {q.question_type === 'MULTIPLE_CHOICE' ? 'Trắc nghiệm' : q.question_type === 'SHORT_ANSWER' ? 'Tự luận ngắn' : 'Nộp tệp/link'})
                       </span>
                     </div>
@@ -364,8 +412,8 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                                 gap: '10px',
                                 padding: '10px 14px',
                                 borderRadius: '8px',
-                                border: `1px solid ${isSelected ? '#e85a2c' : '#cbd5e1'}`,
-                                background: isSelected ? '#fff5f0' : '#ffffff',
+                                border: `1px solid ${isSelected ? 'var(--color-primary-strong)' : 'var(--color-control-border)'}`,
+                                background: isSelected ? 'var(--color-primary-soft)' : 'var(--color-white)',
                                 cursor: canSubmit ? 'pointer' : 'default',
                                 transition: 'all 0.15s',
                               }}
@@ -376,10 +424,10 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                                 checked={isSelected}
                                 disabled={!canSubmit}
                                 onChange={() => handleAnswerChange(q._id, letter)}
-                                style={{ accentColor: '#e85a2c' }}
+                                style={{ accentColor: 'var(--color-primary-strong)' }}
                               />
-                              <span style={{ fontWeight: 600, color: '#334155' }}>{letter}.</span>
-                              <span style={{ color: '#0f172a' }}>{optText}</span>
+                              <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>{letter}.</span>
+                              <span style={{ color: 'var(--color-text)' }}>{optText}</span>
                             </label>
                           );
                         })}
@@ -399,9 +447,9 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                             width: '100%',
                             padding: '10px 12px',
                             borderRadius: '8px',
-                            border: '1px solid #cbd5e1',
+                            border: '1px solid var(--color-control-border)',
                             fontSize: '14px',
-                            background: '#ffffff',
+                            background: 'var(--color-surface)',
                           }}
                         />
                       </div>
@@ -420,15 +468,36 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
                             width: '100%',
                             padding: '10px 12px',
                             borderRadius: '8px',
-                            border: '1px solid #cbd5e1',
+                            border: '1px solid var(--color-control-border)',
                             fontSize: '14px',
-                            background: '#ffffff',
+                            background: 'var(--color-surface)',
                           }}
                         />
-                        <div style={{ fontSize: '12px', color: '#64748b', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <Info size={13} color="#0284c7" />
-                          <span>Hãy đảm bảo liên kết được đặt ở chế độ công khai (bất kỳ ai có liên kết đều có thể xem) để gia sư chấm điểm.</span>
+                        <div style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <Info size={13} color="var(--color-info)" />
+                          <span>Hỗ trợ tệp tài liệu, hình ảnh, mã nguồn (tối đa 20MB). Không chấp nhận tệp thực thi (.exe, .bat, ...). Hãy đảm bảo liên kết ở chế độ công khai để gia sư chấm bài.</span>
                         </div>
+                      </div>
+                    )}
+
+                    {/* Case 6.10: Hiển thị đáp án chính thức khi gia sư đã công bố kết quả */}
+                    {assignment.results_published_at && q.correct_answer && (
+                      <div
+                        style={{
+                          marginTop: '12px',
+                          padding: '8px 12px',
+                          background: 'var(--color-success-soft)',
+                          border: '1px solid #bbf7d0',
+                          borderRadius: '8px',
+                          fontSize: '13px',
+                          color: 'var(--color-success)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                        }}
+                      >
+                        <CheckCircle2 size={15} color="var(--color-success)" />
+                        <span><strong>Đáp án chuẩn của gia sư:</strong> {q.correct_answer}</span>
                       </div>
                     )}
                   </div>

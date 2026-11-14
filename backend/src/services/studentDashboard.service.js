@@ -107,7 +107,7 @@ const getTutorNames = async (tutorProfileIds) => {
  * @param {Array} classIds
  * @returns {Promise<Map<string, Object>>} class_id -> { _id, name, subject, tutor_name }
  */
-const getClassSummaries = async (classIds) => {
+export const getClassSummaries = async (classIds) => {
   const classSummaries = new Map();
   if (classIds.length === 0) {
     return classSummaries;
@@ -352,4 +352,457 @@ export const listPublishedGrades = async (user, { page, limit }) => {
   });
 
   return { items: items, pagination: buildPagination(page, limit, total) };
+};
+
+/**
+ * Danh sách tất cả bài tập của học sinh từ các lớp đang tham gia
+ * @param {Object} user - req.user { id, role }
+ * @param {Object} query - { page, limit, status, classId, search }
+ * @returns {Promise<{ items: Object[], pagination: Object, counts: Object }>}
+ */
+export const listAllAssignments = async (user, { page, limit, status, classId, search }) => {
+  assertStudent(user);
+
+  const now = new Date();
+  const classIds = await getActiveClassIds(user.id);
+  const counts = { ALL: 0, PENDING: 0, SUBMITTED: 0, GRADED: 0, OVERDUE: 0 };
+
+  if (classIds.length === 0) {
+    return { items: [], pagination: buildPagination(page, limit, 0), counts };
+  }
+
+  let targetClassIds = classIds;
+  if (classId) {
+    const isMemberOfClass = classIds.some((id) => String(id) === String(classId));
+    if (!isMemberOfClass) {
+      return { items: [], pagination: buildPagination(page, limit, 0), counts };
+    }
+    targetClassIds = [new mongoose.Types.ObjectId(classId)];
+  }
+
+  const assignmentFilter = {
+    class_id: { $in: targetClassIds },
+    status: ENUMS.AssignmentsStatus.PUBLISHED,
+    $or: [{ published_at: null }, { published_at: { $lte: now } }],
+  };
+
+  if (search && search.trim()) {
+    assignmentFilter.title = { $regex: search.trim(), $options: 'i' };
+  }
+
+  const allAssignments = await Assignment.find(assignmentFilter)
+    .select('class_id title instructions due_date allow_late_submission allow_resubmission total_points published_at results_published_at questions')
+    .sort({ due_date: 1, created_at: -1 })
+    .lean();
+
+  if (allAssignments.length === 0) {
+    return { items: [], pagination: buildPagination(page, limit, 0), counts };
+  }
+
+  const assignmentIds = allAssignments.map((a) => a._id);
+  const submissions = await AssignmentSubmission.find({
+    student_user_id: user.id,
+    assignment_id: { $in: assignmentIds },
+  })
+    .sort({ attempt_number: -1 })
+    .lean();
+
+  const submissionByAssignment = new Map();
+  for (const sub of submissions) {
+    const key = String(sub.assignment_id);
+    if (!submissionByAssignment.has(key)) {
+      submissionByAssignment.set(key, sub);
+    }
+  }
+
+  const classSummaries = await getClassSummaries(allAssignments.map((a) => a.class_id));
+
+  const mappedItems = allAssignments.map((assignment) => {
+    const sub = submissionByAssignment.get(String(assignment._id)) || null;
+
+    let derivedStatus = 'PENDING';
+    const isPastDue = assignment.due_date ? new Date(assignment.due_date).getTime() < now.getTime() : false;
+
+    if (sub) {
+      if (sub.status === ENUMS.AssignmentSubmissionsStatus.GRADED) {
+        derivedStatus = 'GRADED';
+      } else if (sub.status === ENUMS.AssignmentSubmissionsStatus.SUBMITTED) {
+        derivedStatus = 'SUBMITTED';
+      } else if (isPastDue) {
+        derivedStatus = 'OVERDUE';
+      } else {
+        derivedStatus = 'PENDING';
+      }
+    } else if (isPastDue) {
+      derivedStatus = 'OVERDUE';
+    } else {
+      derivedStatus = 'PENDING';
+    }
+
+    let canSubmit = true;
+    if (
+      derivedStatus === 'GRADED' ||
+      (assignment.results_published_at && new Date(assignment.results_published_at).getTime() <= now.getTime())
+    ) {
+      canSubmit = false;
+    } else if (derivedStatus === 'SUBMITTED' && assignment.allow_resubmission === false) {
+      canSubmit = false;
+    } else if (derivedStatus === 'OVERDUE' && assignment.allow_late_submission !== true) {
+      canSubmit = false;
+    }
+
+    counts.ALL += 1;
+    if (counts[derivedStatus] !== undefined) {
+      counts[derivedStatus] += 1;
+    }
+
+    return {
+      _id: String(assignment._id),
+      title: assignment.title,
+      instructions: assignment.instructions,
+      due_date: assignment.due_date,
+      total_points: assignment.total_points || 10,
+      allow_late_submission: assignment.allow_late_submission === true,
+      allow_resubmission: assignment.allow_resubmission === true,
+      results_published_at: assignment.results_published_at,
+      question_count: assignment.questions?.length || 0,
+      status: derivedStatus,
+      can_submit: canSubmit,
+      submission: sub
+        ? {
+            _id: String(sub._id),
+            status: sub.status,
+            timeliness: sub.timeliness,
+            provisional_score: sub.provisional_score,
+            final_score: sub.final_score,
+            overall_feedback: sub.overall_feedback,
+            submitted_at: sub.submitted_at,
+            graded_at: sub.graded_at,
+            attempt_number: sub.attempt_number,
+          }
+        : null,
+      class: classSummaries.get(String(assignment.class_id)) || null,
+    };
+  });
+
+  let filtered = mappedItems;
+  if (status && status !== 'ALL') {
+    filtered = mappedItems.filter((item) => item.status === status);
+  }
+
+  const total = filtered.length;
+  const startIndex = (page - 1) * limit;
+  const items = filtered.slice(startIndex, startIndex + limit);
+
+  return { items, pagination: buildPagination(page, limit, total), counts };
+};
+
+/**
+ * Lấy dữ liệu hoạt động học tập của học sinh theo các tuần gần nhất để vẽ biểu đồ đường
+ * @param {Object} user - req.user { id, role }
+ * @param {Object} query - { weeks }
+ * @returns {Promise<{ summary: Object, points: Object[] }>}
+ */
+export const getLearningActivity = async (user, { weeks = 6 } = {}) => {
+  assertStudent(user);
+
+  const numWeeks = Math.min(Math.max(Number(weeks) || 6, 4), 12);
+  const now = new Date();
+  const studentId = new mongoose.Types.ObjectId(user.id);
+  const classIds = await getActiveClassIds(user.id);
+
+  // 1. Lấy tất cả bài nộp của học sinh
+  const submissions = await AssignmentSubmission.find({
+    student_user_id: studentId,
+    status: { $in: [ENUMS.AssignmentSubmissionsStatus.SUBMITTED, ENUMS.AssignmentSubmissionsStatus.GRADED] },
+  })
+    .select('status final_score provisional_score submitted_at graded_at created_at')
+    .lean();
+
+  // 2. Lấy tất cả buổi học của các lớp đang tham gia
+  let sessions = [];
+  if (classIds.length > 0) {
+    sessions = await ClassSession.find({
+      class_id: { $in: classIds },
+      status: { $ne: ENUMS.ClassSessionsStatus.CANCELLED },
+    })
+      .select('start_time end_time')
+      .lean();
+  }
+
+  // 3. Tính toán từng khoảng tuần (từ tuần xa nhất đến tuần hiện tại)
+  const points = [];
+  const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
+
+  for (let i = numWeeks - 1; i >= 0; i--) {
+    const weekEnd = new Date(now.getTime() - i * oneWeekMs);
+    const weekStart = new Date(now.getTime() - (i + 1) * oneWeekMs);
+
+    // Lọc bài nộp trong tuần
+    const weekSubmissions = submissions.filter((sub) => {
+      const time = new Date(sub.submitted_at || sub.created_at).getTime();
+      return time >= weekStart.getTime() && time < weekEnd.getTime();
+    });
+
+    // Lọc bài đã có điểm trong tuần
+    const gradedSubmissions = weekSubmissions.filter(
+      (sub) => sub.status === ENUMS.AssignmentSubmissionsStatus.GRADED && typeof sub.final_score === 'number'
+    );
+
+    let avgScore = null;
+    if (gradedSubmissions.length > 0) {
+      const sum = gradedSubmissions.reduce((acc, cur) => acc + cur.final_score, 0);
+      avgScore = Math.round((sum / gradedSubmissions.length) * 10) / 10;
+    }
+
+    // Lọc buổi học trong tuần
+    const weekSessions = sessions.filter((s) => {
+      const time = new Date(s.start_time).getTime();
+      return time >= weekStart.getTime() && time < weekEnd.getTime();
+    });
+
+    const startStr = `${String(weekStart.getDate()).padStart(2, '0')}/${String(weekStart.getMonth() + 1).padStart(2, '0')}`;
+    const endStr = `${String(weekEnd.getDate()).padStart(2, '0')}/${String(weekEnd.getMonth() + 1).padStart(2, '0')}`;
+
+    points.push({
+      weekIndex: numWeeks - i,
+      label: `${startStr} - ${endStr}`,
+      shortLabel: i === 0 ? 'Hiện tại' : `T-${i}`,
+      avgScore: avgScore,
+      submissionsCount: weekSubmissions.length,
+      sessionsCount: weekSessions.length,
+      activityCount: weekSubmissions.length + weekSessions.length,
+    });
+  }
+
+  // 4. Tổng quan (Summary)
+  const allGraded = submissions.filter(
+    (sub) => sub.status === ENUMS.AssignmentSubmissionsStatus.GRADED && typeof sub.final_score === 'number'
+  );
+  let overallAvgScore = 0;
+  if (allGraded.length > 0) {
+    const sum = allGraded.reduce((acc, cur) => acc + cur.final_score, 0);
+    overallAvgScore = Math.round((sum / allGraded.length) * 10) / 10;
+  }
+
+  const summary = {
+    totalSubmissions: submissions.length,
+    gradedSubmissionsCount: allGraded.length,
+    averageScore: overallAvgScore,
+    totalSessions: sessions.filter((s) => new Date(s.start_time).getTime() <= now.getTime()).length,
+    totalActivities:
+      submissions.length + sessions.filter((s) => new Date(s.start_time).getTime() <= now.getTime()).length,
+  };
+
+  return { summary, points };
+};
+
+/**
+ * Lịch sử các lần nộp bài tập của học sinh
+ * @param {Object} user - req.user { id, role }
+ * @param {Object} query - { page, limit, classId, search, status }
+ * @returns {Promise<{ items: Object[], pagination: Object, stats: Object }>}
+ */
+export const listSubmissionHistory = async (user, { page, limit, classId, search, status = 'ALL' }) => {
+  assertStudent(user);
+
+  const studentId = new mongoose.Types.ObjectId(user.id);
+  const classIds = await getActiveClassIds(user.id);
+  const emptyResult = {
+    items: [],
+    pagination: buildPagination(page, limit, 0),
+    stats: { totalSubmissions: 0, gradedCount: 0, averageScore: 0 },
+  };
+
+  if (classIds.length === 0) {
+    return emptyResult;
+  }
+
+  let targetClassIds = classIds;
+  if (classId) {
+    const isMemberOfClass = classIds.some((id) => String(id) === String(classId));
+    if (!isMemberOfClass) {
+      return emptyResult;
+    }
+    targetClassIds = [new mongoose.Types.ObjectId(classId)];
+  }
+
+  const assignmentFilter = {
+    class_id: { $in: targetClassIds },
+  };
+  if (search && search.trim()) {
+    assignmentFilter.title = { $regex: search.trim(), $options: 'i' };
+  }
+
+  const matchingAssignments = await Assignment.find(assignmentFilter)
+    .select('class_id title total_points due_date results_published_at')
+    .lean();
+
+  if (matchingAssignments.length === 0) {
+    return emptyResult;
+  }
+
+  const assignmentById = new Map();
+  for (const asg of matchingAssignments) {
+    assignmentById.set(String(asg._id), asg);
+  }
+
+  const submissionFilter = {
+    student_user_id: studentId,
+    assignment_id: { $in: matchingAssignments.map((a) => a._id) },
+    status: { $in: [ENUMS.AssignmentSubmissionsStatus.SUBMITTED, ENUMS.AssignmentSubmissionsStatus.GRADED] },
+  };
+  if (status && status !== 'ALL') {
+    submissionFilter.status = status;
+  }
+
+  const [submissions, total] = await Promise.all([
+    AssignmentSubmission.find(submissionFilter)
+      .select('assignment_id attempt_number status timeliness provisional_score final_score overall_feedback submitted_at graded_at created_at')
+      .sort({ submitted_at: -1, created_at: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean(),
+    AssignmentSubmission.countDocuments(submissionFilter),
+  ]);
+
+  const classSummaries = await getClassSummaries(matchingAssignments.map((a) => a.class_id));
+
+  const items = submissions.map((sub) => {
+    const asg = assignmentById.get(String(sub.assignment_id));
+    return {
+      _id: String(sub._id),
+      assignment_id: String(sub.assignment_id),
+      attempt_number: sub.attempt_number || 1,
+      status: sub.status,
+      timeliness: sub.timeliness || 'ON_TIME',
+      provisional_score: sub.provisional_score,
+      final_score: sub.final_score,
+      overall_feedback: sub.overall_feedback,
+      submitted_at: sub.submitted_at || sub.created_at,
+      graded_at: sub.graded_at,
+      assignment: asg
+        ? {
+            _id: String(asg._id),
+            title: asg.title,
+            total_points: asg.total_points || 10,
+            due_date: asg.due_date,
+            results_published_at: asg.results_published_at,
+          }
+        : null,
+      class: asg ? classSummaries.get(String(asg.class_id)) || null : null,
+    };
+  });
+
+  const allStudentSubmissions = await AssignmentSubmission.find({
+    student_user_id: studentId,
+    assignment_id: { $in: matchingAssignments.map((a) => a._id) },
+    status: { $in: [ENUMS.AssignmentSubmissionsStatus.SUBMITTED, ENUMS.AssignmentSubmissionsStatus.GRADED] },
+  })
+    .select('status final_score')
+    .lean();
+
+  const gradedSubmissions = allStudentSubmissions.filter(
+    (s) => s.status === ENUMS.AssignmentSubmissionsStatus.GRADED && typeof s.final_score === 'number'
+  );
+  let averageScore = 0;
+  if (gradedSubmissions.length > 0) {
+    const sum = gradedSubmissions.reduce((acc, cur) => acc + cur.final_score, 0);
+    averageScore = Math.round((sum / gradedSubmissions.length) * 10) / 10;
+  }
+
+  const stats = {
+    totalSubmissions: allStudentSubmissions.length,
+    gradedCount: gradedSubmissions.length,
+    averageScore,
+  };
+
+  return { items, pagination: buildPagination(page, limit, total), stats };
+};
+
+/**
+ * Lấy danh sách lịch học của học sinh theo khoảng thời gian (UC30 / UC32)
+ * @param {Object} user - req.user { id, role }
+ * @param {Object} query - { startDate, endDate, classId, status }
+ * @returns {Promise<{ items: Object[], stats: Object }>}
+ */
+export const listStudentSchedule = async (user, query = {}) => {
+  assertStudent(user);
+
+  const activeClassIds = await getActiveClassIds(user.id);
+  if (activeClassIds.length === 0) {
+    return {
+      items: [],
+      stats: { totalSessions: 0, upcomingCount: 0, completedCount: 0 },
+    };
+  }
+
+  let targetClassIds = activeClassIds;
+  if (query.classId) {
+    const isJoined = activeClassIds.some((id) => String(id) === String(query.classId));
+    if (!isJoined) {
+      throw new AppError('Forbidden: Bạn không thuộc lớp học này', 403);
+    }
+    targetClassIds = [query.classId];
+  }
+
+  const filter = {
+    class_id: { $in: targetClassIds },
+  };
+
+  if (query.status && query.status !== 'ALL') {
+    filter.status = query.status;
+  } else {
+    filter.status = { $ne: ENUMS.ClassSessionsStatus.CANCELLED };
+  }
+
+  if (query.startDate || query.endDate) {
+    filter.start_time = {};
+    if (query.startDate) {
+      filter.start_time.$gte = new Date(query.startDate);
+    }
+    if (query.endDate) {
+      filter.start_time.$lte = new Date(query.endDate);
+    }
+  }
+
+  const sessions = await ClassSession.find(filter)
+    .sort({ start_time: 1 })
+    .lean();
+
+  const classSummaries = await getClassSummaries(sessions.map((s) => s.class_id));
+
+  const now = new Date();
+  let upcomingCount = 0;
+  let completedCount = 0;
+
+  const items = sessions.map((s) => {
+    const startTime = new Date(s.start_time);
+    const endTime = new Date(s.end_time);
+    const isCompleted = s.status === ENUMS.ClassSessionsStatus.COMPLETED || endTime < now;
+    const isUpcoming = s.status === ENUMS.ClassSessionsStatus.SCHEDULED && startTime >= now;
+
+    if (isUpcoming) upcomingCount += 1;
+    if (isCompleted) completedCount += 1;
+
+    return {
+      _id: String(s._id),
+      class_id: String(s.class_id),
+      title: s.title,
+      start_time: s.start_time,
+      end_time: s.end_time,
+      meeting_link: s.meeting_link,
+      status: s.status,
+      class: classSummaries.get(String(s.class_id)) || null,
+    };
+  });
+
+  return {
+    items,
+    stats: {
+      totalSessions: items.length,
+      upcomingCount,
+      completedCount,
+    },
+  };
 };

@@ -22,4 +22,11 @@ module.exports = [
     image_urls: [], status: 'PUBLISHED', created_at: d('2026-10-04T09:00:00+07:00'), updated_at: d('2026-10-18T09:00:00+07:00'),
   },
   ...require('../marketplaceFixture').posts,
+  {
+    // Bị phụ huynh Hà báo cáo (report_3) nên đang tạm ẩn chờ Admin kiểm duyệt
+    _id: ids.post_lan_ielts, profile_id: ids.tp_lan, title: 'Cam kết IELTS 8.0 sau 1 tháng – học phí siêu rẻ',
+    subject_name: 'Tiếng Anh', grade_level: 'Lớp 10–12', teaching_mode: 'ONLINE', price: money(100000),
+    schedule: 'Linh hoạt', description: 'Đảm bảo 8.0 chỉ sau 4 tuần, không đạt hoàn 200% học phí.',
+    image_urls: [], status: 'PENDING_MODERATION', created_at: d('2026-11-08T10:00:00+07:00'), updated_at: d('2026-11-11T09:30:00+07:00'),
+  },
 ];

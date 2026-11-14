@@ -12,8 +12,8 @@
 .student-welcome-banner {
   padding: 24px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(90deg, var(--color-primary-strong), #e0663c);
-  color: var(--color-white);
+  background: var(--color-hero);
+  color: var(--color-text);
 }
 
 .student-welcome-eyebrow {
@@ -92,7 +92,7 @@
   padding: 12px;
   border: 1px solid transparent;
   border-radius: var(--radius-md);
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
 }
 
 .student-list-row.is-top-aligned {
@@ -101,7 +101,7 @@
 
 .student-list-row.is-overdue {
   border-color: var(--color-error-soft);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .student-row-icon {
@@ -163,7 +163,7 @@
   height: 48px;
   padding: 0 6px;
   border-radius: var(--radius-md);
-  background: var(--color-white);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   font-size: 13px;
   font-weight: 800;
@@ -195,7 +195,7 @@
 }
 
 .student-score-bar-fill.tone-warning {
-  background: #d97706;
+  background: var(--color-warning);
 }
 
 .student-score-bar-fill.tone-error {
@@ -211,7 +211,7 @@
   margin: 8px 0 0;
   padding: 8px 10px;
   border-radius: var(--radius-sm);
-  background: var(--color-white);
+  background: var(--color-surface);
   font-size: 13px;
   line-height: 1.5;
   overflow-wrap: anywhere;
@@ -243,5 +243,280 @@
 
   .student-welcome-name {
     font-size: 20px;
+  }
+}
+
+/* ---------- Khối biểu đồ Hoạt động học tập (Line chart) ---------- */
+.activity-chart-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.activity-mode-toggle {
+  display: inline-flex;
+  background: var(--color-surface-subtle);
+  padding: 3px;
+  border-radius: 8px;
+}
+
+.activity-mode-btn {
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 11px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: all 0.15s ease;
+}
+
+.activity-mode-btn:hover {
+  color: var(--color-text);
+}
+
+.activity-mode-btn.is-active {
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.activity-period-select-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.activity-period-select {
+  padding: 5px 10px;
+  border: 1px solid var(--color-control-border);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  outline: none;
+  cursor: pointer;
+}
+
+.activity-summary-chips {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.activity-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--color-surface-subtle);
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+}
+
+.activity-chip-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.activity-chip-icon.tone-primary {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+}
+
+.activity-chip-icon.tone-success {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+.activity-chip-icon.tone-info {
+  background: var(--color-info-soft);
+  color: var(--color-info);
+}
+
+.activity-chip-icon.tone-purple {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+.activity-chip-body {
+  min-width: 0;
+}
+
+.activity-chip-label {
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activity-chip-val {
+  margin: 2px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.activity-svg-container {
+  position: relative;
+  width: 100%;
+  background: var(--color-surface);
+  padding-top: 8px;
+}
+
+.activity-legend {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  flex-wrap: wrap;
+}
+
+.activity-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-dot.is-score {
+  background: var(--color-primary-strong);
+}
+
+.legend-dot.is-activity {
+  background: var(--color-info);
+}
+
+.activity-svg-chart {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  display: block;
+}
+
+.chart-axis-text {
+  font-size: 11px;
+  fill: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.chart-axis-text.is-active-label {
+  fill: var(--color-text);
+  font-weight: 700;
+}
+
+.activity-chart-tooltip {
+  position: absolute;
+  top: 36px;
+  transform: translateX(-50%);
+  background: var(--color-text);
+  color: #ffffff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  pointer-events: none;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
+  animation: fadeInTooltip 0.12s ease-in-out;
+}
+
+@keyframes fadeInTooltip {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.tooltip-week-label {
+  margin: 0 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding-bottom: 4px;
+  color: var(--color-border);
+}
+
+.tooltip-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tooltip-metric-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tooltip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.tooltip-dot.is-score {
+  background: var(--color-primary-strong);
+}
+
+.tooltip-dot.is-activity {
+  background: var(--color-info);
+}
+
+.tooltip-dot.is-session {
+  background: var(--color-success);
+}
+
+.activity-chart-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .activity-summary-chips {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .activity-chart-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .activity-summary-chips {
+    grid-template-columns: 1fr;
   }
 }

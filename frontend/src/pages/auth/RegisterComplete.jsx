@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
@@ -23,7 +24,6 @@ export default function RegisterComplete() {
   const [role, setRole] = useState('');
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [errors, setErrors] = useState({});
-  const [formError, setFormError] = useState('');
   const [ticketExpired, setTicketExpired] = useState(false);
   const [emailTaken, setEmailTaken] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -39,7 +39,6 @@ export default function RegisterComplete() {
   };
 
   const handleSubmit = async () => {
-    setFormError('');
 
     const newErrors = {
       role: validateRole(role),
@@ -76,13 +75,13 @@ export default function RegisterComplete() {
     if (error.status === 422 && error.errors) {
       setErrors(toFieldErrors(error.errors));
     }
-    setFormError(error.message);
+    toast.error(error.message);
   };
 
   // Ticket hỏng / hết hạn: phải đăng nhập Google lại để lấy ticket mới
   if (!googleProfile || ticketExpired) {
     return (
-      <AuthLayout activeStep={2}>
+      <AuthLayout activeStep={2} panelClassName="register-intro">
         <h1 className="auth-title">Phiên đăng ký đã hết hạn</h1>
         <p className="auth-subtitle">Phiên đăng ký bằng Google không hợp lệ hoặc đã hết hạn. Vui lòng tiếp tục với Google một lần nữa.</p>
         <GoogleButton href={getGoogleLoginUrl()} />
@@ -100,12 +99,10 @@ export default function RegisterComplete() {
         Email này đã được đăng ký. <Link to="/login" className="link">Đăng nhập</Link>
       </Alert>
     );
-  } else if (formError) {
-    alert = <Alert type="error">{formError}</Alert>;
   }
 
   return (
-    <AuthLayout activeStep={2}>
+    <AuthLayout activeStep={2} panelClassName="register-intro">
       <RegisterStepper currentStep={2} />
       <RegisterConfirmStep
         fullName={googleProfile.full_name}

@@ -24,10 +24,10 @@ function BrandLogo() {
 
 // Bố cục chung của các màn auth: panel giới thiệu bên trái + form bên phải.
 // activeStep: số bước được tô màu ở panel trái (0 = không tô bước nào)
-export default function AuthLayout({ activeStep = 0, children }) {
+export default function AuthLayout({ activeStep = 0, panelClassName = '', children }) {
   return (
     <div className="auth-layout">
-      <aside className="auth-panel">
+      <aside className={`auth-panel ${panelClassName}`.trim()}>
         <span className="auth-panel-circle circle-top" aria-hidden="true" />
         <span className="auth-panel-circle circle-middle" aria-hidden="true" />
         <span className="auth-panel-circle circle-bottom" aria-hidden="true" />

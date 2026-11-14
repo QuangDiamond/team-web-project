@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -14,7 +15,7 @@ import {
 import { previewClassroom, joinClassroom } from '../../services/classroomService';
 import { useAuth } from '../../hooks/useAuth.jsx';
 
-export default function JoinClassModal({ isOpen, onClose, showToast }) {
+export default function JoinClassModal({ isOpen, onClose }) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [joinCode, setJoinCode] = useState('');
@@ -79,12 +80,10 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
       setJoining(true);
       setError('');
       const res = await joinClassroom(joinCode.trim(), selectedChildId || null);
-      if (showToast) {
-        if (user?.role === 'PARENT' && selectedChildId) {
-          showToast('Đã tham gia lớp và gửi yêu cầu liên kết đến học sinh!');
-        } else {
-          showToast('Tham gia lớp học thành công!');
-        }
+      if (user?.role === 'PARENT' && selectedChildId) {
+        toast.success('Đã tham gia lớp và gửi yêu cầu liên kết đến học sinh!');
+      } else {
+        toast.success('Tham gia lớp học thành công!');
       }
       handleClose();
       if (res?.data?.class_id) {
@@ -97,7 +96,7 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
         navigate(targetUrl);
       }
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || 'Không thể tham gia lớp học');
+      toast.error(err?.response?.data?.message || err.message || 'Không thể tham gia lớp học');
     } finally {
       setJoining(false);
     }
@@ -108,7 +107,7 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <KeyRound size={20} color="#e85a2c" />
+            <KeyRound size={20} color="var(--color-primary-strong)" />
             <span>Tham gia lớp học</span>
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
@@ -165,8 +164,8 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
               style={{
                 marginTop: '16px',
                 padding: '16px',
-                background: '#f8fafc',
-                border: '1px solid #e2e8f0',
+                background: 'var(--color-surface-subtle)',
+                border: '1px solid var(--color-border)',
                 borderRadius: '12px',
               }}
             >
@@ -178,13 +177,13 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
                 </span>
               </div>
 
-              <h3 style={{ margin: '0 0 6px 0', fontSize: '18px', color: '#0f172a' }}>{preview.name}</h3>
+              <h3 style={{ margin: '0 0 6px 0', fontSize: '18px', color: 'var(--color-text)' }}>{preview.name}</h3>
 
               {preview.description && (
-                <p style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#64748b' }}>{preview.description}</p>
+                <p style={{ margin: '0 0 10px 0', fontSize: '14px', color: 'var(--color-text-muted)' }}>{preview.description}</p>
               )}
 
-              <div style={{ fontSize: '13px', color: '#475569', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ fontSize: '13px', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Users size={14} />
                 <span>
                   Sĩ số: <strong>{preview.member_count}</strong> / {preview.capacity} học viên
@@ -193,8 +192,8 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
 
               {/* Luồng UC24: Nếu là Phụ huynh, cho phép chọn và liên kết con đang ở trong lớp */}
               {user?.role === 'PARENT' && (
-                <div style={{ marginTop: '12px', padding: '10px', background: '#ffffff', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, color: '#334155', marginBottom: '4px' }}>
+                <div style={{ marginTop: '12px', padding: '10px', background: 'var(--color-surface)', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>
                     <Users size={14} />
                     <span>Bạn là Phụ huynh. Chọn con đang học trong lớp để theo dõi:</span>
                   </label>
@@ -206,9 +205,9 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
                         width: '100%',
                         padding: '6px 8px',
                         borderRadius: '6px',
-                        border: '1px solid #cbd5e1',
+                        border: '1px solid var(--color-control-border)',
                         fontSize: '13px',
-                        background: '#fff',
+                        background: 'var(--color-surface)',
                       }}
                     >
                       <option value="">-- Chưa liên kết con / Tham gia theo dõi chung --</option>
@@ -219,7 +218,7 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
                       ))}
                     </select>
                   ) : (
-                    <div style={{ fontSize: '11px', color: '#64748b', fontStyle: 'italic' }}>
+                    <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
                       (Lớp hiện chưa có học sinh nào, bạn có thể tham gia trước)
                     </div>
                   )}
@@ -228,14 +227,14 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
 
               {/* Hướng dẫn riêng cho Gia sư */}
               {user?.role === 'TUTOR' ? (
-                <div style={{ marginTop: '14px', padding: '14px', background: '#fff7ed', borderRadius: '8px', border: '1px solid #fed7aa', textAlign: 'center' }}>
+                <div style={{ marginTop: '14px', padding: '14px', background: 'var(--color-primary-soft)', borderRadius: '8px', border: '1px solid #fed7aa', textAlign: 'center' }}>
                   <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
-                    <GraduationCap size={32} color="#c2410c" />
+                    <GraduationCap size={32} color="var(--color-primary-strong)" />
                   </div>
-                  <div style={{ color: '#c2410c', fontWeight: 700, fontSize: '14px', marginBottom: '4px' }}>
+                  <div style={{ color: 'var(--color-primary-strong)', fontWeight: 700, fontSize: '14px', marginBottom: '4px' }}>
                     Bạn đang đăng nhập với vai trò Gia sư
                   </div>
-                  <div style={{ color: '#9a3412', fontSize: '13px', marginBottom: '12px' }}>
+                  <div style={{ color: 'var(--color-primary-strong-hover)', fontSize: '13px', marginBottom: '12px' }}>
                     Mã tham gia này dành cho Học sinh & Phụ huynh. Bạn có thể vào xem hoặc chỉnh sửa lớp học ngay.
                   </div>
                   <button
@@ -260,7 +259,7 @@ export default function JoinClassModal({ isOpen, onClose, showToast }) {
               ) : null}
 
               {preview.is_full && (
-                <div style={{ color: '#dc2626', fontSize: '13px', marginTop: '6px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <div style={{ color: 'var(--color-error)', fontSize: '13px', marginTop: '6px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <AlertTriangle size={14} />
                   <span>Lớp học đã đạt sĩ số tối đa, không thể nhận thêm học viên.</span>
                 </div>

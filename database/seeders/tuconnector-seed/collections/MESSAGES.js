@@ -14,4 +14,6 @@ module.exports = [
     attachments: [{ file_url: 'https://cdn.tuconnector.vn/chat/de-cuong-buoi-3.pdf', file_name: 'de-cuong-buoi-3.pdf', file_size: 245760, mime_type: 'application/pdf' }],
   }),
   ...require('../marketplaceFixture').messages,
+  // Tin nhắn gia sư Minh chưa đọc → có thông báo noti_msg_minh
+  m({ _id: ids.msg_7, conversation_id: ids.conv_ha_minh, sender_user_id: ids.user_parent_ha, content: 'Thầy ơi, tối thứ 5 tuần này con có lịch kiểm tra, thầy cho con học bù tối thứ 6 được không ạ?', created_at: d('2026-11-10T20:15:00+07:00') }),
 ];

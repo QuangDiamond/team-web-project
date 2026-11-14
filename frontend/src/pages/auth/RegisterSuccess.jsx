@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { MailCheck } from 'lucide-react';
 import AuthLayout from '../../components/layout/AuthLayout';
 import ResendVerificationButton from '../../components/common/ResendVerificationButton';
+import '../../styles/register.css';
 import '../../styles/registerSuccess.css';
 
 // Màn "Check your email" sau khi đăng ký thường thành công
@@ -13,7 +14,7 @@ export default function RegisterSuccess() {
   }
 
   return (
-    <AuthLayout activeStep={1}>
+    <AuthLayout activeStep={1} panelClassName="register-intro">
       <div className="register-success">
         <span className="register-success-icon" aria-hidden="true">
           <MailCheck size={32} />

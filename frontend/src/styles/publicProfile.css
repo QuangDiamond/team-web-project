@@ -27,7 +27,7 @@
   padding: 20px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .public-profile-sidebar .avatar-upload-controls { width: 100%; }
@@ -39,7 +39,7 @@
 .public-profile-main > .section-card {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  background: var(--color-white);
+  background: var(--color-surface);
   box-shadow: 0 8px 24px rgb(27 27 51 / 4%);
 }
 
@@ -52,7 +52,7 @@
   position: relative;
   height: 112px;
   overflow: hidden;
-  background: linear-gradient(125deg, var(--color-primary-strong), var(--color-primary), #ffab67);
+  background: var(--color-hero);
 }
 
 .public-profile-cover::before,
@@ -127,7 +127,7 @@
   padding: 5px 9px;
   border-radius: var(--radius-sm);
   color: var(--color-text-muted);
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
   font-size: 12px;
   font-weight: 600;
 }
@@ -291,6 +291,7 @@
 }
 
 .public-profile-rates strong {
+  color: var(--color-price);
   text-align: right;
   flex-shrink: 0;
 }
@@ -344,7 +345,7 @@
   font-weight: 700;
   line-height: 1.5;
   color: var(--color-text-muted);
-  background: var(--color-white);
+  background: var(--color-surface);
   cursor: pointer;
 }
 
@@ -366,7 +367,7 @@
 .public-profile-tab-count {
   border-radius: 20px;
   padding: 2px 6px;
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
   color: var(--color-text-muted);
   font-size: 11px;
 }
@@ -433,7 +434,7 @@
 .public-profile-post-heading .public-profile-rate { margin: 0; line-height: 1.5; }
 .public-profile-post-heading .public-profile-rate span { font-size: 12px; font-weight: 400; }
 .public-profile-post-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; padding: 0; list-style: none; }
-.public-profile-post-tags li { display: inline-flex; align-items: center; gap: 6px; min-width: 0; max-width: 100%; padding: 5px 9px; border-radius: 8px; background: var(--color-surface); color: var(--color-text-muted); font-size: 12px; overflow-wrap: anywhere; }
+.public-profile-post-tags li { display: inline-flex; align-items: center; gap: 6px; min-width: 0; max-width: 100%; padding: 5px 9px; border-radius: 8px; background: var(--color-surface-subtle); color: var(--color-text-muted); font-size: 12px; overflow-wrap: anywhere; }
 .public-profile-post-tags svg, .public-profile-post-schedule svg { flex-shrink: 0; }
 .public-profile-post-schedule { display: flex; align-items: flex-start; gap: 8px; margin: 16px 0 0; color: var(--color-text-muted); font-size: 13px; line-height: 1.6; }
 .public-profile-post-schedule svg { margin-top: 3px; }
@@ -446,7 +447,7 @@
   padding: 16px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
 }
 
 .public-profile-item-icon {
@@ -457,7 +458,7 @@
   flex-shrink: 0;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-primary-strong);
 }
 
@@ -485,12 +486,12 @@
 }
 
 .public-profile-rate {
+  color: var(--color-price);
   display: inline-block;
   margin: 10px 0 4px;
   padding: 6px 10px;
   border-radius: var(--radius-sm);
   background: var(--color-primary-soft);
-  color: var(--color-primary-strong);
   font-size: 14px;
   font-weight: 700;
 }
@@ -502,7 +503,7 @@
   margin-bottom: 22px;
   padding: 20px;
   border-radius: var(--radius-md);
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
 }
 
 .public-profile-review-summary > strong {
@@ -684,4 +685,11 @@
     gap: 16px;
   }
 
+}
+
+/* Nút báo cáo bài đăng gia sư (UC38) */
+.public-profile-report-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
 }

@@ -70,7 +70,7 @@
 .request-fact {
   padding: 12px;
   border-radius: var(--radius-md);
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
 }
 
 .request-fact dt {

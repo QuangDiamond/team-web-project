@@ -2,14 +2,13 @@
 
 .teaching-category-picker { position: relative; margin-top: 24px; }
 .teaching-category-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; padding: 0; list-style: none; }
-.teaching-category-tags li { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 4px 6px 4px 12px; border-radius: 8px; background: var(--color-surface); color: var(--color-text); font-size: 13px; overflow-wrap: anywhere; }
+.teaching-category-tags li { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 4px 6px 4px 12px; border-radius: 8px; background: var(--color-surface-subtle); color: var(--color-text); font-size: 13px; overflow-wrap: anywhere; }
 .teaching-category-tags button { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 28px; height: 28px; border: 0; border-radius: 50%; background: transparent; color: var(--color-text-muted); cursor: pointer; }
 .teaching-category-tags button:hover { background: var(--color-border); }
 .teaching-category-control { display: flex; align-items: center; gap: 10px; padding: 0 12px; border: 1px solid var(--color-border); border-radius: 10px; }
-.teaching-category-control:focus-within { box-shadow: var(--focus-ring); }
 .teaching-category-control > svg { flex-shrink: 0; color: var(--color-text-muted); }
 .teaching-category-control input { flex: 1; min-width: 0; min-height: 44px; border: 0; outline: 0; background: transparent; color: var(--color-text); font: inherit; font-size: 14px; }
-.teaching-category-options { position: absolute; z-index: 20; left: 0; right: 0; max-height: 260px; overflow-y: auto; margin: 4px 0 0; padding: 6px; border: 1px solid var(--color-border); border-radius: 10px; background: var(--color-white); box-shadow: 0 8px 24px rgb(0 0 0 / 10%); list-style: none; }
+.teaching-category-options { position: absolute; z-index: 20; left: 0; right: 0; max-height: 260px; overflow-y: auto; margin: 4px 0 0; padding: 6px; border: 1px solid var(--color-border); border-radius: 10px; background: var(--color-surface); box-shadow: 0 8px 24px rgb(0 0 0 / 10%); list-style: none; }
 .teaching-category-options button { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 44px; padding: 10px; border: 0; border-radius: 6px; background: transparent; color: var(--color-text); text-align: left; font: inherit; font-size: 14px; cursor: pointer; }
 .teaching-category-options button:hover, .teaching-category-options .is-active button { background: var(--color-primary-soft); }
 .teaching-category-options small { flex-shrink: 0; color: var(--color-text-muted); font-size: 11px; }
@@ -49,7 +48,7 @@
   padding: 14px 14px 0;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
 }
 
 .profile-item-fields {

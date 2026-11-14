@@ -1,34 +1,48 @@
-import { useState, useEffect } from 'react';
-import { GraduationCap, AlertTriangle, Check, X, Plus } from 'lucide-react';
-import { createClassroom, getConfirmedAgreements } from '../../services/classroomService';
+import { toast } from 'sonner';
+import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { GraduationCap, AlertTriangle, Check, X, Plus, ExternalLink } from 'lucide-react';
+import { createClassroom, getConfirmedAgreements, getMyClassrooms } from '../../services/classroomService';
 import { useSubjectNames } from '../../hooks/useSubjectNames';
-import { formatVnd } from '../../utils/formatCurrency';
 
 function applyAgreementToForm(form, agreement) {
+  const subject = agreement.derived_subject || agreement.agreed_subject || form.subject || '';
+  const grade = agreement.derived_grade || agreement.conversation_id?.request_id?.grade_level || form.grade || '';
+  const studentName = agreement.student_info?.full_name ? ` (${agreement.student_info.full_name})` : '';
+  const defaultName = subject ? `Lớp ${subject}${grade ? ` ${grade}` : ''}${studentName}` : `Lớp kèm thỏa thuận`;
+
   return {
     ...form,
     agreement_id: agreement._id,
-    name: form.name || `Lớp kèm môn ${agreement.agreed_subject || 'học'}`,
-    subject: agreement.agreed_subject || form.subject,
+    name: form.name && form.name.trim() ? form.name : defaultName,
+    subject: subject || form.subject,
+    grade: grade || form.grade,
     description: agreement.agreed_schedule
-      ? `Lịch học đã chốt: ${agreement.agreed_schedule}`
-      : form.description,
+      ? `Lịch học đã chốt: ${agreement.agreed_schedule}${agreement.student_info ? ` | Học sinh: ${agreement.student_info.full_name}` : ''}`
+      : (form.description || (agreement.student_info ? `Học sinh: ${agreement.student_info.full_name}` : '')),
   };
 }
 
-export default function CreateClassroomModal({ isOpen, initialAgreementId = '', onClose, onClassroomCreated, showToast }) {
+export default function CreateClassroomModal({
+  isOpen,
+  initialAgreementId = '',
+  existingClassrooms = [],
+  onClose,
+  onClassroomCreated,
+}) {
+  const navigate = useNavigate();
   const { subjectNames, gradeNames, loading: loadingCategories, error: categoryError } = useSubjectNames();
   const [formData, setFormData] = useState({
     name: '',
     subject: '',
     grade: '',
-    capacity: 20,
+    capacity: 50,
     description: '',
     agreement_id: '',
   });
 
+  const [allClassroomsList, setAllClassroomsList] = useState([]);
   const [agreements, setAgreements] = useState([]);
-  const [loadingAgreements, setLoadingAgreements] = useState(false);
   const [useAgreement, setUseAgreement] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -39,7 +53,7 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
       name: '',
       subject: '',
       grade: '',
-      capacity: 20,
+      capacity: 50,
       description: '',
       agreement_id: '',
     });
@@ -48,11 +62,18 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
     setCreatedResult(null);
   };
 
-  // Load danh sách thỏa thuận đã chốt khi mở modal (UC21.A1)
+  // Load danh sách tất cả lớp học của gia sư (cả Active lẫn Archived) và danh sách thỏa thuận đã chốt khi mở modal (UC21, Case 1.2)
   useEffect(() => {
     if (isOpen) {
       resetForm();
-      setLoadingAgreements(true);
+      getMyClassrooms()
+        .then((res) => {
+          if (res?.data && Array.isArray(res.data)) {
+            setAllClassroomsList(res.data);
+          }
+        })
+        .catch(() => {});
+
       getConfirmedAgreements()
         .then((res) => {
           if (res?.data && Array.isArray(res.data)) {
@@ -70,14 +91,9 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
         })
         .catch((err) => {
           console.warn('[UC21] Không lấy được danh sách thỏa thuận:', err.message);
-        })
-        .finally(() => {
-          setLoadingAgreements(false);
         });
     }
   }, [isOpen, initialAgreementId]);
-
-  if (!isOpen) return null;
 
   const handleClose = () => {
     resetForm();
@@ -100,6 +116,24 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
       setFormData((prev) => ({ ...prev, agreement_id: '' }));
     }
   };
+
+  // Danh sách đầy đủ các lớp của gia sư (kết hợp cả danh sách active và archived)
+  const allKnownClassrooms = useMemo(() => {
+    if (allClassroomsList && allClassroomsList.length > 0) {
+      return allClassroomsList;
+    }
+    return existingClassrooms || [];
+  }, [allClassroomsList, existingClassrooms]);
+
+  // Case 1.2: Kiểm tra trùng tên theo thời gian thực (chuẩn hóa khoảng trắng & không phân biệt hoa thường)
+  const normalizedInputName = (formData.name || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  const isDuplicateName = Boolean(
+    normalizedInputName &&
+    allKnownClassrooms.some((c) => {
+      const existingName = (c.name || '').trim().toLowerCase().replace(/\s+/g, ' ');
+      return existingName === normalizedInputName;
+    })
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -126,6 +160,12 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
       return;
     }
 
+    // Case 1.2: Chặn tạo lớp nếu trùng tên với lớp đã có (kể cả lớp đã lưu trữ)
+    if (isDuplicateName) {
+      setError('Bạn đã có một lớp học mang tên này. Vui lòng đặt tên khác.');
+      return;
+    }
+
     try {
       setSubmitting(true);
       const res = await createClassroom({
@@ -138,13 +178,19 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
       });
 
       const newClassroom = res?.data?.classroom || res?.data;
-      setCreatedResult(newClassroom);
       if (onClassroomCreated) {
         onClassroomCreated(newClassroom);
       }
-      showToast('Khởi tạo lớp học thành công!');
+      toast.success('Khởi tạo lớp học thành công!');
+      handleClose();
+      navigate(`/tutor/classes/${newClassroom._id}`);
     } catch (err) {
-      setError(err.message || 'Không thể tạo lớp học. Vui lòng kiểm tra lại.');
+      const errMsg =
+        err?.response?.data?.message ||
+        err?.rawMessage ||
+        err.message ||
+        'Không thể tạo lớp học. Vui lòng kiểm tra lại.';
+      toast.error(errMsg);
     } finally {
       setSubmitting(false);
     }
@@ -153,9 +199,11 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
   const handleCopy = (text, message) => {
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(text);
-      showToast(message);
+      toast.success(message);
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="modal-overlay" onClick={handleClose}>
@@ -163,7 +211,7 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
         {/* Modal Header */}
         <div className="modal-header">
           <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <GraduationCap size={20} style={{ color: '#e85a2c' }} />
+            <GraduationCap size={20} style={{ color: 'var(--color-primary-strong)' }} />
             <span>{createdResult ? 'Lớp học đã được tạo thành công!' : 'Tạo lớp học mới'}</span>
           </h2>
           <button className="modal-close-btn" onClick={handleClose} title="Đóng">
@@ -174,9 +222,46 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
         {/* Modal Body */}
         <div className="modal-body">
           {error && (
-            <div className="error-alert">
-              <AlertTriangle size={18} style={{ flexShrink: 0 }} />
-              <div>{error}</div>
+            <div
+              className="error-alert"
+              style={
+                error.toLowerCase().includes('hạn mức') || error.toLowerCase().includes('nâng cấp gói')
+                  ? { background: 'var(--color-warning-soft)', borderColor: '#fde68a', color: 'var(--color-warning)' }
+                  : {}
+              }
+            >
+              <AlertTriangle
+                size={18}
+                style={{
+                  flexShrink: 0,
+                  color:
+                    error.toLowerCase().includes('hạn mức') || error.toLowerCase().includes('nâng cấp gói')
+                      ? '#d97706'
+                      : '#ef4444',
+                }}
+              />
+              <div style={{ flex: 1 }}>
+                <div>{error}</div>
+                {(error.toLowerCase().includes('hạn mức') || error.toLowerCase().includes('nâng cấp gói')) && (
+                  <div style={{ marginTop: '8px' }}>
+                    <a
+                      href="/tutor/checkout"
+                      className="btn-primary-orange"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        fontSize: '13px',
+                        padding: '6px 14px',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      <span>Nâng cấp gói PRO ngay</span>
+                      <ExternalLink size={14} />
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -227,13 +312,16 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
               </div>
 
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                <a
-                  href={`/classes/${createdResult._id}`}
+                <button
+                  type="button"
                   className="btn-primary-orange"
-                  style={{ textDecoration: 'none' }}
+                  onClick={() => {
+                    handleClose();
+                    navigate(`/tutor/classes/${createdResult._id}`);
+                  }}
                 >
                   Vào không gian lớp học ngay →
-                </a>
+                </button>
                 <button type="button" className="btn-outline-gray" onClick={handleClose}>
                   Đóng
                 </button>
@@ -268,11 +356,47 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
                       <option value="">-- Chọn thỏa thuận đã chốt với phụ huynh --</option>
                       {agreements.map((item) => (
                         <option key={item._id} value={item._id}>
-                          {item.agreed_subject || 'Môn học'} - Học phí: {item.agreed_price != null ? formatVnd(item.agreed_price) : 'Thỏa thuận'} ({item.agreed_schedule || 'Chưa có lịch'})
+                          {item.derived_subject || item.agreed_subject || 'Môn học'}{item.derived_grade ? ` (${item.derived_grade})` : ''} - Phụ huynh: {item.parent_info?.full_name || 'Phụ huynh'} {item.student_info?.full_name ? `- Con: ${item.student_info.full_name}` : ''} ({item.agreed_schedule || 'Lịch thỏa thuận'})
                         </option>
                       ))}
                     </select>
                   )}
+
+                  {useAgreement && formData.agreement_id && (() => {
+                    const sel = agreements.find((a) => a._id === formData.agreement_id);
+                    if (!sel) return null;
+                    return (
+                      <div
+                        style={{
+                          marginTop: '10px',
+                          padding: '10px 14px',
+                          background: 'var(--color-surface-subtle)',
+                          border: '1px solid var(--color-border)',
+                          borderRadius: '8px',
+                          fontSize: '13px',
+                          color: 'var(--color-text)',
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        <div><strong>Môn học:</strong> {sel.derived_subject || sel.agreed_subject || 'Theo thỏa thuận'}</div>
+                        <div><strong>Khối / Trình độ:</strong> {sel.derived_grade || sel.conversation_id?.request_id?.grade_level || 'Chung'}</div>
+                        <div><strong>Phụ huynh:</strong> {sel.parent_info?.full_name || 'Phụ huynh'} {sel.parent_info?.email ? `(${sel.parent_info.email})` : ''}</div>
+                        <div>
+                          <strong>Con (Học sinh):</strong>{' '}
+                          {sel.student_info?.full_name ? (
+                            <span style={{ color: '#0f766e', fontWeight: 600 }}>
+                              {sel.student_info.full_name} {sel.student_info.email ? `(${sel.student_info.email})` : ''}
+                            </span>
+                          ) : (
+                            <span style={{ color: 'var(--color-text-muted)' }}>Được gán theo tài khoản liên kết của phụ huynh</span>
+                          )}
+                        </div>
+                        <div style={{ marginTop: '6px', fontSize: '12px', color: 'var(--color-info)' }}>
+                          * Hệ thống sẽ tự động thêm học sinh & phụ huynh vào lớp, đồng thời gửi tin nhắn kèm link mời tham gia ngay khi tạo lớp.
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               )}
 
@@ -290,7 +414,18 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
                   onChange={handleChange}
                   required
                   autoFocus
+                  style={
+                    isDuplicateName
+                      ? { borderColor: 'var(--color-error)', backgroundColor: 'var(--color-error-soft)' }
+                      : {}
+                  }
                 />
+                {isDuplicateName && (
+                  <div style={{ color: 'var(--color-error)', fontSize: '13px', marginTop: '4px', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <AlertTriangle size={14} />
+                    <span>Bạn đã có một lớp học mang tên này. Vui lòng đặt tên khác.</span>
+                  </div>
+                )}
                 <div className="form-help-text">Đặt tên rõ ràng để học sinh và phụ huynh dễ nhận biết.</div>
               </div>
 
@@ -320,7 +455,7 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
 
                 <div className="form-group">
                   <label htmlFor="grade">
-                    Khối / Trình độ <span style={{ color: '#94a3b8', fontSize: '12px' }}>(tùy chọn)</span>
+                    Khối / Trình độ <span style={{ color: 'var(--color-text-muted)', fontSize: '12px' }}>(tùy chọn)</span>
                   </label>
                   <input
                     type="text"
@@ -373,7 +508,18 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
                 <button type="button" className="btn-outline-gray" onClick={handleClose} disabled={submitting}>
                   Hủy
                 </button>
-                <button type="submit" className="btn-primary-orange" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }} disabled={submitting}>
+                <button
+                  type="submit"
+                  className="btn-primary-orange"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    opacity: isDuplicateName ? 0.6 : 1,
+                    cursor: isDuplicateName ? 'not-allowed' : 'pointer',
+                  }}
+                  disabled={submitting || isDuplicateName}
+                >
                   <Plus size={15} />
                   <span>{submitting ? 'Đang khởi tạo lớp...' : 'Tạo lớp học ngay'}</span>
                 </button>

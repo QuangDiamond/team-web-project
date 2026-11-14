@@ -2,7 +2,6 @@ import { assertRole } from '../common/utils/assertRole.js';
 import { ENUMS } from '../models/enums.js';
 import { User } from '../models/User.js';
 import { TutorProfile } from '../models/TutorProfile.js';
-import { TutorPost } from '../models/TutorPost.js';
 import { ParentRequest } from '../models/ParentRequest.js';
 import { ApplyRequest } from '../models/ApplyRequest.js';
 import { TutorInvitation } from '../models/TutorInvitation.js';
@@ -13,8 +12,6 @@ import { Classroom } from '../models/Classroom.js';
 import { Review } from '../models/Review.js';
 import { ContentReport } from '../models/ContentReport.js';
 import { AdminAuditLog } from '../models/AdminAuditLog.js';
-
-const AVATAR_COLORS = ['#F4673A', '#6366F1', '#10B981', '#F59E0B', '#0284C7', '#EC4899'];
 
 const getInitials = (name) => {
   if (!name) return 'TC';
@@ -27,25 +24,17 @@ const getInitials = (name) => {
 };
 
 /**
- * Lấy dữ liệu trang chủ công khai (danh sách gia sư tiêu biểu, đánh giá, số liệu tổng quan)
- * @returns {Promise<{ featuredTutors: Object[], testimonials: Object[], platformStats: Object }>}
+ * Lấy dữ liệu trang chủ công khai (đánh giá, số liệu tổng quan)
+ * @returns {Promise<{ testimonials: Object[], platformStats: Object }>}
  */
 export const getPublicHomeStats = async () => {
   const [
-    profiles,
-    posts,
     reviews,
     totalTutors,
     totalParents,
     totalRequests,
     confirmedAgreements,
   ] = await Promise.all([
-    TutorProfile.find({ is_complete: true })
-      .populate({ path: 'user_id', select: 'full_name email account_status avatar_url' })
-      .sort({ average_rating: -1 })
-      .limit(8)
-      .lean(),
-    TutorPost.find({ status: ENUMS.TutorPostsStatus.PUBLISHED }).lean(),
     Review.find({ status: ENUMS.ReviewsStatus.APPROVED })
       .populate({ path: 'parent_user_id', select: 'full_name role' })
       .populate({
@@ -61,53 +50,6 @@ export const getPublicHomeStats = async () => {
     TutoringAgreement.countDocuments({ status: ENUMS.TutoringAgreementsStatus.CONFIRMED }),
   ]);
 
-  const postsByProfileId = new Map();
-  for (const post of posts) {
-    const key = String(post.profile_id);
-    if (!postsByProfileId.has(key)) {
-      postsByProfileId.set(key, []);
-    }
-    postsByProfileId.get(key).push(post);
-  }
-
-  const featuredTutors = profiles
-    .filter((p) => p.user_id && p.user_id.account_status === ENUMS.UserAccountStatus.ACTIVE)
-    .slice(0, 4)
-    .map((profile, idx) => {
-      const tutorPosts = postsByProfileId.get(String(profile._id)) || [];
-      const firstPost = tutorPosts[0] || null;
-      const subjects = tutorPosts.map((tp) => tp.subject_name).filter(Boolean);
-      const subjectLabel =
-        subjects.length > 0
-          ? [...new Set(subjects)].join(' & ')
-          : profile.headline || 'Gia sư chuyên môn cao';
-
-      let priceNumber = 250000;
-      if (firstPost && firstPost.price_per_session != null) {
-        priceNumber = Number(firstPost.price_per_session.toString());
-      }
-
-      const edu =
-        profile.educations && profile.educations.length > 0
-          ? `${profile.educations[0].degree || ''} — ${profile.educations[0].school || ''}`.replace(
-              /^ — /,
-              ''
-            )
-          : profile.headline || 'Gia sư xác thực TuConnector';
-
-      return {
-        _id: String(profile._id),
-        name: profile.user_id.full_name,
-        subject: subjectLabel,
-        rating: Number(profile.average_rating || 5.0),
-        price: `${priceNumber.toLocaleString('vi-VN')}đ/buổi`,
-        color: AVATAR_COLORS[idx % AVATAR_COLORS.length],
-        initials: getInitials(profile.user_id.full_name),
-        avatar_url: profile.user_id.avatar_url || profile.avatar_url || null,
-        degree: edu,
-      };
-    });
-
   const testimonials = reviews.map((rev) => {
     const parentName = rev.parent_user_id?.full_name || 'Phụ huynh TuConnector';
     const tutorName = rev.tutor_profile_id?.user_id?.full_name || 'Gia sư';
@@ -122,7 +64,6 @@ export const getPublicHomeStats = async () => {
   });
 
   return {
-    featuredTutors,
     testimonials,
     platformStats: {
       totalTutors,
@@ -130,6 +71,91 @@ export const getPublicHomeStats = async () => {
       totalRequests,
       confirmedAgreements,
     },
+  };
+};
+
+const isWithinPeriod = (value, periodStart, periodEnd) => {
+  if (!value) {
+    return false;
+  }
+  const timestamp = new Date(value).getTime();
+  return timestamp >= periodStart.getTime() && timestamp <= periodEnd.getTime();
+};
+
+/**
+ * Tính các KPI phát sinh trong kỳ đã chọn (UC40 Normal Flow bước 2-3, SDS 9.4 StatsRepository).
+ * Khác với `kpis` (số tích lũy), các số ở đây chỉ đếm dữ liệu tạo ra trong khoảng [periodStart, periodEnd].
+ * Kỳ không có dữ liệu thì trả về 0 (E1).
+ * @param {Date} periodStart - đầu kỳ
+ * @param {Date} periodEnd - cuối kỳ (thời điểm gọi API)
+ * @param {Object[]} usersList - User (lean) gồm created_at, role
+ * @param {Object[]} paymentOrders - PaymentOrder SUCCESS (lean) gồm amount, item_type, paid_at
+ * @returns {Promise<Object>} newUsers, newUsersByRole, newRequests, applications, invitations,
+ *   conversationsOpened, confirmedAgreements, revenue, planUpgradeRevenue, creditPackRevenue
+ */
+export const getPeriodKpis = async (periodStart, periodEnd, usersList, paymentOrders) => {
+  const createdInPeriod = { created_at: { $gte: periodStart, $lte: periodEnd } };
+
+  const [newRequests, applications, invitations, conversationsOpened, confirmedAgreements] = await Promise.all([
+    ParentRequest.countDocuments(createdInPeriod),
+    ApplyRequest.countDocuments(createdInPeriod),
+    TutorInvitation.countDocuments(createdInPeriod),
+    Conversation.countDocuments({ ...createdInPeriod, type: ENUMS.ConversationsType.DIRECT }),
+    // SDS 9.4: thỏa thuận được xác nhận trong kỳ tính theo updated_at
+    TutoringAgreement.countDocuments({
+      status: ENUMS.TutoringAgreementsStatus.CONFIRMED,
+      updated_at: { $gte: periodStart, $lte: periodEnd },
+    }),
+  ]);
+
+  const newUsersByRole = {
+    [ENUMS.UserRole.PARENT]: 0,
+    [ENUMS.UserRole.TUTOR]: 0,
+    [ENUMS.UserRole.STUDENT]: 0,
+    [ENUMS.UserRole.ADMIN]: 0,
+  };
+  let newUsers = 0;
+  for (const user of usersList) {
+    if (isWithinPeriod(user.created_at, periodStart, periodEnd)) {
+      newUsers += 1;
+      if (newUsersByRole[user.role] !== undefined) {
+        newUsersByRole[user.role] += 1;
+      }
+    }
+  }
+
+  let revenue = 0;
+  let planUpgradeRevenue = 0;
+  let creditPackRevenue = 0;
+  for (const order of paymentOrders) {
+    if (!isWithinPeriod(order.paid_at, periodStart, periodEnd)) {
+      continue;
+    }
+    let amount = 0;
+    if (order.amount != null) {
+      amount = Number(order.amount.toString());
+    }
+    revenue += amount;
+    if (order.item_type === ENUMS.PaymentOrdersItemType.PLAN_UPGRADE) {
+      planUpgradeRevenue += amount;
+    } else if (order.item_type === ENUMS.PaymentOrdersItemType.CREDIT_PACK) {
+      creditPackRevenue += amount;
+    }
+  }
+
+  return {
+    from: periodStart.toISOString(),
+    to: periodEnd.toISOString(),
+    newUsers,
+    newUsersByRole,
+    newRequests,
+    applications,
+    invitations,
+    conversationsOpened,
+    confirmedAgreements,
+    revenue,
+    planUpgradeRevenue,
+    creditPackRevenue,
   };
 };
 
@@ -256,8 +282,11 @@ export const getDashboardStats = async (adminUser, period = '30d') => {
       ? Number(((confirmedConnections / totalRequests) * 100).toFixed(1))
       : 0;
 
+  const periodKpis = await getPeriodKpis(new Date(windowStart), new Date(windowEnd), usersList, paymentOrders);
+
   return {
     period,
+    periodKpis,
     kpis: {
       totalUsers,
       activeTutors,
