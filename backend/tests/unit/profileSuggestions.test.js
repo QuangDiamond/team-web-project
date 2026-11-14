@@ -26,7 +26,7 @@ test('matching requires both typed references and treats IELTS/TOEIC as distinct
   assert.equal(matchTeachingCategories(requested, selections, new Map()).length, 0);
 });
 
-test('suggestions use profile category IDs, work without posts, paginate and never read the AI cache', async (t) => {
+test('suggestions use profile category IDs, paginate and never read the AI cache', async (t) => {
   t.mock.method(ParentRequest, 'findOne', (filter) => {
     assert.equal(filter.parent_user_id, parent.id);
     return query(request);
@@ -35,7 +35,8 @@ test('suggestions use profile category IDs, work without posts, paginate and nev
   t.mock.method(GradeLevel, 'find', () => query([{ _id: gradeId, name: 'Lớp 9', is_active: true }]));
   t.mock.method(TutorProfile, 'find', (filter) => {
     assert.equal(filter.is_complete, true);
-    assert.equal(filter.$and.length, 2);
+    assert.equal(filter.$or.length, 1);
+    assert.equal(filter.$or[0].$and.length, 2);
     return query([
       { _id: 'p1', user_id: 'u1', average_rating: 4, teaching_categories: [{ type: 'subjects', category_id: subjectId }, { type: 'grades', category_id: gradeId }] },
       { _id: 'p2', user_id: 'u2', average_rating: 5, teaching_categories: [{ type: 'subjects', category_id: subjectId }, { type: 'grades', category_id: gradeId }] },
@@ -49,7 +50,7 @@ test('suggestions use profile category IDs, work without posts, paginate and nev
     return query([{ _id: 'u1', full_name: 'Tutor 1' }, { _id: 'u2', full_name: 'Tutor 2' }, { _id: 'u3', full_name: 'Tutor 3' }]);
   });
   t.mock.method(AiSuggestion, 'find', () => { throw new Error('Old cache must not be read'); });
-  t.mock.method(TutorPost, 'find', () => { throw new Error('Posts must not be required'); });
+  t.mock.method(TutorPost, 'find', () => query([]));
   const first = await getSuggestions(parent, requestId, { page: 1, limit: 1 });
   assert.equal(first.items[0].tutor.profile_id, 'p2');
   assert.equal(first.items[0].matching_categories.length, 2);
@@ -73,8 +74,37 @@ test('all matching tutors remain available beyond the first ten results', async 
   t.mock.method(Subject, 'find', () => query([{ _id: subjectId, name: 'Toán' }]));
   t.mock.method(GradeLevel, 'find', () => query([{ _id: gradeId, name: 'Lớp 9' }]));
   t.mock.method(TutorProfile, 'find', () => query(profiles));
+  t.mock.method(TutorPost, 'find', () => query([]));
   t.mock.method(User, 'find', () => query(profiles.map((item) => ({ _id: item.user_id, full_name: item.user_id }))));
   const result = await getSuggestions(parent, requestId, { page: 2, limit: 10 });
   assert.equal(result.pagination.total, 12);
   assert.equal(result.items.length, 2);
+});
+
+test('a tutor with a published post of the same subject and grade is suggested even without matching profile categories', async (t) => {
+  t.mock.method(ParentRequest, 'findOne', () => query(request));
+  t.mock.method(Subject, 'find', () => query([{ _id: subjectId, name: 'Toán' }]));
+  t.mock.method(GradeLevel, 'find', () => query([{ _id: gradeId, name: 'Lớp 9' }]));
+  t.mock.method(TutorPost, 'find', (filter) => {
+    assert.equal(filter.status, 'PUBLISHED');
+    return query([
+      { profile_id: 'pPost', subject_name: 'Toán', grade_level: 'Lớp 9' },
+      { profile_id: 'pOther', subject_name: 'Toán', grade_level: 'Lớp 12' },
+    ]);
+  });
+  t.mock.method(TutorProfile, 'find', (filter) => {
+    assert.equal(filter.$or.length, 2);
+    assert.deepEqual(filter.$or[1]._id.$in, ['pPost']);
+    return query([
+      { _id: 'pPost', user_id: 'u1', teaching_categories: [], average_rating: 3 },
+      { _id: 'pProfile', user_id: 'u2', teaching_categories: [{ type: 'subjects', category_id: subjectId }, { type: 'grades', category_id: gradeId }], average_rating: 4 },
+      { _id: 'pOther', user_id: 'u3', teaching_categories: [] },
+    ]);
+  });
+  t.mock.method(User, 'find', () => query([{ _id: 'u1', full_name: 'Post tutor' }, { _id: 'u2', full_name: 'Profile tutor' }, { _id: 'u3', full_name: 'Other' }]));
+  const result = await getSuggestions(parent, requestId, { page: 1, limit: 10 });
+  assert.deepEqual(result.items.map((item) => item.tutor.profile_id), ['pProfile', 'pPost']);
+  assert.deepEqual(result.items[0].matched_by, ['PROFILE']);
+  assert.deepEqual(result.items[1].matched_by, ['POST']);
+  assert.equal(result.items[1].matching_categories.length, 2);
 });

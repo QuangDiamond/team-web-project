@@ -105,3 +105,23 @@ export const matchTeachingCategories = (request, selections, catalog) => {
     name: maskContact(catalog.get(item.type + ':' + item.category_id)),
   }));
 };
+
+/**
+ * Một request phù hợp với gia sư khi cùng môn học VÀ cùng khối lớp, theo một trong hai nguồn:
+ * hồ sơ gia sư (cặp môn + khối trong teaching_categories) hoặc bài đăng PUBLISHED của gia sư.
+ * Dùng chung cho gợi ý gia sư cho phụ huynh và gợi ý yêu cầu cho gia sư.
+ * @param {Object} request - { subject_name, grade_level }
+ * @param {Object[]} selections - teaching_categories của hồ sơ gia sư
+ * @param {Map} catalog - tên danh mục đang bật, khóa dạng "type:id"
+ * @param {Object[]} posts - bài đăng PUBLISHED của gia sư ({ subject_name, grade_level })
+ * @returns {{ matched: boolean, profileCategories: Object[], postMatched: boolean }}
+ */
+export const matchTutorToRequest = (request, selections, catalog, posts) => {
+  const profileCategories = matchTeachingCategories(request, selections, catalog);
+  const postMatched = posts.some((post) => matchesSubjectAndGrade(request, post));
+  return {
+    matched: profileCategories.length === 2 || postMatched,
+    profileCategories: profileCategories,
+    postMatched: postMatched,
+  };
+};

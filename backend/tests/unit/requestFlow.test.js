@@ -51,6 +51,9 @@ test('parent request body: location is required for OFFLINE and HYBRID only', ()
 test('parent request body: rejects blank text, bad budget, bad mode, bad student id', () => {
   assert.equal(parentRequestBodySchema.safeParse({ ...validRequestBody, title: '  ' }).success, false);
   assert.equal(parentRequestBodySchema.safeParse({ ...validRequestBody, budget: '0' }).success, false);
+  // Ngân sách phải lớn hơn 1.000đ: đúng 1000 bị từ chối, 1001 hợp lệ
+  assert.equal(parentRequestBodySchema.safeParse({ ...validRequestBody, budget: '1000' }).success, false);
+  assert.equal(parentRequestBodySchema.safeParse({ ...validRequestBody, budget: '1001' }).success, true);
   assert.equal(parentRequestBodySchema.safeParse({ ...validRequestBody, budget: 'abc' }).success, false);
   assert.equal(parentRequestBodySchema.safeParse({ ...validRequestBody, teaching_mode: 'EITHER' }).success, false);
   assert.equal(parentRequestBodySchema.safeParse({ ...validRequestBody, student_id: 'nope' }).success, false);
