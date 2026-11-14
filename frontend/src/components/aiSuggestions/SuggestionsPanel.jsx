@@ -1,9 +1,9 @@
+import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { RefreshCw, SearchX } from 'lucide-react';
 import { useAiSuggestions } from '../../hooks/useAiSuggestions';
 import { getMyInvitations } from '../../services/invitationService';
-import Alert from '../common/Alert';
 import ListState from '../common/ListState';
 import Pagination from '../common/Pagination';
 import InviteModal from '../invitations/InviteModal';
@@ -18,7 +18,6 @@ export default function SuggestionsPanel({ requestId }) {
   // UC14: gia sư đang được mời (mở hộp thoại), các gia sư đã mời và thông báo kết quả
   const [invitingSuggestion, setInvitingSuggestion] = useState(null);
   const [invitedTutorIds, setInvitedTutorIds] = useState([]);
-  const [inviteNotice, setInviteNotice] = useState('');
 
   // Gia sư đã được mời vào request này từ trước (kể cả đã hủy, vì mỗi gia sư chỉ mời được một lần) hiện "Invited"
   useEffect(() => {
@@ -43,9 +42,15 @@ export default function SuggestionsPanel({ requestId }) {
 
   const handleInvited = (result) => {
     setInvitedTutorIds([...invitedTutorIds, invitingSuggestion.tutor.profile_id]);
-    setInviteNotice(`Đã gửi lời mời. Bạn còn ${result.remaining_credits} credits.`);
+    toast.success(`Đã gửi lời mời. Bạn còn ${result.remaining_credits} credits.`);
     setInvitingSuggestion(null);
   };
+
+  useEffect(() => {
+    if (refreshError) {
+      toast.error(refreshError.message, { id: 'suggestions-refresh-error' });
+    }
+  }, [refreshError]);
 
   const list = { loading: loading, data: data, error: error, reload: reload };
 
@@ -64,9 +69,6 @@ export default function SuggestionsPanel({ requestId }) {
           <span>{refreshing ? 'Đang làm mới...' : 'Làm mới'}</span>
         </button>
       </div>
-
-      {refreshError && <Alert type="error">{refreshError.message}</Alert>}
-      {inviteNotice && <Alert type="success">{inviteNotice}</Alert>}
 
       <ListState
         list={list}

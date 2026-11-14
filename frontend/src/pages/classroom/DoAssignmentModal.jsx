@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import {
   Eye,
@@ -18,7 +19,7 @@ import {
 import { submitAssignment } from '../../services/classroomService';
 import { useAuth } from '../../hooks/useAuth.jsx';
 
-export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmitted, showToast }) {
+export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmitted }) {
   const { user } = useAuth();
   const isParent = user?.role === 'PARENT';
   const [answers, setAnswers] = useState({});
@@ -132,14 +133,12 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
         }
       }
 
-      if (showToast) {
-        showToast('Nộp bài tập thành công!');
-      }
+      toast.success('Nộp bài tập thành công!');
       if (onSubmitted) {
         onSubmitted();
       }
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || 'Không thể nộp bài tập');
+      toast.error(err?.response?.data?.message || err.message || 'Không thể nộp bài tập');
     } finally {
       setSubmitting(false);
     }

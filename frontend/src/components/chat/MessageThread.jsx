@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -58,8 +59,6 @@ function Bubble({ message, otherName }) {
 // Khung tin nhắn bên phải (Figma: header người liên hệ, bong bóng chat hiện đại, composer chuyên nghiệp). thread: kết quả của useChatThread
 export default function MessageThread({ thread, basePath }) {
   const [draft, setDraft] = useState('');
-  const [sendError, setSendError] = useState('');
-  const [agreementNotice, setAgreementNotice] = useState('');
   const scrollRef = useRef(null);
   const stickToBottom = useRef(true);
 
@@ -88,21 +87,13 @@ export default function MessageThread({ thread, basePath }) {
     if (!content || thread.sending) {
       return;
     }
-    setSendError('');
     try {
       await thread.send(content);
       setDraft('');
       stickToBottom.current = true;
     } catch (error) {
-      setSendError(error.message);
+      toast.error(error.message);
     }
-  };
-
-  // UC16: thông báo gửi đề xuất thỏa thuận thành công, tự ẩn sau 4 giây
-  const showAgreementNotice = (message) => {
-    setSendError('');
-    setAgreementNotice(message);
-    setTimeout(() => setAgreementNotice(''), 4000);
   };
 
   const handleSubmit = (event) => {
@@ -195,8 +186,8 @@ export default function MessageThread({ thread, basePath }) {
               {!isClosed && (
                 <ChatAgreementButton
                   conversationId={conversation._id}
-                  onProposed={showAgreementNotice}
-                  onError={setSendError}
+                  onProposed={(message) => toast.success(message)}
+                  onError={(message) => toast.error(message)}
                 />
               )}
               <Link
@@ -250,17 +241,6 @@ export default function MessageThread({ thread, basePath }) {
         )}
         {items}
       </div>
-
-      {sendError && (
-        <div className="chat-send-error">
-          <Alert type="error">{sendError}</Alert>
-        </div>
-      )}
-      {agreementNotice && (
-        <div className="chat-send-error">
-          <Alert type="success">{agreementNotice}</Alert>
-        </div>
-      )}
 
       {/* Composer Input */}
       {isClosed ? (

@@ -1,8 +1,9 @@
+import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import { UserPlus, AlertTriangle, X } from 'lucide-react';
 import { addMemberToClass } from '../../services/classroomService';
 
-export default function AddMemberModal({ isOpen, onClose, classroomId, onMemberAdded, showToast }) {
+export default function AddMemberModal({ isOpen, onClose, classroomId, onMemberAdded }) {
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -32,16 +33,14 @@ export default function AddMemberModal({ isOpen, onClose, classroomId, onMemberA
       setSubmitting(true);
       setError('');
       const res = await addMemberToClass(classroomId, { email: email.trim() });
-      if (showToast) {
-        showToast('Đã thêm học viên vào lớp học thành công!');
-      }
+      toast.success('Đã thêm học viên vào lớp học thành công!');
       setEmail('');
       if (onMemberAdded) {
         onMemberAdded(res?.data);
       }
       onClose();
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || 'Không thể thêm học viên');
+      toast.error(err?.response?.data?.message || err.message || 'Không thể thêm học viên');
     } finally {
       setSubmitting(false);
     }

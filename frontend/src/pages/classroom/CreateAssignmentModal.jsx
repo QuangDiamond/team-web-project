@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -24,7 +25,6 @@ export default function CreateAssignmentModal({
   classroomGrade = '',
   studentCount = 0,
   onAssignmentCreated,
-  showToast,
 }) {
   const isEditing = Boolean(assignmentToEdit);
   const isQuestionLocked = Boolean(assignmentToEdit?.results_published_at);
@@ -208,9 +208,7 @@ export default function CreateAssignmentModal({
         setIsAiGenerated(true);
         setStatus('DRAFT'); // Luôn để DRAFT để sửa, không publish thẳng (Case 5.2)
         setShowAiPrompt(false);
-        if (showToast) {
-          showToast(`Trợ lý AI đã tạo đề bài mẫu thành công! (Còn lại ${draft.ai_quota_left} lượt trong tháng)`);
-        }
+        toast.success(`Trợ lý AI đã tạo đề bài mẫu thành công! (Còn lại ${draft.ai_quota_left} lượt trong tháng)`);
       }
     } catch (err) {
       const errStatus = err?.response?.status;
@@ -218,22 +216,11 @@ export default function CreateAssignmentModal({
       const msg = data?.message || err.message || 'Không thể tạo đề bằng AI';
 
       if (errStatus === 403 || data?.code === 'AI_QUOTA_EXCEEDED' || /hạn mức AI/i.test(msg)) {
-        // Case 5.3: Hết hạn mức tháng -> Báo hết quota, gợi ý nâng gói, giữ editor thủ công
-        setAiError({
-          type: 'QUOTA',
-          message: msg,
-        });
+        setAiError({ type: 'QUOTA', message: msg });
       } else if (errStatus === 504 || /timeout/i.test(msg)) {
-        // Case 5.4: Lỗi timeout -> Không trừ quota, giữ editor thủ công
-        setAiError({
-          type: 'TIMEOUT',
-          message: msg,
-        });
+        setAiError({ type: 'TIMEOUT', message: msg });
       } else {
-        setAiError({
-          type: 'ERROR',
-          message: msg,
-        });
+        toast.error(msg);
       }
     } finally {
       setAiLoading(false);
@@ -297,14 +284,10 @@ export default function CreateAssignmentModal({
       let res;
       if (isEditing) {
         res = await updateAssignment(assignmentToEdit._id, payload);
-        if (showToast) {
-          showToast(submitStatus === 'PUBLISHED' ? 'Đã xuất bản bài tập!' : 'Đã cập nhật bản nháp bài tập!');
-        }
+        toast.success(submitStatus === 'PUBLISHED' ? 'Đã xuất bản bài tập!' : 'Đã cập nhật bản nháp bài tập!');
       } else {
         res = await createAssignment(classroomId, payload);
-        if (showToast) {
-          showToast(submitStatus === 'PUBLISHED' ? 'Tạo và xuất bản bài tập thành công!' : 'Đã lưu bản nháp bài tập!');
-        }
+        toast.success(submitStatus === 'PUBLISHED' ? 'Tạo và xuất bản bài tập thành công!' : 'Đã lưu bản nháp bài tập!');
       }
 
       if (onAssignmentCreated) {
@@ -312,7 +295,7 @@ export default function CreateAssignmentModal({
       }
       onClose();
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || 'Không thể lưu bài tập');
+      toast.error(err?.response?.data?.message || err.message || 'Không thể lưu bài tập');
     } finally {
       setSubmitting(false);
     }

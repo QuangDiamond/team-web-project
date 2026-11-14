@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState, useEffect, useCallback } from 'react';
 import {
   Clock,
@@ -23,7 +24,6 @@ export default function TutorChangeRequestsModal({
   onClose,
   classId,
   onSuccess,
-  showToast,
 }) {
   const [requests, setRequests] = useState([]);
   const [activeTab, setActiveTab] = useState('PENDING'); // 'PENDING' | 'ALL'
@@ -63,15 +63,13 @@ export default function TutorChangeRequestsModal({
         tutor_comment: comment.trim() || undefined,
       });
 
-      if (showToast) {
-        showToast(status === 'APPROVED' ? 'Đã chấp thuận yêu cầu đổi lịch!' : 'Đã từ chối yêu cầu đổi lịch.');
-      }
+      toast.success(status === 'APPROVED' ? 'Đã chấp thuận yêu cầu đổi lịch!' : 'Đã từ chối yêu cầu đổi lịch.');
       setRejectingId(null);
       setRejectionNote('');
       await loadRequests();
       if (onSuccess) onSuccess();
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || 'Thao tác không thành công');
+      toast.error(err?.response?.data?.message || err.message || 'Thao tác không thành công');
     } finally {
       setProcessingId(null);
     }

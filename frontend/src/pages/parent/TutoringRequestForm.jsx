@@ -1,6 +1,7 @@
+import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft, CircleCheck, LoaderCircle } from 'lucide-react';
+import { ChevronLeft, LoaderCircle } from 'lucide-react';
 import { createRequest, getMyRequest, updateRequest } from '../../services/parentRequestService';
 import Alert from '../../components/common/Alert';
 import SectionCard from '../../components/common/SectionCard';
@@ -33,7 +34,6 @@ export default function TutoringRequestForm() {
   const navigate = useNavigate();
 
   const [state, setState] = useState({ loading: isEdit, error: null, request: null });
-  const [savedRequest, setSavedRequest] = useState(null);
 
   useEffect(() => {
     if (!isEdit) {
@@ -57,13 +57,19 @@ export default function TutoringRequestForm() {
   }, [id, isEdit]);
 
   const handleSubmit = async (payload) => {
-    let response;
     if (isEdit) {
-      response = await updateRequest(id, payload);
+      await updateRequest(id, payload);
     } else {
-      response = await createRequest(payload);
+      await createRequest(payload);
     }
-    setSavedRequest(response.data);
+    let successTitle = 'Đã đăng yêu cầu';
+    let successText = 'Gia sư có thể xem và ứng tuyển vào yêu cầu.';
+    if (isEdit) {
+      successTitle = 'Đã cập nhật yêu cầu';
+      successText = 'Gia sư có thể xem các thay đổi của bạn.';
+    }
+    toast.success(successTitle, { description: successText });
+    navigate('/parent/requests');
   };
 
   if (state.loading) {
@@ -80,36 +86,6 @@ export default function TutoringRequestForm() {
       <div className="page-stack">
         <Alert type="error">{state.error.message}</Alert>
         <Link to="/parent/requests" className="link">Quay lại danh sách yêu cầu</Link>
-      </div>
-    );
-  }
-
-  if (savedRequest) {
-    let successTitle = 'Đã đăng yêu cầu';
-    let successText = 'Gia sư có thể xem và ứng tuyển vào yêu cầu.';
-    if (isEdit) {
-      successTitle = 'Đã cập nhật yêu cầu';
-      successText = 'Gia sư có thể xem các thay đổi của bạn.';
-    }
-    return (
-      <div className="request-success">
-        <span className="request-success-icon" aria-hidden="true"><CircleCheck size={32} /></span>
-        <h2 className="request-success-title">{successTitle}</h2>
-        <p className="item-meta">{successText}</p>
-        <div className="item-actions">
-          <button type="button" className="btn btn-primary btn-sm" onClick={() => navigate('/parent/requests')}>
-            Xem yêu cầu của tôi
-          </button>
-          {!isEdit && (
-            <button
-              type="button"
-              className="btn btn-outline btn-sm"
-              onClick={() => navigate(`/parent/requests/${savedRequest._id}/suggestions`)}
-            >
-              Xem gia sư được gợi ý
-            </button>
-          )}
-        </div>
       </div>
     );
   }

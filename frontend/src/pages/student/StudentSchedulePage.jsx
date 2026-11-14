@@ -69,12 +69,6 @@ export default function StudentSchedulePage() {
   const [error, setError] = useState('');
   const [selectedSession, setSelectedSession] = useState(null);
   const [changeRequestSession, setChangeRequestSession] = useState(null);
-  const [toastMessage, setToastMessage] = useState('');
-
-  const showToast = (msg) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(''), 3000);
-  };
 
   const days = useMemo(() => getWeekDays(weekStart), [weekStart]);
   const today = useMemo(() => new Date(), []);
@@ -739,35 +733,11 @@ export default function StudentSchedulePage() {
         isOpen={Boolean(changeRequestSession)}
         onClose={() => setChangeRequestSession(null)}
         session={changeRequestSession}
-        showToast={showToast}
         onSuccess={() => {
           fetchSchedule();
         }}
       />
 
-      {/* Toast thông báo */}
-      {toastMessage && (
-        <div
-          style={{
-            position: 'fixed',
-            bottom: '24px',
-            right: '24px',
-            background: '#0f172a',
-            color: '#ffffff',
-            padding: '12px 20px',
-            borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            zIndex: 9999,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            fontSize: '14px',
-          }}
-        >
-          <CheckCircle2 size={16} color="#4ade80" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
     </div>
   );
 }

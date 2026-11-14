@@ -1561,38 +1561,6 @@ body {
   }
 }
 
-/* ---------- Màn "đã lưu / đã đăng" sau khi gửi form (dùng chung cho request, bài đăng...) ---------- */
-.request-success {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  max-width: 480px;
-  margin: 24px auto;
-  padding: 32px 24px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-white);
-  text-align: center;
-}
-
-.request-success-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--color-success-soft);
-  color: var(--color-success);
-}
-
-.request-success-title {
-  margin: 8px 0 0;
-  font-size: 20px;
-  font-weight: 800;
-}
-
 /* ---------- Public Layout (Header & Footer) ---------- */
 .app-layout {
   min-height: 100vh;

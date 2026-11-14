@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
 import {
@@ -82,7 +83,6 @@ export default function CreateAssignmentPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [toastMessage, setToastMessage] = useState('');
 
   const formatDateForInput = (dateStr) => {
     if (!dateStr) return '';
@@ -90,11 +90,6 @@ export default function CreateAssignmentPage() {
     if (isNaN(d.getTime())) return '';
     const pad = (n) => String(n).padStart(2, '0');
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  };
-
-  const showToast = (msg) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(''), 3000);
   };
 
   // Load classroom, topics, materials, and existing assignment (if editing)
@@ -638,7 +633,7 @@ export default function CreateAssignmentPage() {
         setIsAiGenerated(true);
         setStatus('DRAFT');
         setShowAiPrompt(false);
-        showToast(`Trợ lý AI đã tạo đề bài mẫu thành công! (Còn lại ${draft.ai_quota_left} lượt trong tháng)`);
+        toast.success(`Trợ lý AI đã tạo đề bài mẫu thành công! (Còn lại ${draft.ai_quota_left} lượt trong tháng)`);
       }
     } catch (err) {
       const errStatus = err?.response?.status;
@@ -650,7 +645,7 @@ export default function CreateAssignmentPage() {
       } else if (errStatus === 504 || /timeout/i.test(msg)) {
         setAiError({ type: 'TIMEOUT', message: msg });
       } else {
-        setAiError({ type: 'ERROR', message: msg });
+        toast.error(msg);
       }
     } finally {
       setAiLoading(false);
@@ -723,7 +718,7 @@ export default function CreateAssignmentPage() {
         },
       });
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || 'Không thể lưu bài tập');
+      toast.error(err?.response?.data?.message || err.message || 'Không thể lưu bài tập');
     } finally {
       setSubmitting(false);
     }
@@ -740,11 +735,6 @@ export default function CreateAssignmentPage() {
 
   return (
     <div className="classroom-container" style={{ maxWidth: '960px', margin: '0 auto', padding: '24px 16px' }}>
-      {toastMessage && (
-        <div className="copy-toast" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <Sparkles size={16} /> {toastMessage}
-        </div>
-      )}
 
       {/* Breadcrumb & Navigation */}
       <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>

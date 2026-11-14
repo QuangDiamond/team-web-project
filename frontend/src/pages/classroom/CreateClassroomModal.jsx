@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GraduationCap, AlertTriangle, Check, X, Plus, ExternalLink } from 'lucide-react';
@@ -28,7 +29,6 @@ export default function CreateClassroomModal({
   existingClassrooms = [],
   onClose,
   onClassroomCreated,
-  showToast,
 }) {
   const navigate = useNavigate();
   const { subjectNames, gradeNames, loading: loadingCategories, error: categoryError } = useSubjectNames();
@@ -181,7 +181,7 @@ export default function CreateClassroomModal({
       if (onClassroomCreated) {
         onClassroomCreated(newClassroom);
       }
-      showToast('Khởi tạo lớp học thành công!');
+      toast.success('Khởi tạo lớp học thành công!');
       handleClose();
       navigate(`/tutor/classes/${newClassroom._id}`);
     } catch (err) {
@@ -190,7 +190,7 @@ export default function CreateClassroomModal({
         err?.rawMessage ||
         err.message ||
         'Không thể tạo lớp học. Vui lòng kiểm tra lại.';
-      setError(errMsg);
+      toast.error(errMsg);
     } finally {
       setSubmitting(false);
     }
@@ -199,7 +199,7 @@ export default function CreateClassroomModal({
   const handleCopy = (text, message) => {
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(text);
-      showToast(message);
+      toast.success(message);
     }
   };
 

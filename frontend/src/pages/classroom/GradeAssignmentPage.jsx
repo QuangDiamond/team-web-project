@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
@@ -9,7 +10,6 @@ import {
   Share2,
   Loader2,
   FileText,
-  Sparkles,
   Award,
 } from 'lucide-react';
 import {
@@ -36,17 +36,11 @@ export default function GradeAssignmentPage() {
   const [submitting, setSubmitting] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [error, setError] = useState('');
-  const [toastMessage, setToastMessage] = useState('');
 
   // Form states for the selected student
   const [finalScore, setFinalScore] = useState('');
   const [feedback, setFeedback] = useState('');
   const [answersFeedback, setAnswersFeedback] = useState({});
-
-  const showToast = (msg) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(''), 3500);
-  };
 
   const initAnswersFb = (sub) => {
     const map = {};
@@ -164,7 +158,7 @@ export default function GradeAssignmentPage() {
         answers_feedback: answersFbPayload,
       });
 
-      showToast('Đã lưu và công bố điểm cho học sinh thành công!');
+      toast.success('Đã lưu và công bố điểm cho học sinh thành công!');
 
       // Cập nhật lại danh sách submissions
       setSubmissions((prev) =>
@@ -172,7 +166,7 @@ export default function GradeAssignmentPage() {
       );
       setSelectedSub((prev) => ({ ...prev, ...res.data }));
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || 'Lỗi khi lưu điểm');
+      toast.error(err?.response?.data?.message || err.message || 'Lỗi khi lưu điểm');
     } finally {
       setSubmitting(false);
     }
@@ -188,7 +182,7 @@ export default function GradeAssignmentPage() {
       setError('');
 
       await publishAssignmentResults(assignmentId);
-      showToast('Đã công bố điểm cho toàn bộ học sinh và phụ huynh trong lớp thành công!');
+      toast.success('Đã công bố điểm cho toàn bộ học sinh và phụ huynh trong lớp thành công!');
 
       // Cập nhật lại trạng thái bài tập
       setAssignment((prev) => ({
@@ -196,7 +190,7 @@ export default function GradeAssignmentPage() {
         results_published_at: new Date().toISOString(),
       }));
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || 'Lỗi khi công bố điểm cho cả lớp');
+      toast.error(err?.response?.data?.message || err.message || 'Lỗi khi công bố điểm cho cả lớp');
     } finally {
       setPublishing(false);
     }
@@ -234,13 +228,6 @@ export default function GradeAssignmentPage() {
 
   return (
     <div className="grade-page-container">
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className="copy-toast" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Sparkles size={16} />
-          <span>{toastMessage}</span>
-        </div>
-      )}
 
       {/* Top Bar: Navigation & Quick Actions */}
       <div className="grade-top-bar">

@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import { UserCheck, Clock, AlertCircle, Loader2, X, Check, CheckCircle2, UserX } from 'lucide-react';
 import { getClassMembers, markAttendance } from '../../services/classroomService';
@@ -8,7 +9,6 @@ export default function AttendanceModal({
   session,
   classId,
   onSuccess,
-  showToast,
 }) {
   const [students, setStudents] = useState([]);
   const [attendanceMap, setAttendanceMap] = useState({}); // { [studentId]: { status, comment } }
@@ -111,11 +111,11 @@ export default function AttendanceModal({
       setSubmitting(true);
       setError('');
       const res = await markAttendance(classId, session._id, { items });
-      if (showToast) showToast('Điểm danh buổi học thành công!');
+      toast.success('Điểm danh buổi học thành công!');
       if (onSuccess) onSuccess(res?.data);
       onClose();
     } catch (err) {
-      setError(err.message || 'Lỗi lưu kết quả điểm danh');
+      toast.error(err.message || 'Lỗi lưu kết quả điểm danh');
     } finally {
       setSubmitting(false);
     }

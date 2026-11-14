@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import {
   Pencil,
@@ -20,7 +21,6 @@ export default function ClassroomAnnouncementsTab({
   announcements,
   setAnnouncements,
   isOwner,
-  showToast,
 }) {
   const [announcementContent, setAnnouncementContent] = useState('');
   const [isPinned, setIsPinned] = useState(false);
@@ -42,9 +42,9 @@ export default function ClassroomAnnouncementsTab({
       setAnnouncements((prev) => [res?.data, ...prev]);
       setAnnouncementContent('');
       setIsPinned(false);
-      showToast('Đã đăng thông báo lên bảng tin!');
+      toast.success('Đã đăng thông báo lên bảng tin!');
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || 'Không thể đăng thông báo');
+      toast.error(err?.response?.data?.message || err.message || 'Không thể đăng thông báo');
     } finally {
       setPostingAnnouncement(false);
     }
@@ -59,9 +59,9 @@ export default function ClassroomAnnouncementsTab({
           .map((a) => (a._id === announcementId ? { ...a, is_pinned: res?.data?.is_pinned } : a))
           .sort((a, b) => (b.is_pinned ? 1 : 0) - (a.is_pinned ? 1 : 0))
       );
-      showToast(res?.data?.is_pinned ? 'Đã ghim thông báo lên đầu trang!' : 'Đã bỏ ghim thông báo');
+      toast.success(res?.data?.is_pinned ? 'Đã ghim thông báo lên đầu trang!' : 'Đã bỏ ghim thông báo');
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || 'Lỗi khi ghim thông báo');
+      toast.error(err?.response?.data?.message || err.message || 'Lỗi khi ghim thông báo');
     }
   };
 
@@ -71,9 +71,9 @@ export default function ClassroomAnnouncementsTab({
     try {
       await deleteClassAnnouncement(classroomId, announcementId);
       setAnnouncements((prev) => prev.filter((a) => a._id !== announcementId));
-      showToast('Đã xóa thông báo');
+      toast.success('Đã xóa thông báo');
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || 'Lỗi khi xóa');
+      toast.error(err?.response?.data?.message || err.message || 'Lỗi khi xóa');
     }
   };
 
@@ -86,9 +86,9 @@ export default function ClassroomAnnouncementsTab({
         prev.map((a) => (a._id === announcementId ? { ...a, content: res?.data?.content } : a))
       );
       setEditingAnnouncementId(null);
-      showToast('Đã cập nhật thông báo');
+      toast.success('Đã cập nhật thông báo');
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || 'Lỗi khi cập nhật');
+      toast.error(err?.response?.data?.message || err.message || 'Lỗi khi cập nhật');
     }
   };
 

@@ -1,8 +1,8 @@
+import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail } from 'lucide-react';
 import AuthLayout from '../../components/layout/AuthLayout';
-import Alert from '../../components/common/Alert';
 import FormInput from '../../components/common/FormInput';
 import { forgotPassword } from '../../services/authService';
 import { validateEmail, toFieldErrors, focusFirstInvalidField } from '../../utils/authValidators';
@@ -11,7 +11,6 @@ import '../../styles/passwordRecovery.css';
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [formError, setFormError] = useState('');
   const [sent, setSent] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -27,7 +26,7 @@ export default function ForgotPassword() {
     if (submitting || secondsLeft > 0) return;
     const error = validateEmail(email);
     setEmailError(error);
-    setFormError('');
+
     if (error) {
       focusFirstInvalidField(['email'], { email: error });
       return;
@@ -36,10 +35,11 @@ export default function ForgotPassword() {
     try {
       await forgotPassword({ email: email.trim() });
       setSent(true);
+      toast.success('Nếu email đã được đăng ký và tài khoản đủ điều kiện, bạn sẽ nhận được liên kết đặt lại mật khẩu. Vui lòng kiểm tra hộp thư đến và thư rác. Liên kết có hiệu lực trong 15 phút.');
       setSecondsLeft(60);
     } catch (error) {
       setEmailError(toFieldErrors(error.errors).email || '');
-      setFormError(error.message);
+      toast.error(error.message);
     } finally {
       setSubmitting(false);
     }
@@ -55,8 +55,7 @@ export default function ForgotPassword() {
         <span className="password-recovery-icon" aria-hidden="true"><Mail size={26} /></span>
         <h1 className="auth-title">Bạn quên mật khẩu?</h1>
         <p className="auth-subtitle">Nhập email của tài khoản để nhận liên kết đặt lại mật khẩu an toàn.</p>
-        {sent && <Alert type="success">Nếu email đã được đăng ký và tài khoản đủ điều kiện, bạn sẽ nhận được liên kết đặt lại mật khẩu. Vui lòng kiểm tra hộp thư đến và thư rác. Liên kết có hiệu lực trong 15 phút.</Alert>}
-        {formError && <Alert type="error">{formError}</Alert>}
+
         <form onSubmit={handleSubmit} noValidate>
           <FormInput id="email" label="Địa chỉ email" type="email" autoComplete="email" required
             value={email} onChange={(event) => { setEmail(event.target.value); setEmailError(''); }}

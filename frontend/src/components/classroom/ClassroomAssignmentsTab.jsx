@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import {
   Plus,
@@ -31,7 +32,7 @@ export default function ClassroomAssignmentsTab({
 }) {
   const handleCreateClick = () => {
     if (studentCount === 0) {
-      alert('Lớp học phải có ít nhất một học sinh tham gia để có thể tạo và giao bài tập.');
+      toast.error('Lớp học phải có ít nhất một học sinh tham gia để có thể tạo và giao bài tập.');
       return;
     }
     if (onOpenCreateAssignment) {

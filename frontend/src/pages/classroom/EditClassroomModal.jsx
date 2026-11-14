@@ -1,8 +1,9 @@
+import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import { Settings, AlertTriangle, X } from 'lucide-react';
 import { updateClassroom } from '../../services/classroomService';
 
-export default function EditClassroomModal({ isOpen, onClose, classroom, onUpdated, showToast }) {
+export default function EditClassroomModal({ isOpen, onClose, classroom, onUpdated }) {
   const [formData, setFormData] = useState({
     name: '',
     subject: '',
@@ -79,15 +80,13 @@ export default function EditClassroomModal({ isOpen, onClose, classroom, onUpdat
     try {
       setSubmitting(true);
       const res = await updateClassroom(classroom._id, formData);
-      if (showToast) {
-        showToast('Cập nhật thông tin lớp học thành công!');
-      }
+      toast.success('Cập nhật thông tin lớp học thành công!');
       if (onUpdated) {
         onUpdated(res?.data || { ...classroom, ...formData });
       }
       onClose();
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || 'Không thể cập nhật lớp học');
+      toast.error(err?.response?.data?.message || err.message || 'Không thể cập nhật lớp học');
     } finally {
       setSubmitting(false);
     }

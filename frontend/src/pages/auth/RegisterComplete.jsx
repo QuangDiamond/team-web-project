@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
@@ -23,7 +24,6 @@ export default function RegisterComplete() {
   const [role, setRole] = useState('');
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [errors, setErrors] = useState({});
-  const [formError, setFormError] = useState('');
   const [ticketExpired, setTicketExpired] = useState(false);
   const [emailTaken, setEmailTaken] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -39,7 +39,6 @@ export default function RegisterComplete() {
   };
 
   const handleSubmit = async () => {
-    setFormError('');
 
     const newErrors = {
       role: validateRole(role),
@@ -76,7 +75,7 @@ export default function RegisterComplete() {
     if (error.status === 422 && error.errors) {
       setErrors(toFieldErrors(error.errors));
     }
-    setFormError(error.message);
+    toast.error(error.message);
   };
 
   // Ticket hỏng / hết hạn: phải đăng nhập Google lại để lấy ticket mới
@@ -100,8 +99,6 @@ export default function RegisterComplete() {
         Email này đã được đăng ký. <Link to="/login" className="link">Đăng nhập</Link>
       </Alert>
     );
-  } else if (formError) {
-    alert = <Alert type="error">{formError}</Alert>;
   }
 
   return (

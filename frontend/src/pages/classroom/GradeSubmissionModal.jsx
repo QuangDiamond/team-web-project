@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import {
   BarChart3,
@@ -13,7 +14,7 @@ import {
 } from 'lucide-react';
 import { getSubmissionsForAssignment, gradeSubmission, publishAssignmentResults } from '../../services/classroomService';
 
-export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGraded, showToast }) {
+export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGraded }) {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedSub, setSelectedSub] = useState(null);
@@ -119,9 +120,7 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
         answers_feedback: answersFbPayload,
       });
 
-      if (showToast) {
-        showToast('Chấm điểm bài nộp thành công! Đã gửi thông báo cho học viên và phụ huynh liên kết.');
-      }
+      toast.success('Chấm điểm bài nộp thành công! Đã gửi thông báo cho học viên và phụ huynh liên kết.');
       // Cập nhật lại list
       setSubmissions((prev) =>
         prev.map((s) => (s._id === selectedSub._id ? { ...s, ...res.data } : s))
@@ -129,7 +128,7 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
       setSelectedSub((prev) => ({ ...prev, ...res.data }));
       if (onGraded) onGraded();
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || 'Lỗi khi lưu điểm');
+      toast.error(err?.response?.data?.message || err.message || 'Lỗi khi lưu điểm');
     } finally {
       setSubmitting(false);
     }
@@ -140,13 +139,11 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
       setSubmitting(true);
       setError('');
       await publishAssignmentResults(assignment._id);
-      if (showToast) {
-        showToast('Công bố kết quả bài tập cho cả lớp thành công! Toàn bộ học sinh và phụ huynh đã nhận được thông báo.');
-      }
+      toast.success('Công bố kết quả bài tập cho cả lớp thành công! Toàn bộ học sinh và phụ huynh đã nhận được thông báo.');
       if (onGraded) onGraded();
       onClose();
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || 'Lỗi khi công bố kết quả');
+      toast.error(err?.response?.data?.message || err.message || 'Lỗi khi công bố kết quả');
     } finally {
       setSubmitting(false);
     }
