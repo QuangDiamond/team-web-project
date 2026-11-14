@@ -1,9 +1,63 @@
 import { toast } from 'sonner';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Settings, AlertTriangle, X } from 'lucide-react';
 import { updateClassroom } from '../../services/classroomService';
+import { useSubjectNames } from '../../hooks/useSubjectNames';
+import Combobox from '../../components/common/Combobox';
+
+const DEFAULT_SUBJECTS = [
+  'Toán',
+  'Ngữ văn',
+  'Tiếng Anh',
+  'Vật lý',
+  'Hóa học',
+  'Sinh học',
+  'Lịch sử',
+  'Địa lý',
+  'Tin học',
+  'Khoa học tự nhiên',
+  'Lịch sử và Địa lý',
+  'Giáo dục công dân',
+  'Tiếng Pháp',
+  'Tiếng Nhật',
+  'Tiếng Trung',
+  'Tiếng Hàn',
+];
+
+const DEFAULT_GRADES = [
+  'Mầm non',
+  'Lớp 1',
+  'Lớp 2',
+  'Lớp 3',
+  'Lớp 4',
+  'Lớp 5',
+  'Lớp 6',
+  'Lớp 7',
+  'Lớp 8',
+  'Lớp 9',
+  'Lớp 10',
+  'Lớp 11',
+  'Lớp 12',
+  'Ôn thi vào 10',
+  'Ôn thi Đại học',
+  'IELTS',
+  'TOEIC',
+  'Tiếng Anh giao tiếp',
+  'Đại học / Cao đẳng',
+];
 
 export default function EditClassroomModal({ isOpen, onClose, classroom, onUpdated }) {
+  const { subjectNames, gradeNames } = useSubjectNames();
+
+  const subjectOptions = useMemo(() => {
+    const list = Array.isArray(subjectNames) && subjectNames.length > 0 ? subjectNames : DEFAULT_SUBJECTS;
+    return Array.from(new Set([...list, ...DEFAULT_SUBJECTS]));
+  }, [subjectNames]);
+
+  const gradeOptions = useMemo(() => {
+    const list = Array.isArray(gradeNames) && gradeNames.length > 0 ? gradeNames : DEFAULT_GRADES;
+    return Array.from(new Set([...list, ...DEFAULT_GRADES]));
+  }, [gradeNames]);
   const [formData, setFormData] = useState({
     name: '',
     subject: '',
@@ -130,49 +184,33 @@ export default function EditClassroomModal({ isOpen, onClose, classroom, onUpdat
 
             <div className="form-row">
               <div className="form-group">
-                <label>
+                <label htmlFor="edit-subject">
                   Môn học <span className="required">*</span>
                 </label>
-                <select name="subject" value={formData.subject} onChange={handleChange} required>
-                  <option value="">-- Chọn môn học --</option>
-                  <option value="Toán học">Toán học</option>
-                  <option value="Vật lý">Vật lý</option>
-                  <option value="Hóa học">Hóa học</option>
-                  <option value="Tiếng Anh">Tiếng Anh</option>
-                  <option value="Ngữ văn">Ngữ văn</option>
-                  <option value="Sinh học">Sinh học</option>
-                  <option value="Lịch sử">Lịch sử</option>
-                  <option value="Địa lý">Địa lý</option>
-                  <option value="Tin học">Tin học</option>
-                  <option value="Khác">Môn khác</option>
-                </select>
+                <Combobox
+                  id="edit-subject"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={(val) => setFormData((prev) => ({ ...prev, subject: val }))}
+                  options={subjectOptions}
+                  placeholder="Chọn hoặc nhập môn học..."
+                  required
+                />
               </div>
 
               <div className="form-group">
-                <label>
+                <label htmlFor="edit-grade">
                   Khối lớp / Trình độ <span className="required">*</span>
                 </label>
-                <select name="grade" value={formData.grade} onChange={handleChange} required>
-                  <option value="">-- Chọn khối lớp --</option>
-                  <option value="Mầm non / Tiền tiểu học">Mầm non / Tiền tiểu học</option>
-                  <option value="Lớp 1">Lớp 1</option>
-                  <option value="Lớp 2">Lớp 2</option>
-                  <option value="Lớp 3">Lớp 3</option>
-                  <option value="Lớp 4">Lớp 4</option>
-                  <option value="Lớp 5">Lớp 5</option>
-                  <option value="Lớp 6">Lớp 6</option>
-                  <option value="Lớp 7">Lớp 7</option>
-                  <option value="Lớp 8">Lớp 8</option>
-                  <option value="Lớp 9">Lớp 9</option>
-                  <option value="Lớp 10">Lớp 10</option>
-                  <option value="Lớp 11">Lớp 11</option>
-                  <option value="Lớp 12">Lớp 12</option>
-                  <option value="Ôn thi Đại học">Ôn thi Đại học</option>
-                  <option value="Đại học">Đại học / Cao đẳng</option>
-                  <option value="Luyện thi chứng chỉ">Luyện thi chứng chỉ</option>
-                  <option value="Người đi làm">Người đi làm</option>
-                  <option value="Chung">Chung</option>
-                </select>
+                <Combobox
+                  id="edit-grade"
+                  name="grade"
+                  value={formData.grade}
+                  onChange={(val) => setFormData((prev) => ({ ...prev, grade: val }))}
+                  options={gradeOptions}
+                  placeholder="Chọn hoặc nhập khối lớp, trình độ..."
+                  required
+                />
               </div>
             </div>
 
