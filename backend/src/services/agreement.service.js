@@ -9,9 +9,25 @@ import { TutorProfile } from '../models/TutorProfile.js';
 import { Notification } from '../models/Notification.js';
 import { Review } from '../models/Review.js';
 
+// Nhãn trạng thái thỏa thuận hiển thị cho người dùng (cùng cách gọi với frontend ConnectionCard.jsx)
+const AGREEMENT_STATUS_LABELS = {
+  DRAFT: 'Bản nháp',
+  PENDING: 'Chờ xác nhận',
+  CONFIRMED: 'Đã xác nhận',
+  REJECTED: 'Từ chối',
+  CANCELLED: 'Đã hủy',
+};
+
+const getAgreementStatusLabel = (status) => {
+  if (AGREEMENT_STATUS_LABELS[status]) {
+    return AGREEMENT_STATUS_LABELS[status];
+  }
+  return status;
+};
+
 const assertParentOrTutor = (user) => {
   if (!user || (user.role !== ENUMS.UserRole.PARENT && user.role !== ENUMS.UserRole.TUTOR)) {
-    throw new AppError('Chỉ tài khoản Phụ huynh hoặc Gia sư mới có quyền truy cập thỏa thuận kết nối (UC16).', 403);
+    throw new AppError('Chỉ tài khoản Phụ huynh hoặc Gia sư mới có quyền truy cập thỏa thuận kết nối.', 403);
   }
 };
 
@@ -20,7 +36,7 @@ const assertParticipant = (user, parentUserId, tutorUserId) => {
   const isParent = parentUserId && String(parentUserId) === currentId;
   const isTutor = tutorUserId && String(tutorUserId) === currentId;
   if (!isParent && !isTutor) {
-    throw new AppError('Bạn không phải thành viên của phòng hội thoại này (BR-14).', 403);
+    throw new AppError('Bạn không phải thành viên của phòng hội thoại này.', 403);
   }
 };
 
@@ -239,12 +255,12 @@ export const proposeAgreement = async (user, payload) => {
   assertParticipant(user, parentUserId, tutorUserId);
 
   if (!conversation.is_active) {
-    throw new AppError('Phòng chat phải đang ở trạng thái hoạt động để có thể đề xuất xác nhận thỏa thuận (PRE-1).', 400);
+    throw new AppError('Phòng chat phải đang ở trạng thái hoạt động để có thể đề xuất xác nhận thỏa thuận.', 400);
   }
 
   // UC16 Exception E1: Request already closed
   if (conversation.request_id && conversation.request_id.status === ENUMS.ParentRequestsStatus.CLOSED) {
-    throw new AppError('Yêu cầu tìm gia sư này đã đóng (E1). Không thể tạo thỏa thuận mới.', 409);
+    throw new AppError('Yêu cầu tìm gia sư này đã đóng. Không thể tạo thỏa thuận mới.', 409);
   }
 
   const priceNum = Number(agreedPrice || conversation.request_id?.budget || 250000);
@@ -333,10 +349,13 @@ export const confirmAgreement = async (user, agreementId, { action }) => {
       agreement.status !== ENUMS.TutoringAgreementsStatus.PENDING &&
       agreement.status !== ENUMS.TutoringAgreementsStatus.DRAFT
     ) {
-      throw new AppError(`Chỉ có thể hủy đề xuất đang ở trạng thái PENDING hoặc DRAFT (hiện tại: ${agreement.status}).`, 409);
+      throw new AppError(
+        `Chỉ có thể hủy đề xuất đang chờ xác nhận hoặc bản nháp (hiện tại: ${getAgreementStatusLabel(agreement.status)}).`,
+        409
+      );
     }
     if (proposerId !== currentUserId) {
-      throw new AppError('Chỉ người tạo đề xuất mới có quyền hủy bỏ đề xuất thỏa thuận này (UC16 A3).', 403);
+      throw new AppError('Chỉ người tạo đề xuất mới có quyền hủy bỏ đề xuất thỏa thuận này.', 403);
     }
     const cancelledAgreement = await changeAgreementStatus(
       agreement._id,
@@ -347,13 +366,16 @@ export const confirmAgreement = async (user, agreementId, { action }) => {
     return {
       success: true,
       action: 'CANCEL',
-      message: 'Đã hủy đề xuất thỏa thuận thành công (UC16 A3).',
+      message: 'Đã hủy đề xuất thỏa thuận thành công.',
       agreement: cancelledAgreement,
     };
   }
 
   if (agreement.status !== ENUMS.TutoringAgreementsStatus.PENDING) {
-    throw new AppError(`Chỉ có thể phản hồi thỏa thuận đang ở trạng thái PENDING (hiện tại: ${agreement.status}).`, 409);
+    throw new AppError(
+      `Chỉ có thể phản hồi thỏa thuận đang chờ xác nhận (hiện tại: ${getAgreementStatusLabel(agreement.status)}).`,
+      409
+    );
   }
 
   // SDS 3.7: Only the other side can CONFIRM or REJECT
@@ -402,7 +424,7 @@ export const confirmAgreement = async (user, agreementId, { action }) => {
   // UC16 E1: request đã đóng (ví dụ một thỏa thuận khác vừa được xác nhận) thì không cho xác nhận nữa
   const request = conv?.request_id;
   if (request && request.status === ENUMS.ParentRequestsStatus.CLOSED) {
-    throw new AppError('Yêu cầu tìm gia sư này đã đóng (E1). Không thể xác nhận thỏa thuận.', 409);
+    throw new AppError('Yêu cầu tìm gia sư này đã đóng. Không thể xác nhận thỏa thuận.', 409);
   }
 
   const confirmedAgreement = await changeAgreementStatus(
@@ -426,7 +448,7 @@ export const confirmAgreement = async (user, agreementId, { action }) => {
         { _id: agreement._id },
         { $set: { status: ENUMS.TutoringAgreementsStatus.PENDING, accepted_by_user_id: null } }
       );
-      throw new AppError('Yêu cầu tìm gia sư này đã đóng (E1). Không thể xác nhận thỏa thuận.', 409);
+      throw new AppError('Yêu cầu tìm gia sư này đã đóng. Không thể xác nhận thỏa thuận.', 409);
     }
 
     const relatedConversationIds = await Conversation.find({ request_id: requestId }).distinct('_id');
@@ -498,7 +520,7 @@ export const confirmAgreement = async (user, agreementId, { action }) => {
   return {
     success: true,
     action: 'CONFIRM',
-    message: 'Thỏa thuận kết nối dạy học đã được xác nhận thành công (POST-1)! Bài yêu cầu đã được đóng.',
+    message: 'Thỏa thuận kết nối dạy học đã được xác nhận thành công! Bài yêu cầu đã được đóng.',
     agreement: confirmedAgreement,
     canRate: true,
     canCreateClassroom: true,
@@ -529,7 +551,7 @@ export const rateTutor = async (user, agreementId, payload) => {
 
   const parentUserId = agreement.conversation_id?.parent_user_id;
   if (parentUserId && String(parentUserId) !== String(user.id)) {
-    throw new AppError('Chỉ phụ huynh sở hữu thỏa thuận này mới có quyền đánh giá gia sư (BR-07).', 403);
+    throw new AppError('Chỉ phụ huynh sở hữu thỏa thuận này mới có quyền đánh giá gia sư.', 403);
   }
 
   const existing = await Review.findOne({ agreement_id: agreement._id }).lean();
