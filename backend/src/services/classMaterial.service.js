@@ -6,7 +6,7 @@ import { Assignment } from '../models/Assignment.js';
 import { ClassMaterial } from '../models/ClassMaterial.js';
 import { ENUMS } from '../models/enums.js';
 import { getTutorProfileOrThrow } from './tutorContext.service.js';
-import { getOwnedActiveClassroom } from './topic.service.js';
+import { getOwnedActiveClassroom, getStudentActiveClassroom } from './topic.service.js';
 import { uploadClassMaterialToCloudinary, deleteClassMaterialFromCloudinary } from '../config/cloudinary.js';
 
 /**
@@ -106,6 +106,49 @@ const getClassMaterialOrThrow = async (classroom, materialId) => {
 export const getClassMaterials = async (user, classId, { page, limit }) => {
   const classroom = await getOwnedActiveClassroom(user, classId);
   const filter = { class_id: classroom._id };
+  const [materials, total] = await Promise.all([
+    ClassMaterial.find(filter)
+      .sort({ created_at: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean(),
+    ClassMaterial.countDocuments(filter),
+  ]);
+
+  return {
+    items: materials.map((material) => ({
+      _id: String(material._id),
+      class_id: String(material.class_id),
+      topic_id: material.topic_id ? String(material.topic_id) : null,
+      title: material.title,
+      material_type: material.material_type,
+      file_url: material.file_url,
+      file_size: material.file_size,
+      visibility: material.visibility,
+      created_at: material.created_at,
+    })),
+    pagination: buildPagination(page, limit, total),
+  };
+};
+
+/**
+ * Get student-visible materials from a classroom the student actively belongs to
+ * @param {Object} user - Authenticated student { id, role }
+ * @param {string} classId - Classroom ID
+ * @param {{ page: number, limit: number }} query - Pagination options
+ * @returns {Promise<{ items: Object[], pagination: Object }>}
+ */
+export const getStudentClassMaterials = async (user, classId, { page, limit }) => {
+  const classroom = await getStudentActiveClassroom(user, classId);
+  const filter = {
+    class_id: classroom._id,
+    visibility: {
+      $in: [
+        ENUMS.ClassMaterialsVisibility.ALL_MEMBERS,
+        ENUMS.ClassMaterialsVisibility.STUDENTS_ONLY,
+      ],
+    },
+  };
   const [materials, total] = await Promise.all([
     ClassMaterial.find(filter)
       .sort({ created_at: -1 })

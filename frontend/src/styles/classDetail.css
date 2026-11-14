@@ -259,6 +259,33 @@
   font-weight: 600;
 }
 
+.class-topic-filter-button {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.class-topic-filter-button:hover,
+.class-topic-filter-button.is-selected {
+  color: var(--color-primary-strong);
+  font-weight: 700;
+}
+
+.class-topic-filter-button:focus-visible {
+  border-radius: 3px;
+  outline: 2px solid var(--color-primary-strong);
+  outline-offset: 3px;
+}
+
 .class-topic-list li.is-new {
   background: var(--color-success-soft);
   box-shadow: inset 0 0 0 1px var(--color-success);

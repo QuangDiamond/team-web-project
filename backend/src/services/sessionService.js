@@ -3,6 +3,7 @@ import { ClassSession } from '../models/ClassSession.js';
 import { Classroom } from '../models/Classroom.js';
 import { ClassMember } from '../models/ClassMember.js';
 import { ParentChildLink } from '../models/ParentChildLink.js';
+import { User } from '../models/User.js';
 import { ENUMS } from '../models/enums.js';
 import { getTutorProfileOrThrow } from './tutorContext.service.js';
 
@@ -15,7 +16,7 @@ const getVisibleClassrooms = async (user) => {
   if (user.role === ENUMS.UserRole.TUTOR) {
     const tutorProfile = await getTutorProfileOrThrow(user);
     return Classroom.find({ tutor_profile_id: tutorProfile._id })
-      .select('_id name subject grade')
+      .select('_id name subject grade status')
       .lean();
   }
 
@@ -43,7 +44,7 @@ const getVisibleClassrooms = async (user) => {
   const classIds = memberships.map((membership) => membership.class_id).filter(Boolean);
 
   return Classroom.find({ _id: { $in: classIds } })
-    .select('_id name subject grade')
+    .select('_id name subject grade status')
     .lean();
 };
 
@@ -68,8 +69,33 @@ export const getUserSessions = async (user, { page, limit }) => {
     ClassSession.countDocuments(filter),
   ]);
 
+  const memberships = await ClassMember.find({
+    class_id: { $in: classIds },
+    status: ENUMS.ClassMembersStatus.ACTIVE,
+  })
+    .select('class_id user_id')
+    .lean();
+  const memberIds = [...new Set(memberships.map((membership) => String(membership.user_id)))];
+  const activeStudentIds = await User.distinct('_id', {
+    _id: { $in: memberIds },
+    role: ENUMS.UserRole.STUDENT,
+    account_status: ENUMS.UserAccountStatus.ACTIVE,
+  });
+  const activeStudentIdSet = new Set(activeStudentIds.map((studentId) => String(studentId)));
+  const activeStudentCounts = new Map();
+  for (const membership of memberships) {
+    if (activeStudentIdSet.has(String(membership.user_id))) {
+      const classId = String(membership.class_id);
+      activeStudentCounts.set(classId, (activeStudentCounts.get(classId) || 0) + 1);
+    }
+  }
+
   const items = sessions.map((classSession) => {
     const classroom = classroomById.get(String(classSession.class_id));
+    const attendanceRecords = Array.isArray(classSession.attendance) ? classSession.attendance : [];
+    const attendanceRecord = user.role === ENUMS.UserRole.STUDENT
+      ? attendanceRecords.find((record) => String(record.student_user_id) === String(user.id))
+      : null;
     return {
       _id: String(classSession._id),
       class_id: String(classSession.class_id),
@@ -80,6 +106,7 @@ export const getUserSessions = async (user, { page, limit }) => {
       end_time: classSession.end_time,
       meeting_link: classSession.meeting_link,
       status: classSession.status,
+      attendance_status: attendanceRecord ? attendanceRecord.status : null,
       created_at: classSession.created_at,
       updated_at: classSession.updated_at,
       classroom: classroom
@@ -88,6 +115,8 @@ export const getUserSessions = async (user, { page, limit }) => {
             name: classroom.name,
             subject: classroom.subject,
             grade: classroom.grade,
+            status: classroom.status,
+            active_student_count: activeStudentCounts.get(String(classroom._id)) || 0,
           }
         : null,
     };

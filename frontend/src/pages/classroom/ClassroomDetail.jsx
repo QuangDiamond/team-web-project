@@ -43,6 +43,7 @@ import ClassroomAnnouncementsTab from '../../components/classroom/ClassroomAnnou
 import ClassroomMembersTab from '../../components/classroom/ClassroomMembersTab';
 import ClassroomAssignmentsTab from '../../components/classroom/ClassroomAssignmentsTab';
 import ClassroomChatTab from '../../components/classroom/ClassroomChatTab';
+import StudentClassContent from '../../components/classroom/StudentClassContent';
 import MyClassDetail from '../tutor/MyClassDetail';
 import './classroom.css';
 
@@ -577,6 +578,24 @@ export default function ClassroomDetail() {
               </button>
             </>
           )}
+          {user?.role === 'STUDENT' && (
+            <>
+              <button
+                type="button"
+                className={`tab-btn ${activeTab === 'student-materials' ? 'active' : ''}`}
+                onClick={() => setActiveTab('student-materials')}
+              >
+                <BookOpen size={15} aria-hidden="true" /> Tài liệu &amp; chủ đề
+              </button>
+              <button
+                type="button"
+                className={`tab-btn ${activeTab === 'student-schedule' ? 'active' : ''}`}
+                onClick={() => setActiveTab('student-schedule')}
+              >
+                <CalendarDays size={15} aria-hidden="true" /> Lịch học
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -654,6 +673,15 @@ export default function ClassroomDetail() {
         <MyClassDetail
           embedded
           classId={id}
+          classroom={classroom}
+          activeTab={activeTab}
+        />
+      )}
+
+      {user?.role === 'STUDENT' && (activeTab === 'student-materials' || activeTab === 'student-schedule') && (
+        <StudentClassContent
+          key={id}
+          classroomId={id}
           classroom={classroom}
           activeTab={activeTab}
         />

@@ -1,10 +1,13 @@
 import mongoose from 'mongoose';
 import { AppError } from '../common/utils/AppError.js';
 import { buildPagination } from '../common/utils/pagination.js';
+import { ClassMember } from '../models/ClassMember.js';
 import { ClassSession } from '../models/ClassSession.js';
 import { Classroom } from '../models/Classroom.js';
+import { Notification } from '../models/Notification.js';
+import { User } from '../models/User.js';
 import { ENUMS } from '../models/enums.js';
-import { getOwnedActiveClassroom } from './topic.service.js';
+import { getOwnedActiveClassroom, getStudentActiveClassroom } from './topic.service.js';
 
 /**
  * Find a class session that belongs to the classroom
@@ -104,6 +107,42 @@ const ensureNoSessionOverlap = async (classroom, startTime, endTime, excludedSes
 };
 
 /**
+ * Notify active students after a tutor directly changes a class session time
+ * @param {Object} classroom - Classroom whose session time changed
+ * @param {Object} session - Updated session
+ * @returns {Promise<void>}
+ */
+const notifyStudentsAboutScheduleChange = async (classroom, session) => {
+  try {
+    const memberIds = await ClassMember.distinct('user_id', {
+      class_id: classroom._id,
+      status: ENUMS.ClassMembersStatus.ACTIVE,
+    });
+    const students = await User.find({
+      _id: { $in: memberIds },
+      role: ENUMS.UserRole.STUDENT,
+      account_status: ENUMS.UserAccountStatus.ACTIVE,
+    })
+      .select('_id')
+      .lean();
+    if (students.length === 0) {
+      return;
+    }
+    await Notification.insertMany(students.map((student) => ({
+      recipient_user_id: student._id,
+      category: ENUMS.NotificationsCategory.SCHEDULE_CHANGE,
+      title: 'Lịch buổi học đã thay đổi',
+      body: `Buổi “${session.title || 'Buổi học'}” của lớp ${classroom.name} đã được chuyển sang ${session.start_time.toLocaleString('vi-VN')}.`,
+      target_type: ENUMS.NotificationsTargetType.SESSION,
+      target_id: session._id,
+      is_read: false,
+    })));
+  } catch (error) {
+    console.warn('[SCHEDULE_CHANGE] Could not notify class students:', error.message);
+  }
+};
+
+/**
  * List sessions from an active classroom owned by the authenticated tutor
  * @param {Object} user - Authenticated user { id, role }
  * @param {string} classId - Classroom ID
@@ -121,9 +160,67 @@ export const listClassSessions = async (user, classId, { page, limit }) => {
       .lean(),
     ClassSession.countDocuments(filter),
   ]);
+  const memberIds = await ClassMember.distinct('user_id', {
+    class_id: classroom._id,
+    status: ENUMS.ClassMembersStatus.ACTIVE,
+  });
+  const activeStudentCount = await User.countDocuments({
+    _id: { $in: memberIds },
+    role: ENUMS.UserRole.STUDENT,
+    account_status: ENUMS.UserAccountStatus.ACTIVE,
+  });
 
   return {
-    items: sessions.map((classSession) => toClassSessionDto(classSession)),
+    items: sessions.map((classSession) => ({
+      ...toClassSessionDto(classSession),
+      active_student_count: activeStudentCount,
+    })),
+    pagination: buildPagination(page, limit, total),
+  };
+};
+
+/**
+ * List sessions from an active classroom the authenticated student belongs to
+ * @param {Object} user - Authenticated student { id, role }
+ * @param {string} classId - Classroom ID
+ * @param {{ page: number, limit: number }} query - Pagination options
+ * @returns {Promise<{ items: Object[], pagination: Object }>}
+ */
+export const listStudentClassSessions = async (user, classId, { page, limit }) => {
+  const classroom = await getStudentActiveClassroom(user, classId);
+  const filter = { class_id: classroom._id };
+  const [sessions, total] = await Promise.all([
+    ClassSession.find(filter)
+      .sort({ start_time: 1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean(),
+    ClassSession.countDocuments(filter),
+  ]);
+  const memberIds = await ClassMember.distinct('user_id', {
+    class_id: classroom._id,
+    status: ENUMS.ClassMembersStatus.ACTIVE,
+  });
+  const activeStudentCount = await User.countDocuments({
+    _id: { $in: memberIds },
+    role: ENUMS.UserRole.STUDENT,
+    account_status: ENUMS.UserAccountStatus.ACTIVE,
+  });
+
+  return {
+    items: sessions.map((session) => {
+      const attendanceRecords = Array.isArray(session.attendance) ? session.attendance : [];
+      const attendanceRecord = attendanceRecords.find((record) => (
+        String(record.student_user_id) === String(user.id)
+      ));
+
+      return {
+        ...toClassSessionDto(session),
+        class_name: classroom.name,
+        active_student_count: activeStudentCount,
+        attendance_status: attendanceRecord ? attendanceRecord.status : null,
+      };
+    }),
     pagination: buildPagination(page, limit, total),
   };
 };
@@ -179,6 +276,9 @@ export const updateClassSession = async (user, classId, sessionId, data) => {
   const classroom = await getOwnedActiveClassroom(user, classId);
   const classSession = await getClassSessionOrThrow(classroom, sessionId);
 
+  if (classSession.status === ENUMS.ClassSessionsStatus.CANCELLED) {
+    throw new AppError('Cancelled class sessions cannot be changed', 422);
+  }
   if (classSession.start_time <= new Date()) {
     throw new AppError('Past class sessions cannot be updated', 422);
   }
@@ -201,6 +301,9 @@ export const updateClassSession = async (user, classId, sessionId, data) => {
 
   if (!updatedSession) {
     throw new AppError('Class session changed before update; reload and try again', 409);
+  }
+  if (data.start_time && classSession.start_time.getTime() !== data.start_time.getTime()) {
+    await notifyStudentsAboutScheduleChange(classroom, updatedSession);
   }
   return toClassSessionDto(updatedSession);
 };

@@ -1,6 +1,16 @@
 import axios from 'axios';
 import { translateSystemMessage } from '../utils/viMessages';
 
+const UNTRANSLATED_ERROR_FALLBACK = 'Không thể thực hiện yêu cầu. Vui lòng kiểm tra thông tin và thử lại.';
+
+const translateApiErrorMessage = (message, status) => {
+  const translatedMessage = translateSystemMessage(message);
+  if (status < 500 && translatedMessage === UNTRANSLATED_ERROR_FALLBACK) {
+    return message;
+  }
+  return translatedMessage;
+};
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
   withCredentials: true,
@@ -17,11 +27,14 @@ const toApiError = (err) => {
     apiError.status = err.response.status;
     if (err.response.data && err.response.data.message) {
       apiError.rawMessage = err.response.data.message;
-      apiError.message = translateSystemMessage(apiError.rawMessage);
+      apiError.message = translateApiErrorMessage(apiError.rawMessage, apiError.status);
     }
     if (err.response.data && err.response.data.errors) {
       apiError.errors = Object.fromEntries(Object.entries(err.response.data.errors).map(([field, messages]) => [
-        field, Array.isArray(messages) ? messages.map((message) => translateSystemMessage(message)) : messages,
+        field,
+        Array.isArray(messages)
+          ? messages.map((message) => translateApiErrorMessage(message, apiError.status))
+          : translateApiErrorMessage(messages, apiError.status),
       ]));
     }
   }

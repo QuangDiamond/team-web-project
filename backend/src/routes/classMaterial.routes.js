@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authentication } from '../common/middlewares/auth.middleware.js';
+import { authentication, authorize } from '../common/middlewares/auth.middleware.js';
 import {
   uploadClassMaterialFile,
   requireClassMaterialFile,
@@ -39,7 +39,7 @@ classMaterialRoutes.post(
 classMaterialRoutes.get(
   '/:classId/materials',
   authentication,
-  tutorOnly,
+  authorize('TUTOR', 'STUDENT'),
   getClassMaterials);
 
 // hàm update

@@ -30,6 +30,7 @@ import PlansPricing from '../pages/admin/PlansPricing';
 import Categories from '../pages/admin/Categories';
 import RoleRoute from './RoleRoute';
 import StudentDashboard from '../pages/student/StudentDashboard';
+import StudentSchedule from '../pages/student/StudentSchedule';
 import AiTutorSuggestions from '../pages/parent/AiTutorSuggestions';
 import ParentDashboard from '../pages/parent/ParentDashboard';
 import ChatPage from '../pages/chat/ChatPage';
@@ -48,6 +49,7 @@ import SavedRequests from '../pages/tutor/SavedRequests';
 import TutorRequestDetail from '../pages/tutor/TutorRequestDetail';
 import MyApplications from '../pages/tutor/MyApplications';
 import MySchedule from '../pages/tutor/MySchedule';
+import SessionAttendance from '../pages/tutor/SessionAttendance';
  import MyConnections from '../pages/connections/MyConnections';
 import Notifications from '../pages/notifications/Notifications';
 import Moderation from '../pages/admin/Moderation';
@@ -137,6 +139,7 @@ export const router = createBrowserRouter([
           { path: 'dashboard', element: <StudentDashboard />, handle: { title: "Tổng quan" } },
           { path: 'classes', element: <ClassroomsPage />, handle: { title: 'Lớp học của tôi' } },
           { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
+          { path: 'schedule', element: <StudentSchedule />, handle: { title: 'Lịch học' } },
           { path: 'change-password', element: <ChangePassword />, handle: { title: "Bảo mật tài khoản" } },
           { path: 'notifications', element: <Notifications />, handle: { title: "Thông báo" } },
         ],
@@ -199,6 +202,7 @@ export const router = createBrowserRouter([
           { path: 'receipts/:orderCode', element: <Receipt />, handle: { title: "Biên nhận" } },
           { path: 'dashboard', element: <TutorDashboard />, handle: { title: "Tổng quan" } },
           { path: 'classes', element: <ClassroomsPage />, handle: { title: 'Quản lý lớp học' } },
+          { path: 'classes/:classId/sessions/:sessionId/attendance', element: <SessionAttendance />, handle: { title: 'Điểm danh buổi học' } },
           { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
           { path: 'change-password', element: <ChangePassword />, handle: { title: "Bảo mật tài khoản" } },
           { path: 'requests', element: <BrowseRequests />, handle: { title: "Tìm yêu cầu" } },

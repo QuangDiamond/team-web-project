@@ -110,7 +110,7 @@ export const STUDENT_MENU = {
         { label: "Lịch sử làm bài", icon: History },
         { label: "Bài tập", icon: ClipboardList },
         { label: "Hoạt động học tập", icon: TrendingUp },
-        { label: "Lịch học", icon: CalendarDays },
+        { label: "Lịch học", to: '/student/schedule', icon: CalendarDays },
       ],
     },
   ],

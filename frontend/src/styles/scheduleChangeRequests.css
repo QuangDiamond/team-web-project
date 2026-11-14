@@ -1,0 +1,650 @@
+.schedule-page-tabs {
+  display: inline-flex;
+  align-self: flex-start;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-white);
+}
+
+.schedule-page-tabs button {
+  min-height: 36px;
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.schedule-page-tabs button:hover,
+.schedule-page-tabs button.is-active {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+}
+
+.schedule-change-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(15 23 42 / 45%);
+}
+
+.schedule-change-modal {
+  width: min(100%, 520px);
+  max-height: min(90vh, 760px);
+  overflow: auto;
+  padding: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-white);
+  box-shadow: 0 22px 60px rgb(15 23 42 / 22%);
+}
+
+.schedule-change-modal-heading,
+.schedule-change-modal-heading > div,
+.schedule-change-list-heading,
+.schedule-change-list-heading h2,
+.schedule-change-request-topline,
+.schedule-change-form-actions,
+.schedule-change-response-actions > div {
+  display: flex;
+  align-items: center;
+}
+
+.schedule-change-modal-heading,
+.schedule-change-list-heading,
+.schedule-change-request-topline {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.schedule-change-modal-heading {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.schedule-change-modal-heading > div {
+  min-width: 0;
+  gap: 12px;
+}
+
+.schedule-change-modal-icon {
+  display: grid;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+}
+
+.schedule-change-modal-heading h2,
+.schedule-change-modal-heading p,
+.schedule-change-list-heading h2,
+.schedule-change-list-heading p,
+.schedule-change-request-card h3,
+.schedule-change-request-card p {
+  margin: 0;
+}
+
+.schedule-change-modal-heading h2 {
+  color: var(--color-dark);
+  font-size: 18px;
+}
+
+.schedule-change-modal-heading p,
+.schedule-change-list-heading p {
+  margin-top: 4px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.schedule-change-close {
+  display: grid;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-white);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.schedule-change-modal form {
+  display: grid;
+  gap: 14px;
+}
+
+.schedule-change-current-time {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.schedule-change-form-actions {
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.schedule-change-form-error {
+  margin: 0;
+  color: var(--color-error);
+  font-size: 13px;
+}
+
+.schedule-change-requests-panel {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.schedule-change-list-heading {
+  padding: 16px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-white);
+}
+
+.schedule-change-list-heading h2 {
+  gap: 8px;
+  color: var(--color-dark);
+  font-size: 18px;
+}
+
+.schedule-change-list-heading > span {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.schedule-change-request-list {
+  display: grid;
+  gap: 12px;
+}
+
+.schedule-change-request-card {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-white);
+}
+
+.schedule-change-direction,
+.schedule-change-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.schedule-change-direction.is-incoming {
+  background: #eaf2ff;
+  color: #2457a7;
+}
+
+.schedule-change-direction.is-outgoing {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.schedule-change-status.is-pending {
+  background: #fff4d6;
+  color: #8a5a00;
+}
+
+.schedule-change-status.is-approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.schedule-change-status.is-rejected,
+.schedule-change-status.is-withdrawn {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.schedule-change-request-card h3 {
+  color: var(--color-dark);
+  font-size: 15px;
+}
+
+.schedule-change-request-person,
+.schedule-change-request-reason,
+.schedule-change-response-comment {
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.schedule-change-times {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.schedule-change-times .is-proposed {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-primary-strong);
+  font-weight: 700;
+}
+
+.schedule-change-request-reason strong,
+.schedule-change-response-comment strong {
+  color: var(--color-dark);
+}
+
+.schedule-change-response-actions {
+  display: grid;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+}
+
+.schedule-change-response-actions > div {
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.schedule-change-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 180px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+@media (max-width: 600px) {
+  .schedule-change-modal {
+    padding: 16px;
+  }
+
+  .schedule-page-tabs button {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .schedule-change-request-card {
+    padding: 12px;
+  }
+}
+
+/* ---------- Mapping lịch hiện tại ↔ lịch đề xuất (chỉ yêu cầu PENDING) ---------- */
+.schedule-change-requests-panel,
+.schedule-change-calendar-notes,
+.schedule-calendar,
+.schedule-change-compare {
+  --schedule-change-link: #b45309;
+  --schedule-change-link-soft: #fff3dc;
+  --schedule-change-link-text: #7a3e06;
+  --schedule-change-proposal-bg: #fffaf0;
+}
+
+/* Lớp đường nối đặt tuyệt đối trên lưới lịch */
+.schedule-calendar {
+  position: relative;
+}
+
+.schedule-change-calendar-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.schedule-change-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.schedule-change-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.schedule-change-legend span.is-link {
+  color: var(--schedule-change-link);
+}
+
+.schedule-change-legend i {
+  display: inline-block;
+  width: 18px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.schedule-change-legend i.is-pending {
+  border-left: 3px solid hsl(0 62% 40%);
+  background: hsl(0 80% 95%);
+  outline: 2px solid var(--schedule-change-link);
+  outline-offset: 1px;
+}
+
+.schedule-change-legend i.is-proposal {
+  border: 1.5px dashed var(--schedule-change-link);
+  background: var(--schedule-change-proposal-bg);
+}
+
+.schedule-change-week-hints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.schedule-change-week-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 4px 12px;
+  border: 1px solid #f3d29c;
+  border-radius: 999px;
+  background: var(--schedule-change-link-soft);
+  color: var(--schedule-change-link-text);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Buổi gốc đang chờ đổi */
+.schedule-event.is-pending-change {
+  outline: 2px solid var(--schedule-change-link);
+  outline-offset: 2px;
+}
+
+.schedule-event.is-change-selected {
+  z-index: 3;
+  box-shadow: 0 0 0 5px rgb(180 83 9 / 18%);
+}
+
+.schedule-event.is-change-dimmed {
+  opacity: 0.5;
+}
+
+/* Ô ma ở giờ đề xuất */
+.schedule-change-proposal-event {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 4px 7px;
+  border: 1.5px dashed var(--schedule-change-link);
+  border-radius: 6px;
+  background: var(--schedule-change-proposal-bg);
+  color: var(--schedule-change-link-text);
+  font: inherit;
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.schedule-change-proposal-event strong {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.schedule-change-proposal-event span {
+  white-space: nowrap;
+}
+
+.schedule-change-proposal-tag {
+  align-self: flex-start;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--schedule-change-link-soft);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.schedule-change-proposal-event.is-change-selected {
+  z-index: 3;
+  box-shadow: 0 0 0 5px rgb(180 83 9 / 18%);
+}
+
+.schedule-change-proposal-event.is-change-dimmed {
+  opacity: 0.45;
+}
+
+.schedule-change-links-layer {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.schedule-change-links-layer svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+}
+
+.schedule-change-links-layer path {
+  fill: none;
+  stroke: var(--schedule-change-link);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  transition: opacity 0.15s ease;
+}
+
+.schedule-change-links-layer path.is-change-selected {
+  stroke-width: 3.5;
+}
+
+.schedule-change-links-layer path.is-change-dimmed {
+  opacity: 0.3;
+}
+
+.schedule-change-link-label {
+  position: absolute;
+  padding: 2px 9px;
+  border: 1px solid #f3d29c;
+  border-radius: 999px;
+  background: var(--schedule-change-link-soft);
+  color: var(--schedule-change-link-text);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+}
+
+.schedule-change-link-label.is-change-dimmed {
+  opacity: 0.35;
+}
+
+/* Thẻ yêu cầu */
+.schedule-change-request-card.is-selected {
+  border-color: var(--schedule-change-link);
+  box-shadow: 0 0 0 1px var(--schedule-change-link);
+}
+
+.schedule-change-show-on-calendar {
+  align-self: flex-start;
+}
+
+.schedule-change-compare {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: #f8f9fb;
+}
+
+.schedule-change-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.schedule-change-strip-label {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.schedule-change-strip.is-proposal .schedule-change-strip-label {
+  color: var(--schedule-change-link);
+}
+
+.schedule-change-strip-grid {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+}
+
+.schedule-change-strip-hour {
+  position: absolute;
+  right: 0;
+  left: 0;
+  border-top: 1px solid #eef0f3;
+}
+
+.schedule-change-strip-hour:first-child {
+  border-top: 0;
+}
+
+.schedule-change-strip-hour span {
+  position: absolute;
+  top: 2px;
+  left: 8px;
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.schedule-change-strip-event {
+  position: absolute;
+  right: 10px;
+  left: 56px;
+  box-sizing: border-box;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.schedule-change-strip.is-current .schedule-change-strip-event {
+  border-left: 3px solid hsl(0 62% 40%);
+  background: hsl(0 80% 95%);
+  color: hsl(0 48% 27%);
+  outline: 2px solid var(--schedule-change-link);
+  outline-offset: 2px;
+}
+
+.schedule-change-strip.is-proposal .schedule-change-strip-event {
+  border: 1.5px dashed var(--schedule-change-link);
+  background: var(--schedule-change-proposal-bg);
+  color: var(--schedule-change-link-text);
+}
+
+.schedule-change-compare-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--schedule-change-link);
+}
+
+.schedule-change-compare-arrow span {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--schedule-change-link-soft);
+  color: var(--schedule-change-link-text);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .schedule-change-compare {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .schedule-change-compare-arrow svg {
+    transform: rotate(90deg);
+  }
+}
+
+/* Yêu cầu PENDING đã quá hạn (suy ra ở giao diện) */
+.schedule-change-status.is-expired {
+  background: #eef0f4;
+  color: #4b5161;
+}
+
+.schedule-change-request-card.is-expired {
+  background: #fafbfc;
+}
+
+.schedule-change-expired-note {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: #eef0f4;
+  color: #4b5161;
+  font-size: 13px;
+}
+
+.schedule-change-direction.is-parent {
+  background: #f3e8ff;
+  color: #6b21a8;
+}
+
+/* Người tạo sửa / rút đề nghị đang chờ */
+.schedule-change-owner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.schedule-change-status.is-withdrawn {
+  background: #eef0f4;
+  color: #4b5161;
+}

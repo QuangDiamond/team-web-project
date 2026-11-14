@@ -598,6 +598,7 @@ export default function ClassroomTopicsAndMaterials({
   const [selectedMaterialTopicId, setSelectedMaterialTopicId] = useState(ALL_MATERIAL_TOPICS);
   const [previewMaterialId, setPreviewMaterialId] = useState('');
   const previewSectionRef = useRef(null);
+  const materialsSectionRef = useRef(null);
   const normalizedMaterialSearch = normalizeSearch(materialSearchQuery.trim());
   const filteredMaterials = materials.filter((material) => {
     const materialTitle = normalizeSearch(material.title || '');
@@ -658,8 +659,20 @@ export default function ClassroomTopicsAndMaterials({
                 key={topic._id}
                 className={topic._id === newlyCreatedTopicId ? 'is-new' : ''}
               >
-                <span className="class-topic-number">{String(index + 1).padStart(2, '0')}</span>
-                <span>{topic.name}</span>
+                <button
+                  type="button"
+                  className={selectedMaterialTopicId === topic._id ? 'class-topic-filter-button is-selected' : 'class-topic-filter-button'}
+                  onClick={() => {
+                    setSelectedMaterialTopicId(topic._id);
+                    if (materialsSectionRef.current) {
+                      materialsSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }}
+                  aria-pressed={selectedMaterialTopicId === topic._id}
+                >
+                  <span className="class-topic-number">{String(index + 1).padStart(2, '0')}</span>
+                  <span>{topic.name}</span>
+                </button>
                 <span className="class-topic-actions">
                   <button
                     type="button"
@@ -686,7 +699,7 @@ export default function ClassroomTopicsAndMaterials({
         )}
       </section>
 
-      <section className="class-detail-section" aria-labelledby="class-materials-title">
+      <section ref={materialsSectionRef} className="class-detail-section" aria-labelledby="class-materials-title">
         <div className="class-detail-section-heading">
           <span className="class-detail-section-icon" aria-hidden="true"><FileText size={18} /></span>
           <div>
