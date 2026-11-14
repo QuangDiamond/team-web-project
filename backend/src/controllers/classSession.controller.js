@@ -4,11 +4,17 @@ import { asyncHandler } from '../common/utils/asyncHandler.js';
 import { parseQuery } from '../common/utils/pagination.js';
 import { paginationQuerySchema } from '../common/validator/studentDashboardSchema.js';
 import * as classSessionService from '../services/classSession.service.js';
+import { ENUMS } from '../models/enums.js';
 
 export const listClassSessions = asyncHandler(async (req, res) => {
   const query = parseQuery(paginationQuerySchema, req.query);
-  const data = await classSessionService.listClassSessions(req.user, req.params.classId, query);
-  return responseCommon(res, data, 'Lấy danh sách buổi học thành công!', 200, responseCode.SUCCESSED);
+  let data;
+  if (req.user.role === ENUMS.UserRole.STUDENT) {
+    data = await classSessionService.listStudentClassSessions(req.user, req.params.classId, query);
+  } else {
+    data = await classSessionService.listClassSessions(req.user, req.params.classId, query);
+  }
+  return responseCommon(res, data, 'Class sessions retrieved successfully!', 200, responseCode.SUCCESSED);
 });
 
 export const getClassSession = asyncHandler(async (req, res) => {

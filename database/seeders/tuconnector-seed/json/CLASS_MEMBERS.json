@@ -34,5 +34,95 @@
     },
     "status": "ACTIVE",
     "removal_reason": null
+  },
+  {
+    "_id": {
+      "$oid": "af3825c24a173e8a8cc01206"
+    },
+    "class_id": {
+      "$oid": "6a4b261ff1b9efa6c28d9717"
+    },
+    "user_id": {
+      "$oid": "2431a25fff9589b2f8036019"
+    },
+    "joined_at": {
+      "$date": {
+        "$numberLong": "1792929600000"
+      }
+    },
+    "status": "ACTIVE",
+    "removal_reason": null
+  },
+  {
+    "_id": {
+      "$oid": "339458fa03ca81594f41a207"
+    },
+    "class_id": {
+      "$oid": "355efdf8c4a7ab87480162a9"
+    },
+    "user_id": {
+      "$oid": "2431a25fff9589b2f8036019"
+    },
+    "joined_at": {
+      "$date": {
+        "$numberLong": "1792929900000"
+      }
+    },
+    "status": "ACTIVE",
+    "removal_reason": null
+  },
+  {
+    "_id": {
+      "$oid": "a82419724edd0de09a7841d5"
+    },
+    "class_id": {
+      "$oid": "98b78415828a6fcacc89670a"
+    },
+    "user_id": {
+      "$oid": "86ade579a5af4da591895948"
+    },
+    "joined_at": {
+      "$date": {
+        "$numberLong": "1792930200000"
+      }
+    },
+    "status": "ACTIVE",
+    "removal_reason": null
+  },
+  {
+    "_id": {
+      "$oid": "f811a85b2298c6843ae78f69"
+    },
+    "class_id": {
+      "$oid": "cbc8bbcc6f1e0d625ebb8bef"
+    },
+    "user_id": {
+      "$oid": "86ade579a5af4da591895948"
+    },
+    "joined_at": {
+      "$date": {
+        "$numberLong": "1792930500000"
+      }
+    },
+    "status": "ACTIVE",
+    "removal_reason": null
+  },
+  {
+    "_id": {
+      "$oid": "a6b5a8be03cf3ee19c775df8"
+    },
+    "class_id": {
+      "$oid": "04bad262bb2ee5783a26ee60"
+    },
+    "user_id": {
+      "$oid": "32935467beb3ada708d525ea"
+    },
+    "joined_at": {
+      "$date": {
+        "$numberLong": "1792930800000"
+      }
+    },
+    "status": "ACTIVE",
+    "removal_reason": null
   }
 ]

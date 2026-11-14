@@ -1,0 +1,272 @@
+[
+  {
+    "_id": {
+      "$oid": "47b4057b1b1573b78743a71c"
+    },
+    "name": "Toán",
+    "sort_order": {
+      "$numberInt": "1"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "2b4b54c8315c2d351d46d220"
+    },
+    "name": "Ngữ văn",
+    "sort_order": {
+      "$numberInt": "2"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "ca0c8a5adf2bdfd5471ab2e7"
+    },
+    "name": "Tiếng Anh",
+    "sort_order": {
+      "$numberInt": "3"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "11da49340efada0ce47a4c92"
+    },
+    "name": "Vật lý",
+    "sort_order": {
+      "$numberInt": "4"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "1817623e8f8891ff97eaba0b"
+    },
+    "name": "Hóa học",
+    "sort_order": {
+      "$numberInt": "5"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "828f91a6aadb9428cd1a0f57"
+    },
+    "name": "Sinh học",
+    "sort_order": {
+      "$numberInt": "6"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "502b27804996934a886da5fe"
+    },
+    "name": "Lịch sử",
+    "sort_order": {
+      "$numberInt": "7"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "0b24017eafb18716183cbc43"
+    },
+    "name": "Địa lý",
+    "sort_order": {
+      "$numberInt": "8"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "4d67db20fd49e466bb168f95"
+    },
+    "name": "Giáo dục công dân",
+    "sort_order": {
+      "$numberInt": "9"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "d2d8790210796f2bcee1a841"
+    },
+    "name": "Tin học",
+    "sort_order": {
+      "$numberInt": "10"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "19a3ac686b40571fdd56cbd2"
+    },
+    "name": "Lập trình",
+    "sort_order": {
+      "$numberInt": "11"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "06582b050ce4330b157e81aa"
+    },
+    "name": "Tiếng Việt",
+    "sort_order": {
+      "$numberInt": "12"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "49a154092f9d51e12eb97a87"
+    },
+    "name": "Khoa học tự nhiên",
+    "sort_order": {
+      "$numberInt": "13"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "ddffb5fcfe1a775cb09ec227"
+    },
+    "name": "Khoa học xã hội",
+    "sort_order": {
+      "$numberInt": "14"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "fb0b7d968b3638e0a0e4db1b"
+    },
+    "name": "Tiếng Nhật",
+    "sort_order": {
+      "$numberInt": "15"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "587de751edf3f2afc7e83524"
+    },
+    "name": "Tiếng Hàn",
+    "sort_order": {
+      "$numberInt": "16"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "0dabb9eebecad7a01745adca"
+    },
+    "name": "Tiếng Trung",
+    "sort_order": {
+      "$numberInt": "17"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "c9b70f515c925b82302de049"
+    },
+    "name": "Tiếng Pháp",
+    "sort_order": {
+      "$numberInt": "18"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "6203938692f717fa383f06cd"
+    },
+    "name": "Tiếng Đức",
+    "sort_order": {
+      "$numberInt": "19"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "6d99a4e7ef25c42da3bb4b71"
+    },
+    "name": "Luyện thi IELTS",
+    "sort_order": {
+      "$numberInt": "20"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "9ee756da0885cf32a21c68b8"
+    },
+    "name": "Luyện thi TOEIC",
+    "sort_order": {
+      "$numberInt": "21"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "4ffd92795594bb61179f4a7e"
+    },
+    "name": "Luyện thi vào lớp 10",
+    "sort_order": {
+      "$numberInt": "22"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "91709ba780b8bf11b496fd8b"
+    },
+    "name": "Luyện thi đại học",
+    "sort_order": {
+      "$numberInt": "23"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "2a55543ebf5c61acdc673be6"
+    },
+    "name": "Âm nhạc",
+    "sort_order": {
+      "$numberInt": "24"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "2ec483baa447551bdd8d6308"
+    },
+    "name": "Mỹ thuật",
+    "sort_order": {
+      "$numberInt": "25"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "a78ef856dd26f6616a3420b2"
+    },
+    "name": "Kỹ năng mềm",
+    "sort_order": {
+      "$numberInt": "26"
+    },
+    "is_active": true
+  },
+  {
+    "_id": {
+      "$oid": "645a20d2b861b2ed74132f6d"
+    },
+    "name": "Môn khác",
+    "sort_order": {
+      "$numberInt": "27"
+    },
+    "is_active": true
+  }
+]

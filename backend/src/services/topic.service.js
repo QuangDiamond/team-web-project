@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { Classroom } from '../models/Classroom.js';
 import { ClassMaterial } from '../models/ClassMaterial.js';
+import { ClassMember } from '../models/ClassMember.js';
 import { ENUMS } from '../models/enums.js';
 import { AppError } from '../common/utils/AppError.js';
 import { buildPagination } from '../common/utils/pagination.js';
@@ -35,6 +36,35 @@ export const getOwnedActiveClassroom = async (user, classId) => {
   // check status của lớp/classroom
   if (classroom.status !== ENUMS.ClassroomsStatus.ACTIVE) {
     throw new AppError('Archived classrooms cannot be changed', 409);
+  }
+
+  return classroom;
+};
+
+/**
+ * Find an active classroom that the authenticated tutor owns or student belongs to
+ * @param {Object} user - Authenticated user { id, role }
+ * @param {string} classId - Classroom ID
+ * @returns {Promise<Object>} Active classroom available for read-only access
+ */
+export const getStudentActiveClassroom = async (user, classId) => {
+  if (user?.role !== ENUMS.UserRole.STUDENT || !mongoose.isValidObjectId(classId)) {
+    throw new AppError('Classroom not found', 404);
+  }
+
+  const classroom = await Classroom.findById(classId);
+  if (!classroom || classroom.status !== ENUMS.ClassroomsStatus.ACTIVE) {
+    throw new AppError('Active classroom not found', 404);
+  }
+
+  const membership = await ClassMember.findOne({
+    class_id: classroom._id,
+    user_id: user.id,
+    status: ENUMS.ClassMembersStatus.ACTIVE,
+  }).select('_id').lean();
+
+  if (!membership) {
+    throw new AppError('You do not have access to this classroom', 403);
   }
 
   return classroom;
@@ -79,6 +109,25 @@ const toTopicDto = (topic) => ({
  */
 export const getAllTopics = async (user, classId, { page, limit }) => {
   const classroom = await getOwnedActiveClassroom(user, classId);
+  const total = classroom.topics.length;
+  const startIndex = (page - 1) * limit;
+  const topics = classroom.topics.slice(startIndex, startIndex + limit);
+
+  return {
+    items: topics.map((topic) => toTopicDto(topic)),
+    pagination: buildPagination(page, limit, total),
+  };
+};
+
+/**
+ * Get topics for a student who is an active member of the classroom
+ * @param {Object} user - Authenticated student { id, role }
+ * @param {string} classId - Classroom ID
+ * @param {{ page: number, limit: number }} query - Pagination options
+ * @returns {Promise<{ items: Object[], pagination: Object }>}
+ */
+export const getStudentClassTopics = async (user, classId, { page, limit }) => {
+  const classroom = await getStudentActiveClassroom(user, classId);
   const total = classroom.topics.length;
   const startIndex = (page - 1) * limit;
   const topics = classroom.topics.slice(startIndex, startIndex + limit);

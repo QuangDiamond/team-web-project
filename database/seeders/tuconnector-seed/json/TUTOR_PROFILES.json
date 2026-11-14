@@ -137,5 +137,949 @@
         "description": null
       }
     ]
+  },
+  {
+    "_id": {
+      "$oid": "753a131cadb5dd8c1cc5eb0d"
+    },
+    "user_id": {
+      "$oid": "43dc75eb7404a691924708f2"
+    },
+    "headline": "Gia sư Toán — 3 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Cầu Giấy, Hà Nội",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "47b4057b1b1573b78743a71c"
+        },
+        "name": "Toán"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "9d64d40290c90100a586bbf5"
+        },
+        "name": "Lớp 9"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "a44d434396cbc1ee12cab792"
+        },
+        "name": "Lớp 12"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Toán",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Toán",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "058976c84daf6cdbe3e4c262"
+    },
+    "user_id": {
+      "$oid": "78da6f8996dc8494e6086627"
+    },
+    "headline": "Gia sư Toán — 4 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "47b4057b1b1573b78743a71c"
+        },
+        "name": "Toán"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "9d64d40290c90100a586bbf5"
+        },
+        "name": "Lớp 9"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "a44d434396cbc1ee12cab792"
+        },
+        "name": "Lớp 12"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Toán",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Toán",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "425380a71b019f232b3e0ed3"
+    },
+    "user_id": {
+      "$oid": "b0c1867ee185a1bcdad620b1"
+    },
+    "headline": "Gia sư Toán — 5 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Cầu Giấy, Hà Nội",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "47b4057b1b1573b78743a71c"
+        },
+        "name": "Toán"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "9d64d40290c90100a586bbf5"
+        },
+        "name": "Lớp 9"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "a44d434396cbc1ee12cab792"
+        },
+        "name": "Lớp 12"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Toán",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Toán",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "5916aae37015540f05a90eb1"
+    },
+    "user_id": {
+      "$oid": "ee7540e9c97a16b3741655bc"
+    },
+    "headline": "Gia sư Toán — 6 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "47b4057b1b1573b78743a71c"
+        },
+        "name": "Toán"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "9d64d40290c90100a586bbf5"
+        },
+        "name": "Lớp 9"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "a44d434396cbc1ee12cab792"
+        },
+        "name": "Lớp 12"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Toán",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Toán",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "ab93ed25d044a7ef77a9c1ac"
+    },
+    "user_id": {
+      "$oid": "bd28f9debbe06de9dda5db51"
+    },
+    "headline": "Gia sư Toán — 7 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Cầu Giấy, Hà Nội",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "47b4057b1b1573b78743a71c"
+        },
+        "name": "Toán"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "9d64d40290c90100a586bbf5"
+        },
+        "name": "Lớp 9"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "a44d434396cbc1ee12cab792"
+        },
+        "name": "Lớp 12"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Toán",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Toán",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "acc5b1c563f22ac1f260a454"
+    },
+    "user_id": {
+      "$oid": "b86ea5252fc6a66848feea74"
+    },
+    "headline": "Gia sư Toán — 3 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "47b4057b1b1573b78743a71c"
+        },
+        "name": "Toán"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "9d64d40290c90100a586bbf5"
+        },
+        "name": "Lớp 9"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "a44d434396cbc1ee12cab792"
+        },
+        "name": "Lớp 12"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Toán",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Toán",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "928c4cb7ffbff41f937b24b0"
+    },
+    "user_id": {
+      "$oid": "35bf3cf76a7ee227f3773fd0"
+    },
+    "headline": "Gia sư Toán — 4 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Cầu Giấy, Hà Nội",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "47b4057b1b1573b78743a71c"
+        },
+        "name": "Toán"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "9d64d40290c90100a586bbf5"
+        },
+        "name": "Lớp 9"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "a44d434396cbc1ee12cab792"
+        },
+        "name": "Lớp 12"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Toán",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Toán",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "9cd157ce83000c408054e4a3"
+    },
+    "user_id": {
+      "$oid": "56946206da9e68ffd3f3fd12"
+    },
+    "headline": "Gia sư Toán — 5 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "47b4057b1b1573b78743a71c"
+        },
+        "name": "Toán"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "9d64d40290c90100a586bbf5"
+        },
+        "name": "Lớp 9"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "a44d434396cbc1ee12cab792"
+        },
+        "name": "Lớp 12"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Toán",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Toán",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "999071f49124e3d88312ab01"
+    },
+    "user_id": {
+      "$oid": "f7316d6840704f0280941204"
+    },
+    "headline": "Gia sư Tiếng Anh — 6 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Cầu Giấy, Hà Nội",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "ca0c8a5adf2bdfd5471ab2e7"
+        },
+        "name": "Tiếng Anh"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "d72643a1e9776838e45395d8"
+        },
+        "name": "IELTS"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "5e174e0a55bbdb65d5b1e8c9"
+        },
+        "name": "TOEIC"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Tiếng Anh",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Tiếng Anh",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "df08879e19dee71911a8e164"
+    },
+    "user_id": {
+      "$oid": "cf2bc6d00b8e14accc0b37a5"
+    },
+    "headline": "Gia sư Tiếng Anh — 7 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "ca0c8a5adf2bdfd5471ab2e7"
+        },
+        "name": "Tiếng Anh"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "d72643a1e9776838e45395d8"
+        },
+        "name": "IELTS"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "5e174e0a55bbdb65d5b1e8c9"
+        },
+        "name": "TOEIC"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Tiếng Anh",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Tiếng Anh",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "626e363cdf0a7c1b4c0c3a05"
+    },
+    "user_id": {
+      "$oid": "a536b54653bd80ff57663788"
+    },
+    "headline": "Gia sư Tiếng Anh — 3 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Cầu Giấy, Hà Nội",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "ca0c8a5adf2bdfd5471ab2e7"
+        },
+        "name": "Tiếng Anh"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "d72643a1e9776838e45395d8"
+        },
+        "name": "IELTS"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "5e174e0a55bbdb65d5b1e8c9"
+        },
+        "name": "TOEIC"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Tiếng Anh",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Tiếng Anh",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "bf6fc34974770511b6dd5929"
+    },
+    "user_id": {
+      "$oid": "03b01a7448279c806abf8838"
+    },
+    "headline": "Gia sư Tiếng Anh — 4 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "ca0c8a5adf2bdfd5471ab2e7"
+        },
+        "name": "Tiếng Anh"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "d72643a1e9776838e45395d8"
+        },
+        "name": "IELTS"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "5e174e0a55bbdb65d5b1e8c9"
+        },
+        "name": "TOEIC"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Tiếng Anh",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Tiếng Anh",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "1f024ac065f7a6c5feafae4d"
+    },
+    "user_id": {
+      "$oid": "380bbb3585f67e33bd77c803"
+    },
+    "headline": "Gia sư Tiếng Anh — 5 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Cầu Giấy, Hà Nội",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "ca0c8a5adf2bdfd5471ab2e7"
+        },
+        "name": "Tiếng Anh"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "d72643a1e9776838e45395d8"
+        },
+        "name": "IELTS"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "5e174e0a55bbdb65d5b1e8c9"
+        },
+        "name": "TOEIC"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Tiếng Anh",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Tiếng Anh",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "e2c2fa7c542d217e4ce7e91f"
+    },
+    "user_id": {
+      "$oid": "f9149af99c53eeca3205466c"
+    },
+    "headline": "Gia sư Tiếng Anh — 6 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "ca0c8a5adf2bdfd5471ab2e7"
+        },
+        "name": "Tiếng Anh"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "d72643a1e9776838e45395d8"
+        },
+        "name": "IELTS"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "5e174e0a55bbdb65d5b1e8c9"
+        },
+        "name": "TOEIC"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Tiếng Anh",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Tiếng Anh",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "ea5bd828eb9ce5f78fcf9e94"
+    },
+    "user_id": {
+      "$oid": "652a2e101aac57b433c0052d"
+    },
+    "headline": "Gia sư Tiếng Anh — 7 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Cầu Giấy, Hà Nội",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "ca0c8a5adf2bdfd5471ab2e7"
+        },
+        "name": "Tiếng Anh"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "d72643a1e9776838e45395d8"
+        },
+        "name": "IELTS"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "5e174e0a55bbdb65d5b1e8c9"
+        },
+        "name": "TOEIC"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Tiếng Anh",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Tiếng Anh",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "5351928cd6c4f4dfc7a59f45"
+    },
+    "user_id": {
+      "$oid": "60a43c386456a61b524ee414"
+    },
+    "headline": "Gia sư Tiếng Anh — 3 năm kinh nghiệm",
+    "bio": "Giảng dạy dễ hiểu, bám sát mục tiêu học viên. Có lộ trình cá nhân và cập nhật tiến độ mỗi tuần cho phụ huynh.",
+    "address": "Bình Thạnh, TP. Hồ Chí Minh",
+    "is_address_hidden": false,
+    "is_complete": true,
+    "availability_status": "AVAILABLE",
+    "average_rating": null,
+    "teaching_categories": [
+      {
+        "type": "subjects",
+        "category_id": {
+          "$oid": "ca0c8a5adf2bdfd5471ab2e7"
+        },
+        "name": "Tiếng Anh"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "d72643a1e9776838e45395d8"
+        },
+        "name": "IELTS"
+      },
+      {
+        "type": "grades",
+        "category_id": {
+          "$oid": "5e174e0a55bbdb65d5b1e8c9"
+        },
+        "name": "TOEIC"
+      }
+    ],
+    "educations": [
+      {
+        "school": "Đại học Sư phạm",
+        "degree": "Cử nhân sư phạm Tiếng Anh",
+        "graduation_year": {
+          "$numberInt": "2020"
+        }
+      }
+    ],
+    "experiences": [
+      {
+        "title": "Gia sư Tiếng Anh",
+        "company": "Gia sư tự do",
+        "start_date": {
+          "$date": {
+            "$numberLong": "1598918400000"
+          }
+        },
+        "end_date": null
+      }
+    ]
   }
 ]

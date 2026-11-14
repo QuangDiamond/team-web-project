@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authentication } from '../common/middlewares/auth.middleware.js';
+import { authentication, authorize } from '../common/middlewares/auth.middleware.js';
 import { validator } from '../common/validator/validator.js';
 import { createTopicSchema, updateTopicSchema } from '../common/validator/topicSchema.js';
 import { assertRole } from '../common/utils/assertRole.js';
@@ -13,7 +13,7 @@ const tutorOnly = (req, res, next) => {
   return next();
 };
 
-topicRoutes.get('/:classId/topics', authentication, tutorOnly, getAllTopics);
+topicRoutes.get('/:classId/topics', authentication, authorize('TUTOR', 'STUDENT'), getAllTopics);
 topicRoutes.post('/:classId/topics', authentication, tutorOnly, validator(createTopicSchema), createTopic);
 topicRoutes.patch('/:classId/topics/:topicId', authentication, tutorOnly, validator(updateTopicSchema), updateTopic);
 topicRoutes.delete('/:classId/topics/:topicId', authentication, tutorOnly, deleteTopic);

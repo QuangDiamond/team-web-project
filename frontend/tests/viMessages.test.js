@@ -12,6 +12,20 @@ test('upload errors explain how to correct the file instead of showing a generic
   assert.match(translateSystemMessage('A URL is required for link material'), /nhập liên kết/);
 });
 
+test('class material success responses explain which action completed', () => {
+  assert.equal(translateSystemMessage('Class material created successfully!'), 'Tải tài liệu lên thành công.');
+  assert.equal(translateSystemMessage('Class material updated successfully!'), 'Cập nhật tài liệu thành công.');
+  assert.equal(translateSystemMessage('Class material deleted successfully!'), 'Xóa tài liệu thành công.');
+  assert.equal(
+    translateSystemMessage('Class material updated, but the previous Cloudinary file could not be removed.'),
+    'Cập nhật tài liệu thành công, nhưng chưa xóa được file cũ trên Cloudinary.',
+  );
+  assert.equal(
+    translateSystemMessage('Class material deleted, but its Cloudinary file could not be removed.'),
+    'Đã xóa tài liệu, nhưng chưa xóa được file trên Cloudinary.',
+  );
+});
+
 test('Vietnamese system messages cover errors, dynamic validation and status labels', () => {
   assert.equal(translateSystemMessage('Invalid username or password'), 'Email hoặc mật khẩu không đúng.');
   assert.equal(translateSystemMessage('Reason must be at most 500 characters'), 'Lý do không được quá 500 ký tự.');

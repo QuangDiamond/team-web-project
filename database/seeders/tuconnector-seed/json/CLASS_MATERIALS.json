@@ -6,9 +6,7 @@
     "class_id": {
       "$oid": "f12f543e8d37e49b73b85a05"
     },
-    "topic_id": {
-      "$oid": "39fab13364f18a64ddbebe2b"
-    },
+    "topic_id": null,
     "uploader_profile_id": {
       "$oid": "590162ab97401e315b7aa0a3"
     },
@@ -26,7 +24,7 @@
     },
     "updated_at": {
       "$date": {
-        "$numberLong": "1791774000000"
+        "$numberLong": "1794503450312"
       }
     }
   },
@@ -56,6 +54,184 @@
     "updated_at": {
       "$date": {
         "$numberLong": "1791946800000"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5cf384abfef91af5e45a3"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "topic_id": {
+      "$oid": "6af5cf214abfef91af5e459a"
+    },
+    "uploader_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "title": "meomeo",
+    "material_type": "DOCUMENT",
+    "file_url": "https://res.cloudinary.com/dsqguwjmo/raw/upload/v1794494263/class-materials/SE1937NJ_HE191134_lhazs1.zip",
+    "file_size": {
+      "$numberInt": "5684"
+    },
+    "visibility": "ALL_MEMBERS",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794494264621"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794494264621"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5eb303576a53feee02103"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "topic_id": {
+      "$oid": "5453609bb958230fd4d06146"
+    },
+    "uploader_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "title": "zip thử",
+    "material_type": "DOCUMENT",
+    "file_url": "https://res.cloudinary.com/dhqtvre8s/raw/upload/v1794501424/class-materials/2026-11-11T02_19_43.268Z_SE1937NJ_HE191134_yrhkm8.zip",
+    "file_size": {
+      "$numberInt": "5684"
+    },
+    "visibility": "ALL_MEMBERS",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794501424546"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794501424546"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5ed013576a53feee02174"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "topic_id": {
+      "$oid": "5453609bb958230fd4d06146"
+    },
+    "uploader_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "title": "oke rồi nhri",
+    "material_type": "SLIDE",
+    "file_url": "https://res.cloudinary.com/dhqtvre8s/image/upload/v1794501888/class-materials/azir-lol-legends-of-runeterra-uhdpaper.com-4K-5.3240_g54brq.jpg",
+    "file_size": {
+      "$numberInt": "1928174"
+    },
+    "visibility": "STUDENTS_ONLY",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794501889065"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794501889065"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5ede83576a53feee02197"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "topic_id": null,
+    "uploader_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "title": "ádfasdf",
+    "material_type": "SLIDE",
+    "file_url": "https://res.cloudinary.com/dhqtvre8s/image/upload/v1794502119/class-materials/10%C3%84_msrofd.jpg",
+    "file_size": {
+      "$numberInt": "50464"
+    },
+    "visibility": "ALL_MEMBERS",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794502120217"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794503450312"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5eeec3576a53feee021d2"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "topic_id": null,
+    "uploader_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "title": "sdfa",
+    "material_type": "VIDEO",
+    "file_url": "https://res.cloudinary.com/dhqtvre8s/image/upload/v1794502379/class-materials/g%C3%83_i_xinh_zdcve7.jpg",
+    "file_size": {
+      "$numberInt": "37836"
+    },
+    "visibility": "ALL_MEMBERS",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794502380315"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794503450312"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af5f5d371cb9f64a6149dd2"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "topic_id": null,
+    "uploader_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "title": "sdf",
+    "material_type": "LINK",
+    "file_url": "https://youtu.be/u6j4DsZgANQ?si=N87KfMo7IciBpMni",
+    "file_size": null,
+    "visibility": "ALL_MEMBERS",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794504147403"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794504169551"
       }
     }
   }

@@ -87,5 +87,113 @@
       }
     },
     "attendance": []
+  },
+  {
+    "_id": {
+      "$oid": "6af60716afbd064579414e44"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "tutor_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "rule_id": null,
+    "title": "húp rồiiii",
+    "start_time": {
+      "$date": {
+        "$numberLong": "1794539700000"
+      }
+    },
+    "end_time": {
+      "$date": {
+        "$numberLong": "1794550500000"
+      }
+    },
+    "meeting_link": null,
+    "status": "SCHEDULED",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794508566799"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794512836713"
+      }
+    },
+    "attendance": []
+  },
+  {
+    "_id": {
+      "$oid": "6af60824afbd064579414e4c"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "tutor_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "rule_id": null,
+    "title": "húp rồiiii",
+    "start_time": {
+      "$date": {
+        "$numberLong": "1794647700000"
+      }
+    },
+    "end_time": {
+      "$date": {
+        "$numberLong": "1794651300000"
+      }
+    },
+    "meeting_link": null,
+    "status": "SCHEDULED",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794508836353"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794508850068"
+      }
+    },
+    "attendance": []
+  },
+  {
+    "_id": {
+      "$oid": "6af60829afbd064579414e54"
+    },
+    "class_id": {
+      "$oid": "f12f543e8d37e49b73b85a05"
+    },
+    "tutor_profile_id": {
+      "$oid": "590162ab97401e315b7aa0a3"
+    },
+    "rule_id": null,
+    "title": "meommeoe",
+    "start_time": {
+      "$date": {
+        "$numberLong": "1794744900000"
+      }
+    },
+    "end_time": {
+      "$date": {
+        "$numberLong": "1794748500000"
+      }
+    },
+    "meeting_link": null,
+    "status": "SCHEDULED",
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794508841030"
+      }
+    },
+    "updated_at": {
+      "$date": {
+        "$numberLong": "1794508841030"
+      }
+    },
+    "attendance": []
   }
 ]

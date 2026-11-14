@@ -1,16 +1,18 @@
 import mongoose from 'mongoose';
 import { AppError } from '../common/utils/AppError.js';
 import { buildPagination } from '../common/utils/pagination.js';
+import { ClassMember } from '../models/ClassMember.js';
 import { ClassSession } from '../models/ClassSession.js';
 import { Classroom } from '../models/Classroom.js';
-import { ClassMember } from '../models/ClassMember.js';
+import { Notification } from '../models/Notification.js';
+import { User } from '../models/User.js';
 import { ParentChildLink } from '../models/ParentChildLink.js';
 import { TutorProfile } from '../models/TutorProfile.js';
 import { RecurringRule } from '../models/RecurringRule.js';
 import { ScheduleChangeRequest } from '../models/ScheduleChangeRequest.js';
 import { SessionReminder } from '../models/SessionReminder.js';
 import { ENUMS } from '../models/enums.js';
-import { getOwnedActiveClassroom } from './topic.service.js';
+import { getOwnedActiveClassroom, getStudentActiveClassroom } from './topic.service.js';
 import { notifyParentsOfClassStudents } from './notification.service.js';
 
 const SESSION_NOTIFICATION_TITLES = {
@@ -170,32 +172,87 @@ const validateFutureStartTime = (startTime) => {
 };
 
 /**
- * Kiểm tra xung đột trùng lịch dạy của gia sư (BR-10: Overlap Conflict Check)
- * @param {ObjectId|string} tutorProfileId
- * @param {Date} startTime
- * @param {Date} endTime
- * @param {ObjectId|string|null} excludeSessionId
+ * Reject a session time range that overlaps another non-cancelled session in any active classroom owned by the tutor
+ * @param {Object} classroom - Active classroom being scheduled
+ * @param {Date} startTime - Proposed session start time
+ * @param {Date} endTime - Proposed session end time
+ * @param {string | null} excludedSessionId - Session ID to ignore while updating
+ * @returns {Promise<void>}
  */
-export const assertNoConflict = async (tutorProfileId, startTime, endTime, excludeSessionId = null) => {
-  const filter = {
-    tutor_profile_id: tutorProfileId,
-    status: ENUMS.ClassSessionsStatus.SCHEDULED,
-    start_time: { $lt: endTime },
-    end_time: { $gt: startTime },
-  };
-  if (excludeSessionId) {
-    filter._id = { $ne: excludeSessionId };
+const ensureNoSessionOverlap = async (classroom, startTime, endTime, excludedSessionId = null) => {
+  const activeClassrooms = await Classroom.find({
+    tutor_profile_id: classroom.tutor_profile_id,
+    status: ENUMS.ClassroomsStatus.ACTIVE,
+  })
+    .select('_id')
+    .lean();
+  const activeClassIds = activeClassrooms.map((activeClassroom) => activeClassroom._id);
+  if (!activeClassIds.some((classId) => String(classId) === String(classroom._id))) {
+    activeClassIds.push(classroom._id);
   }
 
-  const conflicting = await ClassSession.findOne(filter).lean();
-  if (conflicting) {
-    const conflictStart = new Date(conflicting.start_time).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-    const conflictEnd = new Date(conflicting.end_time).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-    const conflictDate = new Date(conflicting.start_time).toLocaleDateString('vi-VN');
-    throw new AppError(
-      `Trùng lịch dạy (BR-10): Bạn đã có buổi học "${conflicting.title || 'Buổi học'}" từ ${conflictStart} đến ${conflictEnd} ngày ${conflictDate}.`,
-      409
-    );
+  const filter = {
+    class_id: { $in: activeClassIds },
+    status: { $ne: ENUMS.ClassSessionsStatus.CANCELLED },
+    $or: [
+      {
+        start_time: { $lte: startTime },
+        end_time: { $gte: startTime },
+      },
+      {
+        start_time: { $lte: endTime },
+        end_time: { $gte: endTime },
+      },
+      {
+        start_time: { $gte: startTime },
+        end_time: { $lte: endTime },
+      },
+    ],
+  };
+
+  if (excludedSessionId) {
+    filter._id = { $ne: excludedSessionId };
+  }
+
+  const conflictingSession = await ClassSession.exists(filter);
+  if (conflictingSession) {
+    throw new AppError('Class session overlaps with another scheduled session in one of your active classes', 409);
+  }
+};
+
+/**
+ * Notify active students after a tutor directly changes a class session time
+ * @param {Object} classroom - Classroom whose session time changed
+ * @param {Object} session - Updated session
+ * @returns {Promise<void>}
+ */
+const notifyStudentsAboutScheduleChange = async (classroom, session) => {
+  try {
+    const memberIds = await ClassMember.distinct('user_id', {
+      class_id: classroom._id,
+      status: ENUMS.ClassMembersStatus.ACTIVE,
+    });
+    const students = await User.find({
+      _id: { $in: memberIds },
+      role: ENUMS.UserRole.STUDENT,
+      account_status: ENUMS.UserAccountStatus.ACTIVE,
+    })
+      .select('_id')
+      .lean();
+    if (students.length === 0) {
+      return;
+    }
+    await Notification.insertMany(students.map((student) => ({
+      recipient_user_id: student._id,
+      category: ENUMS.NotificationsCategory.SCHEDULE_CHANGE,
+      title: 'Lịch buổi học đã thay đổi',
+      body: `Buổi “${session.title || 'Buổi học'}” của lớp ${classroom.name} đã được chuyển sang ${session.start_time.toLocaleString('vi-VN')}.`,
+      target_type: ENUMS.NotificationsTargetType.SESSION,
+      target_id: session._id,
+      is_read: false,
+    })));
+  } catch (error) {
+    console.warn('[SCHEDULE_CHANGE] Could not notify class students:', error.message);
   }
 };
 
@@ -256,9 +313,67 @@ export const listClassSessions = async (user, classId, { page, limit }) => {
       .lean(),
     ClassSession.countDocuments(filter),
   ]);
+  const memberIds = await ClassMember.distinct('user_id', {
+    class_id: classroom._id,
+    status: ENUMS.ClassMembersStatus.ACTIVE,
+  });
+  const activeStudentCount = await User.countDocuments({
+    _id: { $in: memberIds },
+    role: ENUMS.UserRole.STUDENT,
+    account_status: ENUMS.UserAccountStatus.ACTIVE,
+  });
 
   return {
-    items: sessions.map((classSession) => toClassSessionDto(classSession)),
+    items: sessions.map((classSession) => ({
+      ...toClassSessionDto(classSession),
+      active_student_count: activeStudentCount,
+    })),
+    pagination: buildPagination(page, limit, total),
+  };
+};
+
+/**
+ * List sessions from an active classroom the authenticated student belongs to
+ * @param {Object} user - Authenticated student { id, role }
+ * @param {string} classId - Classroom ID
+ * @param {{ page: number, limit: number }} query - Pagination options
+ * @returns {Promise<{ items: Object[], pagination: Object }>}
+ */
+export const listStudentClassSessions = async (user, classId, { page, limit }) => {
+  const classroom = await getStudentActiveClassroom(user, classId);
+  const filter = { class_id: classroom._id };
+  const [sessions, total] = await Promise.all([
+    ClassSession.find(filter)
+      .sort({ start_time: 1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean(),
+    ClassSession.countDocuments(filter),
+  ]);
+  const memberIds = await ClassMember.distinct('user_id', {
+    class_id: classroom._id,
+    status: ENUMS.ClassMembersStatus.ACTIVE,
+  });
+  const activeStudentCount = await User.countDocuments({
+    _id: { $in: memberIds },
+    role: ENUMS.UserRole.STUDENT,
+    account_status: ENUMS.UserAccountStatus.ACTIVE,
+  });
+
+  return {
+    items: sessions.map((session) => {
+      const attendanceRecords = Array.isArray(session.attendance) ? session.attendance : [];
+      const attendanceRecord = attendanceRecords.find((record) => (
+        String(record.student_user_id) === String(user.id)
+      ));
+
+      return {
+        ...toClassSessionDto(session),
+        class_name: classroom.name,
+        active_student_count: activeStudentCount,
+        attendance_status: attendanceRecord ? attendanceRecord.status : null,
+      };
+    }),
     pagination: buildPagination(page, limit, total),
   };
 };
@@ -286,11 +401,10 @@ export const getClassSession = async (user, classId, sessionId) => {
 export const createClassSession = async (user, classId, data) => {
   const classroom = await getOwnedActiveClassroom(user, classId);
   validateFutureStartTime(data.start_time);
+  await ensureNoSessionOverlap(classroom, data.start_time, data.end_time);
 
   // 1. Nếu không có lặp lại (buổi lẻ)
   if (!data.repeat) {
-    await assertNoConflict(classroom.tutor_profile_id, data.start_time, data.end_time);
-
     const classSession = await ClassSession.create({
       class_id: classroom._id,
       tutor_profile_id: classroom.tutor_profile_id,
@@ -299,7 +413,7 @@ export const createClassSession = async (user, classId, data) => {
       start_time: data.start_time,
       end_time: data.end_time,
       meeting_link: data.meeting_link,
-      status: data.status,
+      status: ENUMS.ClassSessionsStatus.SCHEDULED,
     });
 
     await scheduleRemindersForSession(classSession);
@@ -347,7 +461,7 @@ export const createClassSession = async (user, classId, data) => {
         start_time: sStart,
         end_time: sEnd,
         meeting_link: data.meeting_link,
-        status: data.status || ENUMS.ClassSessionsStatus.SCHEDULED,
+        status: ENUMS.ClassSessionsStatus.SCHEDULED,
       });
     }
     curr.setDate(curr.getDate() + 1);
@@ -362,12 +476,12 @@ export const createClassSession = async (user, classId, data) => {
       start_time: data.start_time,
       end_time: data.end_time,
       meeting_link: data.meeting_link,
-      status: data.status || ENUMS.ClassSessionsStatus.SCHEDULED,
+      status: ENUMS.ClassSessionsStatus.SCHEDULED,
     });
   }
 
   for (const s of generatedSessions) {
-    await assertNoConflict(classroom.tutor_profile_id, s.start_time, s.end_time);
+    await ensureNoSessionOverlap(classroom, s.start_time, s.end_time);
   }
 
   const createdSessions = await ClassSession.insertMany(generatedSessions);
@@ -392,13 +506,21 @@ export const updateClassSession = async (user, classId, sessionId, data) => {
   const classroom = await getOwnedActiveClassroom(user, classId);
   const classSession = await getClassSessionOrThrow(classroom, sessionId);
 
+  if (classSession.status === ENUMS.ClassSessionsStatus.CANCELLED) {
+    throw new AppError('Cancelled class sessions cannot be changed', 422);
+  }
   if (classSession.start_time <= new Date()) {
     throw new AppError('Past class sessions cannot be updated', 422);
   }
 
   if (data.start_time && data.end_time) {
     validateFutureStartTime(data.start_time);
-    await assertNoConflict(classroom.tutor_profile_id, data.start_time, data.end_time, classSession._id);
+    await ensureNoSessionOverlap(
+      classroom,
+      data.start_time,
+      data.end_time,
+      classSession._id,
+    );
   }
 
   const updatedSession = await ClassSession.findOneAndUpdate(
@@ -409,6 +531,9 @@ export const updateClassSession = async (user, classId, sessionId, data) => {
 
   if (!updatedSession) {
     throw new AppError('Class session changed before update; reload and try again', 409);
+  }
+  if (data.start_time && classSession.start_time.getTime() !== data.start_time.getTime()) {
+    await notifyStudentsAboutScheduleChange(classroom, updatedSession);
   }
 
   let sessionAction = 'UPDATED';
@@ -576,7 +701,7 @@ export const respondScheduleChangeRequest = async (user, classId, requestId, dat
 
   if (data.status === ENUMS.ScheduleChangeRequestsStatus.APPROVED) {
     if (changeRequest.request_type === ENUMS.ScheduleChangeRequestsRequestType.MOVE) {
-      await assertNoConflict(classroom.tutor_profile_id, changeRequest.proposed_start_time, changeRequest.proposed_end_time, session._id);
+      await ensureNoSessionOverlap(classroom, changeRequest.proposed_start_time, changeRequest.proposed_end_time, session._id);
       session.start_time = changeRequest.proposed_start_time;
       session.end_time = changeRequest.proposed_end_time;
       await session.save();

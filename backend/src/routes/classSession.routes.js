@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authentication } from '../common/middlewares/auth.middleware.js';
+import { authentication, authorize } from '../common/middlewares/auth.middleware.js';
 import { assertRole } from '../common/utils/assertRole.js';
 import { validator } from '../common/validator/validator.js';
 import {
@@ -30,8 +30,8 @@ const tutorOnly = (req, res, next) => {
 };
 
 // 1. Quản lý buổi học (UC26 & UC30)
-classSessionRoutes.get('/:classId/sessions', authentication, listClassSessions);
-classSessionRoutes.get('/:classId/sessions/:sessionId', authentication, getClassSession);
+classSessionRoutes.get('/:classId/sessions', authentication, authorize('TUTOR', 'STUDENT', 'PARENT'), listClassSessions);
+classSessionRoutes.get('/:classId/sessions/:sessionId', authentication, tutorOnly, getClassSession);
 classSessionRoutes.post(
   '/:classId/sessions',
   authentication,

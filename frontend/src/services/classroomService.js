@@ -229,8 +229,8 @@ export const deleteClassSession = async (classId, sessionId) => {
   return await api.delete(`/classroom/v1/${classId}/sessions/${sessionId}`);
 };
 
-export const getClassTopics = async (classId) => {
-  return await api.get(`/classroom/v1/${classId}/topics`);
+export const getClassTopics = async (classId, params = {}) => {
+  return await api.get(`/classroom/v1/${classId}/topics`, { params });
 };
 
 export const createClassTopic = async (classId, data) => {
@@ -245,8 +245,8 @@ export const deleteClassTopic = async (classId, topicId) => {
   return await api.delete(`/classroom/v1/${classId}/topics/${topicId}`);
 };
 
-export const getClassMaterials = async (classId) => {
-  return await api.get(`/classroom/v1/${classId}/materials`);
+export const getClassMaterials = async (classId, params = {}) => {
+  return await api.get(`/classroom/v1/${classId}/materials`, { params });
 };
 
 export const createClassMaterial = async (classId, data) => {

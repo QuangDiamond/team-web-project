@@ -19,12 +19,11 @@ Creates a one-off session. Request body:
   "title": "Math lesson",
   "start_time": "2026-12-01T09:00:00+07:00",
   "end_time": "2026-12-01T10:00:00+07:00",
-  "meeting_link": "https://meet.google.com/example",
-  "status": "SCHEDULED"
+  "meeting_link": "https://meet.google.com/example"
 }
 ```
 
-`title`, `start_time`, and `end_time` are required. Times must be ISO datetime strings with a timezone, and `end_time` must be later than `start_time`. `meeting_link` is optional and can be `null`. `status` is optional and defaults to `SCHEDULED`; allowed values in the current backend/database enum are `SCHEDULED`, `CANCELLED`, and `COMPLETED`. The backend sets `class_id` from the URL, `tutor_profile_id` from the owned classroom, and `rule_id` to `null` for a one-off session.
+`title`, `start_time`, and `end_time` are required. Times must be ISO datetime strings with a timezone, and `end_time` must be later than `start_time`. `meeting_link` is optional and can be `null`. New sessions always start with status `SCHEDULED`, set by the backend. The backend sets `class_id` from the URL, `tutor_profile_id` from the owned classroom, and `rule_id` to `null` for a one-off session.
 
 `start_time` must be in the future. A past or current start time is rejected with `422`.
 
