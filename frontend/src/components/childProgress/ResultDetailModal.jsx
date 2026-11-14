@@ -5,6 +5,7 @@ import { getChildResultDetail } from '../../services/childProgressService';
 import Alert from '../common/Alert';
 import Modal from '../common/Modal';
 import { formatDate } from '../../utils/dateFormat';
+import { getAttachmentUrl } from '../../utils/fileUrl';
 import { QUESTION_TYPE, TIMELINESS, formatPercent, formatScore, getScoreTone } from './progressLabels';
 
 function QuestionBlock({ question }) {
@@ -35,7 +36,7 @@ function QuestionBlock({ question }) {
       <p className="progress-row-meta">Bài làm của con</p>
       <p className="result-answer">{answerText}</p>
       {answer && answer.file_url && (
-        <a className="link" href={answer.file_url} target="_blank" rel="noopener noreferrer">Xem file bài làm</a>
+        <a className="link" href={getAttachmentUrl(answer.file_url)} target="_blank" rel="noopener noreferrer">Xem file bài làm</a>
       )}
 
       {isMultipleChoice && question.correct_answer && (

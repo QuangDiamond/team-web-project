@@ -437,23 +437,20 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
     }
 
   } else if (user?.role === 'PARENT' && userId) {
-    // Với Parent: CHỈ lấy danh sách các lớp mà con của phụ huynh đang thực tế theo học (status: ACTIVE)
+    // Với Parent: Lấy danh sách lớp mà phụ huynh là thành viên trực tiếp HOẶC có con đang theo học
     const childLinks = await ParentChildLink.find({
       parent_user_id: userId,
       status: ENUMS.ParentChildLinksStatus.ACCEPTED,
     }).select('student_user_id').lean();
     const studentUserIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
 
-    if (studentUserIds.length === 0) {
-      filter._id = { $in: [] };
-    } else {
-      const memberships = await ClassMember.find({
-        user_id: { $in: studentUserIds },
-        status: ENUMS.ClassMembersStatus.ACTIVE,
-      }).select('class_id').lean();
-      const classIds = memberships.map((m) => m.class_id);
-      filter._id = { $in: classIds };
-    }
+    const relevantUserIds = [userId, ...studentUserIds];
+    const memberships = await ClassMember.find({
+      user_id: { $in: relevantUserIds },
+      status: ENUMS.ClassMembersStatus.ACTIVE,
+    }).select('class_id').lean();
+    const classIds = memberships.map((m) => m.class_id);
+    filter._id = { $in: classIds };
   } else if (user) {
     // Với Student: Lấy danh sách lớp đã tham gia thành công (ACTIVE)
     const memberships = await ClassMember.find({
@@ -517,8 +514,9 @@ export const getUserClassrooms = async ({ user, tutorProfile, query = {} }) => {
 
       return {
         ...cls,
-        member_count: activeMembers.length,
+        member_count: studentCount,
         student_count: studentCount,
+        total_members: activeMembers.length,
         conversation_id: conversation?._id || null,
         is_owner: isOwner,
       };
@@ -588,20 +586,30 @@ export const getClassroomDetail = async ({ classroomId, tutorProfile, user }) =>
       });
       if (isMember) hasAccess = true;
     } else if (user?.role === 'PARENT' && user?._id) {
-      // Phụ huynh CHỈ có quyền truy cập nếu con của mình là học viên đang học trong lớp
-      const childLinks = await ParentChildLink.find({
-        parent_user_id: user._id,
-        status: ENUMS.ParentChildLinksStatus.ACCEPTED,
-      }).select('student_user_id').lean();
-      const studentIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
-      if (studentIds.length > 0) {
-        const isChildMember = await ClassMember.findOne({
-          class_id: classroomId,
-          user_id: { $in: studentIds },
-          status: ENUMS.ClassMembersStatus.ACTIVE,
-        });
-        if (isChildMember) {
-          hasAccess = true;
+      // 1. Kiểm tra nếu phụ huynh là thành viên trực tiếp của lớp (đã tham gia bằng mã hoặc gia sư thêm)
+      const isDirectMember = await ClassMember.findOne({
+        class_id: classroomId,
+        user_id: user._id,
+        status: ENUMS.ClassMembersStatus.ACTIVE,
+      });
+      if (isDirectMember) {
+        hasAccess = true;
+      } else {
+        // 2. Hoặc con của phụ huynh đang là học viên trong lớp
+        const childLinks = await ParentChildLink.find({
+          parent_user_id: user._id,
+          status: ENUMS.ParentChildLinksStatus.ACCEPTED,
+        }).select('student_user_id').lean();
+        const studentIds = childLinks.map((l) => l.student_user_id).filter(Boolean);
+        if (studentIds.length > 0) {
+          const isChildMember = await ClassMember.findOne({
+            class_id: classroomId,
+            user_id: { $in: studentIds },
+            status: ENUMS.ClassMembersStatus.ACTIVE,
+          });
+          if (isChildMember) {
+            hasAccess = true;
+          }
         }
       }
     } else if (user?._id) {
@@ -614,7 +622,7 @@ export const getClassroomDetail = async ({ classroomId, tutorProfile, user }) =>
     }
 
     if (!hasAccess) {
-      throw new AppError('Bạn không có quyền truy cập lớp học này (lớp này không có con của bạn đang theo học)', 403);
+      throw new AppError('Bạn không có quyền truy cập lớp học này (bạn chưa tham gia lớp và không có con đang theo học)', 403);
     }
   }
 
@@ -628,9 +636,10 @@ export const getClassroomDetail = async ({ classroomId, tutorProfile, user }) =>
 
   return {
     ...classroom,
-    member_count: activeMembers.length,
+    member_count: studentCount,
     student_count: studentCount,
     parent_count: parentCount,
+    total_members: activeMembers.length,
     is_full: studentCount >= (classroom.capacity || 20),
     conversation,
     is_owner: isOwner,
@@ -1355,6 +1364,9 @@ export const getClassroomByJoinCode = async ({ joinCode }) => {
       full_name: m.user_id.full_name || m.user_id.email,
     }));
 
+  const studentCount = students.length;
+  const parentCount = activeMembers.filter((m) => m.user_id && m.user_id.role === 'PARENT').length;
+
   return {
     _id: classroom._id,
     name: classroom.name,
@@ -1363,8 +1375,11 @@ export const getClassroomByJoinCode = async ({ joinCode }) => {
     description: classroom.description,
     status: classroom.status,
     capacity: classroom.capacity,
-    member_count: activeMembers.length,
-    is_full: activeMembers.length >= classroom.capacity,
+    member_count: studentCount,
+    student_count: studentCount,
+    parent_count: parentCount,
+    total_members: activeMembers.length,
+    is_full: studentCount >= classroom.capacity,
     tutor: classroom.tutor_profile_id,
     tutor_user_id: classroom.tutor_profile_id?.user_id?._id || classroom.tutor_profile_id?.user_id || null,
     students,
@@ -1429,20 +1444,6 @@ export const joinClassroomByCode = async ({ joinCode, user, child_user_id }) => 
 
   // Quy tắc UC23: Thành viên đã bị xóa không thể tự vào lại lớp bằng mã mời hoặc link cũ
   if (member && member.status === ENUMS.ClassMembersStatus.REMOVED) {
-    if (process.env.NODE_ENV === 'development') {
-      // Trong môi trường development để hỗ trợ kiểm thử tiện lợi, cho phép kích hoạt lại
-      member.status = ENUMS.ClassMembersStatus.ACTIVE;
-      member.joined_at = new Date();
-      member.removal_reason = null;
-      await member.save();
-      return {
-        class_id: classroom._id,
-        name: classroom.name,
-        member_id: member._id,
-        role: user.role,
-        message: 'Tham gia lại lớp học thành công!',
-      };
-    }
     throw new AppError(
       'Bạn đã bị gỡ khỏi lớp học này và không thể tham gia lại bằng liên kết hoặc mã mời cũ. Vui lòng liên hệ gia sư phụ trách lớp.',
       403
@@ -2388,7 +2389,36 @@ export const submitAssignment = async ({ assignmentId, user, answers = [] }) => 
   const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
   for (const ans of answers) {
-    if (ans.file_url) {
+    // Nếu học sinh tải tệp trực tiếp từ máy (gửi kèm file_data dạng base64)
+    if (ans.file_data) {
+      const originalName = (ans.file_name || 'bai_lam').trim();
+      const ext = originalName.split('.').pop()?.toLowerCase() || '';
+      if (DISALLOWED_EXTENSIONS.some((bad) => `.${ext}` === bad || originalName.toLowerCase().endsWith(bad))) {
+        throw new AppError('Định dạng tệp không được hỗ trợ (không chấp nhận file thực thi .exe, .bat, ...)', 400);
+      }
+
+      let base64Data = ans.file_data;
+      if (base64Data.includes(',')) {
+        base64Data = base64Data.split(',')[1];
+      }
+      const buffer = Buffer.from(base64Data, 'base64');
+      const fileSize = buffer.length;
+
+      if (fileSize > MAX_FILE_SIZE) {
+        throw new AppError(`Tệp "${originalName}" vượt quá dung lượng tối đa cho phép là 20MB`, 400);
+      }
+
+      await fs.mkdir(uploadsDir, { recursive: true });
+      const safeBaseName = originalName
+        .replace(/[^a-zA-Z0-9._-]/g, '_')
+        .slice(0, 50);
+      const uniqueFileName = `sub-${Date.now()}-${crypto.randomBytes(4).toString('hex')}-${safeBaseName}`;
+      const targetPath = path.join(uploadsDir, uniqueFileName);
+
+      await fs.writeFile(targetPath, buffer);
+      ans.file_url = `/uploads/${uniqueFileName}`;
+      ans.file_size = fileSize;
+    } else if (ans.file_url) {
       const urlLower = ans.file_url.toLowerCase();
       const isDisallowed = DISALLOWED_EXTENSIONS.some((ext) => urlLower.endsWith(ext) || urlLower.includes(`${ext}?`));
       if (isDisallowed) {

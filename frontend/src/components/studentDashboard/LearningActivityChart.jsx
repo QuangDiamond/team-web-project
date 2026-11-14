@@ -1,4 +1,4 @@
-import { useState, useEffect, useId, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { TrendingUp, Award, CheckCircle2, BookOpen, Activity, Loader2, Calendar } from 'lucide-react';
 import SectionCard from '../common/SectionCard';
 import { getLearningActivity } from '../../services/studentDashboardService';
@@ -10,9 +10,6 @@ export default function LearningActivityChart() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hoveredIndex, setHoveredIndex] = useState(null);
-
-  const scoreGradId = useId();
-  const activityGradId = useId();
 
   useEffect(() => {
     let isMounted = true;
@@ -80,17 +77,11 @@ export default function LearningActivityChart() {
     // Tạo SVG Path cho đường điểm số (nối các điểm có giá trị)
     const validScores = scoreCoords.filter((c) => c.y !== null);
     let scorePathD = '';
-    let scoreAreaD = '';
     if (validScores.length > 0) {
       scorePathD = `M ${validScores[0].x} ${validScores[0].y}`;
       validScores.slice(1).forEach((c) => {
         scorePathD += ` L ${c.x} ${c.y}`;
       });
-
-      const firstX = validScores[0].x;
-      const lastX = validScores[validScores.length - 1].x;
-      const groundY = paddingTop + chartHeight;
-      scoreAreaD = `${scorePathD} L ${lastX} ${groundY} L ${firstX} ${groundY} Z`;
     }
 
     // Tạo SVG Path cho đường hoạt động
@@ -98,11 +89,6 @@ export default function LearningActivityChart() {
     activityCoords.slice(1).forEach((c) => {
       activityPathD += ` L ${c.x} ${c.y}`;
     });
-
-    const firstActX = activityCoords[0].x;
-    const lastActX = activityCoords[activityCoords.length - 1].x;
-    const groundY = paddingTop + chartHeight;
-    const activityAreaD = `${activityPathD} L ${lastActX} ${groundY} L ${firstActX} ${groundY} Z`;
 
     return {
       width,
@@ -115,9 +101,7 @@ export default function LearningActivityChart() {
       scoreCoords,
       activityCoords,
       scorePathD,
-      scoreAreaD,
       activityPathD,
-      activityAreaD,
       maxActivity,
     };
   }, [data]);
@@ -256,20 +240,6 @@ export default function LearningActivityChart() {
             className="activity-svg-chart"
             aria-label="Biểu đồ đường hoạt động học tập"
           >
-            <defs>
-              {/* Gradient cho vùng điểm số */}
-              <linearGradient id={scoreGradId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--color-primary-strong)" stopOpacity="0.28" />
-                <stop offset="100%" stopColor="var(--color-primary-strong)" stopOpacity="0.01" />
-              </linearGradient>
-
-              {/* Gradient cho vùng hoạt động */}
-              <linearGradient id={activityGradId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--color-info)" stopOpacity="0.22" />
-                <stop offset="100%" stopColor="var(--color-info)" stopOpacity="0.01" />
-              </linearGradient>
-            </defs>
-
             {/* Trục Y và Đường lưới ngang (Grid lines) */}
             {[0, 2.5, 5, 7.5, 10].map((level) => {
               const y =
@@ -300,16 +270,6 @@ export default function LearningActivityChart() {
                 </g>
               );
             })}
-
-            {/* Vùng mờ (Area Fill) cho Hoạt động */}
-            {(metricMode === 'ALL' || metricMode === 'ACTIVITY') && chartCoordinates.activityAreaD && (
-              <path d={chartCoordinates.activityAreaD} fill={`url(#${activityGradId})`} />
-            )}
-
-            {/* Vùng mờ (Area Fill) cho Điểm số */}
-            {(metricMode === 'ALL' || metricMode === 'SCORE') && chartCoordinates.scoreAreaD && (
-              <path d={chartCoordinates.scoreAreaD} fill={`url(#${scoreGradId})`} />
-            )}
 
             {/* Đường biểu diễn (Line) Hoạt động */}
             {(metricMode === 'ALL' || metricMode === 'ACTIVITY') && chartCoordinates.activityPathD && (

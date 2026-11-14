@@ -85,23 +85,17 @@ const createWorkItems = (role) => [
  * Mục "Log Out" luôn do DashboardLayout tự thêm, không khai báo ở đây.
  */
 
-// UC36 – Student Dashboard. Menu theo Figma (StudentDashboard), mục chưa có màn hình để trống `to`
+// UC36 – Student Dashboard. Menu theo Figma (StudentDashboard)
 export const STUDENT_MENU = {
   roleLabel: "Học sinh",
   groups: [
     createOverviewGroup('student'),
-    createAccountGroup('student', [
-      { label: 'Giao dịch', icon: CreditCard },
-      { label: 'Cài đặt', icon: Settings },
-    ]),
+    createAccountGroup('student'),
     {
       label: "CÔNG VIỆC",
       items: [
         { label: "Lớp học", to: '/student/classes', icon: BookOpen },
-        { label: "Buổi học của tôi", icon: Video },
-        { label: "Tin nhắn", icon: MessageSquare },
         { label: "Thông báo", to: '/student/notifications', icon: Bell },
-        { label: "Nhóm học tập", icon: Users },
         { label: "Liên kết phụ huynh", to: '/student/parent-links', icon: Link2 },
       ],
     },

@@ -96,7 +96,20 @@ export default function JoinClassModal({ isOpen, onClose }) {
         navigate(targetUrl);
       }
     } catch (err) {
-      toast.error(err?.response?.data?.message || err.message || 'Không thể tham gia lớp học');
+      const msg = err?.response?.data?.message || err.message || 'Không thể tham gia lớp học';
+      if (msg.includes('đã là thành viên') && preview?._id) {
+        toast.info('Bạn đã là thành viên của lớp này. Đang chuyển hướng vào lớp...');
+        handleClose();
+        const targetUrl =
+          user?.role === 'TUTOR'
+            ? `/tutor/classes/${preview._id}`
+            : user?.role === 'PARENT'
+            ? `/parent/classes/${preview._id}`
+            : `/student/classes/${preview._id}`;
+        navigate(targetUrl);
+        return;
+      }
+      toast.error(msg);
     } finally {
       setJoining(false);
     }
@@ -186,7 +199,7 @@ export default function JoinClassModal({ isOpen, onClose }) {
               <div style={{ fontSize: '13px', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Users size={14} />
                 <span>
-                  Sĩ số: <strong>{preview.member_count}</strong> / {preview.capacity} học viên
+                  Sĩ số: <strong>{preview.student_count ?? preview.member_count}</strong> / {preview.capacity} học sinh
                 </span>
               </div>
 

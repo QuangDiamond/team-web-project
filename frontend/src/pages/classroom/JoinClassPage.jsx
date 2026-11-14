@@ -82,7 +82,13 @@ export default function JoinClassPage() {
         navigate(getClassesUrl());
       }
     } catch (err) {
-      toast.error(err?.response?.data?.message || err.message || 'Không thể tham gia lớp học');
+      const msg = err?.response?.data?.message || err.message || 'Không thể tham gia lớp học';
+      if (msg.includes('đã là thành viên') && preview?._id) {
+        toast.info('Bạn đã là thành viên của lớp này. Đang chuyển hướng vào lớp...');
+        navigate(getClassDetailUrl(preview._id));
+        return;
+      }
+      toast.error(msg);
     } finally {
       setJoining(false);
     }
@@ -190,7 +196,7 @@ export default function JoinClassPage() {
               <div style={{ fontSize: '14px', color: 'var(--color-text-muted)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Users size={15} />
                 <span>
-                  Sĩ số hiện tại: <strong>{preview.member_count}</strong> / {preview.capacity} học viên
+                  Sĩ số hiện tại: <strong>{preview.student_count ?? preview.member_count}</strong> / {preview.capacity} học sinh
                 </span>
               </div>
 
