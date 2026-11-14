@@ -15,8 +15,7 @@
   gap: 16px;
 }
 
-.noti-categories,
-.noti-read-filters {
+.noti-categories, .noti-read-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -54,8 +53,7 @@
   background: var(--color-surface);
 }
 
-.noti-filter-button:focus-visible,
-.noti-preference input:focus-visible {
+.noti-filter-button:focus-visible, .noti-preference input:focus-visible {
   outline: 2px solid var(--color-primary-strong);
   outline-offset: 3px;
 }
@@ -89,8 +87,7 @@
   background: var(--color-info-soft);
 }
 
-.noti-category-SESSION,
-.noti-category-ASSIGNMENT {
+.noti-category-SESSION, .noti-category-ASSIGNMENT {
   color: var(--color-success);
   background: var(--color-success-soft);
 }
@@ -231,4 +228,5 @@
   .noti-filter-button {
     padding: 8px;
   }
+
 }

@@ -7,7 +7,6 @@ import { User } from '../models/User.js';
 import { ENUMS } from '../models/enums.js';
 import { AppError } from '../common/utils/AppError.js';
 import { buildPagination } from '../common/utils/pagination.js';
-import { notifyNewDirectMessage, markDirectMessageNotificationsRead } from './notification.service.js';
 
 const { UserRole } = ENUMS;
 const DIRECT = ENUMS.ConversationsType.DIRECT;
@@ -267,8 +266,6 @@ export const markConversationRead = async (user, conversationId) => {
       { $push: { read_states: { user_id: user.id, last_read_message_id: lastReadMessageId, read_at: now } } }
     );
   }
-  // Đã đọc hội thoại thì thông báo tin nhắn của hội thoại này cũng coi như đã đọc
-  await markDirectMessageNotificationsRead(user.id, conversation._id);
   return { unread_count: 0 };
 };
 
@@ -295,8 +292,6 @@ export const sendMessage = async (user, conversationId, content) => {
   // Đưa hội thoại lên đầu danh sách của cả hai bên
   await Conversation.updateOne({ _id: conversation._id }, { $set: { updated_at: new Date() } });
   await markConversationRead(user, conversationId);
-  // Báo cho bên còn lại có tin nhắn mới (chuông thông báo)
-  await notifyNewDirectMessage({ conversation: conversation, senderUser: user, content: content });
 
   return toMessageDto(message, user.id);
 };

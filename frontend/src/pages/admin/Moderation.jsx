@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useState } from 'react';
 import { ShieldCheck } from 'lucide-react';
 import PageHeader from '../../components/common/PageHeader';
@@ -14,15 +13,12 @@ import '../../styles/Moderation.css';
 export default function Moderation() {
   const data = useModeration();
   const [activeReport, setActiveReport] = useState(null);
-  const resolved = (text) => {
-    toast.success(text);
-    setActiveReport(null);
-    data.reload();
-  };
+  const [message, setMessage] = useState('');
+  const resolved = (text) => { setMessage(text); setActiveReport(null); data.reload(); };
   return (
     <div className="mod-page">
       <PageHeader eyebrow="QUẢN TRỊ" title="Kiểm duyệt nội dung" description="Xem xét báo cáo vi phạm và theo dõi các quyết định xử lý." />
-
+      {message && <Alert type="success">{message}</Alert>}
       <div className="stat-grid">
         <StatCard label="Tổng số báo cáo" value={data.summary.total} />
         <StatCard label="Chờ xử lý" value={data.summary.pendingCount} tone="warning" />

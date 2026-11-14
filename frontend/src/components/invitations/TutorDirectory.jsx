@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, Star, Users } from 'lucide-react';
@@ -7,6 +6,7 @@ import { usePagedList } from '../../hooks/usePagedList';
 import { searchTutors } from '../../services/discoveryService';
 import { formatBudget } from '../../constants/requestLabels';
 import { getInitials } from '../../utils/getInitials';
+import Alert from '../common/Alert';
 import ListState from '../common/ListState';
 import Pagination from '../common/Pagination';
 import InviteTutorDialog from '../publicProfile/InviteTutorDialog';
@@ -69,6 +69,8 @@ export default function TutorDirectory() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filters, setFilters] = useState(() => Object.fromEntries(searchParams));
   const [invitingTutor, setInvitingTutor] = useState(null);
+  const [notice, setNotice] = useState('');
+  const [noticeType, setNoticeType] = useState('success');
 
   const params = { ...Object.fromEntries(searchParams), limit: PAGE_SIZE };
   delete params.area;
@@ -89,7 +91,8 @@ export default function TutorDirectory() {
       return;
     }
     if (user.role !== 'PARENT') {
-      toast.info('Chỉ tài khoản phụ huynh mới có thể gửi lời mời gia sư.');
+      setNoticeType('info');
+      setNotice('Chỉ tài khoản phụ huynh mới có thể gửi lời mời gia sư.');
       return;
     }
     setInvitingTutor(tutor);
@@ -102,7 +105,8 @@ export default function TutorDirectory() {
   };
 
   const handleInvited = (result) => {
-    toast.success(`Đã gửi lời mời tới ${invitingTutor.full_name}. Bạn còn ${result.remaining_credits} credits.`);
+    setNoticeType('success');
+    setNotice(`Đã gửi lời mời tới ${invitingTutor.full_name}. Bạn còn ${result.remaining_credits} credits.`);
     setInvitingTutor(null);
   };
 
@@ -137,6 +141,8 @@ export default function TutorDirectory() {
             {list.pagination && <p className="item-meta" role="status">Tìm thấy {list.pagination.total} gia sư</p>}
           </div>
         </form>
+
+      {notice && <Alert type={noticeType}>{notice}</Alert>}
 
       <ListState
         list={list}

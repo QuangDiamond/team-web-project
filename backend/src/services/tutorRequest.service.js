@@ -43,18 +43,6 @@ export const toTutorRequestDto = (request, { applicationCount, isBookmarked, has
 };
 
 /**
- * Dữ liệu request cho khách / người không phải gia sư: ẩn cả parent_user_id
- * @param {Object} request - ParentRequest (lean)
- * @param {number} applicationCount
- * @returns {Object}
- */
-const toPublicRequestDto = (request, applicationCount) => {
-  const dto = toTutorRequestDto(request, { applicationCount, isBookmarked: false, hasApplied: false });
-  dto.parent_user_id = null;
-  return dto;
-};
-
-/**
  * Điều kiện Mongo cho danh sách duyệt request: chỉ OPEN, chưa quá 30 ngày, cộng các bộ lọc
  * @param {Object} query - { q, subject, grade, area, mode, minBudget, maxBudget }
  * @param {Date} [now]
@@ -121,9 +109,6 @@ const assertValidId = (id) => {
 const decorateRequests = async (requests, profile) => {
   const requestIds = requests.map((request) => request._id);
   const counts = await countApplications(requestIds);
-  if (!profile) {
-    return requests.map((request) => toPublicRequestDto(request, counts.get(String(request._id)) || 0));
-  }
   const bookmarks = await BookmarkedRequest.find({ tutor_profile_id: profile._id, request_id: { $in: requestIds } })
     .select('request_id')
     .lean();
@@ -149,16 +134,13 @@ const decorateRequests = async (requests, profile) => {
 };
 
 /**
- * Duyệt request đang mở với bộ lọc và phân trang, mới nhất trước. Công khai: chỉ gia sư có trạng thái đã lưu / đã ứng tuyển
- * @param {Object|undefined} user - req.user { id, role }, undefined với khách
+ * Duyệt request đang mở với bộ lọc và phân trang, mới nhất trước
+ * @param {Object} user - req.user { id, role }
  * @param {Object} query - { q, subject, grade, area, mode, minBudget, maxBudget, page, limit }
  * @returns {Promise<{ items: Object[], pagination: Object }>}
  */
 export const browseRequests = async (user, query) => {
-  let profile = null;
-  if (user && user.role === ENUMS.UserRole.TUTOR) {
-    profile = await getTutorProfileOrThrow(user);
-  }
+  const profile = await getTutorProfileOrThrow(user);
   const filter = buildBrowseFilter(query);
 
   const [requests, total] = await Promise.all([

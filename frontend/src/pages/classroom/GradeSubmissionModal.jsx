@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import {
   BarChart3,
@@ -10,32 +9,17 @@ import {
   ExternalLink,
   Award,
   Send,
-  Share2,
 } from 'lucide-react';
-import { getSubmissionsForAssignment, gradeSubmission, publishAssignmentResults } from '../../services/classroomService';
+import { getSubmissionsForAssignment, gradeSubmission } from '../../services/classroomService';
 
-export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGraded }) {
+export default function GradeSubmissionModal({ isOpen, onClose, assignment, showToast }) {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedSub, setSelectedSub] = useState(null);
   const [finalScore, setFinalScore] = useState('');
   const [feedback, setFeedback] = useState('');
-  const [answersFeedback, setAnswersFeedback] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-
-  const initAnswersFb = (sub) => {
-    const map = {};
-    (sub?.answers || []).forEach((a) => {
-      const qId = a.question_id?.toString() || a.question_id;
-      map[qId] = {
-        score: a.score !== null && a.score !== undefined ? a.score : 0,
-        comment: a.comment || '',
-        is_overridden: Boolean(a.is_overridden),
-      };
-    });
-    setAnswersFeedback(map);
-  };
 
   useEffect(() => {
     if (isOpen && assignment?._id) {
@@ -54,10 +38,8 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                 : list[0].provisional_score || 0
             );
             setFeedback(list[0].overall_feedback || '');
-            initAnswersFb(list[0]);
           } else {
             setSelectedSub(null);
-            setAnswersFeedback({});
           }
         } catch (err) {
           setError(err?.response?.data?.message || err.message || 'Không thể tải danh sách bài nộp');
@@ -84,20 +66,7 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
         : sub.provisional_score || 0
     );
     setFeedback(sub.overall_feedback || '');
-    initAnswersFb(sub);
     setError('');
-  };
-
-  const handleAnswerFeedbackChange = (questionId, field, value, isAutoGraded = false) => {
-    const qId = questionId?.toString() || questionId;
-    setAnswersFeedback((prev) => {
-      const curr = prev[qId] || { score: 0, comment: '', is_overridden: false };
-      const updated = { ...curr, [field]: value };
-      if (field === 'score' && isAutoGraded) {
-        updated.is_overridden = true;
-      }
-      return { ...prev, [qId]: updated };
-    });
   };
 
   const handleGrade = async (e) => {
@@ -107,43 +76,20 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
     try {
       setSubmitting(true);
       setError('');
-
-      const answersFbPayload = Object.entries(answersFeedback).map(([qId, fb]) => ({
-        question_id: qId,
-        score: parseFloat(fb.score) || 0,
-        comment: (fb.comment || '').trim(),
-      }));
-
       const res = await gradeSubmission(selectedSub._id, {
         final_score: parseFloat(finalScore) || 0,
         overall_feedback: feedback.trim(),
-        answers_feedback: answersFbPayload,
       });
-
-      toast.success('Chấm điểm bài nộp thành công! Đã gửi thông báo cho học viên và phụ huynh liên kết.');
+      if (showToast) {
+        showToast('Chấm điểm bài nộp thành công! Đã gửi thông báo cho học viên và phụ huynh liên kết.');
+      }
       // Cập nhật lại list
       setSubmissions((prev) =>
         prev.map((s) => (s._id === selectedSub._id ? { ...s, ...res.data } : s))
       );
       setSelectedSub((prev) => ({ ...prev, ...res.data }));
-      if (onGraded) onGraded();
     } catch (err) {
-      toast.error(err?.response?.data?.message || err.message || 'Lỗi khi lưu điểm');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handlePublishAllResults = async () => {
-    try {
-      setSubmitting(true);
-      setError('');
-      await publishAssignmentResults(assignment._id);
-      toast.success('Công bố kết quả bài tập cho cả lớp thành công! Toàn bộ học sinh và phụ huynh đã nhận được thông báo.');
-      if (onGraded) onGraded();
-      onClose();
-    } catch (err) {
-      toast.error(err?.response?.data?.message || err.message || 'Lỗi khi công bố kết quả');
+      setError(err?.response?.data?.message || err.message || 'Lỗi khi lưu điểm');
     } finally {
       setSubmitting(false);
     }
@@ -302,314 +248,37 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                             </span>
                           </div>
 
-                          <div style={{ marginTop: '8px' }}>
-                            {/* Dạng 1: Trắc nghiệm (MULTIPLE_CHOICE) */}
-                            {questionInfo?.question_type === 'MULTIPLE_CHOICE' ? (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', fontSize: '13px' }}>
-                                  <span style={{ color: '#64748b' }}>Học sinh chọn:</span>
-                                  <span
-                                    style={{
-                                      fontWeight: 700,
-                                      color:
-                                        (ans.text_response || '').trim().toUpperCase() ===
-                                        (questionInfo.correct_answer || '').trim().toUpperCase()
-                                          ? '#16a34a'
-                                          : '#dc2626',
-                                    }}
-                                  >
-                                    Phương án {ans.text_response || '(Chưa chọn)'}
-                                  </span>
-                                  {ans.is_auto_graded && (
-                                    <span style={{ fontSize: '12px', color: '#16a34a', fontWeight: 600 }}>
-                                      (Trắc nghiệm tự chấm: +{ans.score || 0}đ)
-                                    </span>
-                                  )}
-                                </div>
+                          <div style={{ marginTop: '6px' }}>
+                            <span style={{ color: '#64748b', fontSize: '13px' }}>Trả lời: </span>
+                            {isUrl ? (
+                              <a
+                                href={ans.text_response.startsWith('http') ? ans.text_response : `https://${ans.text_response}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{
+                                  color: '#0284c7',
+                                  textDecoration: 'underline',
+                                  fontWeight: 600,
+                                  wordBreak: 'break-all',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                }}
+                              >
+                                <ExternalLink size={13} />
+                                <span>{ans.text_response}</span>
+                              </a>
+                            ) : (
+                              <span style={{ fontWeight: 600, color: '#0f172a', whiteSpace: 'pre-wrap' }}>
+                                {ans.text_response || '(Không trả lời)'}
+                              </span>
+                            )}
 
-                                {/* Chi tiết 4 phương án A, B, C, D và đối chiếu đáp án */}
-                                {Array.isArray(questionInfo.options) && questionInfo.options.length > 0 && (
-                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' }}>
-                                    {['A', 'B', 'C', 'D'].map((letter, optIdx) => {
-                                      const rawOption = questionInfo.options[optIdx];
-                                      if (rawOption === undefined || rawOption === null) return null;
-                                      const optText = String(rawOption).trim();
-                                      const cleanText =
-                                        optText.startsWith(`${letter}.`) || optText.startsWith(`${letter}:`)
-                                          ? optText.slice(2).trim()
-                                          : optText;
-
-                                      const studentChoice = (ans.text_response || '').trim().toUpperCase();
-                                      const correctAns = (questionInfo.correct_answer || '').trim().toUpperCase();
-
-                                      const isChosen = studentChoice === letter || studentChoice.startsWith(letter);
-                                      const isCorrect = correctAns === letter || correctAns.startsWith(letter);
-
-                                      let itemBg = '#ffffff';
-                                      let itemBorder = '#e2e8f0';
-                                      let badge = null;
-
-                                      if (isCorrect && isChosen) {
-                                        itemBg = '#f0fdf4';
-                                        itemBorder = '#86efac';
-                                        badge = (
-                                          <span
-                                            style={{
-                                              fontSize: '11px',
-                                              background: '#16a34a',
-                                              color: '#ffffff',
-                                              padding: '2px 8px',
-                                              borderRadius: '10px',
-                                              fontWeight: 600,
-                                              display: 'inline-flex',
-                                              alignItems: 'center',
-                                              gap: '3px',
-                                            }}
-                                          >
-                                            <CheckCircle2 size={12} /> Học sinh chọn đúng
-                                          </span>
-                                        );
-                                      } else if (isChosen && !isCorrect) {
-                                        itemBg = '#fef2f2';
-                                        itemBorder = '#fca5a5';
-                                        badge = (
-                                          <span
-                                            style={{
-                                              fontSize: '11px',
-                                              background: '#dc2626',
-                                              color: '#ffffff',
-                                              padding: '2px 8px',
-                                              borderRadius: '10px',
-                                              fontWeight: 600,
-                                            }}
-                                          >
-                                            Học sinh đã chọn (Sai)
-                                          </span>
-                                        );
-                                      } else if (isCorrect) {
-                                        itemBg = '#eff6ff';
-                                        itemBorder = '#93c5fd';
-                                        badge = (
-                                          <span
-                                            style={{
-                                              fontSize: '11px',
-                                              background: '#0284c7',
-                                              color: '#ffffff',
-                                              padding: '2px 8px',
-                                              borderRadius: '10px',
-                                              fontWeight: 600,
-                                              display: 'inline-flex',
-                                              alignItems: 'center',
-                                              gap: '3px',
-                                            }}
-                                          >
-                                            <CheckCircle2 size={12} /> Đáp án đúng của đề
-                                          </span>
-                                        );
-                                      }
-
-                                      return (
-                                        <div
-                                          key={letter}
-                                          style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
-                                            padding: '7px 12px',
-                                            borderRadius: '6px',
-                                            background: itemBg,
-                                            border: `1px solid ${itemBorder}`,
-                                            fontSize: '13px',
-                                            gap: '8px',
-                                          }}
-                                        >
-                                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
-                                            <span
-                                              style={{
-                                                fontWeight: 700,
-                                                minWidth: '18px',
-                                                color: isCorrect ? '#15803d' : isChosen ? '#dc2626' : '#64748b',
-                                              }}
-                                            >
-                                              {letter}.
-                                            </span>
-                                            <span style={{ color: isCorrect ? '#14532d' : '#334155', fontWeight: isCorrect || isChosen ? 500 : 400 }}>
-                                              {cleanText}
-                                            </span>
-                                          </div>
-                                          {badge}
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                )}
-                              </div>
-                            ) : null}
-
-                            {/* Dạng 2: Tự luận ngắn (SHORT_ANSWER) */}
-                            {questionInfo?.question_type === 'SHORT_ANSWER' ? (
-                              <div>
-                                <div style={{ padding: '10px 12px', background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '6px' }}>
-                                  <div style={{ fontSize: '12px', fontWeight: 600, color: '#64748b', marginBottom: '4px' }}>
-                                    Câu trả lời của học sinh:
-                                  </div>
-                                  <div style={{ fontWeight: 600, color: '#0f172a', whiteSpace: 'pre-wrap', fontSize: '14px' }}>
-                                    {ans.text_response || '(Không trả lời)'}
-                                  </div>
-                                </div>
-
-                                {questionInfo.correct_answer && (
-                                  <div
-                                    style={{
-                                      marginTop: '8px',
-                                      padding: '10px 12px',
-                                      background: '#f0fdf4',
-                                      border: '1px solid #bbf7d0',
-                                      borderRadius: '6px',
-                                    }}
-                                  >
-                                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#166534', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
-                                      <CheckCircle2 size={13} />
-                                      <span>Đáp án chuẩn / Gợi ý chấm điểm (Đối chiếu):</span>
-                                    </div>
-                                    <div style={{ fontSize: '13px', color: '#15803d', whiteSpace: 'pre-wrap', lineHeight: '1.4' }}>
-                                      {questionInfo.correct_answer}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            ) : null}
-
-                            {/* Dạng 3: Nộp tệp / Tự luận dài (FILE_UPLOAD) */}
-                            {questionInfo?.question_type === 'FILE_UPLOAD' ? (
-                              <div>
-                                {ans.file_url ? (
-                                  <div style={{ padding: '10px 12px', background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '6px' }}>
-                                    <div style={{ fontSize: '12px', fontWeight: 600, color: '#64748b', marginBottom: '6px' }}>
-                                      Tệp bài làm đính kèm của học sinh:
-                                    </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                                      <a
-                                        href={ans.file_url}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        style={{
-                                          display: 'inline-flex',
-                                          alignItems: 'center',
-                                          gap: '6px',
-                                          fontSize: '13px',
-                                          padding: '7px 14px',
-                                          textDecoration: 'none',
-                                          color: '#ea580c',
-                                          borderColor: '#fdba74',
-                                          background: '#fff7ed',
-                                          border: '1px solid #fdba74',
-                                          borderRadius: '6px',
-                                          fontWeight: 600,
-                                        }}
-                                      >
-                                        <FileText size={15} />
-                                        <span>Mở tệp bài làm của học sinh</span>
-                                        <ExternalLink size={13} />
-                                      </a>
-                                      {ans.file_size && (
-                                        <span style={{ fontSize: '12px', color: '#64748b' }}>
-                                          ({(ans.file_size / (1024 * 1024)).toFixed(2)} MB)
-                                        </span>
-                                      )}
-                                    </div>
-                                  </div>
-                                ) : ans.text_response ? (
-                                  <div style={{ padding: '10px 12px', background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '6px' }}>
-                                    <div style={{ fontSize: '12px', fontWeight: 600, color: '#64748b', marginBottom: '4px' }}>
-                                      Bài làm / Đường dẫn nộp bài:
-                                    </div>
-                                    {isUrl ? (
-                                      <a
-                                        href={ans.text_response.startsWith('http') ? ans.text_response : `https://${ans.text_response}`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        style={{
-                                          color: '#0284c7',
-                                          textDecoration: 'underline',
-                                          fontWeight: 600,
-                                          wordBreak: 'break-all',
-                                          display: 'inline-flex',
-                                          alignItems: 'center',
-                                          gap: '4px',
-                                          fontSize: '14px',
-                                        }}
-                                      >
-                                        <ExternalLink size={13} />
-                                        <span>{ans.text_response}</span>
-                                      </a>
-                                    ) : (
-                                      <span style={{ fontWeight: 600, color: '#0f172a', whiteSpace: 'pre-wrap', fontSize: '14px' }}>
-                                        {ans.text_response}
-                                      </span>
-                                    )}
-                                  </div>
-                                ) : (
-                                  <div style={{ fontSize: '13px', color: '#64748b', fontStyle: 'italic', padding: '6px 0' }}>
-                                    (Học sinh không đính kèm tệp bài làm)
-                                  </div>
-                                )}
-
-                                {questionInfo.correct_answer && (
-                                  <div
-                                    style={{
-                                      marginTop: '8px',
-                                      padding: '10px 12px',
-                                      background: '#eff6ff',
-                                      border: '1px solid #bfdbfe',
-                                      borderRadius: '6px',
-                                    }}
-                                  >
-                                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#1d4ed8', marginBottom: '4px' }}>
-                                      Gợi ý / Tiêu chí chấm điểm (Đối chiếu):
-                                    </div>
-                                    <div style={{ fontSize: '13px', color: '#1e40af', whiteSpace: 'pre-wrap', lineHeight: '1.4' }}>
-                                      {questionInfo.correct_answer}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            ) : null}
-                          </div>
-
-                          {/* Case 5.8, 5.9: Sửa/Override điểm câu hỏi kèm comment */}
-                          <div style={{ marginTop: '10px', padding: '8px 12px', background: '#ffffff', borderRadius: '6px', border: '1px solid #cbd5e1', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>
-                                  {ans.is_auto_graded ? 'Điểm câu (MCQ tự chấm):' : 'Điểm câu hỏi:'}
-                                </label>
-                                <input
-                                  type="number"
-                                  step="0.25"
-                                  min="0"
-                                  max={questionInfo?.points || 10}
-                                  value={answersFeedback[ans.question_id]?.score ?? ans.score ?? 0}
-                                  onChange={(e) => handleAnswerFeedbackChange(ans.question_id, 'score', e.target.value, ans.is_auto_graded)}
-                                  style={{ width: '65px', padding: '3px 6px', fontSize: '13px', borderRadius: '4px', border: '1px solid #cbd5e1', fontWeight: 600 }}
-                                />
-                                <span style={{ fontSize: '12px', color: '#64748b' }}>/ {questionInfo?.points || 1}đ</span>
-                              </div>
-
-                              {(answersFeedback[ans.question_id]?.is_overridden || ans.is_overridden) && (
-                                <span style={{ fontSize: '11px', background: '#e0e7ff', color: '#3730a3', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>
-                                  Đã override điểm
-                                </span>
-                              )}
-                            </div>
-
-                            <input
-                              type="text"
-                              placeholder="Nhận xét riêng cho câu này (hoặc lý do sửa/override điểm)..."
-                              value={answersFeedback[ans.question_id]?.comment ?? ans.comment ?? ''}
-                              onChange={(e) => handleAnswerFeedbackChange(ans.question_id, 'comment', e.target.value)}
-                              style={{ width: '100%', padding: '4px 8px', fontSize: '12px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
-                            />
+                            {ans.is_auto_graded && (
+                              <span style={{ marginLeft: '10px', fontSize: '12px', color: '#16a34a', fontWeight: 600 }}>
+                                (Trắc nghiệm tự chấm: +{ans.score || 0}đ)
+                              </span>
+                            )}
                           </div>
                         </div>
                       );
@@ -677,21 +346,7 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
           )}
         </div>
 
-        <div className="modal-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            {assignment && !assignment.results_published_at && (
-              <button
-                type="button"
-                className="btn-outline-gray"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#0284c7' }}
-                onClick={handlePublishAllResults}
-                disabled={submitting}
-              >
-                <Share2 size={14} />
-                <span>Công bố kết quả cho toàn bộ lớp</span>
-              </button>
-            )}
-          </div>
+        <div className="modal-footer">
           <button type="button" className="btn-outline-gray" onClick={handleClose}>
             Đóng
           </button>

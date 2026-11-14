@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Bookmark, BookmarkCheck, ChevronLeft, LoaderCircle } from 'lucide-react';
@@ -6,7 +5,6 @@ import { getTutorRequest, saveRequest, unsaveRequest } from '../../services/tuto
 import Alert from '../../components/common/Alert';
 import SectionCard from '../../components/common/SectionCard';
 import ApplyModal from '../../components/tutor/ApplyModal';
-import ReportContentButton from '../../components/common/ReportContentButton';
 import { formatBudget, getModeLabel } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 import '../../styles/tutorRequests.css';
@@ -16,6 +14,8 @@ export default function TutorRequestDetail() {
   const { id } = useParams();
   const [state, setState] = useState({ loading: true, error: null, request: null });
   const [applying, setApplying] = useState(false);
+  const [notice, setNotice] = useState('');
+  const [actionError, setActionError] = useState('');
 
   const load = useCallback(async () => {
     setState({ loading: true, error: null, request: null });
@@ -32,7 +32,7 @@ export default function TutorRequestDetail() {
   }, [load]);
 
   const handleToggleSave = async () => {
-
+    setActionError('');
     const request = state.request;
     try {
       if (request.is_bookmarked) {
@@ -42,14 +42,14 @@ export default function TutorRequestDetail() {
       }
       setState({ ...state, request: { ...request, is_bookmarked: !request.is_bookmarked } });
     } catch (error) {
-      toast.error(error.message);
+      setActionError(error.message);
     }
   };
 
   const handleApplied = (result) => {
     const request = state.request;
     setState({ ...state, request: { ...request, has_applied: true, application_count: request.application_count + 1 } });
-    toast.success(`Đã gửi đơn ứng tuyển. Bạn còn ${result.remaining_credits} credits.`);
+    setNotice(`Đã gửi đơn ứng tuyển. Bạn còn ${result.remaining_credits} credits.`);
     setApplying(false);
   };
 
@@ -92,6 +92,9 @@ export default function TutorRequestDetail() {
         <span>Quay lại danh sách yêu cầu</span>
       </Link>
 
+      {notice && <Alert type="success">{notice}</Alert>}
+      {actionError && <Alert type="error">{actionError}</Alert>}
+
       <div className="tutor-detail-grid">
         <div className="tutor-detail-main">
           <SectionCard title={request.title}>
@@ -127,12 +130,6 @@ export default function TutorRequestDetail() {
               <SaveIcon size={16} aria-hidden="true" />
               <span>{request.is_bookmarked ? "Đã lưu" : "Lưu yêu cầu"}</span>
             </button>
-            <ReportContentButton
-              targetType="REQUEST"
-              targetId={request._id}
-              targetTitle={request.title}
-              onReported={toast.success}
-            />
           </div>
         </SectionCard>
       </div>

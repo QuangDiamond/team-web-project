@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, LoaderCircle, Plus } from 'lucide-react';
@@ -17,10 +16,11 @@ export default function TutoringRequests() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [requestToDelete, setRequestToDelete] = useState(null);
+  const [notice, setNotice] = useState('');
   const { loading, error, data, reload } = usePagedList(getMyRequests, { page: page, limit: PAGE_SIZE });
 
   const handleDeleted = async () => {
-    toast.success(`Đã xóa yêu cầu "${requestToDelete.title}".`);
+    setNotice(`Đã xóa yêu cầu "${requestToDelete.title}".`);
     setRequestToDelete(null);
     await reload();
   };
@@ -38,6 +38,8 @@ export default function TutoringRequests() {
           <span>Tạo yêu cầu</span>
         </button>
       </div>
+
+      {notice && <Alert type="success">{notice}</Alert>}
 
       {loading && !data && (
         <div className="page-loading-inline" role="status">

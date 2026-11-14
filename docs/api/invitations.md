@@ -55,7 +55,7 @@ Lời mời gia sư nhận được, mới nhất trước; **không gồm lời
 Item: `_id, status, message, created_at, conversation_id` (chỉ khi `ACCEPTED`), `request: { _id, title, subject_name, grade_level, teaching_mode, budget, location_address, is_available }`. **Không có thông tin phụ huynh** (tên, email, id) hay học sinh.
 
 ### PATCH `/:id/accept` · PATCH `/:id/decline`
-Không có body; chỉ áp dụng cho lời mời `PENDING` của chính gia sư (lời mời của người khác → 404 `Invitation not found`; lời mời phụ huynh đã hủy → 404 `This invitation is no longer available` (UC15 E1); không còn `PENDING` → 409).
+Không có body; chỉ áp dụng cho lời mời `PENDING` của chính gia sư (lời mời của người khác hoặc đã bị hủy → 404; không còn `PENDING` → 409).
 
 - **Accept**: lời mời → `ACCEPTED` và mở hội thoại 1-1 với phụ huynh đã mời (dùng lại nếu đã có). Request phải còn `OPEN` và chưa quá 30 ngày, nếu không 409 và lời mời giữ nguyên `PENDING`. **Request vẫn `OPEN`.**
 - **Decline**: lời mời → `DECLINED` (không cần request còn mở).

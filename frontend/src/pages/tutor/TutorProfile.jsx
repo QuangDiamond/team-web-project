@@ -1,6 +1,5 @@
-import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { LoaderCircle } from 'lucide-react';
 import { getMyProfile, saveMyProfile } from '../../services/tutorProfileService';
 import Alert from '../../components/common/Alert';
@@ -11,8 +10,8 @@ import '../../styles/tutorProfile.css';
 
 // Hồ sơ gia sư của chính mình: tạo lần đầu hoặc chỉnh sửa. Cần có hồ sơ để duyệt request, ứng tuyển và đăng bài
 export default function TutorProfile() {
-  const navigate = useNavigate();
   const [state, setState] = useState({ loading: true, error: null, profile: null, fullName: '' });
+  const [notice, setNotice] = useState('');
   // Đổi key để form dựng lại với dữ liệu vừa lưu
   const [formVersion, setFormVersion] = useState(0);
 
@@ -38,16 +37,11 @@ export default function TutorProfile() {
     const response = await saveMyProfile(payload);
     setState({ ...state, profile: response.data.profile });
     setFormVersion(formVersion + 1);
-    let msg = "Đã lưu hồ sơ.";
     if (response.data.created) {
-      msg = "Hồ sơ đã sẵn sàng. Bạn có thể xem yêu cầu, ứng tuyển và tạo bài đăng.";
+      setNotice("Hồ sơ đã sẵn sàng. Bạn có thể xem yêu cầu, ứng tuyển và tạo bài đăng.");
+    } else {
+      setNotice("Đã lưu hồ sơ.");
     }
-    toast.success(msg, {
-      action: {
-        label: 'Tạo bài đăng',
-        onClick: () => navigate('/tutor/posts/new'),
-      },
-    });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -80,6 +74,16 @@ export default function TutorProfile() {
       {!state.profile && (
         <Alert type="info">
           Xin chào, {state.fullName}! Hãy tạo hồ sơ để bắt đầu giảng dạy trên TuConnector.
+        </Alert>
+      )}
+      {notice && (
+        <Alert type="success">
+          <p>{notice}</p>
+          <p>
+            <Link to="/tutor/posts/new" className="link">Tạo bài đăng</Link>
+            {' · '}
+            <Link to="/tutor/requests" className="link">Tìm yêu cầu</Link>
+          </p>
         </Alert>
       )}
 

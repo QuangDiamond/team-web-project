@@ -31,9 +31,8 @@ test('marketplace seed has valid linked records, usable passwords and consistent
   }
   for (const profile of data.profiles) assert.ok(userIds.has(String(profile.user_id)));
   for (const post of data.posts) assert.ok(profileIds.has(String(post.profile_id)));
-  const requestChats = data.conversations.filter((chat) => chat.request_id);
-  const chatPairs = new Set(requestChats.map((chat) => `${chat.request_id}:${chat.tutor_profile_id}`));
-  assert.equal(chatPairs.size, requestChats.length);
+  const chatPairs = new Set(data.conversations.map((chat) => `${chat.request_id}:${chat.tutor_profile_id}`));
+  assert.equal(chatPairs.size, data.conversations.length);
   for (const [index, request] of data.requests.entries()) {
     assert.ok(userIds.has(String(request.parent_user_id)));
     assert.equal(data.applications.filter((application) => String(application.request_id) === String(request._id)).length, index < 12 ? 6 : 0);
@@ -66,24 +65,6 @@ test('marketplace seed has valid linked records, usable passwords and consistent
     assert.ok(balance > 0);
     assert.notEqual(user.password_hash, DEMO_PASSWORD);
   }
-  const agreementIds = ids(data.agreements);
-  assert.equal(data.agreements.length, 63);
-  assert.equal(data.reviews.length, 63);
-  for (const agreement of data.agreements) {
-    assert.equal(agreement.status, 'CONFIRMED');
-    assert.ok(conversationIds.has(String(agreement.conversation_id)));
-  }
-  for (const profile of data.profiles) {
-    const reviews = data.reviews.filter((review) => String(review.tutor_profile_id) === String(profile._id));
-    assert.ok(reviews.length >= 3 && reviews.length <= 5);
-    assert.equal(new Set(reviews.map((review) => String(review.parent_user_id))).size, reviews.length);
-  }
-  for (const review of data.reviews) {
-    assert.ok(agreementIds.has(String(review.agreement_id)));
-    assert.ok(userIds.has(String(review.parent_user_id)));
-    assert.ok(review.rating >= 1 && review.rating <= 5);
-  }
-  assert.equal(new Set(data.reviews.map((review) => String(review.agreement_id))).size, data.reviews.length);
   const again = buildMarketplaceSeed(options);
   for (const key of Object.keys(marketplaceModels)) assert.deepEqual([...ids(data[key])], [...ids(again[key])]);
 });

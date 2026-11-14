@@ -28,53 +28,5 @@
         "$numberLong": "1792249200000"
       }
     }
-  },
-  {
-    "_id": {
-      "$oid": "fc3856de53a46fcc1710cd75"
-    },
-    "reporter_user_id": {
-      "$oid": "7130929c2f953794c695a5b4"
-    },
-    "target_type": "REQUEST",
-    "target_id": {
-      "$oid": "1a978726409c24eacc21cd33"
-    },
-    "reason": "Chứa số điện thoại hoặc liên hệ ngoài nền tảng: mô tả ghi số Zalo của phụ huynh",
-    "severity": "MEDIUM",
-    "status": "PENDING",
-    "action_taken": null,
-    "admin_note": null,
-    "resolved_by_admin_id": null,
-    "resolved_at": null,
-    "created_at": {
-      "$date": {
-        "$numberLong": "1794319200000"
-      }
-    }
-  },
-  {
-    "_id": {
-      "$oid": "ca341bddfb75e43b10e6af1e"
-    },
-    "reporter_user_id": {
-      "$oid": "2c15f53000dfedc3e5f327a9"
-    },
-    "target_type": "POST",
-    "target_id": {
-      "$oid": "a51ae92ddc72787bd6db5afd"
-    },
-    "reason": "Thông tin sai sự thật hoặc có dấu hiệu lừa đảo: cam kết đầu ra không thực tế",
-    "severity": "MEDIUM",
-    "status": "PENDING",
-    "action_taken": null,
-    "admin_note": null,
-    "resolved_by_admin_id": null,
-    "resolved_at": null,
-    "created_at": {
-      "$date": {
-        "$numberLong": "1794364200000"
-      }
-    }
   }
 ]

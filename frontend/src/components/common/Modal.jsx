@@ -5,15 +5,10 @@ import { X } from 'lucide-react';
 export default function Modal({ title, onClose, children, className = '' }) {
   const dialogRef = useRef(null);
 
-  // Chỉ đưa focus vào hộp một lần khi mở. Nếu đặt chung effect phụ thuộc onClose, mỗi lần trang cha
-  // render lại (vd gõ phím trong ô nhập) focus sẽ bị kéo khỏi ô nhập về hộp thoại
   useEffect(() => {
     if (dialogRef.current) {
       dialogRef.current.focus();
     }
-  }, []);
-
-  useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
         onClose();

@@ -35,4 +35,3 @@ export { Notification } from './Notification.js';
 export { ParentChildLink } from './ParentChildLink.js';
 export { AdminAuditLog } from './AdminAuditLog.js';
 export { ContentReport } from './ContentReport.js';
-export { ClassGroup } from './ClassGroup.js';

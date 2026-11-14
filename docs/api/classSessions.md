@@ -1,6 +1,6 @@
 # Class Session API (`/api/classroom/v1`)
 
-The mutating endpoints (POST, PATCH, DELETE) require an authenticated `TUTOR` who owns the classroom. Read endpoints (GET) are available to the classroom owner (TUTOR), active student members (STUDENT), and their linked parents (PARENT).
+All endpoints require an authenticated `TUTOR`. The tutor must own the classroom, and the classroom must be active.
 
 ## GET `/:classId/sessions`
 
@@ -35,64 +35,6 @@ Sessions whose `start_time` is in the past or has already arrived cannot be upda
 
 ## DELETE `/:classId/sessions/:sessionId`
 
-Deletes a future session record. Sessions whose `start_time` is in the past or has already arrived cannot be deleted (`422`). Attendance is embedded in the session and is removed with it.
+Deletes a future session record. Sessions whose `start_time` is in the past or has already arrived cannot be deleted (`422`). Attendance is embedded in the session and is removed with it. These CRUD endpoints do not create or modify recurring rules.
 
-## POST `/:classId/sessions/:sessionId/attendance`
-
-Marks student attendance for a session (SRS UC26.A2 / SDS markAttendance). Only the tutor who owns the active classroom can mark attendance. The session must have started (`start_time <= now`). Marking attendance updates the session's `attendance` subdocuments and marks session `status` as `COMPLETED`.
-
-Request body:
-```json
-{
-  "attendance": [
-    {
-      "student_user_id": "67355152a2ff8217bbba9101",
-      "status": "PRESENT",
-      "comment": "Tham gia tích cực"
-    }
-  ]
-}
-```
-`status` must be one of `PRESENT`, `ABSENT`, `LATE`.
-
-## POST `/:classId/sessions/:sessionId/change-requests`
-
-Submits a request to reschedule or cancel a session (SRS UC27 / BR-10). Must be an active student member of the classroom.
-- **Advance notice constraint:** Must be submitted at least 12 hours before `session.start_time`. Submissions within 12 hours are rejected with `400`.
-- Request body for Move:
-```json
-{
-  "request_type": "MOVE",
-  "proposed_start_time": "2026-12-05T09:00:00+07:00",
-  "proposed_end_time": "2026-12-05T10:30:00+07:00",
-  "reason": "Em bận thi học kỳ sáng thứ 7"
-}
-```
-- Request body for Cancel:
-```json
-{
-  "request_type": "CANCEL",
-  "reason": "Em bị ốm phải nằm viện"
-}
-```
-
-## GET `/:classId/change-requests`
-
-Lists all schedule change requests for the classroom. Accessible by the tutor (owner) and active members. Tutors see all requests; students see their own requests.
-
-## PATCH `/:classId/change-requests/:requestId`
-
-Approves or rejects a change request (SRS UC28). Tutor-only.
-Request body:
-```json
-{
-  "status": "APPROVED",
-  "tutor_comment": "Thầy đồng ý dời sang 9h sáng thứ 7"
-}
-```
-When `APPROVED`:
-- If `request_type === 'MOVE'`: Automatically checks tutor conflict on the proposed time window and updates `session.start_time` and `session.end_time`.
-- If `request_type === 'CANCEL'`: Marks `session.status = 'CANCELLED'`.
-- Status transitions: `PENDING` -> `APPROVED` or `REJECTED`.
-
-Status codes: `400` invalid input / less than 12h notice, `401` unauthenticated, `403` wrong role or classroom owner, `404` classroom/session/request not found, `409` tutor conflict or archived classroom, `422` invalid schema.
+Status codes: `401` unauthenticated, `403` wrong role or classroom owner, `404` classroom/session not found, `409` tutor profile missing or classroom archived, `422` invalid DTO or pagination.

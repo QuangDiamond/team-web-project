@@ -23,25 +23,6 @@ const additionalParentNames = [
   'Hà Thị Hồng', 'Chu Gia Khánh', 'Lâm Ngọc Diệp', 'Đào Quang Vinh',
 ];
 
-const reviewComments = [
-  { rating: 5, knowledge: 5, punctuality: 5, communication: 5,
-    comment: 'Thầy cô dạy rất dễ hiểu, con tiến bộ rõ sau một tháng. Sau mỗi buổi đều có nhận xét gửi gia đình.' },
-  { rating: 5, knowledge: 5, punctuality: 4, communication: 5,
-    comment: 'Kiến thức vững, biết cách khơi gợi để con tự làm bài. Có hôm đến muộn vài phút nhưng luôn báo trước.' },
-  { rating: 4, knowledge: 5, punctuality: 4, communication: 4,
-    comment: 'Chuyên môn tốt, bài tập về nhà vừa sức. Mong thầy cô gửi báo cáo tiến độ đều hơn.' },
-  { rating: 4, knowledge: 4, punctuality: 5, communication: 4,
-    comment: 'Đúng giờ, chuẩn bị bài kỹ. Con thích học hơn vì được giải thích bằng ví dụ thực tế.' },
-  { rating: 3, knowledge: 4, punctuality: 3, communication: 3,
-    comment: 'Kiến thức ổn nhưng lịch học hay phải đổi, gia đình mong thầy cô sắp xếp ổn định hơn.' },
-  { rating: 5, knowledge: 5, punctuality: 5, communication: 4,
-    comment: 'Con đạt điểm cao hơn hẳn trong kỳ kiểm tra vừa rồi. Rất cảm ơn thầy cô đã kiên nhẫn với con.' },
-];
-const tutorReplies = [
-  'Cảm ơn anh chị đã tin tưởng, em sẽ tiếp tục đồng hành cùng con.',
-  'Em ghi nhận góp ý và sẽ gửi báo cáo tiến độ sau mỗi tuần ạ.',
-];
-
 const requestTopics = [
   { subject: 'Toán', grades: ['Lớp 3', 'Lớp 5', 'Lớp 8', 'Lớp 11'], budget: 150000,
     goal: 'Giúp con hiểu bản chất, trình bày lời giải theo từng bước và tự kiểm tra kết quả.' },
@@ -92,7 +73,6 @@ export function buildMarketplaceSeed({ passwordHash, now = new Date(), categorie
   const data = {
     users: [], profiles: [], posts: [], requests: [], applications: [],
     invitations: [], conversations: [], messages: [], transactions: [],
-    agreements: [], reviews: [],
   };
 
   function addUser(key, name, role, email) {
@@ -247,43 +227,6 @@ export function buildMarketplaceSeed({ passwordHash, now = new Date(), categorie
         location_address: requestLocations[(parentIndex + slot) % requestLocations.length],
         tutor_requirements: 'Có kinh nghiệm phù hợp, chuẩn bị bài trước buổi học, đúng giờ và trao đổi tiến độ với gia đình.',
         status: 'OPEN', image_urls: [], created_at: requestCreatedAt, updated_at: repliedAt,
-      });
-    }
-  });
-  // Past CONFIRMED connections (no request) so every demo tutor has 3–5 approved reviews.
-  const allParents = data.users.filter((user) => user.role === 'PARENT');
-  tutors.forEach((tutor, tutorIndex) => {
-    const reviewCount = 3 + tutorIndex % 3;
-    for (let slot = 0; slot < reviewCount; slot += 1) {
-      const key = `review:${tutorIndex}:${slot}`;
-      const parent = allParents[(tutorIndex * 5 + slot) % allParents.length];
-      const template = reviewComments[(tutorIndex + slot) % reviewComments.length];
-      const confirmedAt = new Date(createdAt.getTime() + (slot + 1) * 6 * 3600000);
-      const reviewedAt = new Date(confirmedAt.getTime() + 2 * 3600000);
-      const conversationId = demoId(`chat:${key}`);
-      const agreementId = demoId(`agreement:${key}`);
-      const subject = tutor.profile.teaching_categories[0].name;
-      data.conversations.push({
-        _id: conversationId, parent_user_id: parent._id, tutor_profile_id: tutor.profile._id,
-        request_id: null, class_id: null, type: 'DIRECT', is_active: true, read_states: [],
-        created_at: confirmedAt, updated_at: confirmedAt,
-      });
-      data.agreements.push({
-        _id: agreementId, conversation_id: conversationId,
-        proposer_user_id: tutor.user._id, accepted_by_user_id: parent._id,
-        agreed_subject: subject, agreed_schedule: requestSchedules[(tutorIndex + slot) % requestSchedules.length],
-        agreed_price: mongoose.Types.Decimal128.fromString(String(150000 + tutorIndex % 5 * 25000)),
-        status: 'CONFIRMED', created_at: confirmedAt, updated_at: confirmedAt,
-      });
-      const hasReply = slot % 2 === 0;
-      data.reviews.push({
-        _id: demoId(key), tutor_profile_id: tutor.profile._id, agreement_id: agreementId,
-        parent_user_id: parent._id, rating: template.rating, comment: template.comment,
-        knowledge_rating: template.knowledge, punctuality_rating: template.punctuality,
-        communication_rating: template.communication,
-        tutor_reply: hasReply ? tutorReplies[(tutorIndex + slot) % tutorReplies.length] : null,
-        replied_at: hasReply ? repliedAt : null,
-        status: 'APPROVED', created_at: reviewedAt, updated_at: reviewedAt,
       });
     }
   });

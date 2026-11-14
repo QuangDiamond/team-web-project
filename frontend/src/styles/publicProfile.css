@@ -685,10 +685,3 @@
   }
 
 }
-
-/* Nút báo cáo bài đăng gia sư (UC38) */
-.public-profile-report-row {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 12px;
-}

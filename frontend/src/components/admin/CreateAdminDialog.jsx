@@ -1,8 +1,8 @@
-import { toast } from 'sonner';
 import { useState } from 'react';
-import { Copy, TriangleAlert } from 'lucide-react';
+import { Check, Copy, TriangleAlert } from 'lucide-react';
 import Modal from '../common/Modal';
 import FormInput from '../common/FormInput';
+import Alert from '../common/Alert';
 import ReasonField from './ReasonField';
 import DialogActions from './DialogActions';
 import { createAdmin } from '../../services/adminService';
@@ -30,26 +30,35 @@ const validateAdminForm = (values) => {
 const hasErrors = (errors) => Object.values(errors).some((message) => Boolean(message));
 
 // Bước 2: hiện mật khẩu tạm đúng 1 lần (D20) kèm nút sao chép
-function TemporaryPasswordView({ temporaryPassword, onDone }) {
+function TemporaryPasswordView({ createdUser, temporaryPassword, onDone }) {
+  const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState('');
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(temporaryPassword);
-      toast.success('Đã sao chép', { description: 'Đã sao chép mật khẩu vào bộ nhớ tạm' });
+      setCopied(true);
+      setCopyError('');
     } catch {
-      toast.error('Không thể sao chép tự động. Vui lòng chọn mật khẩu và sao chép thủ công.');
+      setCopyError('Không thể sao chép tự động. Vui lòng chọn mật khẩu và sao chép thủ công.');
     }
   };
 
   return (
     <div>
+      <Alert type="success">Đã tạo tài khoản quản trị viên cho {createdUser.full_name} ({createdUser.email}).</Alert>
+
       <label htmlFor="temporary-password" className="form-label">Mật khẩu tạm thời</label>
       <div className="temp-password">
         <input id="temporary-password" className="temp-password-value" value={temporaryPassword} readOnly onFocus={(event) => event.target.select()} />
         <button type="button" className="btn btn-outline btn-sm" onClick={handleCopy}>
-          <Copy size={16} aria-hidden="true" />
-          <span>Sao chép</span>
+          {copied && <Check size={16} aria-hidden="true" />}
+          {!copied && <Copy size={16} aria-hidden="true" />}
+          <span>{copied ? 'Đã sao chép' : 'Sao chép'}</span>
         </button>
       </div>
+      <p className="visually-hidden" role="status">{copied ? 'Đã sao chép mật khẩu vào bộ nhớ tạm' : ''}</p>
+      {copyError && <p className="form-error">{copyError}</p>}
 
       <p className="temp-password-warning">
         <TriangleAlert size={16} aria-hidden="true" />
@@ -67,6 +76,7 @@ function TemporaryPasswordView({ temporaryPassword, onDone }) {
 export default function CreateAdminDialog({ onClose, onCreated }) {
   const [values, setValues] = useState({ full_name: '', email: '', reason: '' });
   const [errors, setErrors] = useState({});
+  const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   // { user, temporary_password } sau khi tạo thành công
   const [result, setResult] = useState(null);
@@ -81,6 +91,7 @@ export default function CreateAdminDialog({ onClose, onCreated }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setFormError('');
 
     const newErrors = validateAdminForm(values);
     setErrors(newErrors);
@@ -97,7 +108,6 @@ export default function CreateAdminDialog({ onClose, onCreated }) {
         reason: values.reason.trim(),
       });
       setResult(response.data);
-      toast.success(`Đã tạo tài khoản quản trị viên cho ${response.data.user.full_name} (${response.data.user.email}).`);
       setSubmitting(false);
     } catch (error) {
       let fieldErrors = toFieldErrors(error.errors);
@@ -107,7 +117,7 @@ export default function CreateAdminDialog({ onClose, onCreated }) {
       }
       setErrors(fieldErrors);
       if (error.status !== 409) {
-        toast.error(error.message);
+        setFormError(error.message);
       }
       focusFirstInvalidField(ADMIN_FIELDS, fieldErrors);
       setSubmitting(false);
@@ -126,7 +136,7 @@ export default function CreateAdminDialog({ onClose, onCreated }) {
   if (result) {
     return (
       <Modal id="create-admin" title="Đã tạo tài khoản quản trị viên" description="Chia sẻ mật khẩu tạm thời cho quản trị viên mới qua kênh an toàn." onClose={handleClose}>
-        <TemporaryPasswordView temporaryPassword={result.temporary_password} onDone={handleClose} />
+        <TemporaryPasswordView createdUser={result.user} temporaryPassword={result.temporary_password} onDone={handleClose} />
       </Modal>
     );
   }
@@ -134,6 +144,7 @@ export default function CreateAdminDialog({ onClose, onCreated }) {
   return (
     <Modal id="create-admin" title="Tạo tài khoản quản trị viên" description="Mật khẩu tạm thời được tạo và chỉ hiển thị một lần sau khi tạo tài khoản." onClose={handleClose}>
       <form onSubmit={handleSubmit} noValidate>
+        {formError && <Alert type="error">{formError}</Alert>}
         <FormInput
           id="full_name"
           label="Họ tên"

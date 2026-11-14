@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authentication, authorize, optionalAuthentication } from '../common/middlewares/auth.middleware.js';
+import { authentication, authorize } from '../common/middlewares/auth.middleware.js';
 import { validator } from '../common/validator/validator.js';
 import { refreshSuggestionsSchema } from '../common/validator/aiSuggestionSchema.js';
 import {
@@ -17,8 +17,7 @@ import {
 export const tutorRequestRoutes = Router();
 
 // Các route cố định phải khai báo trước /:id
-// Public: khách và mọi role xem được danh sách trên trang chủ; gia sư có thêm trạng thái đã lưu / đã ứng tuyển
-tutorRequestRoutes.get('/', optionalAuthentication, browseRequests);
+tutorRequestRoutes.get('/', authentication, authorize('TUTOR'), browseRequests);
 tutorRequestRoutes.get('/filters', authentication, authorize('TUTOR'), getFilterOptions);
 tutorRequestRoutes.get('/bookmarks', authentication, authorize('TUTOR'), listBookmarks);
 tutorRequestRoutes.get('/suggestions', authentication, authorize('TUTOR'), getSuggestions);

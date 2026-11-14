@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useState } from 'react';
 import Modal from '../common/Modal';
 import FormInput from '../common/FormInput';
@@ -48,7 +47,7 @@ export default function CategoryDialog({ type, item, removing, onClose, onSaved 
       }
       onSaved();
     } catch (failure) {
-      toast.error(failure.message);
+      setError(failure.message);
       setSubmitting(false);
     }
   };

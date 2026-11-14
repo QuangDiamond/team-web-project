@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
@@ -7,6 +6,7 @@ import AuthLayout from '../../components/layout/AuthLayout';
 import FormInput from '../../components/common/FormInput';
 import PasswordInput from '../../components/common/PasswordInput';
 import GoogleButton from '../../components/common/GoogleButton';
+import Alert from '../../components/common/Alert';
 import ResendVerificationButton from '../../components/common/ResendVerificationButton';
 import { validateEmail, focusFirstInvalidField, toFieldErrors } from '../../utils/authValidators';
 import { getPathAfterLogin } from '../../routes/redirectAfterLogin';
@@ -44,7 +44,10 @@ export default function Login() {
 
   const [values, setValues] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
+  const [formError, setFormError] = useState('');
   const [notVerified, setNotVerified] = useState(false);
+  // Mở app khi tài khoản đã bị khóa (/me trả 403) thì hiện luôn thông báo khóa
+  const [accountLocked, setAccountLocked] = useState(accountLockedOnStart);
 
   // Đã tới /login sau Log out: từ giờ bị PrivateRoute đưa về /login thì lại nhớ trang để quay lại (D2-B2)
   useEffect(() => {
@@ -52,18 +55,8 @@ export default function Login() {
   }, [clearLoggedOutByUser]);
   const [submitting, setSubmitting] = useState(false);
 
-  const [canResend, setCanResend] = useState(() => getRedirectNotice(searchParams)?.canResend === true);
-
-  useEffect(() => {
-    if (accountLockedOnStart) {
-      toast.error(LOCKED_MESSAGE, { id: 'login-account-locked' });
-      return;
-    }
-    const notice = getRedirectNotice(searchParams);
-    if (notice) {
-      toast[notice.type](notice.message, { id: `login-${searchParams.toString()}` });
-    }
-  }, [accountLockedOnStart, searchParams]);
+  // Thông báo từ URL chỉ hiện cho đến khi user submit lần đầu
+  const [redirectNotice, setRedirectNotice] = useState(() => getRedirectNotice(searchParams));
 
   const handleChange = (event) => {
     const field = event.target.name;
@@ -83,8 +76,10 @@ export default function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setFormError('');
     setNotVerified(false);
-    setCanResend(false);
+    setAccountLocked(false);
+    setRedirectNotice(null);
 
     const newErrors = validate();
     setErrors(newErrors);
@@ -99,7 +94,7 @@ export default function Login() {
 
     // login() đã lưu user vào AuthContext, GuestRoute sẽ tự chuyển tới trang theo role
     if (result.success) {
-      navigate(getPathAfterLogin(location, searchParams), { replace: true });
+      navigate(getPathAfterLogin(location), { replace: true });
       return;
     }
 
@@ -107,27 +102,45 @@ export default function Login() {
     // 403 có 2 trường hợp: chưa kích hoạt email, hoặc tài khoản bị khóa (Suspended / Banned, UC37)
     if (error?.status === 403 && (error.rawMessage || error.message) === 'Account not verified') {
       setNotVerified(true);
-      toast.error('Tài khoản của bạn chưa được xác minh. Vui lòng kiểm tra email hoặc gửi lại email xác minh bên dưới.');
       return;
     }
     if (error?.status === 403) {
-      toast.error(LOCKED_MESSAGE);
+      setAccountLocked(true);
       return;
     }
     if (error?.status === 422 && error?.errors) {
       setErrors(toFieldErrors(error.errors));
       return;
     }
-    toast.error(error?.message || 'Đăng nhập không thành công');
+    setFormError(error?.message || 'Đăng nhập không thành công');
   };
 
-  const showResend = notVerified || canResend;
+  let alert = null;
+  if (accountLocked) {
+    alert = (
+      <Alert type="error">{LOCKED_MESSAGE}</Alert>
+    );
+  } else if (notVerified) {
+    alert = (
+      <Alert type="error">
+        Tài khoản của bạn chưa được xác minh. Vui lòng kiểm tra email hoặc gửi lại email xác minh bên dưới.
+      </Alert>
+    );
+  } else if (formError) {
+    alert = <Alert type="error">{formError}</Alert>;
+  } else if (redirectNotice) {
+    alert = <Alert type={redirectNotice.type}>{redirectNotice.message}</Alert>;
+  }
+
+  const showResend = notVerified || (redirectNotice !== null && redirectNotice.canResend === true);
 
   return (
     <AuthLayout>
       <form onSubmit={handleSubmit} noValidate className="login-form">
         <h1 className="auth-title">Chào mừng bạn trở lại <span aria-hidden="true">👋</span></h1>
         <p className="auth-subtitle">Đăng nhập để tiếp tục sử dụng TuConnector.</p>
+
+        {alert}
 
         <GoogleButton href={getGoogleLoginUrl()} />
 
@@ -168,6 +181,7 @@ export default function Login() {
         <p className="auth-footer-text">
           Bạn chưa có tài khoản? <Link to="/register" className="link">Đăng ký</Link>
         </p>
+
 
       </form>
     </AuthLayout>

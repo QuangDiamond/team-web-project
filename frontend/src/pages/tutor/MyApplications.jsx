@@ -1,8 +1,8 @@
-import { toast } from 'sonner';
 import { useState } from 'react';
 import { Send } from 'lucide-react';
 import { usePagedList } from '../../hooks/usePagedList';
 import { getMyApplications, withdrawApplication } from '../../services/applicationService';
+import Alert from '../../components/common/Alert';
 import ListState from '../../components/common/ListState';
 import Pagination from '../../components/common/Pagination';
 import ApplicationList from '../../components/tutor/ApplicationList';
@@ -12,21 +12,24 @@ const PAGE_SIZE = 10;
 // UC12 – các đơn ứng tuyển gia sư đã gửi (xem lại và rút đơn đang chờ)
 export default function MyApplications() {
   const [page, setPage] = useState(1);
+  const [actionError, setActionError] = useState('');
   const list = usePagedList(getMyApplications, { page: page, limit: PAGE_SIZE });
 
   const handleWithdraw = async (application) => {
-
+    setActionError('');
     try {
       await withdrawApplication(application._id);
       await list.reload();
     } catch (error) {
-      toast.error(error.message);
+      setActionError(error.message);
     }
   };
 
   return (
     <div className="page-stack">
       <p className="item-meta">Các đơn bạn đã gửi. Mỗi đơn tốn ít nhất 1 credits và không được hoàn lại.</p>
+
+      {actionError && <Alert type="error">{actionError}</Alert>}
 
       <ListState
         list={list}

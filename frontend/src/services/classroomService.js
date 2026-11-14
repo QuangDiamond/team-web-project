@@ -144,30 +144,6 @@ export const sendClassChatMessage = async (classroomId, content, attachments = [
   return await api.post(`/classroom/v1/${classroomId}/chat`, { content, attachments });
 };
 
-export const updateClassroomChatSettings = async (classroomId, data) => {
-  return await api.patch(`/classroom/v1/${classroomId}/chat/settings`, data);
-};
-
-export const getClassGroups = async (classroomId) => {
-  return await api.get(`/classroom/v1/${classroomId}/groups`);
-};
-
-export const createClassGroup = async (classroomId, data) => {
-  return await api.post(`/classroom/v1/${classroomId}/groups`, data);
-};
-
-export const addMemberToClassGroup = async (classroomId, groupId, member_user_id) => {
-  return await api.post(`/classroom/v1/${classroomId}/groups/${groupId}/members`, { member_user_id });
-};
-
-export const removeMemberFromClassGroup = async (classroomId, groupId, memberUserId) => {
-  return await api.delete(`/classroom/v1/${classroomId}/groups/${groupId}/members/${memberUserId}`);
-};
-
-export const updateClassGroupSettings = async (classroomId, groupId, data) => {
-  return await api.patch(`/classroom/v1/${classroomId}/groups/${groupId}/settings`, data);
-};
-
 /**
  * ===================================================
  * UC26 & UC27: Bài tập & Chấm điểm
@@ -203,14 +179,6 @@ export const getSubmissionsForAssignment = async (assignmentId) => {
 
 export const gradeSubmission = async (submissionId, data) => {
   return await api.post(`/classroom/v1/submissions/${submissionId}/grade`, data);
-};
-
-export const publishAssignmentResults = async (assignmentId) => {
-  return await api.post(`/classroom/v1/assignments/${assignmentId}/publish-results`);
-};
-
-export const generateAiQuestions = async (data) => {
-  return await api.post('/classroom/v1/assignments/generate-ai', data);
 };
 
 export const getClassSessions = async (classId, params = {}) => {
@@ -259,22 +227,4 @@ export const updateClassMaterial = async (classId, materialId, data) => {
 
 export const deleteClassMaterial = async (classId, materialId) => {
   return await api.delete(`/classroom/v1/${classId}/materials/${materialId}`);
-};
-
-// Điểm danh buổi học (UC26.A2)
-export const markAttendance = async (classId, sessionId, data) => {
-  return await api.post(`/classroom/v1/${classId}/sessions/${sessionId}/attendance`, data);
-};
-
-// Yêu cầu đổi / hủy lịch học (UC27 & UC28)
-export const createScheduleChangeRequest = async (classId, sessionId, data) => {
-  return await api.post(`/classroom/v1/${classId}/sessions/${sessionId}/change-requests`, data);
-};
-
-export const getScheduleChangeRequests = async (classId) => {
-  return await api.get(`/classroom/v1/${classId}/change-requests`);
-};
-
-export const respondScheduleChangeRequest = async (classId, requestId, data) => {
-  return await api.patch(`/classroom/v1/${classId}/change-requests/${requestId}`, data);
 };

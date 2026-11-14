@@ -38,12 +38,6 @@ export default function ReceivedApplicationCard({ application, onContinue, onSki
   };
 
   const isBusy = busyAction !== '';
-  // UC13 E2: tài khoản gia sư bị khóa thì không cho Continue
-  let isTutorLocked = false;
-  if (!tutor || tutor.is_active === false) {
-    isTutorLocked = true;
-  }
-  const showLockedWarning = isTutorLocked && application.status === 'PENDING';
 
   return (
     <li className="review-card">
@@ -68,11 +62,6 @@ export default function ReceivedApplicationCard({ application, onContinue, onSki
         <p className="review-card-note is-empty">Gia sư chưa để lại lời nhắn.</p>
       )}
       <p className="item-meta">Đã ứng tuyển {formatDate(application.created_at)}</p>
-      {showLockedWarning && (
-        <p className="review-card-warning" role="status">
-          Tài khoản gia sư này hiện không hoạt động nên không thể tiếp tục trao đổi.
-        </p>
-      )}
 
       <div className="review-card-actions">
         <button type="button" className="btn btn-outline btn-sm" disabled={isBusy} onClick={() => onViewDetails(application)}>
@@ -91,7 +80,7 @@ export default function ReceivedApplicationCard({ application, onContinue, onSki
             <button
               type="button"
               className="btn btn-primary btn-sm"
-              disabled={isBusy || isTutorLocked}
+              disabled={isBusy}
               onClick={() => runAction('continue', onContinue)}
             >
               {busyAction === 'continue' ? 'Đang mở...' : 'Tiếp tục'}

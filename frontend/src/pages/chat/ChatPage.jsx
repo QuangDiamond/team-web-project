@@ -21,20 +21,16 @@ export default function ChatPage({ basePath }) {
 
   return (
     <div className={layoutClass}>
-      <aside className="chat-sidebar" aria-label="Danh sách cuộc trò chuyện">
+      <aside className="chat-sidebar" aria-label="Cuộc trò chuyện">
         {conversations.loading && (
           <div className="page-loading-inline" role="status">
-            <LoaderCircle size={24} className="spin" aria-hidden="true" />
-            <span className="visually-hidden">Đang tải danh sách...</span>
+            <LoaderCircle size={22} className="spin" aria-hidden="true" />
+            <span className="visually-hidden">Đang tải...</span>
           </div>
         )}
         {conversations.error && <Alert type="error">{conversations.error.message}</Alert>}
         {!conversations.loading && !conversations.error && (
-          <ConversationList
-            conversations={conversations.items}
-            selectedId={conversationId}
-            basePath={basePath}
-          />
+          <ConversationList conversations={conversations.items} selectedId={conversationId} basePath={basePath} />
         )}
       </aside>
 
@@ -42,13 +38,7 @@ export default function ChatPage({ basePath }) {
         {conversationId ? (
           <MessageThread key={conversationId} thread={thread} basePath={basePath} />
         ) : (
-          <div className="chat-placeholder-container">
-            <EmptyState
-              icon={MessageSquare}
-              title="Chọn cuộc trò chuyện"
-              description="Chọn một người liên hệ ở danh sách bên trái để đọc tin nhắn, trao đổi việc học và chuẩn bị tiến tới Thỏa thuận dạy kèm."
-            />
-          </div>
+          <EmptyState icon={MessageSquare} title="Chọn cuộc trò chuyện" description="Chọn cuộc trò chuyện bên trái để đọc và gửi tin nhắn." />
         )}
       </section>
     </div>

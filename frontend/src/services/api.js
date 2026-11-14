@@ -12,9 +12,7 @@ const translateApiErrorMessage = (message, status) => {
 };
 
 const api = axios.create({
-  baseURL:
-    (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) ||
-    'http://localhost:9999/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
   withCredentials: true,
 });
 

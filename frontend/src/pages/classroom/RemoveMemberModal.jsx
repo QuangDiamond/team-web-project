@@ -1,15 +1,16 @@
-import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import { AlertTriangle, Trash2, X } from 'lucide-react';
 import { removeMemberFromClass } from '../../services/classroomService';
 
-export default function RemoveMemberModal({ isOpen, onClose, classroomId, member, onMemberRemoved }) {
+export default function RemoveMemberModal({ isOpen, onClose, classroomId, member, onMemberRemoved, showToast }) {
   const [reason, setReason] = useState('Được gỡ bởi gia sư phụ trách lớp');
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (isOpen) {
       setReason('Được gỡ bởi gia sư phụ trách lớp');
+      setError('');
     }
   }, [isOpen, member]);
 
@@ -17,6 +18,7 @@ export default function RemoveMemberModal({ isOpen, onClose, classroomId, member
 
   const handleClose = () => {
     setReason('Được gỡ bởi gia sư phụ trách lớp');
+    setError('');
     onClose();
   };
 
@@ -25,14 +27,17 @@ export default function RemoveMemberModal({ isOpen, onClose, classroomId, member
 
     try {
       setSubmitting(true);
+      setError('');
       await removeMemberFromClass(classroomId, member._id, reason);
-      toast.success('Đã gỡ học viên khỏi lớp thành công!');
+      if (showToast) {
+        showToast('Đã gỡ học viên khỏi lớp thành công!');
+      }
       if (onMemberRemoved) {
         onMemberRemoved(member._id);
       }
       handleClose();
     } catch (err) {
-      toast.error(err?.response?.data?.message || err.message || 'Không thể xóa thành viên');
+      setError(err?.response?.data?.message || err.message || 'Không thể xóa thành viên');
     } finally {
       setSubmitting(false);
     }
@@ -55,6 +60,12 @@ export default function RemoveMemberModal({ isOpen, onClose, classroomId, member
 
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
+            {error && (
+              <div className="error-alert">
+                <AlertTriangle size={18} style={{ flexShrink: 0 }} />
+                <div>{error}</div>
+              </div>
+            )}
 
             <p style={{ margin: '0 0 16px 0', fontSize: '15px', color: '#334155' }}>
               Bạn có chắc chắn muốn xóa học viên <strong>{userName}</strong> khỏi lớp học không?

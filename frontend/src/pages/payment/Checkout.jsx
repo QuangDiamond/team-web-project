@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LoaderCircle, PackageOpen, RotateCw } from 'lucide-react';
@@ -31,6 +30,7 @@ const toErrorMessage = (error) => {
 export default function Checkout() {
   const { catalog, billing, loading, loadError, reload } = useCheckoutData();
   const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState('');
 
   const header = (
     <PageHeader
@@ -84,14 +84,14 @@ export default function Checkout() {
     const payload = selection.type === 'PLAN'
       ? { item_type: 'PLAN_UPGRADE', plan_id: selection.item._id, payment_method: 'VIETQR' }
       : { item_type: 'CREDIT_PACK', pack_id: selection.item._id, quantity: selection.quantity, payment_method: 'VIETQR' };
-
+    setFormError('');
     setSubmitting(true);
     try {
       const response = await createOrder(payload);
       // Giữ trạng thái "đang xử lý" trong lúc trình duyệt chuyển sang cổng thanh toán
       window.location.assign(response.data.checkout_url);
     } catch (error) {
-      toast.error(toErrorMessage(error));
+      setFormError(toErrorMessage(error));
       setSubmitting(false);
     }
   };
@@ -103,6 +103,7 @@ export default function Checkout() {
       {header}
       <CurrentPlanBanner billing={billing} />
 
+      {formError && <Alert type="error">{formError}</Alert>}
       <div className="checkout-layout">
         <section className="card checkout-section">
           <PurchaseItemSelector

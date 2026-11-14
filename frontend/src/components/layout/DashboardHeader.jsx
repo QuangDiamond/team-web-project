@@ -1,15 +1,32 @@
-import { Link } from 'react-router-dom';
-import { Menu } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Bell, Menu } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import NotificationBell from '../common/NotificationBell';
+import { getUnreadCount } from '../../services/notificationService';
 
 // Header của DashboardLayout: nút mở sidebar (mobile), tiêu đề trang, chuông thông báo (UC33/UC35), các nút hành động theo role
 export default function DashboardHeader({ title, actions = [], isSidebarOpen, onOpenSidebar }) {
   const { user } = useAuth();
+  const location = useLocation();
+  const [unreadCount, setUnreadCount] = useState(0);
+
   let notificationsPath = '/student/notifications';
   if (user && user.role) {
     notificationsPath = `/${user.role.toLowerCase()}/notifications`;
   }
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    getUnreadCount()
+      .then((res) => {
+        if (res && res.data && typeof res.data.unreadCount === 'number') {
+          setUnreadCount(res.data.unreadCount);
+        }
+      })
+      .catch(() => {});
+  }, [user, location.pathname]);
 
   return (
     <header className="dashboard-header">
@@ -28,9 +45,20 @@ export default function DashboardHeader({ title, actions = [], isSidebarOpen, on
       </div>
 
       <div className="dashboard-header-actions">
-        {user && (
-          <NotificationBell notificationsPath={notificationsPath} buttonClassName="dashboard-icon-button" />
-        )}
+        <Link
+          to={notificationsPath}
+          className="dashboard-icon-button"
+          aria-label="Thông báo"
+          title="Thông báo"
+          style={{ position: 'relative' }}
+        >
+          <Bell size={20} aria-hidden="true" />
+          {unreadCount > 0 && (
+            <span className="nav-noti-badge">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </Link>
         {actions.map((action) => (
           <Link key={action.label} to={action.to} className="dashboard-header-link">
             {action.label}

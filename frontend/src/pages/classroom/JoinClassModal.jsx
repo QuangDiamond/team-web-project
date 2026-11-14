@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -15,7 +14,7 @@ import {
 import { previewClassroom, joinClassroom } from '../../services/classroomService';
 import { useAuth } from '../../hooks/useAuth.jsx';
 
-export default function JoinClassModal({ isOpen, onClose }) {
+export default function JoinClassModal({ isOpen, onClose, showToast }) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [joinCode, setJoinCode] = useState('');
@@ -80,10 +79,12 @@ export default function JoinClassModal({ isOpen, onClose }) {
       setJoining(true);
       setError('');
       const res = await joinClassroom(joinCode.trim(), selectedChildId || null);
-      if (user?.role === 'PARENT' && selectedChildId) {
-        toast.success('Đã tham gia lớp và gửi yêu cầu liên kết đến học sinh!');
-      } else {
-        toast.success('Tham gia lớp học thành công!');
+      if (showToast) {
+        if (user?.role === 'PARENT' && selectedChildId) {
+          showToast('Đã tham gia lớp và gửi yêu cầu liên kết đến học sinh!');
+        } else {
+          showToast('Tham gia lớp học thành công!');
+        }
       }
       handleClose();
       if (res?.data?.class_id) {
@@ -96,7 +97,7 @@ export default function JoinClassModal({ isOpen, onClose }) {
         navigate(targetUrl);
       }
     } catch (err) {
-      toast.error(err?.response?.data?.message || err.message || 'Không thể tham gia lớp học');
+      setError(err?.response?.data?.message || err.message || 'Không thể tham gia lớp học');
     } finally {
       setJoining(false);
     }

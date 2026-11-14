@@ -1,6 +1,6 @@
-import { toast } from 'sonner';
 import { useState } from 'react';
 import Modal from '../common/Modal';
+import Alert from '../common/Alert';
 import ReasonField from './ReasonField';
 import DialogActions from './DialogActions';
 import { updateUserStatus } from '../../services/adminService';
@@ -13,6 +13,7 @@ export default function UserStatusDialog({ user, actionKey, onClose, onSaved }) 
   const action = STATUS_ACTIONS[actionKey];
   const [reason, setReason] = useState('');
   const [reasonError, setReasonError] = useState('');
+  const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const handleReasonChange = (event) => {
@@ -24,6 +25,7 @@ export default function UserStatusDialog({ user, actionKey, onClose, onSaved }) 
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setFormError('');
 
     const newReasonError = validateReason(reason);
     setReasonError(newReasonError);
@@ -41,7 +43,7 @@ export default function UserStatusDialog({ user, actionKey, onClose, onSaved }) 
       if (fieldErrors.reason) {
         setReasonError(fieldErrors.reason);
       }
-      toast.error(error.message);
+      setFormError(error.message);
       setSubmitting(false);
     }
   };
@@ -52,7 +54,7 @@ export default function UserStatusDialog({ user, actionKey, onClose, onSaved }) 
         <p className="dialog-subject">
           <strong>{user.full_name}</strong> · {user.email}
         </p>
-
+        {formError && <Alert type="error">{formError}</Alert>}
         <ReasonField value={reason} onChange={handleReasonChange} error={reasonError} disabled={submitting} />
         <DialogActions
           submitLabel={action.submitLabel}

@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useState, useRef } from 'react';
 import {
   MessageSquare,
@@ -89,13 +88,13 @@ export default function ClassroomChatTab({
     for (const file of files) {
       const ext = file.name.split('.').pop()?.toLowerCase();
       if (!ALLOWED_EXTENSIONS.includes(ext)) {
-        toast.error(
+        alert(
           `Tệp "${file.name}" không hợp lệ. Chỉ chấp nhận các định dạng: pdf, doc/docx, ppt/pptx, xls/xlsx, jpg, png, mp4, zip.`
         );
         continue;
       }
       if (file.size > MAX_FILE_SIZE) {
-        toast.error(`Tệp "${file.name}" vượt quá dung lượng tối đa cho phép là 20MB.`);
+        alert(`Tệp "${file.name}" vượt quá dung lượng tối đa cho phép là 20MB.`);
         continue;
       }
       try {
@@ -107,7 +106,7 @@ export default function ClassroomChatTab({
           file_data: base64,
         });
       } catch {
-        toast.error(`Không thể đọc tệp "${file.name}". Vui lòng thử lại.`);
+        alert(`Không thể đọc tệp "${file.name}". Vui lòng thử lại.`);
       }
     }
 
@@ -171,7 +170,7 @@ export default function ClassroomChatTab({
             onClick={() => setShowChatMembers(!showChatMembers)}
           >
             <Users size={14} />
-            {showChatMembers ? 'Ẩn thành viên' : 'Thành viên'}
+            {showChatMembers ? 'Ẩn thành viên' : `Thành viên (${chatGroupMembers.length})`}
           </button>
 
           {isOwner && (
@@ -327,7 +326,7 @@ export default function ClassroomChatTab({
                 }}
               >
                 <h4 style={{ margin: 0, fontSize: '14px', color: '#334155' }}>
-                  Thành viên
+                  Thành viên ({chatGroupMembers.length})
                 </h4>
                 <span style={{ fontSize: '11px', color: '#16a34a', fontWeight: 600 }}>
                   ● Đang hoạt động

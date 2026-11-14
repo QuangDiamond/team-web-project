@@ -1,7 +1,7 @@
-import { toast } from 'sonner';
 import { useState } from 'react';
 import Modal from '../common/Modal';
 import FormInput from '../common/FormInput';
+import Alert from '../common/Alert';
 import ReasonField from './ReasonField';
 import DialogActions from './DialogActions';
 import { createCreditPack, updateCreditPack } from '../../services/adminService';
@@ -85,6 +85,7 @@ export default function CreditPackDialog({ pack, onClose, onSaved }) {
   const isCreating = !pack;
   const [values, setValues] = useState(() => getInitialValues(pack));
   const [errors, setErrors] = useState({});
+  const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (event) => {
@@ -113,6 +114,7 @@ export default function CreditPackDialog({ pack, onClose, onSaved }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setFormError('');
 
     const newErrors = validatePackForm(values);
     setErrors(newErrors);
@@ -128,7 +130,7 @@ export default function CreditPackDialog({ pack, onClose, onSaved }) {
     } catch (error) {
       const fieldErrors = toFieldErrors(error.errors);
       setErrors(fieldErrors);
-      toast.error(error.message);
+      setFormError(error.message);
       focusFirstInvalidField(PACK_FIELDS, fieldErrors);
       setSubmitting(false);
     }
@@ -146,6 +148,7 @@ export default function CreditPackDialog({ pack, onClose, onSaved }) {
   return (
     <Modal id="credit-pack" title={title} description={description} onClose={onClose}>
       <form onSubmit={handleSubmit} noValidate>
+        {formError && <Alert type="error">{formError}</Alert>}
 
         {isCreating && (
           <TargetRoleField

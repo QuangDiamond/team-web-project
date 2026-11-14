@@ -1,5 +1,5 @@
-import { toast } from 'sonner';
 import { useState } from 'react';
+import Alert from '../common/Alert';
 import FormInput from '../common/FormInput';
 import FormSelect from '../common/FormSelect';
 import FormTextarea from '../common/FormTextarea';
@@ -85,6 +85,7 @@ export const toPostFormValues = (post) => ({
 export default function PostForm({ initialValues, isEdit, onSubmit }) {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
+  const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const subjects = useSubjectNames();
   const subjectOptions = toSelectOptions(subjects.subjectNames, values.subject_name);
@@ -106,7 +107,7 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
   };
 
   const submitWithStatus = async (status) => {
-
+    setFormError('');
     const foundErrors = validate(values);
     setErrors(foundErrors);
     if (Object.keys(foundErrors).length > 0) {
@@ -123,7 +124,7 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
         setErrors(serverErrors);
         focusFirstInvalidField(FIELD_ORDER, serverErrors);
       } else {
-        toast.error(error.message);
+        setFormError(error.message);
       }
     } finally {
       setSubmitting(false);
@@ -143,6 +144,7 @@ export default function PostForm({ initialValues, isEdit, onSubmit }) {
 
   return (
     <form className="post-form" onSubmit={handleSubmit} noValidate>
+      {formError && <Alert type="error">{formError}</Alert>}
 
       <FormInput
         id="title"

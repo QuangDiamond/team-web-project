@@ -1,6 +1,6 @@
 # Agreements API (`/api/agreements/v1`) – UC16 Confirm Tutoring Agreement
 
-Dành cho `PARENT` và `TUTOR` đã đăng nhập: `authentication` → `authorize('PARENT', 'TUTOR')` (role khác → 403). Riêng `/:agreementId/rate` chỉ `authorize('PARENT')`.
+Dành cho `PARENT` và `TUTOR` đã đăng nhập (bắt buộc middleware `authentication`).
 
 ## GET `/`
 Trả về danh sách các thỏa thuận dạy học (`connections`) và các hội thoại 1-1 đang hoạt động (`activeConversations`) của người dùng hiện tại.
@@ -25,9 +25,6 @@ Body: `{ "action": "CONFIRM" | "REJECT" | "CANCEL" }`.
 - `CONFIRM` (chỉ đối tác của người đề xuất): cập nhật trạng thái `CONFIRMED`, đóng `ParentRequest` liên quan (`CLOSED`), tự động đóng các thỏa thuận `DRAFT`/`PENDING` khác của cùng bài yêu cầu (`CANCELLED` nếu do phụ huynh đề xuất, `REJECTED` nếu do gia sư đề xuất), gửi thông báo cho cả hai bên.
 - `REJECT` (chỉ đối tác của người đề xuất): cập nhật trạng thái `REJECTED`, gửi thông báo cho người đề xuất.
 - `CANCEL` (UC16 A3 - chỉ chính người đề xuất): hủy đề xuất đang `PENDING`/`DRAFT` (`status = CANCELLED`).
-- Đổi trạng thái có điều kiện theo status hiện tại: hai thao tác đồng thời trên cùng thỏa thuận thì thao tác sau nhận 409.
-- `CONFIRM` khi bài yêu cầu đã `CLOSED` (ví dụ thỏa thuận khác của cùng yêu cầu vừa được xác nhận) → 409 (UC16 E1); thỏa thuận giữ nguyên `PENDING`.
-- Ngoài trang `/parent/contracts`, form đề xuất còn mở được từ header khung chat 1-1 (SC11), chọn sẵn hội thoại hiện tại.
 
 ## POST `/:agreementId/rate`
 Body: `{ "rating": 5, "comment": "..." }`.

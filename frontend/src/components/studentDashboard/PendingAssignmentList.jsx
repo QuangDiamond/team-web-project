@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { ClipboardCheck, ClipboardList } from 'lucide-react';
 import SectionCard from '../common/SectionCard';
 import SectionContent from './SectionContent';
@@ -66,20 +65,7 @@ function AssignmentRow({ assignment }) {
 // Khối "Pending Assignments" (Figma: SectionAssignments)
 export default function PendingAssignmentList({ section, onRetry }) {
   return (
-    <SectionCard
-      title="Bài tập chưa hoàn thành"
-      action={
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <SectionCount section={section} label="Cần làm" />
-          <Link
-            to="/student/assignments"
-            style={{ fontSize: '13px', color: '#c9441a', fontWeight: 600, textDecoration: 'none' }}
-          >
-            Xem tất cả bài tập →
-          </Link>
-        </div>
-      }
-    >
+    <SectionCard title="Bài tập chưa hoàn thành" action={<SectionCount section={section} label="Cần làm" />}>
       <SectionContent
         section={section}
         onRetry={onRetry}

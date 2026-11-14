@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
@@ -45,6 +44,7 @@ export default function Register() {
   const [role, setRole] = useState('');
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [errors, setErrors] = useState({});
+  const [formError, setFormError] = useState('');
   const [emailTaken, setEmailTaken] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -77,6 +77,7 @@ export default function Register() {
   };
 
   const handleBack = () => {
+    setFormError('');
     setEmailTaken(false);
     setStep(1);
   };
@@ -92,6 +93,7 @@ export default function Register() {
   };
 
   const handleSubmit = async () => {
+    setFormError('');
     setEmailTaken(false);
 
     const newErrors = {
@@ -128,7 +130,7 @@ export default function Register() {
         return;
       }
     }
-    toast.error(error?.message || 'Đăng ký không thành công');
+    setFormError(error?.message || 'Đăng ký không thành công');
   };
 
   let alert = null;
@@ -141,6 +143,8 @@ export default function Register() {
         <Link to="/forgot-password" className="link">Quên mật khẩu</Link>?
       </Alert>
     );
+  } else if (formError) {
+    alert = <Alert type="error">{formError}</Alert>;
   }
 
   return (

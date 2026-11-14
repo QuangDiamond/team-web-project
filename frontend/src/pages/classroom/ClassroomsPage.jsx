@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
@@ -14,6 +13,7 @@ import {
   Copy,
   Link as LinkIcon,
   ArrowRight,
+  Sparkles,
   Archive,
 } from 'lucide-react';
 import { getMyClassrooms } from '../../services/classroomService';
@@ -34,6 +34,14 @@ export default function ClassroomsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage('');
+    }, 3000);
+  };
 
   const fetchClassrooms = useCallback(async () => {
     try {
@@ -62,7 +70,7 @@ export default function ClassroomsPage() {
   const handleCopy = (text, label) => {
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(text);
-      toast.success(`Đã sao chép ${label}!`);
+      showToast(`Đã sao chép ${label}!`);
     }
   };
 
@@ -88,6 +96,12 @@ export default function ClassroomsPage() {
 
   return (
     <div className="classroom-container">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="copy-toast" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <Sparkles size={16} /> {toastMessage}
+        </div>
+      )}
 
       {/* Header */}
       <div className="classroom-header">
@@ -360,15 +374,16 @@ export default function ClassroomsPage() {
       <CreateClassroomModal
         isOpen={isModalOpen || Boolean(initialAgreementId)}
         initialAgreementId={initialAgreementId}
-        existingClassrooms={classrooms}
         onClose={handleCloseCreateModal}
         onClassroomCreated={handleClassroomCreated}
+        showToast={showToast}
       />
 
       {/* Modal Tham Gia Lớp Học (UC24) */}
       <JoinClassModal
         isOpen={isJoinModalOpen}
         onClose={() => setIsJoinModalOpen(false)}
+        showToast={showToast}
       />
     </div>
   );

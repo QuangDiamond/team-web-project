@@ -622,13 +622,7 @@ function CalendarWeek({
 
   return (
     <div className="schedule-calendar-scroll">
-      <div
-        className="schedule-calendar"
-        style={{
-          '--schedule-grid-height': `${gridHeight}px`,
-          '--schedule-hour-height': `${HOUR_HEIGHT}px`,
-        }}
-      >
+      <div className="schedule-calendar" style={{ '--schedule-grid-height': `${gridHeight}px` }}>
         <div className="schedule-calendar-corner" aria-hidden="true" />
         {days.map((day) => {
           const dayIsToday = isSameDay(day, today);
@@ -868,7 +862,6 @@ export default function MySchedule() {
               <ChevronLeft size={16} aria-hidden="true" />
             </button>
             <button type="button" className="btn btn-outline btn-sm" onClick={() => moveWeek(1)} aria-label="Tuần sau">
-            <button type="button" className="btn btn-outline btn-sm" onClick={() => moveWeek(1)} aria-label="Tuần sau">
               <ChevronRight size={16} aria-hidden="true" />
             </button>
           </div>
@@ -886,7 +879,6 @@ export default function MySchedule() {
         <Alert type="error">
           <p>{error}</p>
           <button type="button" className="btn btn-outline btn-sm" onClick={() => setReloadKey((key) => key + 1)}>
-            Thử lại
             Thử lại
           </button>
         </Alert>

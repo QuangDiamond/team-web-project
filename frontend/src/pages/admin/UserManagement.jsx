@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useState } from 'react';
 import { UserPlus } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
@@ -6,6 +5,7 @@ import { useHistoryFilters } from '../../hooks/useHistoryFilters';
 import { usePagedList } from '../../hooks/usePagedList';
 import { getUsers } from '../../services/adminService';
 import PageHeader from '../../components/common/PageHeader';
+import Alert from '../../components/common/Alert';
 import Pagination from '../../components/common/Pagination';
 import UserFilters from '../../components/admin/UserFilters';
 import UserTable from '../../components/admin/UserTable';
@@ -22,15 +22,16 @@ export default function UserManagement() {
   const hasValidFilters = filterState.dateError === '';
   const list = usePagedList(getUsers, filterState.filterParams, filterState.page, hasValidFilters);
   const [createOpen, setCreateOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleCreated = (message) => {
     setCreateOpen(false);
-    toast.success(message);
+    setSuccessMessage(message);
     list.reload();
   };
 
   const openCreateDialog = () => {
-
+    setSuccessMessage('');
     setCreateOpen(true);
   };
 
@@ -47,6 +48,8 @@ export default function UserManagement() {
           </button>
         )}
       />
+
+      {successMessage && <Alert type="success">{successMessage}</Alert>}
 
       <UserFilters filters={filterState.filters} onChange={filterState.changeFilter} dateError={filterState.dateError} />
 

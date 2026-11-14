@@ -476,7 +476,18 @@
   background-color: #1E293B;
 }
 
-/* Modals (form đề xuất thỏa thuận dùng chung nên nằm trong index.css) */
+/* Modals */
+.modal.agreement-proposal-modal { width: min(860px, calc(100vw - 32px)); max-width: 860px; }
+.agreement-proposal-form { padding: 24px; }
+.agreement-proposal-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.agreement-proposal-fields .form-field { min-width: 0; }
+.agreement-proposal-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; padding-top: 20px; border-top: 1px solid var(--color-border); }
+@media (max-width: 600px) {
+  .agreement-proposal-form { padding: 16px; }
+  .agreement-proposal-fields { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .agreement-proposal-actions .btn { flex: 1 1 180px; }
+}
+
 .conn-modal-overlay {
   position: fixed;
   top: 0;
@@ -590,91 +601,4 @@
   .btn-conn {
     width: 100%;
   }
-}
-
-/* Các style trước đây viết inline trong MyConnections.jsx */
-.conn-status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.conn-avatar-initials {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: #E2E8F0;
-  color: #334155;
-  font-weight: 800;
-  font-size: 0.875rem;
-}
-
-.conn-empty-hint {
-  color: #64748B;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-}
-
-.conn-price-unit {
-  font-size: 0.75rem;
-  color: #64748B;
-  font-weight: 500;
-}
-
-.conn-request-closed {
-  color: #059669;
-  margin-left: 0.5rem;
-  font-weight: 600;
-}
-
-.conn-rated-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.8125rem;
-  color: #059669;
-  font-weight: 700;
-}
-
-.star-btn.active svg {
-  fill: currentColor;
-}
-
-.rate-tutor-identity {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-}
-
-.rate-tutor-avatar {
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.rate-tutor-name {
-  font-weight: 800;
-  color: #0F172A;
-  font-size: 1.125rem;
-}
-
-.rate-tutor-subject {
-  font-size: 0.8125rem;
-  color: #64748B;
-}
-
-.rate-tutor-label {
-  display: block;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  color: #334155;
-}
-
-.rate-tutor-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  margin-top: 1rem;
 }

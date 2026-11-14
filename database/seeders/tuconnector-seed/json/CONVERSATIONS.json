@@ -22,7 +22,7 @@
     "type": "DIRECT",
     "updated_at": {
       "$date": {
-        "$numberLong": "1794316500000"
+        "$numberLong": "1791294000000"
       }
     },
     "read_states": [
@@ -31,11 +31,11 @@
           "$oid": "2c15f53000dfedc3e5f327a9"
         },
         "last_read_message_id": {
-          "$oid": "967bfd6207e02be514e95648"
+          "$oid": "0e3f71852eddab605c1fbfad"
         },
         "read_at": {
           "$date": {
-            "$numberLong": "1794316500000"
+            "$numberLong": "1791294300000"
           }
         }
       },

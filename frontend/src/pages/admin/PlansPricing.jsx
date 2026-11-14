@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useState } from 'react';
 import { LoaderCircle, Plus, RotateCw } from 'lucide-react';
 import { usePlansPricing } from '../../hooks/usePlansPricing';
@@ -27,11 +26,12 @@ const getPlansForRole = (plans, role) => {
 // SC41 – Plans & Pricing (UC39): Admin xem / sửa plan, thêm / sửa / tắt credit pack
 export default function PlansPricing() {
   const { plans, creditPacks, loading, loadError, reload } = usePlansPricing();
+  const [successMessage, setSuccessMessage] = useState('');
   // dialog = { type: 'plan' | 'pack' | 'pack-status', item } hoặc null khi không mở hộp thoại nào
   const [dialog, setDialog] = useState(null);
 
   const openDialog = (type, item) => {
-
+    setSuccessMessage('');
     setDialog({ type: type, item: item });
   };
 
@@ -41,7 +41,7 @@ export default function PlansPricing() {
 
   const handleSaved = (message) => {
     setDialog(null);
-    toast.success(message);
+    setSuccessMessage(message);
     reload();
   };
 
@@ -134,6 +134,8 @@ export default function PlansPricing() {
         title="Gói dịch vụ và bảng giá"
         description="Mỗi gói dịch vụ có chu kỳ tháng hoặc năm. Với gói năm, bạn có thể thiết lập chiết khấu theo phần trăm."
       />
+
+      {successMessage && <Alert type="success">{successMessage}</Alert>}
 
       {renderContent()}
 

@@ -19,12 +19,12 @@ export const listClassSessions = asyncHandler(async (req, res) => {
 
 export const getClassSession = asyncHandler(async (req, res) => {
   const data = await classSessionService.getClassSession(req.user, req.params.classId, req.params.sessionId);
-  return responseCommon(res, data, 'Lấy thông tin buổi học thành công!', 200, responseCode.SUCCESSED);
+  return responseCommon(res, data, 'Class session retrieved successfully!', 200, responseCode.SUCCESSED);
 });
 
 export const createClassSession = asyncHandler(async (req, res) => {
   const data = await classSessionService.createClassSession(req.user, req.params.classId, req.body);
-  return responseCommon(res, data, 'Tạo buổi học thành công!', 201, responseCode.SUCCESSED);
+  return responseCommon(res, data, 'Class session created successfully!', 201, responseCode.SUCCESSED);
 });
 
 export const updateClassSession = asyncHandler(async (req, res) => {
@@ -34,45 +34,10 @@ export const updateClassSession = asyncHandler(async (req, res) => {
     req.params.sessionId,
     req.body,
   );
-  return responseCommon(res, data, 'Cập nhật buổi học thành công!', 200, responseCode.SUCCESSED);
+  return responseCommon(res, data, 'Class session updated successfully!', 200, responseCode.SUCCESSED);
 });
 
 export const deleteClassSession = asyncHandler(async (req, res) => {
   const data = await classSessionService.deleteClassSession(req.user, req.params.classId, req.params.sessionId);
-  return responseCommon(res, data, 'Xóa buổi học thành công!', 200, responseCode.SUCCESSED);
-});
-
-export const markAttendance = asyncHandler(async (req, res) => {
-  const data = await classSessionService.markAttendance(
-    req.user,
-    req.params.classId,
-    req.params.sessionId,
-    req.body
-  );
-  return responseCommon(res, data, 'Điểm danh buổi học thành công!', 200, responseCode.SUCCESSED);
-});
-
-export const createScheduleChangeRequest = asyncHandler(async (req, res) => {
-  const data = await classSessionService.createScheduleChangeRequest(
-    req.user,
-    req.params.classId,
-    req.params.sessionId,
-    req.body
-  );
-  return responseCommon(res, data, 'Gửi yêu cầu đổi lịch học thành công!', 201, responseCode.SUCCESSED);
-});
-
-export const listScheduleChangeRequests = asyncHandler(async (req, res) => {
-  const data = await classSessionService.listScheduleChangeRequests(req.user, req.params.classId);
-  return responseCommon(res, data, 'Lấy danh sách yêu cầu đổi lịch thành công!', 200, responseCode.SUCCESSED);
-});
-
-export const respondScheduleChangeRequest = asyncHandler(async (req, res) => {
-  const data = await classSessionService.respondScheduleChangeRequest(
-    req.user,
-    req.params.classId,
-    req.params.requestId,
-    req.body
-  );
-  return responseCommon(res, data, 'Phản hồi yêu cầu đổi lịch thành công!', 200, responseCode.SUCCESSED);
+  return responseCommon(res, data, 'Class session deleted successfully!', 200, responseCode.SUCCESSED);
 });

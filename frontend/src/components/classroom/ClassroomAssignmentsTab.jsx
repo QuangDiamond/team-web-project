@@ -1,5 +1,3 @@
-import { toast } from 'sonner';
-import { Link } from 'react-router-dom';
 import {
   Plus,
   Loader2,
@@ -18,7 +16,6 @@ import {
 } from 'lucide-react';
 
 export default function ClassroomAssignmentsTab({
-  classroomId,
   assignments,
   loadingAssignments,
   isOwner,
@@ -32,12 +29,10 @@ export default function ClassroomAssignmentsTab({
 }) {
   const handleCreateClick = () => {
     if (studentCount === 0) {
-      toast.error('Lớp học phải có ít nhất một học sinh tham gia để có thể tạo và giao bài tập.');
+      alert('Lớp học phải có ít nhất một học sinh tham gia để có thể tạo và giao bài tập.');
       return;
     }
-    if (onOpenCreateAssignment) {
-      onOpenCreateAssignment();
-    }
+    onOpenCreateAssignment();
   };
 
   return (
@@ -45,38 +40,24 @@ export default function ClassroomAssignmentsTab({
       <div className="members-toolbar">
         <div>
           <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', color: '#0f172a' }}>
-            {isOwner ? 'Quản lý bài tập & Chấm điểm' : 'Bài tập của lớp'}
+            Quản lý bài tập & Chấm điểm
           </h3>
           <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>
-            {isOwner
-              ? 'Tạo bài tập trắc nghiệm, tự luận, nộp tệp và tự động chấm điểm bài làm của học sinh.'
-              : 'Làm bài, theo dõi hạn nộp và xem điểm, nhận xét của gia sư.'}
+            Tạo bài tập trắc nghiệm, tự luận, nộp tệp và tự động chấm điểm bài làm của học sinh.
           </p>
         </div>
 
         {isOwner && (
-          studentCount > 0 && classroomId ? (
-            <Link
-              to={`/tutor/classes/${classroomId}/assignments/new`}
-              className="btn-primary-orange"
-              style={{ fontSize: '14px', padding: '9px 16px', display: 'inline-flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}
-              title="Tạo bài tập mới"
-            >
-              <Plus size={15} />
-              <span>Tạo bài tập mới</span>
-            </Link>
-          ) : (
-            <button
-              type="button"
-              className="btn-primary-orange"
-              style={{ fontSize: '14px', padding: '9px 16px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-              onClick={handleCreateClick}
-              title={studentCount === 0 ? 'Lớp cần có ít nhất 1 học sinh để tạo bài tập' : 'Tạo bài tập mới'}
-            >
-              <Plus size={15} />
-              <span>Tạo bài tập mới</span>
-            </button>
-          )
+          <button
+            type="button"
+            className="btn-primary-orange"
+            style={{ fontSize: '14px', padding: '9px 16px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            onClick={handleCreateClick}
+            title={studentCount === 0 ? 'Lớp cần có ít nhất 1 học sinh để tạo bài tập' : 'Tạo bài tập mới'}
+          >
+            <Plus size={15} />
+            <span>Tạo bài tập mới</span>
+          </button>
         )}
       </div>
 
@@ -97,37 +78,21 @@ export default function ClassroomAssignmentsTab({
               : 'Hãy tạo bài tập đầu tiên để củng cố kiến thức cho học sinh sau mỗi buổi học!'}
           </p>
           {isOwner && (
-            studentCount > 0 && classroomId ? (
-              <Link
-                to={`/tutor/classes/${classroomId}/assignments/new`}
-                className="btn-primary-orange"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  textDecoration: 'none',
-                }}
-              >
-                <Plus size={15} />
-                <span>Tạo bài tập đầu tiên</span>
-              </Link>
-            ) : (
-              <button
-                type="button"
-                className="btn-primary-orange"
-                onClick={handleCreateClick}
-                disabled={studentCount === 0}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  ...(studentCount === 0 ? { opacity: 0.6, cursor: 'not-allowed' } : {}),
-                }}
-              >
-                <Plus size={15} />
-                <span>Tạo bài tập đầu tiên</span>
-              </button>
-            )
+            <button
+              type="button"
+              className="btn-primary-orange"
+              onClick={handleCreateClick}
+              disabled={studentCount === 0}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                ...(studentCount === 0 ? { opacity: 0.6, cursor: 'not-allowed' } : {}),
+              }}
+            >
+              <Plus size={15} />
+              <span>Tạo bài tập đầu tiên</span>
+            </button>
           )}
         </div>
       ) : (
@@ -185,50 +150,26 @@ export default function ClassroomAssignmentsTab({
               {/* Actions for Tutor */}
               {isOwner ? (
                 <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-                  {classroomId ? (
-                    <Link
-                      to={`/tutor/classes/${classroomId}/assignments/${asg._id}/grade`}
-                      className="btn-primary-orange"
-                      style={{ flex: 2, fontSize: '13px', padding: '8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', textDecoration: 'none' }}
-                      title="Chấm điểm bài nộp (Gia sư)"
-                    >
-                      <BarChart3 size={14} />
-                      <span>Chấm bài</span>
-                    </Link>
-                  ) : (
-                    <button
-                      type="button"
-                      className="btn-primary-orange"
-                      style={{ flex: 2, fontSize: '13px', padding: '8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
-                      onClick={() => onSelectGrading(asg)}
-                      title="Chấm điểm bài nộp (Gia sư)"
-                    >
-                      <BarChart3 size={14} />
-                      <span>Chấm bài</span>
-                    </button>
-                  )}
-                  {classroomId ? (
-                    <Link
-                      to={`/tutor/classes/${classroomId}/assignments/${asg._id}/edit`}
-                      className="btn-outline-gray"
-                      style={{ flex: 1, fontSize: '13px', padding: '8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px', textDecoration: 'none' }}
-                      title={asg.results_published_at ? 'Bài đã công bố điểm, chỉ xem/sửa thông tin chung' : 'Sửa đề bài'}
-                    >
-                      <Pencil size={13} />
-                      <span>Sửa</span>
-                    </Link>
-                  ) : (
-                    <button
-                      type="button"
-                      className="btn-outline-gray"
-                      style={{ flex: 1, fontSize: '13px', padding: '8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}
-                      onClick={() => onOpenEditAssignment(asg)}
-                      title={asg.results_published_at ? 'Bài đã công bố điểm, chỉ xem/sửa thông tin chung' : 'Sửa đề bài'}
-                    >
-                      <Pencil size={13} />
-                      <span>Sửa</span>
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    className="btn-primary-orange"
+                    style={{ flex: 2, fontSize: '13px', padding: '8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+                    onClick={() => onSelectGrading(asg)}
+                    title="Chấm điểm bài nộp (Gia sư)"
+                  >
+                    <BarChart3 size={14} />
+                    <span>Chấm bài ({asg.submission_count || 0})</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-outline-gray"
+                    style={{ flex: 1, fontSize: '13px', padding: '8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}
+                    onClick={() => onOpenEditAssignment(asg)}
+                    title={asg.results_published_at ? 'Bài đã công bố điểm, chỉ xem/sửa thông tin chung' : 'Sửa đề bài'}
+                  >
+                    <Pencil size={13} />
+                    <span>Sửa</span>
+                  </button>
                   <button
                     type="button"
                     className="btn-outline-gray"

@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useState } from 'react';
 import Modal from '../common/Modal';
 import Alert from '../common/Alert';
@@ -36,7 +35,7 @@ export default function ResolutionDialog({
       });
       onResolved(response.message || 'Đã xử lý báo cáo thành công.');
     } catch (failure) {
-      toast.error(failure.message || 'Không thể xử lý báo cáo. Vui lòng thử lại.');
+      setError(failure.message || 'Không thể xử lý báo cáo. Vui lòng thử lại.');
     } finally {
       setSubmitting(false);
     }

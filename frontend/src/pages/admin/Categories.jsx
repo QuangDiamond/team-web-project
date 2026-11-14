@@ -1,7 +1,7 @@
-import { toast } from 'sonner';
 import { useState } from 'react';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import PageHeader from '../../components/common/PageHeader';
+import Alert from '../../components/common/Alert';
 import ListState from '../../components/common/ListState';
 import Pagination from '../../components/common/Pagination';
 import CategoryDialog from '../../components/admin/CategoryDialog';
@@ -21,6 +21,7 @@ export default function Categories() {
   const [search, setSearch] = useState('');
   const [query, setQuery] = useState('');
   const [dialog, setDialog] = useState(null);
+  const [success, setSuccess] = useState('');
   const list = usePagedList(FETCHERS[type], { page, limit: 10, q: query });
 
   const changeTab = (value) => {
@@ -28,7 +29,7 @@ export default function Categories() {
     setPage(1);
     setSearch('');
     setQuery('');
-
+    setSuccess('');
   };
   const handleSearch = (event) => {
     event.preventDefault();
@@ -37,7 +38,7 @@ export default function Categories() {
   };
   const handleSaved = () => {
     setDialog(null);
-    toast.success('Đã cập nhật danh mục.');
+    setSuccess('Đã cập nhật danh mục.');
     if (dialog.removing && list.items.length === 1 && page > 1) setPage(page - 1);
     else list.reload();
   };
@@ -45,7 +46,7 @@ export default function Categories() {
   return (
     <div className="categories-page page-stack">
       <PageHeader title="Quản lý danh mục" description="Nguồn dữ liệu chung cho bài đăng, yêu cầu tìm gia sư và các bộ lọc." />
-
+      {success && <Alert type="success">{success}</Alert>}
       <div className="category-tabs" role="tablist" aria-label="Loại danh mục">
         {TABS.map((tab) => (
           <button key={tab.value} type="button" role="tab" aria-selected={type === tab.value} className={type === tab.value ? 'category-tab is-active' : 'category-tab'} onClick={() => changeTab(tab.value)}>{tab.label}</button>
