@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authentication } from '../common/middlewares/auth.middleware.js';
+import { authentication, authorize } from '../common/middlewares/auth.middleware.js';
 import {
   uploadClassMaterialFile,
   requireClassMaterialFile,
@@ -23,26 +23,35 @@ const tutorOnly = (req, res, next) => {
   return next();
 };
 
+// hàm add, create
 classMaterialRoutes.post(
   '/:classId/materials',
-  authentication,
-  tutorOnly,
-  uploadClassMaterialFile,
+  authentication, // validate token
+  tutorOnly, // validate role tutor 
+  uploadClassMaterialFile, 
   validator(createClassMaterialSchema),
   requireClassMaterialFile,
   validateClassMaterialFileContent,
   createClassMaterial,
 );
-// Học sinh / phụ huynh trong lớp cũng được xem tài liệu (SC36), quyền kiểm tra trong service
-classMaterialRoutes.get('/:classId/materials', authentication, getClassMaterials);
+
+// hàm lấy all material của 1 class
+classMaterialRoutes.get(
+  '/:classId/materials',
+  authentication,
+  authorize('TUTOR', 'STUDENT', 'PARENT'),
+  getClassMaterials);
+
+// hàm update
 classMaterialRoutes.patch(
   '/:classId/materials/:materialId',
   authentication,
   tutorOnly,
   uploadClassMaterialFile,
   validator(updateClassMaterialSchema),
-  requireClassMaterialFile,
   validateClassMaterialFileContent,
   updateClassMaterial,
 );
+
+// hàm delete material
 classMaterialRoutes.delete('/:classId/materials/:materialId', authentication, tutorOnly, deleteClassMaterial);

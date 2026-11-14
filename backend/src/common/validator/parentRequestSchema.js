@@ -31,7 +31,7 @@ export const parentRequestBodySchema = z
     schedule: requiredText('Preferred schedule', 300),
     budget: z.coerce
       .number('Budget must be a number')
-      .positive('Budget must be greater than 0')
+      .gt(1000, 'Budget must be greater than 1000')
       .max(100000000, 'Budget is too large'),
     teaching_mode: z.enum(
       Object.values(ENUMS.ParentRequestsTeachingMode),

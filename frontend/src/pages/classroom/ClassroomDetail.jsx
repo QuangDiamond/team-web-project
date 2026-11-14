@@ -42,6 +42,7 @@ import ClassroomAnnouncementsTab from '../../components/classroom/ClassroomAnnou
 import ClassroomMembersTab from '../../components/classroom/ClassroomMembersTab';
 import ClassroomAssignmentsTab from '../../components/classroom/ClassroomAssignmentsTab';
 import ClassroomChatTab from '../../components/classroom/ClassroomChatTab';
+import StudentClassContent from '../../components/classroom/StudentClassContent';
 import ClassroomScheduleTab from '../../components/classroom/ClassroomScheduleTab';
 import ClassroomMaterialsTab from '../../components/classroom/ClassroomMaterialsTab';
 import MyClassDetail from '../tutor/MyClassDetail';
@@ -588,21 +589,60 @@ export default function ClassroomDetail() {
             <MessageSquare size={15} />
             <span>Nhóm Chat lớp</span>
           </button>
-          <button
-            type="button"
-            className={`tab-btn ${activeTab === 'materials' ? 'active' : ''}`}
-            onClick={() => setActiveTab('materials')}
-          >
-            <BookOpen size={15} aria-hidden="true" />
-            {user?.role === 'TUTOR' ? ' Tài liệu & chủ đề' : ' Tài liệu'}
-          </button>
-          <button
-            type="button"
-            className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`}
-            onClick={() => setActiveTab('schedule')}
-          >
-            <CalendarDays size={15} aria-hidden="true" /> Lịch lớp học
-          </button>
+          {user?.role === 'TUTOR' && (
+            <>
+              <button
+                type="button"
+                className={`tab-btn ${activeTab === 'materials' ? 'active' : ''}`}
+                onClick={() => setActiveTab('materials')}
+              >
+                <BookOpen size={15} aria-hidden="true" /> Tài liệu &amp; chủ đề
+              </button>
+              <button
+                type="button"
+                className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`}
+                onClick={() => setActiveTab('schedule')}
+              >
+                <CalendarDays size={15} aria-hidden="true" /> Lịch lớp học
+              </button>
+            </>
+          )}
+          {user?.role === 'STUDENT' && (
+            <>
+              <button
+                type="button"
+                className={`tab-btn ${activeTab === 'student-materials' ? 'active' : ''}`}
+                onClick={() => setActiveTab('student-materials')}
+              >
+                <BookOpen size={15} aria-hidden="true" /> Tài liệu &amp; chủ đề
+              </button>
+              <button
+                type="button"
+                className={`tab-btn ${activeTab === 'student-schedule' ? 'active' : ''}`}
+                onClick={() => setActiveTab('student-schedule')}
+              >
+                <CalendarDays size={15} aria-hidden="true" /> Lịch học
+              </button>
+            </>
+          )}
+          {user?.role === 'PARENT' && (
+            <>
+              <button
+                type="button"
+                className={`tab-btn ${activeTab === 'materials' ? 'active' : ''}`}
+                onClick={() => setActiveTab('materials')}
+              >
+                <BookOpen size={15} aria-hidden="true" /> Tài liệu
+              </button>
+              <button
+                type="button"
+                className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`}
+                onClick={() => setActiveTab('schedule')}
+              >
+                <CalendarDays size={15} aria-hidden="true" /> Lịch lớp học
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -704,6 +744,15 @@ export default function ClassroomDetail() {
             classroom={classroom}
           />
         )
+      )}
+
+      {user?.role === 'STUDENT' && (activeTab === 'student-materials' || activeTab === 'student-schedule') && (
+        <StudentClassContent
+          key={id}
+          classroomId={id}
+          classroom={classroom}
+          activeTab={activeTab}
+        />
       )}
 
       {/* ==========================================

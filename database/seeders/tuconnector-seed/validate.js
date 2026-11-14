@@ -27,7 +27,7 @@ const bsonTypeOf = (v) => {
 };
 function check(v, s, p, errs) {
   const t = bsonTypeOf(v);
-  const allowed = [].concat(s.bsonType);
+  const allowed = s.bsonType ? [].concat(s.bsonType) : s.enum ? [...new Set(s.enum.map((value) => typeof value === 'string' ? 'string' : bsonTypeOf(value)))] : [];
   if (!allowed.includes(t)) return errs.push(`${p}: kiểu ${t}, cần ${allowed.join('|')}`);
   if (s.enum && !s.enum.some((e) => e === (t === 'string' ? v : null))) errs.push(`${p}: giá trị "${v}" không thuộc enum`);
   if (t === 'object' && s.properties) {

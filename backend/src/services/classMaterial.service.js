@@ -6,7 +6,7 @@ import { Assignment } from '../models/Assignment.js';
 import { ClassMaterial } from '../models/ClassMaterial.js';
 import { ENUMS } from '../models/enums.js';
 import { getTutorProfileOrThrow } from './tutorContext.service.js';
-import { getOwnedActiveClassroom } from './topic.service.js';
+import { getOwnedActiveClassroom, getStudentActiveClassroom } from './topic.service.js';
 import { assertClassroomMemberOrOwner } from './classSession.service.js';
 import { uploadClassMaterialToCloudinary, deleteClassMaterialFromCloudinary } from '../config/cloudinary.js';
 
@@ -143,55 +143,120 @@ export const getClassMaterials = async (user, classId, { page, limit }) => {
 };
 
 /**
- * Replace a class material's file or URL and update its metadata
+ * Get student-visible materials from a classroom the student actively belongs to
+ * @param {Object} user - Authenticated student { id, role }
+ * @param {string} classId - Classroom ID
+ * @param {{ page: number, limit: number }} query - Pagination options
+ * @returns {Promise<{ items: Object[], pagination: Object }>}
+ */
+export const getStudentClassMaterials = async (user, classId, { page, limit }) => {
+  const classroom = await getStudentActiveClassroom(user, classId);
+  const filter = {
+    class_id: classroom._id,
+    visibility: {
+      $in: [
+        ENUMS.ClassMaterialsVisibility.ALL_MEMBERS,
+        ENUMS.ClassMaterialsVisibility.STUDENTS_ONLY,
+      ],
+    },
+  };
+  const [materials, total] = await Promise.all([
+    ClassMaterial.find(filter)
+      .sort({ created_at: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean(),
+    ClassMaterial.countDocuments(filter),
+  ]);
+
+  return {
+    items: materials.map((material) => ({
+      _id: String(material._id),
+      class_id: String(material.class_id),
+      topic_id: material.topic_id ? String(material.topic_id) : null,
+      title: material.title,
+      material_type: material.material_type,
+      file_url: material.file_url,
+      file_size: material.file_size,
+      visibility: material.visibility,
+      created_at: material.created_at,
+    })),
+    pagination: buildPagination(page, limit, total),
+  };
+};
+
+/**
+ * Partially update a class material and optionally replace its file or URL
  * @param {Object} user - Authenticated user { id, role }
  * @param {string} classId - Classroom ID
  * @param {string} materialId - Class material ID
- * @param {{ topic_id: string|null, title: string, material_type: string, visibility: string, file_url?: string }} data - Validated material fields
- * @param {Object|null} file - Replacement file supplied by Multer, or null for link materials
+ * @param {{ topic_id?: string|null, title?: string, material_type?: string, visibility?: string, file_url?: string }} data - Validated fields to update
+ * @param {Object|null} file - Optional replacement file supplied by Multer
  * @returns {Promise<Object>} Updated class material
  */
 export const updateClassMaterial = async (user, classId, materialId, data, file) => {
   const classroom = await getOwnedActiveClassroom(user, classId);
   const material = await getClassMaterialOrThrow(classroom, materialId);
-  if (data.topic_id && !classroom.topics.id(data.topic_id)) {
+
+  const topicId = data.topic_id === undefined ? material.topic_id : data.topic_id;
+  const title = data.title === undefined ? material.title : data.title;
+  const materialType = data.material_type === undefined ? material.material_type : data.material_type;
+  const visibility = data.visibility === undefined ? material.visibility : data.visibility;
+
+  if (topicId && !classroom.topics.id(topicId)) {
     throw new AppError('Topic not found in this classroom', 404);
   }
-  const isLinkMaterial = data.material_type === ENUMS.ClassMaterialsMaterialType.LINK;
+
+  const isLinkMaterial = materialType === ENUMS.ClassMaterialsMaterialType.LINK;
+  const hasReplacementFile = Boolean(file && file.buffer);
   let uploadResult = null;
-  let fileUrl = data.file_url;
-  let fileSize = null;
+  let fileUrl = material.file_url;
+  let fileSize = material.file_size;
 
-  if (!isLinkMaterial) {
-    if (!file || !file.buffer) {
-      throw new AppError('A replacement file is required', 422);
+  if (isLinkMaterial) {
+    if (file) {
+      throw new AppError('A link material must not include a file', 422);
+    }
+    if (material.material_type !== ENUMS.ClassMaterialsMaterialType.LINK && !data.file_url) {
+      throw new AppError('A URL is required when replacing a file with a link', 422);
+    }
+    if (data.file_url !== undefined) {
+      fileUrl = data.file_url;
+    }
+    fileSize = null;
+  } else {
+    if (data.file_url !== undefined) {
+      throw new AppError('A URL can only be set for link materials', 422);
     }
 
-    uploadResult = await uploadClassMaterialToCloudinary(file.buffer, file.originalname);
-    fileUrl = getCloudinaryPublicUrl(uploadResult);
-    fileSize = uploadResult.bytes;
-    if (!fileUrl || !uploadResult.public_id || !uploadResult.resource_type) {
-      throw new AppError('Cloudinary did not return the uploaded file details', 502);
+    if (hasReplacementFile) {
+      uploadResult = await uploadClassMaterialToCloudinary(file.buffer, file.originalname);
+      fileUrl = getCloudinaryPublicUrl(uploadResult);
+      fileSize = uploadResult.bytes;
+      if (!fileUrl || !uploadResult.public_id || !uploadResult.resource_type) {
+        throw new AppError('Cloudinary did not return the uploaded file details', 502);
+      }
+    } else if (material.material_type === ENUMS.ClassMaterialsMaterialType.LINK) {
+      throw new AppError('A replacement file is required when changing to a file material type', 422);
     }
   }
 
-  // Material cũ là LINK thì URL thuộc về người dùng, không xóa URL đó trên Cloudinary.
-  let oldAsset = null;
-  if (material.material_type !== ENUMS.ClassMaterialsMaterialType.LINK) {
-    oldAsset = getCloudinaryAssetDetailsFromUrl(material.file_url);
-  }
+  // Chỉ xóa asset cũ khi thay file hoặc chuyển tài liệu file thành link.
+  const shouldDeleteOldAsset = material.material_type !== ENUMS.ClassMaterialsMaterialType.LINK &&
+    (isLinkMaterial || hasReplacementFile);
+  const oldAsset = shouldDeleteOldAsset ? getCloudinaryAssetDetailsFromUrl(material.file_url) : null;
   let updatedMaterial;
   try {
     updatedMaterial = await ClassMaterial.findOneAndUpdate(
       { _id: material._id, class_id: classroom._id },
       {
         $set: {
-          topic_id: data.topic_id || null,
-          title: data.title,
-          material_type: data.material_type,
+          topic_id: topicId || null,
+          title,
+          material_type: materialType,
           file_url: fileUrl,
           file_size: fileSize,
-          visibility: data.visibility,
+          visibility,
         },
       },
       { new: true, runValidators: true },

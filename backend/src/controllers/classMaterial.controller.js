@@ -4,10 +4,16 @@ import { asyncHandler } from '../common/utils/asyncHandler.js';
 import { parseQuery } from '../common/utils/pagination.js';
 import { paginationQuerySchema } from '../common/validator/studentDashboardSchema.js';
 import * as classMaterialService from '../services/classMaterial.service.js';
+import { ENUMS } from '../models/enums.js';
 
 export const getClassMaterials = asyncHandler(async (req, res) => {
   const query = parseQuery(paginationQuerySchema, req.query);
-  const data = await classMaterialService.getClassMaterials(req.user, req.params.classId, query);
+  let data;
+  if (req.user.role === ENUMS.UserRole.STUDENT) {
+    data = await classMaterialService.getStudentClassMaterials(req.user, req.params.classId, query);
+  } else {
+    data = await classMaterialService.getClassMaterials(req.user, req.params.classId, query);
+  }
   return responseCommon(res, data, 'Class materials retrieved successfully!', 200, responseCode.SUCCESSED);
 });
 

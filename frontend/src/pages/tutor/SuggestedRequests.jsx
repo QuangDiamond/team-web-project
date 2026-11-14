@@ -11,7 +11,7 @@ import '../../styles/tutorRequests.css';
 
 const PAGE_SIZE = 9;
 
-// Gợi ý yêu cầu dựa trên môn học và cấp học/trình độ trong hồ sơ gia sư.
+// Gợi ý yêu cầu cùng môn học và khối lớp với hồ sơ hoặc bài đăng của gia sư.
 export default function SuggestedRequests() {
   const [page, setPage] = useState(1);
   const list = usePagedList(getSuggestedRequests, { page: page, limit: PAGE_SIZE });
@@ -26,7 +26,7 @@ export default function SuggestedRequests() {
     <div className="page-stack">
       <div className="page-toolbar">
         <div>
-          <p className="item-meta">Yêu cầu đang mở khớp ít nhất một môn học hoặc cấp học / trình độ trong hồ sơ của bạn, mới nhất trước.</p>
+          <p className="item-meta">Yêu cầu đang mở cùng môn học và khối lớp với hồ sơ hoặc bài đăng của bạn, mới nhất trước.</p>
           <Link to="/tutor/profile" className="link">Cập nhật danh mục giảng dạy trong hồ sơ</Link>
         </div>
         <button type="button" className="btn btn-outline btn-sm" disabled={list.loading} onClick={handleRefresh}>
@@ -37,7 +37,7 @@ export default function SuggestedRequests() {
 
       <ListState
         list={list}
-        empty={{ icon: Search, title: 'Chưa có gợi ý', description: 'Hãy chọn môn học hoặc trình độ trong hồ sơ, hoặc quay lại khi có yêu cầu mới.' }}
+        empty={{ icon: Search, title: 'Chưa có gợi ý', description: 'Hãy chọn môn học và trình độ trong hồ sơ hoặc đăng bài, rồi quay lại khi có yêu cầu mới.' }}
       >
         {list.data && <RequestGrid items={list.data.items} actions={actions} />}
       </ListState>

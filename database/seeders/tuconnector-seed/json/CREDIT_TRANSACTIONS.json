@@ -248,5 +248,2893 @@
         "$numberLong": "1791460800000"
       }
     }
+  },
+  {
+    "_id": {
+      "$oid": "5c2e02090f834d053291e41f"
+    },
+    "user_id": {
+      "$oid": "43dc75eb7404a691924708f2"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "4943af8ad810eb8ddc38eb8c"
+    },
+    "user_id": {
+      "$oid": "78da6f8996dc8494e6086627"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "f6ff93522bbc7af49b84a6c9"
+    },
+    "user_id": {
+      "$oid": "b0c1867ee185a1bcdad620b1"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a3c2f13c5d8b7e6eb99fe388"
+    },
+    "user_id": {
+      "$oid": "ee7540e9c97a16b3741655bc"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c7770b9e8f443f42f2616c4d"
+    },
+    "user_id": {
+      "$oid": "bd28f9debbe06de9dda5db51"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ca3ff2697c56f6f1f4653974"
+    },
+    "user_id": {
+      "$oid": "b86ea5252fc6a66848feea74"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "59a6a0871e4d3c84b593d5ab"
+    },
+    "user_id": {
+      "$oid": "35bf3cf76a7ee227f3773fd0"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "01408663329f5b50bd3893c4"
+    },
+    "user_id": {
+      "$oid": "56946206da9e68ffd3f3fd12"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "4967085c55e4ee383a4862e1"
+    },
+    "user_id": {
+      "$oid": "f7316d6840704f0280941204"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6d170eb3f037bbd31fef16f6"
+    },
+    "user_id": {
+      "$oid": "cf2bc6d00b8e14accc0b37a5"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "55936932ceb27faf11fea002"
+    },
+    "user_id": {
+      "$oid": "a536b54653bd80ff57663788"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ccebfa694554dfd75ac3a8e1"
+    },
+    "user_id": {
+      "$oid": "03b01a7448279c806abf8838"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "8b701cf74d3141ac3dd667bc"
+    },
+    "user_id": {
+      "$oid": "380bbb3585f67e33bd77c803"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "774eb29717724fbd903b9a6c"
+    },
+    "user_id": {
+      "$oid": "f9149af99c53eeca3205466c"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c748b24d0c087200b181ae86"
+    },
+    "user_id": {
+      "$oid": "652a2e101aac57b433c0052d"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "2d16264ddb4618b7e9af852c"
+    },
+    "user_id": {
+      "$oid": "60a43c386456a61b524ee414"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "dd5898b43ca4ba08fa87a462"
+    },
+    "user_id": {
+      "$oid": "d7c49ac8156a92a523656c65"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "b81eb3450d0a0d4a34159fc9"
+    },
+    "user_id": {
+      "$oid": "a67e218361ef1feed139c922"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "59ba4f7a3a5ae79810b53ef5"
+    },
+    "user_id": {
+      "$oid": "5f5a29cb355122fc353d25c8"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "1ca34e541d0eb5b714d751f9"
+    },
+    "user_id": {
+      "$oid": "0f78824c8e2c83ec41900ad7"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5665e7b788155bb9ac76f04b"
+    },
+    "user_id": {
+      "$oid": "43dc75eb7404a691924708f2"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "96bd0e9e678bfe0db109f446"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "27928e12464e53e81bcaa04e"
+    },
+    "user_id": {
+      "$oid": "78da6f8996dc8494e6086627"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "6c0be7ea451b7f8bad92d419"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "afe09c4ed43f25883743d1b9"
+    },
+    "user_id": {
+      "$oid": "b0c1867ee185a1bcdad620b1"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "73d822b01a0f939c07ad5643"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "44f792fd46fea229880514a0"
+    },
+    "user_id": {
+      "$oid": "ee7540e9c97a16b3741655bc"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "ae5031b2c83e0f98f5e748c9"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a206b9f1e01b0533ef1390a0"
+    },
+    "user_id": {
+      "$oid": "bd28f9debbe06de9dda5db51"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "52860ad9b81edf38ababb96e"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "74cd3ff051f5c75d3fba8797"
+    },
+    "user_id": {
+      "$oid": "b86ea5252fc6a66848feea74"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "7438f33c3189b16aef41f4b4"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "4e4aefc53bdd371acf6ed773"
+    },
+    "user_id": {
+      "$oid": "d7c49ac8156a92a523656c65"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "807ebf0a7d9addc73980d1b3"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "4cf8689b8e294305174e8c66"
+    },
+    "user_id": {
+      "$oid": "d7c49ac8156a92a523656c65"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "631228cbc090086263430f70"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "4f056e5469bb3cbbb17318b3"
+    },
+    "user_id": {
+      "$oid": "f7316d6840704f0280941204"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "fe341095cd869d582441f828"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "65ef39a886f7dcb2f2132f04"
+    },
+    "user_id": {
+      "$oid": "cf2bc6d00b8e14accc0b37a5"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "259a5548414d879a8804f4e6"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "1c8f21f829da334ffb6a3801"
+    },
+    "user_id": {
+      "$oid": "a536b54653bd80ff57663788"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "f6574e499e152b95f6506806"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "d44eb6c2c57e51515096531b"
+    },
+    "user_id": {
+      "$oid": "03b01a7448279c806abf8838"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "83c5a9c676b019ed59f603c8"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "590c02b7f26ea515bfc8f241"
+    },
+    "user_id": {
+      "$oid": "380bbb3585f67e33bd77c803"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "364914a1044aa451e2234395"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "bda6995438d93fdb1829415c"
+    },
+    "user_id": {
+      "$oid": "f9149af99c53eeca3205466c"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "119d330300f934226fdf8133"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a896128321abef35a0eaa446"
+    },
+    "user_id": {
+      "$oid": "a67e218361ef1feed139c922"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "ad1e97b00e9cd769645aa96b"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "19ae75a6b05170f7b5d914d6"
+    },
+    "user_id": {
+      "$oid": "a67e218361ef1feed139c922"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "0c07da933a08135689a6cef5"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a115999de565b2770edff72b"
+    },
+    "user_id": {
+      "$oid": "78da6f8996dc8494e6086627"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "9ae01a4a91a1fc6a7e20067c"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "f47f36bfa596f6a3ba8aafcf"
+    },
+    "user_id": {
+      "$oid": "b0c1867ee185a1bcdad620b1"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "4a64e7599374da03364b96ae"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ced4a4a4f6eb2c1cec0696d9"
+    },
+    "user_id": {
+      "$oid": "ee7540e9c97a16b3741655bc"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "09d3d7162a5b95526d939310"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "f65a12180255a849a0aa7bf9"
+    },
+    "user_id": {
+      "$oid": "bd28f9debbe06de9dda5db51"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "b809b1a3476fce8aef310de6"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "90ea0d6bf5993553d3813110"
+    },
+    "user_id": {
+      "$oid": "b86ea5252fc6a66848feea74"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "86d7e0bf54a63e6d02ad22b6"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "bbf16409d19d14e15e081ccf"
+    },
+    "user_id": {
+      "$oid": "35bf3cf76a7ee227f3773fd0"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "d240a9a33521a0d58f823be1"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c01351521c719c272e9af1c9"
+    },
+    "user_id": {
+      "$oid": "5f5a29cb355122fc353d25c8"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "d4c6bee006f48a04228c77ab"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "e1cb141d64d2b00dbf4a2a21"
+    },
+    "user_id": {
+      "$oid": "5f5a29cb355122fc353d25c8"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "bb1ebd354223254676335f7d"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "4ff18fe05c45bc99dcc6926f"
+    },
+    "user_id": {
+      "$oid": "cf2bc6d00b8e14accc0b37a5"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "58e72cc3ae02b425eea876db"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a9fefbf8a8235733592c6384"
+    },
+    "user_id": {
+      "$oid": "a536b54653bd80ff57663788"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "9a0b993eff34e7ba9ecc9042"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "17b88e1df8b5b94209b190a8"
+    },
+    "user_id": {
+      "$oid": "03b01a7448279c806abf8838"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "6ba73b8c4ef05a8f408da2c9"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "eae728c1876c2c3b84b90b9f"
+    },
+    "user_id": {
+      "$oid": "380bbb3585f67e33bd77c803"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "a813e1bc26c7de296b004069"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "9d6a75d75052b468d348cb8a"
+    },
+    "user_id": {
+      "$oid": "f9149af99c53eeca3205466c"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "af73c606d85ef4a61b87159f"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60e60655411fe4b797b57498"
+    },
+    "user_id": {
+      "$oid": "652a2e101aac57b433c0052d"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "2a627f316fbdca17575acc7e"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "657a5896849f2187dac26db9"
+    },
+    "user_id": {
+      "$oid": "0f78824c8e2c83ec41900ad7"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "e05d5711956e3e4e7881bfb4"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "0150ae45e4f8ee6b1f498765"
+    },
+    "user_id": {
+      "$oid": "0f78824c8e2c83ec41900ad7"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "985798790eabf02f6db945a8"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ecdbf5803eab586068e01d83"
+    },
+    "user_id": {
+      "$oid": "b0c1867ee185a1bcdad620b1"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "03102dc69d6ad7a361ffc6b4"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "d88d76f37b9f22a44ab4301d"
+    },
+    "user_id": {
+      "$oid": "ee7540e9c97a16b3741655bc"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "1e82d7b4a7e1a4c1762b62a1"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "f73d18945ffa4cf2968d569b"
+    },
+    "user_id": {
+      "$oid": "bd28f9debbe06de9dda5db51"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "492f175c3f7e559f14ee220c"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "8e67fa855a466f9970682a2f"
+    },
+    "user_id": {
+      "$oid": "b86ea5252fc6a66848feea74"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "09ea11cea531edf5344d9321"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "8e1d678f01663036907a9476"
+    },
+    "user_id": {
+      "$oid": "35bf3cf76a7ee227f3773fd0"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "c40e02693129a108f65d2e92"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "59b30c69c02b1b6748ff5897"
+    },
+    "user_id": {
+      "$oid": "56946206da9e68ffd3f3fd12"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "971800c58789980e94a66271"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5ac69006f02bf108464fdea1"
+    },
+    "user_id": {
+      "$oid": "d7c49ac8156a92a523656c65"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "5158217bf54d6360406d0bc5"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ed7ae3c888d6506a894c01b3"
+    },
+    "user_id": {
+      "$oid": "d7c49ac8156a92a523656c65"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "ad1e2babda5ed11d48790e4b"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "37294bda9c58d861b77f6481"
+    },
+    "user_id": {
+      "$oid": "a536b54653bd80ff57663788"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "c59a967ecebd34c324c26118"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ad02c1a0cb8df22add17fae"
+    },
+    "user_id": {
+      "$oid": "03b01a7448279c806abf8838"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "bc4123200443960fda1212e1"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "131f37a41cc6127506590afa"
+    },
+    "user_id": {
+      "$oid": "380bbb3585f67e33bd77c803"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "a681d571c11874d6d74ba522"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "2bcfd389107ac4141ce97fd1"
+    },
+    "user_id": {
+      "$oid": "f9149af99c53eeca3205466c"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "de5d1366b1db723d6bdf278c"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69dc70414f9b4fb8fcf1c384"
+    },
+    "user_id": {
+      "$oid": "652a2e101aac57b433c0052d"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "2ab875f19bd58b1d531edfb2"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5a15d4bf6f518aea7c50d837"
+    },
+    "user_id": {
+      "$oid": "60a43c386456a61b524ee414"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "8fa1f70899c2112f3c0ecd45"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "600c39651a56f2453a6b8438"
+    },
+    "user_id": {
+      "$oid": "a67e218361ef1feed139c922"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "0a587662944152cff7c65669"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "15e4bb09484346e63f86b55b"
+    },
+    "user_id": {
+      "$oid": "a67e218361ef1feed139c922"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "479b30a048bcdddf612ddc2c"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "027d0c2322fc53dcce1d3be5"
+    },
+    "user_id": {
+      "$oid": "ee7540e9c97a16b3741655bc"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "7bbbf66480a6e230f56d8edb"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "39065253ce29cc6e8a6ea6db"
+    },
+    "user_id": {
+      "$oid": "bd28f9debbe06de9dda5db51"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "686fce532e7ebf843d2ce1d4"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "e9924f51d25f39144cdb4191"
+    },
+    "user_id": {
+      "$oid": "b86ea5252fc6a66848feea74"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "188b355b401eef45a1d5a6d5"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "85d4fa4609ced9483a5c2ffb"
+    },
+    "user_id": {
+      "$oid": "35bf3cf76a7ee227f3773fd0"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "fa6a0f4761bbbd82666a8611"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c995d6229a1e6eca5f87d7f1"
+    },
+    "user_id": {
+      "$oid": "56946206da9e68ffd3f3fd12"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "0bf37f8d704d781256a13ca2"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "16974ca9a44dd2fdb7112e9a"
+    },
+    "user_id": {
+      "$oid": "43dc75eb7404a691924708f2"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "e9507509159b77f70160db25"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "161d4076e2ad49b2d0ca50fb"
+    },
+    "user_id": {
+      "$oid": "5f5a29cb355122fc353d25c8"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "d72973a9b86eed3a90a5cfa8"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "584aadf002c5f8c17438128c"
+    },
+    "user_id": {
+      "$oid": "5f5a29cb355122fc353d25c8"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "bdc39fcba26511b1d1bc8751"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "61ecf36f60d3f847df523dd1"
+    },
+    "user_id": {
+      "$oid": "03b01a7448279c806abf8838"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "6a26785456e8e9f2fc5f53ea"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ea73e9a9fdc1dcfda6b05b4d"
+    },
+    "user_id": {
+      "$oid": "380bbb3585f67e33bd77c803"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "c415e3909353f297c543c07b"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "7e79998739cf16cb2f690a6e"
+    },
+    "user_id": {
+      "$oid": "f9149af99c53eeca3205466c"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "14fb8c0e4d40df61d7a259b2"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "81024c1d016befff55d60b29"
+    },
+    "user_id": {
+      "$oid": "652a2e101aac57b433c0052d"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "caa83a61da86799fe5fa74e2"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "58621029590628f0585ccb1e"
+    },
+    "user_id": {
+      "$oid": "60a43c386456a61b524ee414"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "695a733c92cb39262dbd9af5"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "92e8229e2f8626a100379f39"
+    },
+    "user_id": {
+      "$oid": "f7316d6840704f0280941204"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "6a5149497156c770c89bbbbd"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a8495907fb76c77b0af1aff3"
+    },
+    "user_id": {
+      "$oid": "0f78824c8e2c83ec41900ad7"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "9ed23cbe21c6878e7360e661"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "e780f0702103b82f71a22566"
+    },
+    "user_id": {
+      "$oid": "0f78824c8e2c83ec41900ad7"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "9f923effe2d58a1783eac0eb"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "041a0ca92b0e2543d5ffe2a0"
+    },
+    "user_id": {
+      "$oid": "bd28f9debbe06de9dda5db51"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "9825c57d939aa8478e5d8833"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "f6a9b0b08af6eb25efffa96f"
+    },
+    "user_id": {
+      "$oid": "b86ea5252fc6a66848feea74"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "4848dcde138f08bf296af9e5"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "3f13a48d4e91f64b19273f67"
+    },
+    "user_id": {
+      "$oid": "35bf3cf76a7ee227f3773fd0"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "ea39be8b3e16763c987f6e80"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "d8f8f77c21e02c19f4438701"
+    },
+    "user_id": {
+      "$oid": "56946206da9e68ffd3f3fd12"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "ffba0db5061cf5d89f9fe781"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a8954ad37691fa6ba077776f"
+    },
+    "user_id": {
+      "$oid": "43dc75eb7404a691924708f2"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "64fed02bc490c74428adfb89"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "9e2ed013975589214e5acf9e"
+    },
+    "user_id": {
+      "$oid": "78da6f8996dc8494e6086627"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "50fed96b4160ca189ff8cdd1"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c735a4f7a6136cb4a66a0127"
+    },
+    "user_id": {
+      "$oid": "d7c49ac8156a92a523656c65"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "0e9059e2a24f0ed97d8c03a3"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ec87d12d1b39318d059a659f"
+    },
+    "user_id": {
+      "$oid": "d7c49ac8156a92a523656c65"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "7d7f90e99c1939224ca5db16"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "786cd5205814092d58de44df"
+    },
+    "user_id": {
+      "$oid": "380bbb3585f67e33bd77c803"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "331ba98e259d5ab23eee6930"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ed0046bedfd4046eafc3e666"
+    },
+    "user_id": {
+      "$oid": "f9149af99c53eeca3205466c"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "d761a586813052a390649e6b"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ecf058a26a4b798dd19006fa"
+    },
+    "user_id": {
+      "$oid": "652a2e101aac57b433c0052d"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "34b0cc53f58d475faef3682d"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c08ac2859d18060ed329c538"
+    },
+    "user_id": {
+      "$oid": "60a43c386456a61b524ee414"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "d278db963b548900bc8a9d92"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a42abca8d703f5e01569edcd"
+    },
+    "user_id": {
+      "$oid": "f7316d6840704f0280941204"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "57dfa1b393f32014c1aedbb1"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "e39fded4d80841deff2ba978"
+    },
+    "user_id": {
+      "$oid": "cf2bc6d00b8e14accc0b37a5"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "92ba90274150b0271671f1fd"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "1626790011c449f14959ad0a"
+    },
+    "user_id": {
+      "$oid": "a67e218361ef1feed139c922"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "9e6740cbf32608f5aa166176"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "75bed65caccf4d2542c792e7"
+    },
+    "user_id": {
+      "$oid": "a67e218361ef1feed139c922"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "001dcf5408da9293580ca832"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "1422c77b2de6293341823c42"
+    },
+    "user_id": {
+      "$oid": "b86ea5252fc6a66848feea74"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "3285b3b5dd060753cf6895d9"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "9b4dd5b3e236af36f758df5d"
+    },
+    "user_id": {
+      "$oid": "35bf3cf76a7ee227f3773fd0"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "44b4455ea41261c3011dd17a"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "f15fc9011346352720953494"
+    },
+    "user_id": {
+      "$oid": "56946206da9e68ffd3f3fd12"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "889b0f62ec8cceef4bd5a215"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "c1cae2faf15802581fd13d00"
+    },
+    "user_id": {
+      "$oid": "43dc75eb7404a691924708f2"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "170509e703e49e11341a8ae8"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5c71f6c7828f92bac664e052"
+    },
+    "user_id": {
+      "$oid": "78da6f8996dc8494e6086627"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "70bb08844d8b96aeccfb0d8d"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "205fb39642afb90289ad8568"
+    },
+    "user_id": {
+      "$oid": "b0c1867ee185a1bcdad620b1"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "12287522f5c21a17d4c2a651"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ffa05afac8942113aa00280c"
+    },
+    "user_id": {
+      "$oid": "5f5a29cb355122fc353d25c8"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "09df09b7b83c80c797f124b7"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "dbb4eae0009c6dd5c51f9f8a"
+    },
+    "user_id": {
+      "$oid": "5f5a29cb355122fc353d25c8"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "ca14cfa64563398b2a282f56"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "74a37b0a8f306ff5489e2e18"
+    },
+    "user_id": {
+      "$oid": "f9149af99c53eeca3205466c"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "a6867c35732deb2ba77fbc05"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "862c04497c0c9d7deae7abc4"
+    },
+    "user_id": {
+      "$oid": "652a2e101aac57b433c0052d"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "1e3210abfe62128bdafd3049"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "012fb1149e025eb9f5becf18"
+    },
+    "user_id": {
+      "$oid": "60a43c386456a61b524ee414"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "3ac711fa37e2c00574450a3b"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "dbb9a36904ca5fad553d8741"
+    },
+    "user_id": {
+      "$oid": "f7316d6840704f0280941204"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "0c9cd45b136ba423e9823ff2"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "3005d9a31a09e531c39b10b8"
+    },
+    "user_id": {
+      "$oid": "cf2bc6d00b8e14accc0b37a5"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "559b67f3e8003738607686e2"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "b336ae2d5c12cf7bd79fc539"
+    },
+    "user_id": {
+      "$oid": "a536b54653bd80ff57663788"
+    },
+    "amount": {
+      "$numberInt": "-3"
+    },
+    "type": "USED_APPLY",
+    "related_apply_id": {
+      "$oid": "fc010d83c45904a8b791e2de"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a0ebe121976ea7c0ea08bb1c"
+    },
+    "user_id": {
+      "$oid": "0f78824c8e2c83ec41900ad7"
+    },
+    "amount": {
+      "$numberInt": "-1"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "9611d029d1d8ef057ef37638"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "689e4f75b865a748575b4f90"
+    },
+    "user_id": {
+      "$oid": "0f78824c8e2c83ec41900ad7"
+    },
+    "amount": {
+      "$numberInt": "-2"
+    },
+    "type": "USED_INVITATION",
+    "related_invitation_id": {
+      "$oid": "6edc8a7907aaf27612571110"
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794375145932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "8d7f7d6ad9e5678420ef5d93"
+    },
+    "user_id": {
+      "$oid": "f47de074a0e5096879e88013"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6df771f17fb37ab879e50425"
+    },
+    "user_id": {
+      "$oid": "1d18ea89b1def13018499437"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a6eb3ead5287b8dc3936f041"
+    },
+    "user_id": {
+      "$oid": "2dfa5f05df230dc1d3944d4a"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "e3a68ca96fdb200acdb78a36"
+    },
+    "user_id": {
+      "$oid": "be1db7062a14c8302235536c"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "672e6cb779bb7069497743a0"
+    },
+    "user_id": {
+      "$oid": "e227c6b5af016b925d2219df"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "1a92030c063e9239692985a1"
+    },
+    "user_id": {
+      "$oid": "2b97014df15e601fa00b51d2"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "102347f5dbd540dbc8f05009"
+    },
+    "user_id": {
+      "$oid": "1c4285fd7d0ff06105b84b89"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "a09d8a77898a787b6f8eb2b7"
+    },
+    "user_id": {
+      "$oid": "d2b80ac3ea1b00c149d065f7"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "d5aed078b0a12b87fd369ec7"
+    },
+    "user_id": {
+      "$oid": "93d90db4c499d525bea51c64"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "ed4bfd0e9371e90e96d21fe8"
+    },
+    "user_id": {
+      "$oid": "520e2b7d058becc3cae08643"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "27107917351f15b17c467147"
+    },
+    "user_id": {
+      "$oid": "604ce68f7cff060c9d2f8c5a"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6770a150a202bb19c544740d"
+    },
+    "user_id": {
+      "$oid": "d7988b9d5938f84dbf3f03db"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "2682757a347463a55a70e589"
+    },
+    "user_id": {
+      "$oid": "dc7ecf5e46c2ce02f1875371"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "0708468e1dbc4e9d33f2f82b"
+    },
+    "user_id": {
+      "$oid": "e39e8b8344a2b38b57502474"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "8f7b992c4df2e834a347ea93"
+    },
+    "user_id": {
+      "$oid": "f95a9070372c1a318506ce06"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "50ac7241269888e3aa0555a6"
+    },
+    "user_id": {
+      "$oid": "bccdef99d11bbbdc504f846e"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6a1aa6b68fef4b4b0bd2ec8e"
+    },
+    "user_id": {
+      "$oid": "01b6ae1f3bc619dfd4cf0b3b"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "304c46f740f4b3ae412ff651"
+    },
+    "user_id": {
+      "$oid": "3bdecef99b6be9b6c14ca44b"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "cf1a95cdb6d573d374e5a9ea"
+    },
+    "user_id": {
+      "$oid": "5eed62c0e01c524390641f86"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "fa451f32502bde3b6885d36f"
+    },
+    "user_id": {
+      "$oid": "5ecc8605cf238ae611b67f91"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "8114c774589a813a5574ef93"
+    },
+    "user_id": {
+      "$oid": "216e02862ac0b7885bc1f754"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "8d28fb811fed780aa21e1383"
+    },
+    "user_id": {
+      "$oid": "11164a9b7bb52414d005d898"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "e9a7ebf6b2f616c4c86b501d"
+    },
+    "user_id": {
+      "$oid": "51950e79298b2cc02f22494e"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
+  },
+  {
+    "_id": {
+      "$oid": "df9f1061f8a0c067ddd07da7"
+    },
+    "user_id": {
+      "$oid": "b2508678ecaee134703a949c"
+    },
+    "amount": {
+      "$numberInt": "20"
+    },
+    "type": "MONTHLY_GRANT",
+    "expires_at": {
+      "$date": {
+        "$numberLong": "1796880745932"
+      }
+    },
+    "created_at": {
+      "$date": {
+        "$numberLong": "1794288745932"
+      }
+    }
   }
 ]

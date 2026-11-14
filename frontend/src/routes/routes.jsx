@@ -34,8 +34,8 @@ import PlansPricing from '../pages/admin/PlansPricing';
 import Categories from '../pages/admin/Categories';
 import RoleRoute from './RoleRoute';
 import StudentDashboard from '../pages/student/StudentDashboard';
+import StudentSchedule from '../pages/student/StudentSchedule';
 import StudentAssignmentsPage from '../pages/student/StudentAssignmentsPage';
-import StudentSchedulePage from '../pages/student/StudentSchedulePage';
 import ParentLinks from '../pages/student/ParentLinks';
 import AiTutorSuggestions from '../pages/parent/AiTutorSuggestions';
 import ParentDashboard from '../pages/parent/ParentDashboard';
@@ -56,6 +56,7 @@ import SavedRequests from '../pages/tutor/SavedRequests';
 import TutorRequestDetail from '../pages/tutor/TutorRequestDetail';
 import MyApplications from '../pages/tutor/MyApplications';
 import MySchedule from '../pages/tutor/MySchedule';
+import SessionAttendance from '../pages/tutor/SessionAttendance';
  import MyConnections from '../pages/connections/MyConnections';
 import Notifications from '../pages/notifications/Notifications';
 import Moderation from '../pages/admin/Moderation';
@@ -153,7 +154,7 @@ export const router = createBrowserRouter([
               { path: 'dashboard', element: <StudentDashboard />, handle: { title: "Tổng quan" } },
               { path: 'classes', element: <ClassroomsPage />, handle: { title: 'Lớp học của tôi' } },
               { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
-              { path: 'schedule', element: <StudentSchedulePage />, handle: { title: "Lịch học của tôi" } },
+              { path: 'schedule', element: <StudentSchedule />, handle: { title: 'Lịch học' } },
               { path: 'assignments', element: <StudentAssignmentsPage />, handle: { title: "Tất cả bài tập" } },
               { path: 'parent-links', element: <ParentLinks />, handle: { title: "Liên kết phụ huynh" } },
               { path: 'change-password', element: <ChangePassword />, handle: { title: "Bảo mật tài khoản" } },
@@ -221,6 +222,7 @@ export const router = createBrowserRouter([
               { path: 'receipts/:orderCode', element: <Receipt />, handle: { title: "Biên nhận" } },
               { path: 'dashboard', element: <TutorDashboard />, handle: { title: "Tổng quan" } },
               { path: 'classes', element: <ClassroomsPage />, handle: { title: 'Quản lý lớp học' } },
+              { path: 'classes/:classId/sessions/:sessionId/attendance', element: <SessionAttendance />, handle: { title: 'Điểm danh buổi học' } },
               { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
               { path: 'classes/:id/assignments/new', element: <CreateAssignmentPage />, handle: { title: 'Tạo bài tập mới' } },
               { path: 'classes/:id/assignments/:assignmentId/edit', element: <CreateAssignmentPage />, handle: { title: 'Chỉnh sửa bài tập' } },

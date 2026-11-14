@@ -50,8 +50,8 @@ const validate = (values) => {
   const price = Number(values.price);
   if (values.price === '' || Number.isNaN(price)) {
     errors.price = "Vui lòng nhập học phí";
-  } else if (price <= 0) {
-    errors.price = "Học phí phải lớn hơn 0";
+  } else if (price <= 1000) {
+    errors.price = "Học phí phải lớn hơn 1.000đ";
   } else if (price > 100000000) {
     errors.price = "Học phí quá lớn";
   }

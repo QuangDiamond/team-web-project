@@ -27,6 +27,7 @@ module.exports = [
     student_id: null, // liên kết với học sinh Chi đang chờ chấp nhận nên chưa gán
     tutor_requirements: 'Gia sư nam hoặc nữ đều được, có kinh nghiệm dạy lớp 11',
   },
+  ...require('../marketplaceFixture').requests,
   {
     // Bị gia sư Huy báo cáo (report_2) nên đang tạm ẩn chờ Admin kiểm duyệt
     _id: ids.req_hoa10, parent_user_id: ids.user_parent_tuan, title: 'Tìm gia sư Hóa lớp 10 – liên hệ Zalo',

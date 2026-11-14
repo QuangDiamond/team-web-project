@@ -2,13 +2,14 @@ import mongoose from 'mongoose';
 import { ParentRequest } from '../models/ParentRequest.js';
 import { BookmarkedRequest } from '../models/BookmarkedRequest.js';
 import { ApplyRequest } from '../models/ApplyRequest.js';
+import { TutorPost } from '../models/TutorPost.js';
 import { ENUMS } from '../models/enums.js';
 import { AppError } from '../common/utils/AppError.js';
 import { buildPagination } from '../common/utils/pagination.js';
 import { decimalToNumber, escapeRegex, getRequestCutoff, isRequestAvailable } from '../common/utils/requestRules.js';
 import { countApplications } from './parentRequest.service.js';
 import { getTutorProfileOrThrow } from './tutorContext.service.js';
-import { matchesSubjectAndGrade, matchesAnyTeachingCategory } from './tutorMatching.service.js';
+import { matchesSubjectAndGrade, matchTutorToRequest } from './tutorMatching.service.js';
 import { loadActiveTeachingCatalog } from './category.service.js';
 
 
@@ -296,7 +297,8 @@ export const listBookmarks = async (user, { page, limit }) => {
 };
 
 /**
- * Suggest current requests using the tutor's active teaching-category selections.
+ * Gợi ý các yêu cầu đang mở cho gia sư: cùng môn học VÀ khối lớp với hồ sơ (cặp môn + khối đã chọn)
+ * hoặc với một bài đăng PUBLISHED của gia sư.
  * @param {Object} user - Authenticated Tutor account.
  * @param {Object} query - Page and limit.
  * @returns {Promise<Object>} Decorated matching requests, pagination and optional profile hint.
@@ -304,13 +306,16 @@ export const listBookmarks = async (user, { page, limit }) => {
 export const getSuggestions = async (user, { page, limit }) => {
   const profile = await getTutorProfileOrThrow(user);
   const selections = profile.teaching_categories || [];
-  const profileHint = 'Hoàn thiện hồ sơ và chọn ít nhất một môn học hoặc cấp học / trình độ giảng dạy để nhận gợi ý.';
+  const profileHint = 'Hoàn thiện hồ sơ, chọn môn học và cấp học / trình độ giảng dạy hoặc đăng bài để nhận gợi ý.';
   const empty = { items: [], pagination: buildPagination(page, limit, 0), hint: profileHint };
-  if (profile.is_complete !== true || selections.length === 0) return empty;
+  if (profile.is_complete !== true) return empty;
 
   const { catalog } = await loadActiveTeachingCatalog();
   const activeSelections = selections.filter((item) => catalog.has(item.type + ':' + item.category_id));
-  if (activeSelections.length === 0) return empty;
+  const publishedPosts = await TutorPost.find({ profile_id: profile._id, status: ENUMS.TutorPostsStatus.PUBLISHED })
+    .select('subject_name grade_level')
+    .lean();
+  if (activeSelections.length === 0 && publishedPosts.length === 0) return empty;
 
   const appliedRequestIds = await ApplyRequest.distinct('request_id', {
     tutor_profile_id: profile._id,
@@ -321,7 +326,7 @@ export const getSuggestions = async (user, { page, limit }) => {
     _id: { $nin: appliedRequestIds },
   }).sort({ created_at: -1, _id: -1 }).lean();
   const matches = requests.filter((request) =>
-    isRequestAvailable(request) && matchesAnyTeachingCategory(request, activeSelections, catalog));
+    isRequestAvailable(request) && matchTutorToRequest(request, activeSelections, catalog, publishedPosts).matched);
   matches.sort((first, second) => {
     const dateOrder = new Date(second.created_at).getTime() - new Date(first.created_at).getTime();
     if (dateOrder !== 0) return dateOrder;
@@ -331,7 +336,7 @@ export const getSuggestions = async (user, { page, limit }) => {
   return {
     items,
     pagination: buildPagination(page, limit, matches.length),
-    hint: matches.length === 0 ? 'Chưa có yêu cầu đang mở phù hợp với môn học hoặc trình độ trong hồ sơ của bạn.' : null,
+    hint: matches.length === 0 ? 'Chưa có yêu cầu đang mở cùng môn học và trình độ với hồ sơ hoặc bài đăng của bạn.' : null,
   };
 };
 

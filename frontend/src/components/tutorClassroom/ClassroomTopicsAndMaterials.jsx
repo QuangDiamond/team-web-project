@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, FileText, Pencil, Plus, Trash2, Upload, Sparkles } from 'lucide-react';
+import { BookOpen, ChevronDown, FileText, Pencil, Plus, Search, Sparkles, Trash2, Upload } from 'lucide-react';
 import EmptyState from '../common/EmptyState';
 import FormInput from '../common/FormInput';
 import FormSelect from '../common/FormSelect';
@@ -18,6 +18,13 @@ const VISIBILITY_OPTIONS = [
   { value: 'ALL_MEMBERS', label: 'Tất cả thành viên trong lớp' },
   { value: 'STUDENTS_ONLY', label: 'Chỉ học sinh' },
 ];
+
+const MATERIAL_TYPE_LABELS = {
+  DOCUMENT: 'Tài liệu',
+  SLIDE: 'Bài trình chiếu',
+  VIDEO: 'Video',
+  LINK: 'Liên kết',
+};
 
 const ALLOWED_FILE_MIME_TYPES = {
   pdf: ['application/pdf'],
@@ -52,11 +59,28 @@ const MATERIAL_TYPE_PLACEHOLDER = 'Chọn loại tài liệu';
 const MATERIAL_VISIBILITY_PLACEHOLDER = 'Chọn đối tượng được xem tài liệu';
 
 const MATERIAL_TOPIC_NONE = { value: '', label: 'Không thuộc chủ đề nào' };
+const ALL_MATERIAL_TOPICS = '__all_topics__';
+const UNASSIGNED_MATERIAL_TOPIC = '__unassigned_topic__';
 
-const materialTopicOptions = (topics) => [MATERIAL_TOPIC_NONE, ...topics.map((topic) => ({
-  value: topic._id,
-  label: topic.name,
-}))];
+const normalizeSearch = (text) => text.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '').replace(/đ/g, 'd');
+
+const isImageMaterial = (fileUrl) => {
+  try {
+    const parsedUrl = new URL(fileUrl);
+    return /\.(avif|gif|jpe?g|png|webp)$/i.test(parsedUrl.pathname);
+  } catch {
+    return false;
+  }
+};
+
+const isWebLink = (fileUrl) => {
+  try {
+    const parsedUrl = new URL(fileUrl);
+    return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
 
 function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material }) {
   const [title, setTitle] = useState(material ? material.title : '');
@@ -65,12 +89,72 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material }) 
   const [visibility, setVisibility] = useState(material ? material.visibility : '');
   const [fileUrl, setFileUrl] = useState(material && material.material_type === 'LINK' ? material.file_url : '');
   const [file, setFile] = useState(null);
+  const [topicQuery, setTopicQuery] = useState('');
+  const [topicPickerOpen, setTopicPickerOpen] = useState(false);
+  const [activeTopicIndex, setActiveTopicIndex] = useState(-1);
   const [fileError, setFileError] = useState('');
+  const [validationErrors, setValidationErrors] = useState({});
   const [isSaving, setIsSaving] = useState(false);
+  const fileInputRef = useRef(null);
+  const originalTopicId = material && material.topic_id ? material.topic_id : '';
+  const hasChanges = !material || Boolean(file) || title.trim() !== material.title ||
+    topicId !== originalTopicId || materialType !== material.material_type ||
+    visibility !== material.visibility ||
+    (materialType === 'LINK' && fileUrl.trim() !== (material.material_type === 'LINK' ? material.file_url : ''));
+  const requiresReplacementFile = material && material.material_type === 'LINK' && materialType !== 'LINK';
+  const selectedTopic = topics.find((topic) => topic._id === topicId);
+  const selectedTopicName = selectedTopic ? selectedTopic.name : '';
+  const filteredTopics = topics.filter((topic) => normalizeSearch(topic.name).includes(normalizeSearch(topicQuery.trim())));
+  const topicOptions = [MATERIAL_TOPIC_NONE, ...filteredTopics.map((topic) => ({ value: topic._id, label: topic.name }))];
+
+  const clearValidationError = (field) => {
+    setValidationErrors((currentErrors) => {
+      if (!currentErrors[field]) return currentErrors;
+      const nextErrors = { ...currentErrors };
+      delete nextErrors[field];
+      return nextErrors;
+    });
+  };
+
+  const chooseTopic = (nextTopicId) => {
+    setTopicId(nextTopicId);
+    setTopicQuery('');
+    setTopicPickerOpen(false);
+    setActiveTopicIndex(-1);
+    clearValidationError('form');
+  };
+
+  const handleTopicKeyDown = (event) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      setTopicPickerOpen(false);
+      setTopicQuery('');
+      setActiveTopicIndex(-1);
+      return;
+    }
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      setTopicPickerOpen(true);
+      setActiveTopicIndex((currentIndex) => {
+        const nextIndex = event.key === 'ArrowDown' ? currentIndex + 1 : currentIndex - 1;
+        return (nextIndex + topicOptions.length) % topicOptions.length;
+      });
+      return;
+    }
+
+    if (event.key === 'Enter' && topicPickerOpen && topicOptions.length > 0) {
+      event.preventDefault();
+      const optionIndex = activeTopicIndex < 0 ? 0 : activeTopicIndex;
+      chooseTopic(topicOptions[optionIndex].value);
+    }
+  };
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files && event.target.files[0];
     setFileError('');
+    clearValidationError('file');
+    clearValidationError('form');
     setFile(selectedFile || null);
     if (!selectedFile) return;
 
@@ -101,19 +185,55 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material }) 
   const handleSubmit = (event) => {
     event.preventDefault();
     const isLinkMaterial = materialType === 'LINK';
-    if (!title.trim() || !materialType || !visibility || fileError) return;
-    if (isLinkMaterial && !fileUrl.trim()) return;
-    if (!isLinkMaterial && !file) return;
+    const errors = {};
+
+    if (!title.trim()) errors.title = 'Vui lòng nhập tiêu đề.';
+    if (!materialType) errors.materialType = 'Vui lòng chọn loại tài liệu.';
+    if (!visibility) errors.visibility = 'Vui lòng chọn phạm vi hiển thị.';
+    if (fileError) errors.file = fileError;
+
+    if (isLinkMaterial) {
+      if (!fileUrl.trim()) {
+        errors.fileUrl = 'Vui lòng nhập URL.';
+      } else {
+        try {
+          const parsedUrl = new URL(fileUrl.trim());
+          if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+            errors.fileUrl = 'URL phải bắt đầu bằng http:// hoặc https://.';
+          }
+        } catch {
+          errors.fileUrl = 'Vui lòng nhập URL hợp lệ.';
+        }
+      }
+    } else if (materialType && (!material || requiresReplacementFile) && !file && !fileError) {
+      errors.file = 'Vui lòng chọn file tài liệu.';
+    }
+
+    if (material && !hasChanges) errors.form = 'Chưa có thay đổi nào để lưu.';
+
+    setValidationErrors(errors);
+    if (Object.keys(errors).length > 0) return;
 
     const formData = new FormData();
-    formData.append('topic_id', topicId);
-    formData.append('title', title.trim());
-    formData.append('material_type', materialType);
-    formData.append('visibility', visibility);
-    if (isLinkMaterial) {
-      formData.append('file_url', fileUrl.trim());
+    if (material) {
+      if (title.trim() !== material.title) formData.append('title', title.trim());
+      if (topicId !== originalTopicId) formData.append('topic_id', topicId);
+      if (materialType !== material.material_type) formData.append('material_type', materialType);
+      if (visibility !== material.visibility) formData.append('visibility', visibility);
+      if (isLinkMaterial && fileUrl.trim() !== (material.material_type === 'LINK' ? material.file_url : '')) {
+        formData.append('file_url', fileUrl.trim());
+      }
+      if (file) formData.append('file', file);
     } else {
-      formData.append('file', file);
+      formData.append('topic_id', topicId);
+      formData.append('title', title.trim());
+      formData.append('material_type', materialType);
+      formData.append('visibility', visibility);
+      if (isLinkMaterial) {
+        formData.append('file_url', fileUrl.trim());
+      } else {
+        formData.append('file', file);
+      }
     }
 
     setIsSaving(true);
@@ -131,33 +251,119 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material }) 
   };
 
   return (
-    <Modal title={material ? 'Thay thế tài liệu lớp học' : 'Tải lên tài liệu lớp học'} onClose={onClose}>
-      <form className="class-create-form" onSubmit={handleSubmit}>
+    <Modal title={material ? 'Chỉnh sửa tài liệu lớp học' : 'Tải lên tài liệu lớp học'} onClose={onClose}>
+      <form className="class-create-form" onSubmit={handleSubmit} noValidate>
         <FormInput
           id="material-title"
           label="Tiêu đề tài liệu"
           value={title}
-          onChange={(event) => setTitle(event.target.value)}
+          onChange={(event) => {
+            setTitle(event.target.value);
+            clearValidationError('title');
+            clearValidationError('form');
+          }}
+          error={validationErrors.title}
           placeholder="Ví dụ: Đề cương bài giảng số 1"
           autoComplete="off"
           maxLength={200}
         />
-        <FormSelect
-          id="material-topic"
-          label="Chủ đề bài học"
-          value={topicId}
-          onChange={(event) => setTopicId(event.target.value)}
-          options={materialTopicOptions(topics)}
-        />
+        <div
+          className="class-material-topic-picker form-field"
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) {
+              setTopicPickerOpen(false);
+              setTopicQuery('');
+              setActiveTopicIndex(-1);
+            }
+          }}
+        >
+          <label htmlFor="material-topic-search" className="form-label">Chủ đề bài học</label>
+          <div className="class-material-topic-control form-control">
+            <Search size={16} aria-hidden="true" />
+            <input
+              id="material-topic-search"
+              type="text"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded={topicPickerOpen}
+              aria-controls="material-topic-options"
+              aria-activedescendant={topicPickerOpen && activeTopicIndex >= 0 ? `material-topic-option-${activeTopicIndex}` : undefined}
+              value={topicPickerOpen ? topicQuery : selectedTopicName}
+              placeholder="Gõ để tìm chủ đề..."
+              autoComplete="off"
+              onFocus={() => {
+                setTopicQuery('');
+                setTopicPickerOpen(true);
+                setActiveTopicIndex(-1);
+              }}
+              onChange={(event) => {
+                setTopicQuery(event.target.value);
+                setTopicPickerOpen(true);
+                setActiveTopicIndex(-1);
+              }}
+              onKeyDown={handleTopicKeyDown}
+            />
+            <button
+              type="button"
+              className="form-control-action"
+              aria-label={topicPickerOpen ? 'Đóng danh sách chủ đề' : 'Mở danh sách chủ đề'}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => {
+                setTopicPickerOpen((isOpen) => !isOpen);
+                setTopicQuery('');
+                setActiveTopicIndex(-1);
+              }}
+            >
+              <ChevronDown size={16} aria-hidden="true" />
+            </button>
+          </div>
+          {topicPickerOpen && (
+            <ul id="material-topic-options" className="class-material-topic-options" role="listbox" aria-label="Danh sách chủ đề">
+              <li
+                id="material-topic-option-0"
+                role="option"
+                aria-selected={!topicId}
+                className={activeTopicIndex === 0 ? 'is-active' : ''}
+              >
+                <button type="button" tabIndex={-1} onMouseDown={(event) => event.preventDefault()} onClick={() => chooseTopic('')}>
+                  {MATERIAL_TOPIC_NONE.label}
+                </button>
+              </li>
+              {filteredTopics.map((topic, index) => (
+                <li
+                  key={topic._id}
+                  id={`material-topic-option-${index + 1}`}
+                  role="option"
+                  aria-selected={topic._id === topicId}
+                  className={activeTopicIndex === index + 1 ? 'is-active' : ''}
+                >
+                  <button type="button" tabIndex={-1} onMouseDown={(event) => event.preventDefault()} onClick={() => chooseTopic(topic._id)}>
+                    {topic.name}
+                  </button>
+                </li>
+              ))}
+              {filteredTopics.length === 0 && topicQuery && (
+                <li className="class-material-topic-empty" role="presentation">Không tìm thấy chủ đề phù hợp.</li>
+              )}
+            </ul>
+          )}
+          <p className="form-hint-left">Để trống nếu không muốn gắn chủ đề.</p>
+        </div>
         <FormSelect
           id="material-type"
           label="Loại tài liệu"
           value={materialType}
           onChange={(event) => {
-            setMaterialType(event.target.value);
-            setFile(null);
+            const nextMaterialType = event.target.value;
+            setMaterialType(nextMaterialType);
+            if (nextMaterialType === 'LINK') setFile(null);
             setFileError('');
+            clearValidationError('materialType');
+            clearValidationError('file');
+            clearValidationError('fileUrl');
+            clearValidationError('form');
           }}
+          error={validationErrors.materialType}
           options={MATERIAL_TYPE_OPTIONS}
           placeholder={MATERIAL_TYPE_PLACEHOLDER}
           hint={MATERIAL_TYPE_HELP}
@@ -166,7 +372,12 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material }) 
           id="material-visibility"
           label="Quyền xem tài liệu"
           value={visibility}
-          onChange={(event) => setVisibility(event.target.value)}
+          onChange={(event) => {
+            setVisibility(event.target.value);
+            clearValidationError('visibility');
+            clearValidationError('form');
+          }}
+          error={validationErrors.visibility}
           options={VISIBILITY_OPTIONS}
           placeholder={MATERIAL_VISIBILITY_PLACEHOLDER}
         />
@@ -176,30 +387,57 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material }) 
             label="Đường dẫn URL"
             type="url"
             value={fileUrl}
-            onChange={(event) => setFileUrl(event.target.value)}
+            onChange={(event) => {
+              setFileUrl(event.target.value);
+              clearValidationError('fileUrl');
+              clearValidationError('form');
+            }}
+            error={validationErrors.fileUrl}
             placeholder="https://example.com/tai-lieu"
             autoComplete="url"
           />
         ) : (
           <div className="form-field">
-            <label htmlFor="material-file" className="form-label">Tệp đính kèm</label>
-            <div className={fileError ? 'form-control has-error' : 'form-control'}>
-              <input id="material-file" name="file" type="file" accept={MATERIAL_ACCEPT} onChange={handleFileChange} />
+            <label htmlFor="material-file-button" className="form-label">Tệp đính kèm</label>
+            <div className={`class-material-file-picker${fileError || validationErrors.file ? ' has-error' : ''}`}>
+              <button
+                id="material-file-button"
+                type="button"
+                className="btn btn-outline btn-sm"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload size={14} aria-hidden="true" />
+                Chọn tệp
+              </button>
+              <input
+                ref={fileInputRef}
+                id="material-file"
+                className="visually-hidden"
+                name="file"
+                type="file"
+                accept={MATERIAL_ACCEPT}
+                tabIndex={-1}
+                onChange={handleFileChange}
+              />
+              <span className="class-material-file-name">
+                {file ? file.name : material && material.material_type !== 'LINK' ? 'Giữ nguyên tệp hiện tại' : 'Chưa chọn tệp'}
+              </span>
             </div>
             <p className="form-hint-left">{MATERIAL_FILE_HELP}</p>
-            {file && <p className="form-hint-left">Đã chọn: {file.name} ({formatFileSize(file.size)})</p>}
-            {fileError && <p className="form-error" role="alert">{fileError}</p>}
+            {file && <p className="form-hint-left">Tệp đã chọn ({formatFileSize(file.size)})</p>}
+            {(fileError || validationErrors.file) && <p className="form-error" role="alert">{fileError || validationErrors.file}</p>}
           </div>
         )}
+        {validationErrors.form && <p className="form-error" role="alert">{validationErrors.form}</p>}
         <div className="modal-actions">
           <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={isSaving}>Hủy</button>
           <button
             type="submit"
             className="btn btn-primary btn-sm"
-            disabled={!title.trim() || !materialType || !visibility || Boolean(fileError) || (materialType === 'LINK' ? !fileUrl.trim() : !file) || isSaving}
+            disabled={isSaving}
           >
             <Upload size={14} aria-hidden="true" />
-            <span>{isSaving ? 'Đang tải lên...' : material ? 'Cập nhật tài liệu' : 'Tải lên tài liệu'}</span>
+            <span>{isSaving ? 'Đang lưu...' : material ? 'Lưu thay đổi' : 'Tải lên tài liệu'}</span>
           </button>
         </div>
       </form>
@@ -331,6 +569,7 @@ function DeleteTopicModal({ topic, onClose, onDelete }) {
 export default function ClassroomTopicsAndMaterials({
   classId,
   topics,
+  newlyCreatedTopicId,
   materials,
   topicsLoading,
   topicsError,
@@ -339,6 +578,7 @@ export default function ClassroomTopicsAndMaterials({
   onUpdateTopic,
   onDeleteTopic,
   onCreateMaterial,
+  newlyCreatedMaterialId,
   materialsLoading,
   materialsError,
   onRetryMaterials,
@@ -346,6 +586,37 @@ export default function ClassroomTopicsAndMaterials({
   onDeleteMaterial,
 }) {
   const [modal, setModal] = useState('');
+  const [materialSearchQuery, setMaterialSearchQuery] = useState('');
+  const [selectedMaterialTopicId, setSelectedMaterialTopicId] = useState(ALL_MATERIAL_TOPICS);
+  const [previewMaterialId, setPreviewMaterialId] = useState('');
+  const previewSectionRef = useRef(null);
+  const materialsSectionRef = useRef(null);
+  const normalizedMaterialSearch = normalizeSearch(materialSearchQuery.trim());
+  const filteredMaterials = materials.filter((material) => {
+    const materialTitle = normalizeSearch(material.title || '');
+    const matchesSearch = materialTitle.includes(normalizedMaterialSearch);
+    let matchesTopic = selectedMaterialTopicId === ALL_MATERIAL_TOPICS;
+
+    if (selectedMaterialTopicId === UNASSIGNED_MATERIAL_TOPIC) {
+      matchesTopic = !material.topic_id;
+    } else if (selectedMaterialTopicId !== ALL_MATERIAL_TOPICS) {
+      matchesTopic = material.topic_id === selectedMaterialTopicId;
+    }
+
+    return matchesSearch && matchesTopic;
+  });
+  const materialTopicFilterOptions = [
+    { value: ALL_MATERIAL_TOPICS, label: 'Tất cả chủ đề' },
+    { value: UNASSIGNED_MATERIAL_TOPIC, label: 'Không gắn chủ đề' },
+    ...topics.map((topic) => ({ value: topic._id, label: topic.name })),
+  ];
+  const previewMaterial = materials.find((material) => material._id === previewMaterialId);
+
+  useEffect(() => {
+    if (previewMaterialId && previewSectionRef.current) {
+      previewSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [previewMaterialId]);
 
   return (
     <div className="class-detail-content-grid">
@@ -373,9 +644,24 @@ export default function ClassroomTopicsAndMaterials({
         ) : (
           <ol className="class-topic-list">
             {topics.map((topic, index) => (
-              <li key={topic._id}>
-                <span className="class-topic-number">{String(index + 1).padStart(2, '0')}</span>
-                <span>{topic.name}</span>
+              <li
+                key={topic._id}
+                className={topic._id === newlyCreatedTopicId ? 'is-new' : ''}
+              >
+                <button
+                  type="button"
+                  className={selectedMaterialTopicId === topic._id ? 'class-topic-filter-button is-selected' : 'class-topic-filter-button'}
+                  onClick={() => {
+                    setSelectedMaterialTopicId(topic._id);
+                    if (materialsSectionRef.current) {
+                      materialsSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }}
+                  aria-pressed={selectedMaterialTopicId === topic._id}
+                >
+                  <span className="class-topic-number">{String(index + 1).padStart(2, '0')}</span>
+                  <span>{topic.name}</span>
+                </button>
                 <span className="class-topic-actions">
                   {classId && (
                     <Link
@@ -422,7 +708,7 @@ export default function ClassroomTopicsAndMaterials({
         )}
       </section>
 
-      <section className="class-detail-section" aria-labelledby="class-materials-title">
+      <section ref={materialsSectionRef} className="class-detail-section" aria-labelledby="class-materials-title">
         <div className="class-detail-section-heading">
           <span className="class-detail-section-icon" aria-hidden="true"><FileText size={18} /></span>
           <div>
@@ -444,64 +730,152 @@ export default function ClassroomTopicsAndMaterials({
         ) : materials.length === 0 ? (
           <EmptyState icon={FileText} title="Chưa có tài liệu nào" description="Thêm tài liệu hoặc liên kết cho học viên trong lớp." />
         ) : (
-          <ul className="class-material-list">
-            {materials.map((material) => (
-              <li key={material._id} className="class-material-row">
-                <span className="class-material-file-icon" aria-hidden="true"><FileText size={17} /></span>
-                <span className="class-material-copy">
-                  <span className="class-material-title">{material.title}</span>
-                  <span className="class-material-detail">
-                    {material.material_type || material.type} · {material.material_type === 'LINK' ? 'Liên kết ngoài' : formatFileSize(material.file_size)}
-                  </span>
-                </span>
-                {material.file_url && (
-                  <a className="btn btn-outline btn-sm" href={material.file_url} target="_blank" rel="noreferrer">Mở xem</a>
-                )}
-                {classId && (
-                  <Link
-                    to={`/tutor/classes/${classId}/assignments/new?materialId=${material._id}&materialTitle=${encodeURIComponent(material.title || '')}`}
-                    className="btn btn-outline btn-sm"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      color: 'var(--color-primary-strong)',
-                      borderColor: '#fdba74',
-                      background: 'var(--color-primary-soft)',
-                      textDecoration: 'none',
-                      fontWeight: 600,
-                    }}
-                    title="Tạo bài tập tự động bằng AI từ tài liệu này"
-                  >
-                    <Sparkles size={14} color="var(--color-primary-strong)" aria-hidden="true" />
-                    <span>AI tạo bài tập</span>
-                  </Link>
-                )}
-                <span className="class-topic-actions">
-                  <button
-                    type="button"
-                    className="btn btn-outline btn-sm"
-                    aria-label={`Sửa ${material.title}`}
-                    onClick={() => setModal({ type: 'edit-material', material: material })}
-                  >
-                    <Pencil size={14} aria-hidden="true" />
-                    <span>Sửa</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-outline btn-sm class-topic-delete-button"
-                    aria-label={`Xóa ${material.title}`}
-                    onClick={() => setModal({ type: 'delete-material', material: material })}
-                  >
-                    <Trash2 size={14} aria-hidden="true" />
-                    <span>Xóa</span>
-                  </button>
-                </span>
-              </li>
-            ))}
-          </ul>
+          <>
+            <div className="class-material-search-filters">
+              <div className="form-field">
+                <label htmlFor="class-material-search" className="form-label">Tìm tài liệu</label>
+                <div className="form-control class-material-search-control">
+                  <Search size={16} aria-hidden="true" />
+                  <input
+                    id="class-material-search"
+                    type="search"
+                    value={materialSearchQuery}
+                    onChange={(event) => setMaterialSearchQuery(event.target.value)}
+                    placeholder="Nhập tên tài liệu"
+                    autoComplete="off"
+                  />
+                </div>
+              </div>
+              <FormSelect
+                id="class-material-topic-filter"
+                label="Lọc theo chủ đề"
+                value={selectedMaterialTopicId}
+                onChange={(event) => setSelectedMaterialTopicId(event.target.value)}
+                options={materialTopicFilterOptions}
+              />
+            </div>
+            {filteredMaterials.length === 0 ? (
+              <p className="class-material-filter-empty" role="status">Không tìm thấy tài liệu phù hợp.</p>
+            ) : (
+              <ul className="class-material-list">
+                {filteredMaterials.map((material) => {
+                  const isPreviewOpen = previewMaterialId === material._id;
+                  const canPreviewImage = isImageMaterial(material.file_url);
+                  const canPreviewLink = material.material_type === 'LINK' && isWebLink(material.file_url);
+                  const canPreviewInline = canPreviewImage || canPreviewLink;
+
+                  return (
+                    <li
+                      key={material._id}
+                      className={`class-material-row${material._id === newlyCreatedMaterialId ? ' is-new' : ''}`}
+                    >
+                      <span className="class-material-file-icon" aria-hidden="true"><FileText size={17} /></span>
+                      <span className="class-material-copy">
+                        <span className="class-material-title">{material.title}</span>
+                        <span className="class-material-detail">
+                          {MATERIAL_TYPE_LABELS[material.material_type || material.type] || material.material_type || material.type} · {material.material_type === 'LINK' ? 'Liên kết ngoài' : formatFileSize(material.file_size)}
+                        </span>
+                      </span>
+                      {material.file_url && canPreviewInline ? (
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-sm"
+                          aria-expanded={isPreviewOpen}
+                          aria-controls="class-material-preview-section"
+                          onClick={() => setPreviewMaterialId(isPreviewOpen ? '' : material._id)}
+                        >
+                          {isPreviewOpen ? 'Đóng' : 'Mở'}
+                        </button>
+                      ) : material.file_url ? (
+                        <a className="btn btn-outline btn-sm" href={material.file_url} target="_blank" rel="noreferrer">Mở xem</a>
+                      ) : null}
+                      {classId && (
+                        <Link
+                          to={`/tutor/classes/${classId}/assignments/new?materialId=${material._id}&materialTitle=${encodeURIComponent(material.title || '')}`}
+                          className="btn btn-outline btn-sm"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            color: 'var(--color-primary-strong)',
+                            borderColor: '#fdba74',
+                            background: 'var(--color-primary-soft)',
+                            textDecoration: 'none',
+                            fontWeight: 600,
+                          }}
+                          title="Tạo bài tập tự động bằng AI từ tài liệu này"
+                        >
+                          <Sparkles size={14} color="var(--color-primary-strong)" aria-hidden="true" />
+                          <span>AI tạo bài tập</span>
+                        </Link>
+                      )}
+                      <span className="class-topic-actions">
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-sm"
+                          aria-label={`Sửa ${material.title}`}
+                          onClick={() => setModal({ type: 'edit-material', material: material })}
+                        >
+                          <Pencil size={14} aria-hidden="true" />
+                          <span>Sửa</span>
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-sm class-topic-delete-button"
+                          aria-label={`Xóa ${material.title}`}
+                          onClick={() => setModal({ type: 'delete-material', material: material })}
+                        >
+                          <Trash2 size={14} aria-hidden="true" />
+                          <span>Xóa</span>
+                        </button>
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </>
         )}
       </section>
+
+      {previewMaterial && (
+        <section
+          id="class-material-preview-section"
+          ref={previewSectionRef}
+          className="class-detail-section class-material-preview-section"
+          aria-labelledby="class-material-preview-title"
+        >
+          <div className="class-detail-section-heading">
+            <span className="class-detail-section-icon" aria-hidden="true"><FileText size={18} /></span>
+            <div>
+              <h2 id="class-material-preview-title">Tài liệu xem trước</h2>
+              <p>{previewMaterial.title}</p>
+            </div>
+            <button type="button" className="btn btn-outline btn-sm" onClick={() => setPreviewMaterialId('')}>
+              Đóng xem trước
+            </button>
+          </div>
+          {previewMaterial.material_type === 'LINK' ? (
+            <>
+              <div className="class-material-link-preview">
+                <iframe
+                  src={previewMaterial.file_url}
+                  title={`Xem trước liên kết: ${previewMaterial.title}`}
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                />
+              </div>
+              <a className="class-material-preview-fallback" href={previewMaterial.file_url} target="_blank" rel="noreferrer">
+                Nếu trang không hiển thị ở đây, mở liên kết trong tab mới
+              </a>
+            </>
+          ) : (
+            <div className="class-material-preview">
+              <img src={previewMaterial.file_url} alt={`Xem trước: ${previewMaterial.title}`} />
+            </div>
+          )}
+        </section>
+      )}
 
       {modal === 'topic' && <CreateTopicModal onClose={() => setModal('')} onCreate={onCreateTopic} />}
       {modal === 'material' && (
