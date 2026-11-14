@@ -8,6 +8,7 @@
 - `data.trends` covers the complete rolling period up to the request timestamp, without overlapping buckets or synthetic fallback values. Labels use Vietnam time. Revenue uses successful orders with `paid_at`; old successful orders lacking this timestamp remain in cumulative totals but cannot be assigned to a chart bucket. User growth and new agreements use their stored creation timestamps.
 - `data.roleDistribution` includes all account statuses and all four roles. Existing Vietnamese role labels are retained.
 - No schema, stored payment data or public homepage contract is changed.
+- Public homepage: `GET /api/stats/v1/public` (no auth) returns `{ testimonials, platformStats }`. `featuredTutors` was removed together with the homepage "Gia sư tiêu biểu" section.
 
 ## Frontend organization
 

@@ -28,7 +28,6 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
   });
 
   const [agreements, setAgreements] = useState([]);
-  const [loadingAgreements, setLoadingAgreements] = useState(false);
   const [useAgreement, setUseAgreement] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -52,7 +51,6 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
   useEffect(() => {
     if (isOpen) {
       resetForm();
-      setLoadingAgreements(true);
       getConfirmedAgreements()
         .then((res) => {
           if (res?.data && Array.isArray(res.data)) {
@@ -70,9 +68,6 @@ export default function CreateClassroomModal({ isOpen, initialAgreementId = '', 
         })
         .catch((err) => {
           console.warn('[UC21] Không lấy được danh sách thỏa thuận:', err.message);
-        })
-        .finally(() => {
-          setLoadingAgreements(false);
         });
     }
   }, [isOpen, initialAgreementId]);

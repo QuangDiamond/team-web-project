@@ -11,7 +11,7 @@ test('navbar highlights only the selected section and links to the parent public
       import { MemoryRouter } from 'react-router-dom';
       import Layout from './src/layouts/Layout.jsx';
       const render = (path) => renderToStaticMarkup(<MemoryRouter initialEntries={[path]}><Layout /></MemoryRouter>);
-      for (const path of ['/', '/#features', '/#featured-tutors', '/#how-it-works', '/profile']) {
+      for (const path of ['/', '/#features', '/#how-it-works', '/tutors', '/requests', '/profile']) {
         const nav = render(path).match(/<div class="nav-links">([\\s\\S]*?)<\\/div>/)[1];
         const active = [...nav.matchAll(/<a[^>]*class="nav-link active"[^>]*href="([^"]+)"/g)];
         assert.equal(active.length, path === '/profile' ? 0 : 1, path);

@@ -6,6 +6,7 @@ import { useAuth } from '../hooks/useAuth';
 import DashboardLayout from '../layouts/DashboardLayout';
 import Home from '../pages/Home';
 import TutorSearch from '../pages/TutorSearch';
+import RequestSearch from '../pages/RequestSearch';
 import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
 import RegisterSuccess from '../pages/auth/RegisterSuccess';
@@ -85,6 +86,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: 'tutors', element: <TutorSearch /> },
+      { path: 'requests', element: <RequestSearch /> },
       { path: 'profile', element: <Profile /> },
       { path: 'join-class', element: <JoinClassPage /> },
       { path: 'join-class/:code', element: <JoinClassPage /> },
