@@ -11,7 +11,7 @@
   padding: 16px 18px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .schedule-toolbar-title,
@@ -27,7 +27,7 @@
 
 .schedule-toolbar-title h2 {
   margin: 0;
-  color: var(--color-dark);
+  color: var(--color-text);
   font-size: 20px;
 }
 
@@ -74,7 +74,7 @@
   overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .schedule-calendar-scroll {
@@ -95,7 +95,7 @@
   top: 0;
   z-index: 2;
   border-bottom: 1px solid var(--color-border);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .schedule-calendar-corner {
@@ -123,7 +123,7 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  color: var(--color-dark);
+  color: var(--color-text);
   font-size: 14px;
 }
 
@@ -136,7 +136,7 @@
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--color-border);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .schedule-time-axis span {
@@ -156,8 +156,8 @@
     to bottom,
     transparent 0,
     transparent calc(var(--schedule-hour-height, 40px) - 1px),
-    #f1f5f9 calc(var(--schedule-hour-height, 40px) - 1px),
-    #f1f5f9 var(--schedule-hour-height, 40px)
+    var(--color-surface-subtle) calc(var(--schedule-hour-height, 40px) - 1px),
+    var(--color-surface-subtle) var(--schedule-hour-height, 40px)
   );
 }
 
@@ -186,7 +186,7 @@
   padding: 0 8px;
   border: 1px solid #f2a78b;
   border-radius: 6px;
-  background: var(--color-white);
+  background: var(--color-surface);
   box-shadow: 0 3px 10px rgb(31 35 51 / 12%);
   color: var(--color-primary-strong);
   font: inherit;
@@ -227,7 +227,7 @@
 }
 
 .schedule-event-color-0 {
-  border-color: #c9441a;
+  border-color: var(--color-primary-strong);
   background: #fff0e9;
   color: #803116;
 }
@@ -252,7 +252,7 @@
 
 .schedule-event-color-4 {
   border-color: #b47a17;
-  background: #fff6df;
+  background: var(--color-warning-soft);
   color: #76500f;
 }
 
@@ -361,23 +361,23 @@
 }
 
 .schedule-status-pill.status-scheduled {
-  background: #e0f2fe;
-  color: #0369a1;
+  background: var(--color-info-soft);
+  color: var(--color-info);
 }
 
 .schedule-status-pill.status-ongoing {
-  background: #dcfce7;
-  color: #15803d;
+  background: var(--color-success-soft);
+  color: var(--color-success);
 }
 
 .schedule-status-pill.status-completed {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--color-surface-subtle);
+  color: var(--color-text-muted);
 }
 
 .schedule-status-pill.status-cancelled {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: var(--color-error-soft);
+  color: var(--color-error);
 }
 
 .schedule-join-btn {
@@ -386,7 +386,7 @@
   gap: 3px;
   font-size: 10px;
   font-weight: 700;
-  color: #0284c7;
+  color: var(--color-info);
   text-decoration: none;
   background: rgb(255 255 255 / 85%);
   padding: 1px 6px;
@@ -396,7 +396,7 @@
 }
 
 .schedule-join-btn:hover {
-  background: #0284c7;
+  background: var(--color-info);
   color: #ffffff;
   text-decoration: none;
 }

@@ -116,6 +116,7 @@
 }
 
 .receipt-total dd {
+  color: var(--color-price);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }

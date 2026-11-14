@@ -63,7 +63,7 @@
   flex: 0 0 auto;
   padding: 4px 8px;
   border-radius: 999px;
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
   color: var(--color-text-muted);
   font-size: 12px;
   font-weight: 700;
@@ -111,9 +111,9 @@
 }
 
 .plan-card-amount {
+  color: var(--color-price);
   font-size: 22px;
   font-weight: 800;
-  color: var(--color-text);
   font-variant-numeric: tabular-nums;
 }
 
@@ -223,7 +223,7 @@
 /* Gói đã tắt: chữ nhạt hơn, vẫn đủ đọc */
 .plans-pricing .data-table tr.is-disabled td,
 .plans-pricing .data-table tr.is-disabled th {
-  background: #fafafb;
+  background: var(--color-surface-subtle);
   color: var(--color-text-muted);
 }
 

@@ -211,7 +211,7 @@ export default function CreateClassroomModal({
         {/* Modal Header */}
         <div className="modal-header">
           <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <GraduationCap size={20} style={{ color: '#e85a2c' }} />
+            <GraduationCap size={20} style={{ color: 'var(--color-primary-strong)' }} />
             <span>{createdResult ? 'Lớp học đã được tạo thành công!' : 'Tạo lớp học mới'}</span>
           </h2>
           <button className="modal-close-btn" onClick={handleClose} title="Đóng">
@@ -226,7 +226,7 @@ export default function CreateClassroomModal({
               className="error-alert"
               style={
                 error.toLowerCase().includes('hạn mức') || error.toLowerCase().includes('nâng cấp gói')
-                  ? { background: '#fffbeb', borderColor: '#fde68a', color: '#92400e' }
+                  ? { background: 'var(--color-warning-soft)', borderColor: '#fde68a', color: 'var(--color-warning)' }
                   : {}
               }
             >
@@ -370,11 +370,11 @@ export default function CreateClassroomModal({
                         style={{
                           marginTop: '10px',
                           padding: '10px 14px',
-                          background: '#f8fafc',
-                          border: '1px solid #e2e8f0',
+                          background: 'var(--color-surface-subtle)',
+                          border: '1px solid var(--color-border)',
                           borderRadius: '8px',
                           fontSize: '13px',
-                          color: '#334155',
+                          color: 'var(--color-text)',
                           lineHeight: 1.6,
                         }}
                       >
@@ -388,10 +388,10 @@ export default function CreateClassroomModal({
                               {sel.student_info.full_name} {sel.student_info.email ? `(${sel.student_info.email})` : ''}
                             </span>
                           ) : (
-                            <span style={{ color: '#64748b' }}>Được gán theo tài khoản liên kết của phụ huynh</span>
+                            <span style={{ color: 'var(--color-text-muted)' }}>Được gán theo tài khoản liên kết của phụ huynh</span>
                           )}
                         </div>
-                        <div style={{ marginTop: '6px', fontSize: '12px', color: '#2563eb' }}>
+                        <div style={{ marginTop: '6px', fontSize: '12px', color: 'var(--color-info)' }}>
                           * Hệ thống sẽ tự động thêm học sinh & phụ huynh vào lớp, đồng thời gửi tin nhắn kèm link mời tham gia ngay khi tạo lớp.
                         </div>
                       </div>
@@ -416,12 +416,12 @@ export default function CreateClassroomModal({
                   autoFocus
                   style={
                     isDuplicateName
-                      ? { borderColor: '#ef4444', backgroundColor: '#fef2f2' }
+                      ? { borderColor: 'var(--color-error)', backgroundColor: 'var(--color-error-soft)' }
                       : {}
                   }
                 />
                 {isDuplicateName && (
-                  <div style={{ color: '#ef4444', fontSize: '13px', marginTop: '4px', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <div style={{ color: 'var(--color-error)', fontSize: '13px', marginTop: '4px', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <AlertTriangle size={14} />
                     <span>Bạn đã có một lớp học mang tên này. Vui lòng đặt tên khác.</span>
                   </div>
@@ -455,7 +455,7 @@ export default function CreateClassroomModal({
 
                 <div className="form-group">
                   <label htmlFor="grade">
-                    Khối / Trình độ <span style={{ color: '#94a3b8', fontSize: '12px' }}>(tùy chọn)</span>
+                    Khối / Trình độ <span style={{ color: 'var(--color-text-muted)', fontSize: '12px' }}>(tùy chọn)</span>
                   </label>
                   <input
                     type="text"

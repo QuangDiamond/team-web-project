@@ -101,10 +101,13 @@ export const router = createBrowserRouter([
           { path: 'profile', element: <Profile /> },
           { path: 'join-class', element: <JoinClassPage /> },
           { path: 'join-class/:code', element: <JoinClassPage /> },
-          { path: 'tutors/:profileId', element: <PublicProfile role="TUTOR" /> },
+          // Hồ sơ công khai (gia sư, phụ huynh) chỉ xem được khi đã đăng nhập
           {
             element: <PrivateRoute />,
-            children: [{ path: 'parents/:userId', element: <PublicProfile role="PARENT" /> }],
+            children: [
+              { path: 'tutors/:profileId', element: <PublicProfile role="TUTOR" /> },
+              { path: 'parents/:userId', element: <PublicProfile role="PARENT" /> },
+            ],
           },
           // Trang thanh toán cũ (placeholder) nay là Checkout (UC17)
           { path: 'payment', element: <Navigate to="/checkout" replace /> },

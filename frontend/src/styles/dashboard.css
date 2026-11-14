@@ -8,7 +8,7 @@
   min-height: 100vh;
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   color: var(--color-text);
-  background: var(--color-surface);
+  background: var(--color-canvas);
 }
 
 .sidebar {
@@ -19,7 +19,7 @@
   flex-shrink: 0;
   width: 256px;
   height: 100vh;
-  background: var(--color-white);
+  background: var(--color-sidebar);
   border-right: 1px solid var(--color-border);
 }
 
@@ -100,7 +100,7 @@
   min-height: 44px;
   padding: 0 12px;
   border-radius: var(--radius-md);
-  color: #4b5563;
+  color: var(--color-text-muted);
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
@@ -108,7 +108,7 @@
 }
 
 .sidebar-link:hover {
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
   color: var(--color-text);
 }
 
@@ -141,7 +141,7 @@
   gap: 12px;
   min-height: 60px;
   padding: 8px 24px;
-  background: var(--color-white);
+  background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -183,7 +183,7 @@
 
 /* ---------- Khối dùng chung ---------- */
 .card {
-  background: var(--color-white);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 16px;
 }
@@ -229,8 +229,8 @@
 }
 
 .badge-gray {
-  background: #eef0f3;
-  color: #4b5563;
+  background: var(--color-surface-subtle);
+  color: var(--color-text-muted);
 }
 
 .badge-blue {
@@ -278,7 +278,7 @@
 }
 
 .icon-button:hover {
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
   color: var(--color-text);
 }
 
@@ -299,7 +299,7 @@
 }
 
 .btn-danger:hover:not(:disabled) {
-  background: #a51f1f;
+  background: var(--color-error);
 }
 
 /* Nút viền cho thao tác nguy hiểm (Suspend / Ban) */
@@ -317,7 +317,7 @@
   margin: 0 0 16px;
   padding: 10px 12px;
   border-radius: var(--radius-sm);
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
   font-size: 14px;
   overflow-wrap: anywhere;
 }
@@ -472,7 +472,7 @@
 }
 
 .form-control:has(input:disabled) {
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
 }
 
 .form-control-suffix {
@@ -523,7 +523,7 @@
   padding: 4px;
   gap: 4px;
   border-radius: var(--radius-md);
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
   border: 1px solid var(--color-border);
 }
 
@@ -551,7 +551,7 @@
 }
 
 .segmented-option input:checked + span {
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-primary-strong);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
@@ -607,7 +607,7 @@
   height: 24px;
   padding: 2px;
   border-radius: 999px;
-  background: #9ca3af;
+  background: var(--color-text-muted);
   transition: background-color var(--transition);
   pointer-events: none;
 }
@@ -617,7 +617,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--color-white);
+  background: var(--color-surface);
   transition: transform var(--transition);
 }
 
@@ -644,14 +644,14 @@
   padding: 0;
   border: none;
   border-radius: 16px;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text);
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   box-shadow: 0 24px 48px rgba(17, 24, 39, 0.2);
 }
 
 .modal::backdrop {
-  background: rgba(17, 24, 39, 0.45);
+  background: var(--color-overlay);
 }
 
 .modal-panel {
@@ -704,7 +704,7 @@
 
 .data-table thead th {
   padding: 12px 16px;
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -773,7 +773,7 @@
     inset: 0;
     z-index: 30;
     border: none;
-    background: rgba(17, 24, 39, 0.4);
+    background: var(--color-overlay);
     cursor: pointer;
   }
 

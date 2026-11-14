@@ -31,10 +31,10 @@ export default function ClassroomMembersTab({
     <div>
       <div className="members-toolbar">
         <div>
-          <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', color: '#0f172a' }}>
+          <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', color: 'var(--color-text)' }}>
             Danh sách thành viên trong lớp
           </h3>
-          <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>
+          <p style={{ margin: 0, fontSize: '14px', color: 'var(--color-text-muted)' }}>
             Sĩ số học viên: <strong>{studentCount}</strong> / {capacity} học sinh
           </p>
         </div>
@@ -81,14 +81,14 @@ export default function ClassroomMembersTab({
       </div>
 
       {loadingMembers ? (
-        <div style={{ textAlign: 'center', padding: '40px', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+        <div style={{ textAlign: 'center', padding: '40px', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
           <Loader2 size={18} className="spin" />
           <span>Đang tải danh sách thành viên...</span>
         </div>
       ) : members.length === 0 ? (
         <div className="classroom-empty-state" style={{ padding: '40px 20px' }}>
           <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
-            <Users size={44} color="#94a3b8" />
+            <Users size={44} color="var(--color-text-muted)" />
           </div>
           <h3>Chưa có học viên nào tham gia lớp</h3>
           <p>
@@ -117,8 +117,8 @@ export default function ClassroomMembersTab({
                 padding: '6px 14px',
                 fontSize: '13px',
                 borderRadius: '20px',
-                background: memberFilter === 'ALL' ? '#f1f5f9' : '#ffffff',
-                borderColor: memberFilter === 'ALL' ? '#94a3b8' : '#e2e8f0',
+                background: memberFilter === 'ALL' ? 'var(--color-surface-subtle)' : 'var(--color-white)',
+                borderColor: memberFilter === 'ALL' ? 'var(--color-text-muted)' : 'var(--color-border)',
                 fontWeight: memberFilter === 'ALL' ? 600 : 400,
               }}
               onClick={() => setMemberFilter('ALL')}
@@ -132,9 +132,9 @@ export default function ClassroomMembersTab({
                 padding: '6px 14px',
                 fontSize: '13px',
                 borderRadius: '20px',
-                background: memberFilter === 'STUDENT' ? '#f0fdf4' : '#ffffff',
-                borderColor: memberFilter === 'STUDENT' ? '#86efac' : '#e2e8f0',
-                color: memberFilter === 'STUDENT' ? '#15803d' : '#334155',
+                background: memberFilter === 'STUDENT' ? 'var(--color-success-soft)' : 'var(--color-white)',
+                borderColor: memberFilter === 'STUDENT' ? '#86efac' : 'var(--color-border)',
+                color: memberFilter === 'STUDENT' ? 'var(--color-success)' : 'var(--color-text)',
                 fontWeight: memberFilter === 'STUDENT' ? 600 : 400,
               }}
               onClick={() => setMemberFilter('STUDENT')}
@@ -151,9 +151,9 @@ export default function ClassroomMembersTab({
                 padding: '6px 14px',
                 fontSize: '13px',
                 borderRadius: '20px',
-                background: memberFilter === 'PARENT' ? '#eff6ff' : '#ffffff',
-                borderColor: memberFilter === 'PARENT' ? '#bfdbfe' : '#e2e8f0',
-                color: memberFilter === 'PARENT' ? '#1d4ed8' : '#334155',
+                background: memberFilter === 'PARENT' ? 'var(--color-info-soft)' : 'var(--color-white)',
+                borderColor: memberFilter === 'PARENT' ? '#bfdbfe' : 'var(--color-border)',
+                color: memberFilter === 'PARENT' ? 'var(--color-info)' : 'var(--color-text)',
                 fontWeight: memberFilter === 'PARENT' ? 600 : 400,
               }}
               onClick={() => setMemberFilter('PARENT')}
@@ -189,8 +189,8 @@ export default function ClassroomMembersTab({
                         <div className="member-cell">
                           <div className="member-avatar">{name.charAt(0).toUpperCase()}</div>
                           <div>
-                            <div style={{ fontWeight: 600, color: '#0f172a' }}>{name}</div>
-                            <div style={{ fontSize: '12px', color: '#64748b' }}>
+                            <div style={{ fontWeight: 600, color: 'var(--color-text)' }}>{name}</div>
+                            <div style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>
                               {u.role === 'PARENT'
                                 ? 'Phụ huynh'
                                 : u.role === 'STUDENT'
@@ -201,13 +201,13 @@ export default function ClassroomMembersTab({
                             </div>
                             {/* Xem liên kết phụ huynh - học viên */}
                             {u.role === 'PARENT' && mem.linked_children && mem.linked_children.length > 0 && (
-                              <div style={{ fontSize: '11px', color: '#e85a2c', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                              <div style={{ fontSize: '11px', color: 'var(--color-primary-strong)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
                                 <GraduationCap size={12} />
                                 <span>Con: {mem.linked_children.map((c) => c.full_name || c.email).join(', ')}</span>
                               </div>
                             )}
                             {u.role === 'STUDENT' && mem.linked_parent && (
-                              <div style={{ fontSize: '11px', color: '#0284c7', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                              <div style={{ fontSize: '11px', color: 'var(--color-info)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
                                 <Users size={12} />
                                 <span>Phụ huynh: {mem.linked_parent.full_name || mem.linked_parent.email}</span>
                               </div>
@@ -223,7 +223,7 @@ export default function ClassroomMembersTab({
                           {isActive ? (u.role === 'PARENT' ? 'Đang theo dõi' : 'Đang học') : 'Đã gỡ'}
                         </span>
                         {mem.removal_reason && (
-                          <div style={{ fontSize: '11px', color: '#991b1b', marginTop: '2px' }}>
+                          <div style={{ fontSize: '11px', color: 'var(--color-error)', marginTop: '2px' }}>
                             Lý do: {mem.removal_reason}
                           </div>
                         )}
@@ -234,7 +234,7 @@ export default function ClassroomMembersTab({
                             <button
                               type="button"
                               className="btn-outline-gray"
-                              style={{ color: '#dc2626', fontSize: '12px', padding: '4px 10px' }}
+                              style={{ color: 'var(--color-error)', fontSize: '12px', padding: '4px 10px' }}
                               onClick={() => onSelectRemoveMember(mem)}
                             >
                               Xóa khỏi lớp

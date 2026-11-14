@@ -32,7 +32,7 @@ export default function GradeQuestionReview({
             {/* Header: Số thứ tự, Nội dung, Điểm tối đa */}
             <div className="grade-q-header">
               <div className="grade-q-title">
-                <span style={{ color: '#e85a2c', fontWeight: 700, marginRight: '6px' }}>
+                <span style={{ color: 'var(--color-primary-strong)', fontWeight: 700, marginRight: '6px' }}>
                   Câu {idx + 1}:
                 </span>
                 <span>{questionInfo?.content || `Câu hỏi ${idx + 1}`}</span>
@@ -46,7 +46,7 @@ export default function GradeQuestionReview({
             {questionInfo?.question_type === 'MULTIPLE_CHOICE' && (
               <div style={{ marginTop: '8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', fontSize: '13px', marginBottom: '10px' }}>
-                  <span style={{ color: '#64748b' }}>Học sinh chọn:</span>
+                  <span style={{ color: 'var(--color-text-muted)' }}>Học sinh chọn:</span>
                   <span
                     style={{
                       fontWeight: 700,
@@ -60,7 +60,7 @@ export default function GradeQuestionReview({
                     Phương án {ans.text_response || '(Chưa chọn)'}
                   </span>
                   {ans.is_auto_graded && (
-                    <span style={{ fontSize: '12px', color: '#16a34a', fontWeight: 600 }}>
+                    <span style={{ fontSize: '12px', color: 'var(--color-success)', fontWeight: 600 }}>
                       (Trắc nghiệm tự chấm: +{ans.score || 0}đ)
                     </span>
                   )}
@@ -93,8 +93,8 @@ export default function GradeQuestionReview({
                           <span
                             style={{
                               fontSize: '11px',
-                              background: '#16a34a',
-                              color: '#ffffff',
+                              background: 'var(--color-success)',
+                              color: 'var(--color-white)',
                               padding: '2px 8px',
                               borderRadius: '10px',
                               fontWeight: 600,
@@ -112,8 +112,8 @@ export default function GradeQuestionReview({
                           <span
                             style={{
                               fontSize: '11px',
-                              background: '#dc2626',
-                              color: '#ffffff',
+                              background: 'var(--color-error)',
+                              color: 'var(--color-white)',
                               padding: '2px 8px',
                               borderRadius: '10px',
                               fontWeight: 600,
@@ -128,8 +128,8 @@ export default function GradeQuestionReview({
                           <span
                             style={{
                               fontSize: '11px',
-                              background: '#0284c7',
-                              color: '#ffffff',
+                              background: 'var(--color-info)',
+                              color: 'var(--color-white)',
                               padding: '2px 8px',
                               borderRadius: '10px',
                               fontWeight: 600,
@@ -149,14 +149,14 @@ export default function GradeQuestionReview({
                             <span
                               className="grade-option-label"
                               style={{
-                                color: isCorrect ? '#15803d' : isChosen ? '#dc2626' : '#64748b',
+                                color: isCorrect ? 'var(--color-success)' : isChosen ? 'var(--color-error)' : 'var(--color-text-muted)',
                               }}
                             >
                               {letter}.
                             </span>
                             <span
                               style={{
-                                color: isCorrect ? '#14532d' : '#334155',
+                                color: isCorrect ? 'var(--color-success)' : 'var(--color-text)',
                                 fontWeight: isCorrect || isChosen ? 500 : 400,
                               }}
                             >
@@ -207,9 +207,9 @@ export default function GradeQuestionReview({
                         rel="noreferrer"
                         className="btn-outline-gray"
                         style={{
-                          color: '#ea580c',
+                          color: 'var(--color-primary-strong)',
                           borderColor: '#fdba74',
-                          background: '#fff7ed',
+                          background: 'var(--color-primary-soft)',
                           fontWeight: 600,
                           textDecoration: 'none',
                         }}
@@ -219,7 +219,7 @@ export default function GradeQuestionReview({
                         <ExternalLink size={13} />
                       </a>
                       {ans.file_size && (
-                        <span style={{ fontSize: '12px', color: '#64748b' }}>
+                        <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>
                           ({(ans.file_size / (1024 * 1024)).toFixed(2)} MB)
                         </span>
                       )}
@@ -234,7 +234,7 @@ export default function GradeQuestionReview({
                         target="_blank"
                         rel="noreferrer"
                         style={{
-                          color: '#0284c7',
+                          color: 'var(--color-info)',
                           textDecoration: 'underline',
                           fontWeight: 600,
                           wordBreak: 'break-all',
@@ -252,7 +252,7 @@ export default function GradeQuestionReview({
                     )}
                   </div>
                 ) : (
-                  <div style={{ fontSize: '13px', color: '#64748b', fontStyle: 'italic', padding: '6px 0' }}>
+                  <div style={{ fontSize: '13px', color: 'var(--color-text-muted)', fontStyle: 'italic', padding: '6px 0' }}>
                     (Học sinh không đính kèm tệp bài làm)
                   </div>
                 )}
@@ -273,7 +273,7 @@ export default function GradeQuestionReview({
             <div className="grade-q-grading-row">
               <div className="grade-q-score-control">
                 <div className="grade-q-score-input-wrap">
-                  <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155' }}>
+                  <label style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text)' }}>
                     {ans.is_auto_graded ? 'Điểm câu (MCQ tự chấm):' : 'Điểm câu hỏi này:'}
                   </label>
                   <input
@@ -287,7 +287,7 @@ export default function GradeQuestionReview({
                     }
                     className="grade-q-score-input"
                   />
-                  <span style={{ fontSize: '13px', color: '#64748b' }}>
+                  <span style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>
                     / {questionInfo?.points || 1}đ
                   </span>
                 </div>

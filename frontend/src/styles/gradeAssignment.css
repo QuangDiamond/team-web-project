@@ -8,7 +8,7 @@
   margin: 0 auto;
   padding: 24px 20px 60px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 /* Header & Breadcrumb */
@@ -27,23 +27,23 @@
   gap: 6px;
   font-size: 14px;
   font-weight: 600;
-  color: #475569;
+  color: var(--color-text-muted);
   text-decoration: none;
   padding: 8px 14px;
   border-radius: 8px;
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
+  border: 1px solid var(--color-control-border);
+  background: var(--color-surface);
   transition: all 0.15s ease;
 }
 
 .grade-back-btn:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--color-surface-subtle);
+  color: var(--color-text);
 }
 
 .grade-header-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 20px 24px;
   margin-bottom: 24px;
@@ -62,7 +62,7 @@
 .grade-assignment-title {
   font-size: 22px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text);
   margin: 0 0 6px 0;
   display: flex;
   align-items: center;
@@ -75,7 +75,7 @@
   gap: 12px;
   flex-wrap: wrap;
   font-size: 13px;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .grade-meta-badge {
@@ -84,22 +84,22 @@
   gap: 5px;
   padding: 4px 10px;
   border-radius: 6px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
   font-weight: 500;
 }
 
 .grade-meta-badge.highlight {
-  background: #fff7ed;
-  border-color: #ffedd5;
-  color: #c2410c;
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary-soft);
+  color: var(--color-primary-strong);
   font-weight: 600;
 }
 
 .grade-meta-badge.points {
-  background: #eff6ff;
-  border-color: #dbeafe;
-  color: #1d4ed8;
+  background: var(--color-info-soft);
+  border-color: var(--color-info-soft);
+  color: var(--color-info);
   font-weight: 600;
 }
 
@@ -119,8 +119,8 @@
 
 /* Left Sidebar - Submissions List */
 .grade-sidebar-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 18px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -136,7 +136,7 @@
 .grade-sidebar-title {
   font-size: 15px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0;
@@ -145,7 +145,7 @@
 .grade-filter-tabs {
   display: flex;
   gap: 4px;
-  background: #f1f5f9;
+  background: var(--color-surface-subtle);
   padding: 3px;
   border-radius: 8px;
   margin-bottom: 14px;
@@ -160,14 +160,14 @@
   border-radius: 6px;
   border: none;
   background: transparent;
-  color: #64748b;
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .grade-filter-tab.active {
-  background: #ffffff;
-  color: #0f172a;
+  background: var(--color-surface);
+  color: var(--color-text);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
@@ -183,21 +183,21 @@
 .grade-submission-item {
   padding: 12px 14px;
   border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  background: #ffffff;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .grade-submission-item:hover {
-  border-color: #cbd5e1;
-  background: #f8fafc;
+  border-color: var(--color-control-border);
+  background: var(--color-surface-subtle);
 }
 
 .grade-submission-item.selected {
-  background: #fff7ed;
-  border-color: #e85a2c;
-  box-shadow: 0 0 0 1px #e85a2c;
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary-strong);
+  box-shadow: 0 0 0 1px var(--color-primary-strong);
 }
 
 .grade-item-header {
@@ -212,7 +212,7 @@
   height: 34px;
   border-radius: 50%;
   background: #fed7aa;
-  color: #c2410c;
+  color: var(--color-primary-strong);
   font-weight: 700;
   font-size: 13px;
   display: flex;
@@ -224,7 +224,7 @@
 .grade-item-name {
   font-size: 14px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--color-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -235,7 +235,7 @@
   align-items: center;
   justify-content: space-between;
   font-size: 12px;
-  color: #64748b;
+  color: var(--color-text-muted);
   margin-top: 4px;
 }
 
@@ -247,13 +247,13 @@
 }
 
 .grade-status-pill.graded {
-  background: #dcfce7;
-  color: #166534;
+  background: var(--color-success-soft);
+  color: var(--color-success);
 }
 
 .grade-status-pill.pending {
-  background: #ffedd5;
-  color: #c2410c;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
 }
 
 /* Right Main Content */
@@ -264,8 +264,8 @@
 }
 
 .grade-student-banner {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 18px 24px;
   display: flex;
@@ -279,13 +279,13 @@
 .grade-student-info h3 {
   font-size: 18px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text);
   margin: 0 0 4px 0;
 }
 
 .grade-student-meta {
   font-size: 13px;
-  color: #64748b;
+  color: var(--color-text-muted);
   display: flex;
   align-items: center;
   gap: 14px;
@@ -300,8 +300,8 @@
 }
 
 .grade-question-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 18px 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -318,15 +318,15 @@
 .grade-q-title {
   font-size: 15px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--color-text);
   line-height: 1.5;
 }
 
 .grade-q-points-badge {
   font-size: 12px;
   font-weight: 700;
-  color: #1d4ed8;
-  background: #eff6ff;
+  color: var(--color-info);
+  background: var(--color-info-soft);
   border: 1px solid #bfdbfe;
   padding: 3px 8px;
   border-radius: 6px;
@@ -348,23 +348,23 @@
   padding: 10px 14px;
   border-radius: 8px;
   font-size: 14px;
-  border: 1px solid #e2e8f0;
-  background: #ffffff;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
   gap: 12px;
 }
 
 .grade-option-row.correct-and-chosen {
-  background: #f0fdf4;
+  background: var(--color-success-soft);
   border-color: #86efac;
 }
 
 .grade-option-row.chosen-wrong {
-  background: #fef2f2;
+  background: var(--color-error-soft);
   border-color: #fca5a5;
 }
 
 .grade-option-row.correct-answer-key {
-  background: #eff6ff;
+  background: var(--color-info-soft);
   border-color: #93c5fd;
 }
 
@@ -377,20 +377,20 @@
 .grade-answer-display-card {
   padding: 12px 16px;
   border-radius: 8px;
-  border: 1px solid #cbd5e1;
-  background: #f8fafc;
+  border: 1px solid var(--color-control-border);
+  background: var(--color-surface-subtle);
 }
 
 .grade-answer-label {
   font-size: 12px;
   font-weight: 600;
-  color: #64748b;
+  color: var(--color-text-muted);
   margin-bottom: 6px;
 }
 
 .grade-answer-content {
   font-size: 14px;
-  color: #0f172a;
+  color: var(--color-text);
   white-space: pre-wrap;
   line-height: 1.5;
 }
@@ -399,19 +399,19 @@
   margin-top: 10px;
   padding: 12px 16px;
   border-radius: 8px;
-  background: #f0fdf4;
+  background: var(--color-success-soft);
   border: 1px solid #bbf7d0;
 }
 
 .grade-key-comparison-box.file-rubric {
-  background: #eff6ff;
+  background: var(--color-info-soft);
   border-color: #bfdbfe;
 }
 
 .grade-key-title {
   font-size: 12px;
   font-weight: 700;
-  color: #166534;
+  color: var(--color-success);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -419,27 +419,27 @@
 }
 
 .grade-key-title.file-rubric {
-  color: #1d4ed8;
+  color: var(--color-info);
 }
 
 .grade-key-content {
   font-size: 13px;
-  color: #15803d;
+  color: var(--color-success);
   white-space: pre-wrap;
   line-height: 1.5;
 }
 
 .grade-key-content.file-rubric {
-  color: #1e40af;
+  color: var(--color-info);
 }
 
 /* Question score & feedback override */
 .grade-q-grading-row {
   margin-top: 14px;
   padding: 12px 14px;
-  background: #f8fafc;
+  background: var(--color-surface-subtle);
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -465,7 +465,7 @@
   font-size: 14px;
   font-weight: 700;
   border-radius: 6px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--color-control-border);
   text-align: center;
 }
 
@@ -474,13 +474,13 @@
   padding: 6px 10px;
   font-size: 13px;
   border-radius: 6px;
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
+  border: 1px solid var(--color-control-border);
+  background: var(--color-surface);
 }
 
 /* Summary Grading Card (Bottom) */
 .grade-summary-card {
-  background: #ffffff;
+  background: var(--color-surface);
   border: 1px solid #fed7aa;
   border-radius: 12px;
   padding: 24px;
@@ -491,7 +491,7 @@
 .grade-summary-title {
   font-size: 16px;
   font-weight: 700;
-  color: #c2410c;
+  color: var(--color-primary-strong);
   margin: 0 0 16px 0;
   display: flex;
   align-items: center;
@@ -516,10 +516,10 @@
   padding: 10px 12px;
   font-size: 20px;
   font-weight: 700;
-  color: #c2410c;
+  color: var(--color-primary-strong);
   border-radius: 8px;
-  border: 1px solid #fdba74;
-  background: #ffffff;
+  border: 1px solid var(--color-control-border);
+  background: var(--color-surface);
 }
 
 .grade-overall-feedback-input {
@@ -527,8 +527,8 @@
   padding: 10px 12px;
   font-size: 14px;
   border-radius: 8px;
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
+  border: 1px solid var(--color-control-border);
+  background: var(--color-surface);
   resize: vertical;
 }
 
@@ -539,6 +539,6 @@
   flex-wrap: wrap;
   gap: 12px;
   padding-top: 14px;
-  border-top: 1px solid #ffedd5;
+  border-top: 1px solid var(--color-primary-soft);
 }
 

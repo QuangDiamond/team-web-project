@@ -1,4 +1,35 @@
-/* Màn đăng ký: /register và /register/complete */
+/* Màn đăng ký: /register, /register/complete và /register/success */
+
+.auth-panel.register-intro {
+  --register-intro-muted: #a5a7c0;
+  background: #1b1b33;
+  color: var(--color-white);
+}
+
+.register-intro .auth-panel-circle {
+  background: #3a2433;
+}
+
+.register-intro .auth-panel-badge {
+  background: #4a2530;
+  color: #ff9a74;
+}
+
+.register-intro .auth-panel-text,
+.register-intro .journey-step-title,
+.register-intro .journey-step-description,
+.register-intro .auth-panel-stats dd {
+  color: var(--register-intro-muted);
+}
+
+.register-intro .journey-step:not(.is-active) .journey-step-number {
+  background: #2c2c48;
+  color: var(--register-intro-muted);
+}
+
+.register-intro .journey-step.is-active .journey-step-title {
+  color: var(--color-white);
+}
 
 /* ---------- Thanh 2 bước ---------- */
 .register-stepper {
@@ -114,7 +145,7 @@
   padding: 14px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: var(--color-white);
+  background: var(--color-surface);
   cursor: pointer;
   transition: border-color var(--transition), background-color var(--transition);
 }
@@ -159,7 +190,7 @@
   margin: 0 0 20px;
   padding: 16px;
   border-radius: var(--radius-md);
-  background: var(--color-white);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
 }
 

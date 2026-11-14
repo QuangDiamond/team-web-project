@@ -406,7 +406,7 @@ export default function FloatingChatWidget() {
               <div className="floating-messages-scroll" ref={scrollRef}>
                 {loadingMessages && (
                   <div className="thread-loading">
-                    <LoaderCircle size={22} className="spin" color="#0284c7" />
+                    <LoaderCircle size={22} className="spin" color="var(--color-info)" />
                     <span>Đang tải tin nhắn...</span>
                   </div>
                 )}

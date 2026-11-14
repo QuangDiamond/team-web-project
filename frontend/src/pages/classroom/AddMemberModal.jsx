@@ -51,7 +51,7 @@ export default function AddMemberModal({ isOpen, onClose, classroomId, onMemberA
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <UserPlus size={20} style={{ color: '#e85a2c' }} />
+            <UserPlus size={20} style={{ color: 'var(--color-primary-strong)' }} />
             <span>Thêm học viên vào lớp</span>
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>

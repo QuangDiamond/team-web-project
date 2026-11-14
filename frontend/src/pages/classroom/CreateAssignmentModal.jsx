@@ -306,7 +306,7 @@ export default function CreateAssignmentModal({
       <div className="modal-content" style={{ maxWidth: '720px' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {isEditing ? <Pencil size={20} style={{ color: '#e85a2c' }} /> : <ClipboardList size={20} style={{ color: '#e85a2c' }} />}
+            {isEditing ? <Pencil size={20} style={{ color: 'var(--color-primary-strong)' }} /> : <ClipboardList size={20} style={{ color: 'var(--color-primary-strong)' }} />}
             <span>{isEditing ? 'Chỉnh sửa bài tập' : 'Tạo bài tập mới'}</span>
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
@@ -324,7 +324,7 @@ export default function CreateAssignmentModal({
             )}
 
             {isQuestionLocked && (
-              <div style={{ background: '#fef3c7', border: '1px solid #fde68a', color: '#92400e', padding: '10px 14px', borderRadius: '8px', marginBottom: '14px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ background: 'var(--color-warning-soft)', border: '1px solid #fde68a', color: 'var(--color-warning)', padding: '10px 14px', borderRadius: '8px', marginBottom: '14px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Lock size={16} style={{ flexShrink: 0 }} />
                 <span><strong>Lưu ý:</strong> Bài tập đã công bố điểm cho học sinh, không thể chỉnh sửa nội dung và danh sách câu hỏi.</span>
               </div>
@@ -334,7 +334,7 @@ export default function CreateAssignmentModal({
             {!isQuestionLocked && (
               <div
                 style={{
-                  background: 'linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%)',
+                  background: 'linear-gradient(135deg, var(--color-success-soft) 0%, var(--color-info-soft) 100%)',
                   border: '1px solid #bbf7d0',
                   borderRadius: '10px',
                   padding: '12px 16px',
@@ -350,7 +350,7 @@ export default function CreateAssignmentModal({
                     <Sparkles size={16} />
                     <span>Trợ lý AI tạo đề bài thông minh</span>
                   </div>
-                  <div style={{ fontSize: '12px', color: '#64748b' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>
                     Tự động tạo trắc nghiệm, trả lời ngắn và nộp tệp theo môn học. (Trừ vào hạn mức AI gói gia sư)
                   </div>
                 </div>
@@ -359,7 +359,7 @@ export default function CreateAssignmentModal({
                   onClick={() => setShowAiPrompt(!showAiPrompt)}
                   style={{
                     background: '#0d9488',
-                    color: '#ffffff',
+                    color: 'var(--color-white)',
                     border: 'none',
                     borderRadius: '8px',
                     padding: '8px 14px',
@@ -382,8 +382,8 @@ export default function CreateAssignmentModal({
             {showAiPrompt && !isQuestionLocked && (
               <div
                 style={{
-                  background: '#f8fafc',
-                  border: '1px solid #cbd5e1',
+                  background: 'var(--color-surface-subtle)',
+                  border: '1px solid var(--color-control-border)',
                   borderRadius: '10px',
                   padding: '16px',
                   marginBottom: '16px',
@@ -391,7 +391,7 @@ export default function CreateAssignmentModal({
               >
                 <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '10px', marginBottom: '12px' }}>
                   <div>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '4px' }}>
+                    <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-muted)', display: 'block', marginBottom: '4px' }}>
                       Chủ đề bài học <span className="required">*</span>:
                     </label>
                     <input
@@ -399,18 +399,18 @@ export default function CreateAssignmentModal({
                       placeholder="VD: Phương trình bậc hai, Thì quá khứ..."
                       value={aiTopic}
                       onChange={(e) => setAiTopic(e.target.value)}
-                      style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px' }}
+                      style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid var(--color-control-border)', fontSize: '13px' }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '4px' }}>
+                    <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-muted)', display: 'block', marginBottom: '4px' }}>
                       Khối lớp:
                     </label>
                     <select
                       value={aiGrade}
                       onChange={(e) => setAiGrade(e.target.value)}
-                      style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px' }}
+                      style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid var(--color-control-border)', fontSize: '13px' }}
                     >
                       <option value="Lớp 6">Lớp 6</option>
                       <option value="Lớp 7">Lớp 7</option>
@@ -423,13 +423,13 @@ export default function CreateAssignmentModal({
                   </div>
 
                   <div>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '4px' }}>
+                    <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-muted)', display: 'block', marginBottom: '4px' }}>
                       Độ khó:
                     </label>
                     <select
                       value={aiDifficulty}
                       onChange={(e) => setAiDifficulty(e.target.value)}
-                      style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px' }}
+                      style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid var(--color-control-border)', fontSize: '13px' }}
                     >
                       <option value="EASY">Cơ bản (Dễ)</option>
                       <option value="MEDIUM">Trung bình</option>
@@ -438,13 +438,13 @@ export default function CreateAssignmentModal({
                   </div>
 
                   <div>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '4px' }}>
+                    <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-muted)', display: 'block', marginBottom: '4px' }}>
                       Số câu hỏi:
                     </label>
                     <select
                       value={aiNumQuestions}
                       onChange={(e) => setAiNumQuestions(e.target.value)}
-                      style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px' }}
+                      style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid var(--color-control-border)', fontSize: '13px' }}
                     >
                       <option value={3}>3 câu</option>
                       <option value={5}>5 câu</option>
@@ -454,7 +454,7 @@ export default function CreateAssignmentModal({
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#64748b', cursor: 'pointer' }}>
+                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--color-text-muted)', cursor: 'pointer' }}>
                     <input
                       type="checkbox"
                       checked={aiSimulateTimeout}
@@ -491,9 +491,9 @@ export default function CreateAssignmentModal({
                       marginTop: '12px',
                       padding: '10px 14px',
                       borderRadius: '8px',
-                      background: aiError.type === 'QUOTA' ? '#fff1f2' : '#fffbeb',
-                      border: `1px solid ${aiError.type === 'QUOTA' ? '#fecdd3' : '#fef3c7'}`,
-                      color: aiError.type === 'QUOTA' ? '#be123c' : '#b45309',
+                      background: aiError.type === 'QUOTA' ? 'var(--color-error-soft)' : 'var(--color-warning-soft)',
+                      border: `1px solid ${aiError.type === 'QUOTA' ? '#fecdd3' : 'var(--color-warning-soft)'}`,
+                      color: aiError.type === 'QUOTA' ? 'var(--color-error)' : 'var(--color-warning)',
                       fontSize: '13px',
                       display: 'flex',
                       alignItems: 'center',
@@ -510,8 +510,8 @@ export default function CreateAssignmentModal({
                       <Link
                         to="/tutor/checkout"
                         style={{
-                          background: '#e11d48',
-                          color: '#ffffff',
+                          background: 'var(--color-error)',
+                          color: 'var(--color-white)',
                           padding: '4px 10px',
                           borderRadius: '6px',
                           fontSize: '12px',
@@ -540,8 +540,8 @@ export default function CreateAssignmentModal({
                     style={{
                       marginLeft: '8px',
                       fontSize: '11px',
-                      background: '#dcfce7',
-                      color: '#15803d',
+                      background: 'var(--color-success-soft)',
+                      color: 'var(--color-success)',
                       padding: '2px 8px',
                       borderRadius: '12px',
                       fontWeight: 600,
@@ -604,7 +604,7 @@ export default function CreateAssignmentModal({
                   id="allowLate"
                   checked={allowLate}
                   onChange={(e) => setAllowLate(e.target.checked)}
-                  style={{ width: '18px', height: '18px', accentColor: '#e85a2c', cursor: 'pointer' }}
+                  style={{ width: '18px', height: '18px', accentColor: 'var(--color-primary-strong)', cursor: 'pointer' }}
                 />
                 <label htmlFor="allowLate" style={{ margin: 0, cursor: 'pointer', fontSize: '13px' }}>
                   Cho phép nộp muộn sau deadline (ghi nhận trễ)
@@ -617,7 +617,7 @@ export default function CreateAssignmentModal({
                   id="allowResubmission"
                   checked={allowResubmission}
                   onChange={(e) => setAllowResubmission(e.target.checked)}
-                  style={{ width: '18px', height: '18px', accentColor: '#e85a2c', cursor: 'pointer' }}
+                  style={{ width: '18px', height: '18px', accentColor: 'var(--color-primary-strong)', cursor: 'pointer' }}
                 />
                 <label htmlFor="allowResubmission" style={{ margin: 0, cursor: 'pointer', fontSize: '13px' }}>
                   Cho phép nộp lại để cải thiện điểm
@@ -626,11 +626,11 @@ export default function CreateAssignmentModal({
             </div>
 
             {/* Questions section */}
-            <div style={{ marginTop: '20px', borderTop: '1px solid #e2e8f0', paddingTop: '16px' }}>
+            <div style={{ marginTop: '20px', borderTop: '1px solid var(--color-border)', paddingTop: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                 <div>
-                  <h4 style={{ margin: 0, color: '#0f172a' }}>Danh sách câu hỏi ({questions.length})</h4>
-                  <div style={{ fontSize: '12px', color: '#64748b' }}>Hỗ trợ Trắc nghiệm, Tự luận ngắn và Nộp tệp</div>
+                  <h4 style={{ margin: 0, color: 'var(--color-text)' }}>Danh sách câu hỏi ({questions.length})</h4>
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>Hỗ trợ Trắc nghiệm, Tự luận ngắn và Nộp tệp</div>
                 </div>
 
                 {!isQuestionLocked && (
@@ -667,8 +667,8 @@ export default function CreateAssignmentModal({
                 <div
                   key={q._id || idx}
                   style={{
-                    background: '#f8fafc',
-                    border: '1px solid #e2e8f0',
+                    background: 'var(--color-surface-subtle)',
+                    border: '1px solid var(--color-border)',
                     borderRadius: '10px',
                     padding: '14px',
                     marginBottom: '12px',
@@ -676,12 +676,12 @@ export default function CreateAssignmentModal({
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <strong style={{ color: '#0f172a' }}>Câu {idx + 1}</strong>
+                      <strong style={{ color: 'var(--color-text)' }}>Câu {idx + 1}</strong>
                       <select
                         value={q.question_type}
                         onChange={(e) => handleQuestionChange(idx, 'question_type', e.target.value)}
                         disabled={isQuestionLocked}
-                        style={{ padding: '3px 8px', borderRadius: '6px', fontSize: '12px', border: '1px solid #cbd5e1' }}
+                        style={{ padding: '3px 8px', borderRadius: '6px', fontSize: '12px', border: '1px solid var(--color-control-border)' }}
                       >
                         <option value="MULTIPLE_CHOICE">Trắc nghiệm</option>
                         <option value="SHORT_ANSWER">Trả lời ngắn</option>
@@ -696,7 +696,7 @@ export default function CreateAssignmentModal({
                         style={{
                           border: 'none',
                           background: 'transparent',
-                          color: '#ef4444',
+                          color: 'var(--color-error)',
                           cursor: 'pointer',
                           fontSize: '13px',
                           display: 'inline-flex',
@@ -725,7 +725,7 @@ export default function CreateAssignmentModal({
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
                       {['A', 'B', 'C', 'D'].map((letter, optIdx) => (
                         <div key={letter} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ fontWeight: 600, fontSize: '13px', color: '#64748b' }}>{letter}.</span>
+                          <span style={{ fontWeight: 600, fontSize: '13px', color: 'var(--color-text-muted)' }}>{letter}.</span>
                           <input
                             type="text"
                             placeholder={`Lựa chọn ${letter}`}
@@ -747,14 +747,14 @@ export default function CreateAssignmentModal({
                         value={q.correct_answer || ''}
                         onChange={(e) => handleQuestionChange(idx, 'correct_answer', e.target.value)}
                         disabled={isQuestionLocked}
-                        style={{ fontSize: '13px', background: '#ffffff' }}
+                        style={{ fontSize: '13px', background: 'var(--color-surface)' }}
                       />
                     </div>
                   )}
 
                   {/* Nộp tệp */}
                   {q.question_type === 'FILE_UPLOAD' && (
-                    <div style={{ marginBottom: '8px', fontSize: '12px', color: '#64748b', fontStyle: 'italic' }}>
+                    <div style={{ marginBottom: '8px', fontSize: '12px', color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
                       Học sinh sẽ được yêu cầu tải lên tệp bài làm hoặc dán liên kết Google Drive / Figma / Github khi làm bài.
                     </div>
                   )}

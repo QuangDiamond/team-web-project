@@ -137,7 +137,7 @@ export default function AttendanceModal({
     >
       <div
         style={{
-          background: '#fff',
+          background: 'var(--color-surface)',
           borderRadius: '14px',
           maxWidth: '620px',
           width: '100%',
@@ -149,20 +149,20 @@ export default function AttendanceModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div style={{ padding: '20px 24px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--color-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <h3 style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 700, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <UserCheck size={20} style={{ color: '#ea580c' }} />
+            <h3 style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 700, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <UserCheck size={20} style={{ color: 'var(--color-primary-strong)' }} />
               <span>Điểm danh học sinh</span>
             </h3>
-            <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>
+            <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-text-muted)' }}>
               Buổi: <strong>{session.title || 'Buổi học'}</strong> ({new Date(session.start_time).toLocaleDateString('vi-VN')})
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#64748b', padding: '4px' }}
+            style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--color-text-muted)', padding: '4px' }}
           >
             <X size={20} />
           </button>
@@ -171,15 +171,15 @@ export default function AttendanceModal({
         {/* Body content */}
         <div style={{ padding: '20px 24px', overflowY: 'auto', flex: 1 }}>
           {loadingMembers && (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '160px', gap: '10px', color: '#64748b' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '160px', gap: '10px', color: 'var(--color-text-muted)' }}>
               <Loader2 size={24} className="spin" />
               <span>Đang tải danh sách học sinh của lớp...</span>
             </div>
           )}
 
           {!loadingMembers && students.length === 0 && (
-            <div style={{ padding: '32px', textAlign: 'center', color: '#64748b' }}>
-              <AlertCircle size={36} style={{ color: '#94a3b8', marginBottom: '8px' }} />
+            <div style={{ padding: '32px', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+              <AlertCircle size={36} style={{ color: 'var(--color-text-muted)', marginBottom: '8px' }} />
               <p style={{ margin: 0, fontWeight: 500 }}>Lớp học hiện chưa có học sinh nào tham gia.</p>
             </div>
           )}
@@ -198,8 +198,8 @@ export default function AttendanceModal({
                     style={{
                       padding: '12px 16px',
                       borderRadius: '10px',
-                      border: '1px solid #e2e8f0',
-                      background: '#f8fafc',
+                      border: '1px solid var(--color-border)',
+                      background: 'var(--color-surface-subtle)',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '10px',
@@ -207,8 +207,8 @@ export default function AttendanceModal({
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                       <div>
-                        <strong style={{ fontSize: '14px', color: '#0f172a' }}>{name}</strong>
-                        {email && <span style={{ fontSize: '12px', color: '#64748b', marginLeft: '6px' }}>({email})</span>}
+                        <strong style={{ fontSize: '14px', color: 'var(--color-text)' }}>{name}</strong>
+                        {email && <span style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginLeft: '6px' }}>({email})</span>}
                       </div>
 
                       {/* Status selector */}
@@ -219,9 +219,9 @@ export default function AttendanceModal({
                           style={{
                             padding: '4px 10px',
                             borderRadius: '6px',
-                            border: currentRecord.status === 'PRESENT' ? '2px solid #16a34a' : '1px solid #cbd5e1',
-                            background: currentRecord.status === 'PRESENT' ? '#dcfce7' : '#fff',
-                            color: currentRecord.status === 'PRESENT' ? '#15803d' : '#64748b',
+                            border: currentRecord.status === 'PRESENT' ? '2px solid var(--color-success)' : '1px solid var(--color-control-border)',
+                            background: currentRecord.status === 'PRESENT' ? 'var(--color-success-soft)' : 'var(--color-white)',
+                            color: currentRecord.status === 'PRESENT' ? 'var(--color-success)' : 'var(--color-text-muted)',
                             fontSize: '12px',
                             fontWeight: 600,
                             cursor: 'pointer',
@@ -240,9 +240,9 @@ export default function AttendanceModal({
                           style={{
                             padding: '4px 10px',
                             borderRadius: '6px',
-                            border: currentRecord.status === 'LATE' ? '2px solid #d97706' : '1px solid #cbd5e1',
-                            background: currentRecord.status === 'LATE' ? '#fef3c7' : '#fff',
-                            color: currentRecord.status === 'LATE' ? '#b45309' : '#64748b',
+                            border: currentRecord.status === 'LATE' ? '2px solid var(--color-warning)' : '1px solid var(--color-control-border)',
+                            background: currentRecord.status === 'LATE' ? 'var(--color-warning-soft)' : 'var(--color-white)',
+                            color: currentRecord.status === 'LATE' ? 'var(--color-warning)' : 'var(--color-text-muted)',
                             fontSize: '12px',
                             fontWeight: 600,
                             cursor: 'pointer',
@@ -261,9 +261,9 @@ export default function AttendanceModal({
                           style={{
                             padding: '4px 10px',
                             borderRadius: '6px',
-                            border: currentRecord.status === 'ABSENT' ? '2px solid #dc2626' : '1px solid #cbd5e1',
-                            background: currentRecord.status === 'ABSENT' ? '#fee2e2' : '#fff',
-                            color: currentRecord.status === 'ABSENT' ? '#b91c1c' : '#64748b',
+                            border: currentRecord.status === 'ABSENT' ? '2px solid var(--color-error)' : '1px solid var(--color-control-border)',
+                            background: currentRecord.status === 'ABSENT' ? 'var(--color-error-soft)' : 'var(--color-white)',
+                            color: currentRecord.status === 'ABSENT' ? 'var(--color-error)' : 'var(--color-text-muted)',
                             fontSize: '12px',
                             fontWeight: 600,
                             cursor: 'pointer',
@@ -287,10 +287,9 @@ export default function AttendanceModal({
                       style={{
                         padding: '6px 10px',
                         borderRadius: '6px',
-                        border: '1px solid #cbd5e1',
+                        border: '1px solid var(--color-control-border)',
                         fontSize: '12px',
-                        background: '#fff',
-                        outline: 'none',
+                        background: 'var(--color-surface)',
                       }}
                       maxLength={200}
                     />
@@ -301,14 +300,14 @@ export default function AttendanceModal({
           )}
 
           {error && (
-            <div style={{ marginTop: '16px', padding: '10px 14px', borderRadius: '8px', background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', fontSize: '13px' }}>
+            <div style={{ marginTop: '16px', padding: '10px 14px', borderRadius: '8px', background: 'var(--color-error-soft)', border: '1px solid #fecaca', color: 'var(--color-error)', fontSize: '13px' }}>
               {error}
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div style={{ padding: '16px 24px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+        <div style={{ padding: '16px 24px', borderTop: '1px solid var(--color-border)', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
           <button
             type="button"
             className="btn btn-outline btn-sm"

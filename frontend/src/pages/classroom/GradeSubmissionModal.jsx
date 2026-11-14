@@ -154,7 +154,7 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
       <div className="modal-content" style={{ maxWidth: '840px' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <BarChart3 size={20} color="#e85a2c" />
+            <BarChart3 size={20} color="var(--color-primary-strong)" />
             <span>Chấm điểm bài tập: {assignment.title}</span>
           </h2>
           <button type="button" className="modal-close-btn" onClick={handleClose}>
@@ -171,20 +171,20 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
           )}
 
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '40px', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
               <Loader2 size={18} className="spin" />
               <span>Đang tải bài làm của học sinh...</span>
             </div>
           ) : submissions.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '40px', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
               <FileText size={18} />
               <span>Chưa có học sinh nào nộp bài tập này.</span>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '20px' }}>
               {/* Danh sách học sinh nộp */}
-              <div style={{ borderRight: '1px solid #e2e8f0', paddingRight: '16px' }}>
-                <h4 style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#64748b', textTransform: 'uppercase' }}>
+              <div style={{ borderRight: '1px solid var(--color-border)', paddingRight: '16px' }}>
+                <h4 style={{ margin: '0 0 12px 0', fontSize: '14px', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
                   Danh sách nộp bài ({submissions.length})
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -201,23 +201,23 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                           padding: '10px 12px',
                           borderRadius: '8px',
                           cursor: 'pointer',
-                          background: isSelected ? '#fff5f0' : '#ffffff',
-                          border: `1px solid ${isSelected ? '#e85a2c' : '#e2e8f0'}`,
+                          background: isSelected ? 'var(--color-primary-soft)' : 'var(--color-white)',
+                          border: `1px solid ${isSelected ? 'var(--color-primary-strong)' : 'var(--color-border)'}`,
                           transition: 'all 0.15s',
                         }}
                       >
-                        <div style={{ fontWeight: 600, fontSize: '14px', color: '#0f172a' }}>{studentName}</div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#64748b', marginTop: '4px' }}>
+                        <div style={{ fontWeight: 600, fontSize: '14px', color: 'var(--color-text)' }}>{studentName}</div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '4px' }}>
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
                             {isGraded ? (
                               <>
-                                <Award size={13} color="#16a34a" /> {sub.final_score}đ
+                                <Award size={13} color="var(--color-success)" /> {sub.final_score}đ
                               </>
                             ) : (
                               `Tạm: ${sub.provisional_score || 0}đ`
                             )}
                           </span>
-                          <span style={{ color: isGraded ? '#16a34a' : '#e85a2c', fontWeight: isGraded ? 600 : 400 }}>
+                          <span style={{ color: isGraded ? 'var(--color-success)' : 'var(--color-primary-strong)', fontWeight: isGraded ? 600 : 400 }}>
                             {isGraded ? 'Đã công bố' : 'Chờ chấm'}
                           </span>
                         </div>
@@ -230,9 +230,9 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
               {/* Chi tiết bài làm & Form chấm điểm */}
               {selectedSub && (
                 <div>
-                  <div style={{ marginBottom: '16px', paddingBottom: '12px', borderBottom: '1px solid #e2e8f0' }}>
+                  <div style={{ marginBottom: '16px', paddingBottom: '12px', borderBottom: '1px solid var(--color-border)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', color: '#0f172a' }}>
+                      <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', color: 'var(--color-text)' }}>
                         {selectedSub.student_user_id?.full_name || selectedSub.student_user_id?.email}
                       </h3>
                       <span
@@ -240,8 +240,8 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                           fontSize: '12px',
                           padding: '3px 8px',
                           borderRadius: '6px',
-                          background: selectedSub.timeliness === 'LATE' ? '#fee2e2' : '#dcfce7',
-                          color: selectedSub.timeliness === 'LATE' ? '#991b1b' : '#166534',
+                          background: selectedSub.timeliness === 'LATE' ? 'var(--color-error-soft)' : 'var(--color-success-soft)',
+                          color: selectedSub.timeliness === 'LATE' ? 'var(--color-error)' : 'var(--color-success)',
                           fontWeight: 600,
                           display: 'inline-flex',
                           alignItems: 'center',
@@ -259,14 +259,14 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                         )}
                       </span>
                     </div>
-                    <div style={{ fontSize: '13px', color: '#64748b' }}>
+                    <div style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>
                       Nộp lúc: {new Date(selectedSub.submitted_at).toLocaleString('vi-VN')} (Lần nộp #{selectedSub.attempt_number || 1})
                     </div>
                   </div>
 
                   {/* Câu trả lời của học sinh */}
                   <div style={{ marginBottom: '20px' }}>
-                    <h4 style={{ margin: '0 0 10px 0', fontSize: '15px', color: '#334155' }}>
+                    <h4 style={{ margin: '0 0 10px 0', fontSize: '15px', color: 'var(--color-text)' }}>
                       Chi tiết bài làm của học sinh:
                     </h4>
                     {selectedSub.answers?.map((ans, idx) => {
@@ -285,8 +285,8 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                         <div
                           key={ans.question_id || idx}
                           style={{
-                            background: '#f8fafc',
-                            border: '1px solid #e2e8f0',
+                            background: 'var(--color-surface-subtle)',
+                            border: '1px solid var(--color-border)',
                             padding: '12px',
                             borderRadius: '8px',
                             marginBottom: '10px',
@@ -294,10 +294,10 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                           }}
                         >
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                            <span style={{ fontWeight: 600, color: '#334155' }}>
+                            <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>
                               Câu {idx + 1}: {questionInfo?.content || `Câu hỏi ${idx + 1}`}
                             </span>
-                            <span style={{ fontSize: '12px', color: '#64748b' }}>
+                            <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>
                               ({questionInfo?.points || 1}đ)
                             </span>
                           </div>
@@ -307,7 +307,7 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                             {questionInfo?.question_type === 'MULTIPLE_CHOICE' ? (
                               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', fontSize: '13px' }}>
-                                  <span style={{ color: '#64748b' }}>Học sinh chọn:</span>
+                                  <span style={{ color: 'var(--color-text-muted)' }}>Học sinh chọn:</span>
                                   <span
                                     style={{
                                       fontWeight: 700,
@@ -321,7 +321,7 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                                     Phương án {ans.text_response || '(Chưa chọn)'}
                                   </span>
                                   {ans.is_auto_graded && (
-                                    <span style={{ fontSize: '12px', color: '#16a34a', fontWeight: 600 }}>
+                                    <span style={{ fontSize: '12px', color: 'var(--color-success)', fontWeight: 600 }}>
                                       (Trắc nghiệm tự chấm: +{ans.score || 0}đ)
                                     </span>
                                   )}
@@ -356,8 +356,8 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                                           <span
                                             style={{
                                               fontSize: '11px',
-                                              background: '#16a34a',
-                                              color: '#ffffff',
+                                              background: 'var(--color-success)',
+                                              color: 'var(--color-white)',
                                               padding: '2px 8px',
                                               borderRadius: '10px',
                                               fontWeight: 600,
@@ -376,8 +376,8 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                                           <span
                                             style={{
                                               fontSize: '11px',
-                                              background: '#dc2626',
-                                              color: '#ffffff',
+                                              background: 'var(--color-error)',
+                                              color: 'var(--color-white)',
                                               padding: '2px 8px',
                                               borderRadius: '10px',
                                               fontWeight: 600,
@@ -393,8 +393,8 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                                           <span
                                             style={{
                                               fontSize: '11px',
-                                              background: '#0284c7',
-                                              color: '#ffffff',
+                                              background: 'var(--color-info)',
+                                              color: 'var(--color-white)',
                                               padding: '2px 8px',
                                               borderRadius: '10px',
                                               fontWeight: 600,
@@ -428,12 +428,12 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                                               style={{
                                                 fontWeight: 700,
                                                 minWidth: '18px',
-                                                color: isCorrect ? '#15803d' : isChosen ? '#dc2626' : '#64748b',
+                                                color: isCorrect ? 'var(--color-success)' : isChosen ? 'var(--color-error)' : 'var(--color-text-muted)',
                                               }}
                                             >
                                               {letter}.
                                             </span>
-                                            <span style={{ color: isCorrect ? '#14532d' : '#334155', fontWeight: isCorrect || isChosen ? 500 : 400 }}>
+                                            <span style={{ color: isCorrect ? 'var(--color-success)' : 'var(--color-text)', fontWeight: isCorrect || isChosen ? 500 : 400 }}>
                                               {cleanText}
                                             </span>
                                           </div>
@@ -449,11 +449,11 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                             {/* Dạng 2: Tự luận ngắn (SHORT_ANSWER) */}
                             {questionInfo?.question_type === 'SHORT_ANSWER' ? (
                               <div>
-                                <div style={{ padding: '10px 12px', background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '6px' }}>
-                                  <div style={{ fontSize: '12px', fontWeight: 600, color: '#64748b', marginBottom: '4px' }}>
+                                <div style={{ padding: '10px 12px', background: 'var(--color-surface)', border: '1px solid var(--color-control-border)', borderRadius: '6px' }}>
+                                  <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: '4px' }}>
                                     Câu trả lời của học sinh:
                                   </div>
-                                  <div style={{ fontWeight: 600, color: '#0f172a', whiteSpace: 'pre-wrap', fontSize: '14px' }}>
+                                  <div style={{ fontWeight: 600, color: 'var(--color-text)', whiteSpace: 'pre-wrap', fontSize: '14px' }}>
                                     {ans.text_response || '(Không trả lời)'}
                                   </div>
                                 </div>
@@ -463,16 +463,16 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                                     style={{
                                       marginTop: '8px',
                                       padding: '10px 12px',
-                                      background: '#f0fdf4',
+                                      background: 'var(--color-success-soft)',
                                       border: '1px solid #bbf7d0',
                                       borderRadius: '6px',
                                     }}
                                   >
-                                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#166534', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-success)', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
                                       <CheckCircle2 size={13} />
                                       <span>Đáp án chuẩn / Gợi ý chấm điểm (Đối chiếu):</span>
                                     </div>
-                                    <div style={{ fontSize: '13px', color: '#15803d', whiteSpace: 'pre-wrap', lineHeight: '1.4' }}>
+                                    <div style={{ fontSize: '13px', color: 'var(--color-success)', whiteSpace: 'pre-wrap', lineHeight: '1.4' }}>
                                       {questionInfo.correct_answer}
                                     </div>
                                   </div>
@@ -484,8 +484,8 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                             {questionInfo?.question_type === 'FILE_UPLOAD' ? (
                               <div>
                                 {ans.file_url ? (
-                                  <div style={{ padding: '10px 12px', background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '6px' }}>
-                                    <div style={{ fontSize: '12px', fontWeight: 600, color: '#64748b', marginBottom: '6px' }}>
+                                  <div style={{ padding: '10px 12px', background: 'var(--color-surface)', border: '1px solid var(--color-control-border)', borderRadius: '6px' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: '6px' }}>
                                       Tệp bài làm đính kèm của học sinh:
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
@@ -500,9 +500,9 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                                           fontSize: '13px',
                                           padding: '7px 14px',
                                           textDecoration: 'none',
-                                          color: '#ea580c',
+                                          color: 'var(--color-primary-strong)',
                                           borderColor: '#fdba74',
-                                          background: '#fff7ed',
+                                          background: 'var(--color-primary-soft)',
                                           border: '1px solid #fdba74',
                                           borderRadius: '6px',
                                           fontWeight: 600,
@@ -513,15 +513,15 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                                         <ExternalLink size={13} />
                                       </a>
                                       {ans.file_size && (
-                                        <span style={{ fontSize: '12px', color: '#64748b' }}>
+                                        <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>
                                           ({(ans.file_size / (1024 * 1024)).toFixed(2)} MB)
                                         </span>
                                       )}
                                     </div>
                                   </div>
                                 ) : ans.text_response ? (
-                                  <div style={{ padding: '10px 12px', background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '6px' }}>
-                                    <div style={{ fontSize: '12px', fontWeight: 600, color: '#64748b', marginBottom: '4px' }}>
+                                  <div style={{ padding: '10px 12px', background: 'var(--color-surface)', border: '1px solid var(--color-control-border)', borderRadius: '6px' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: '4px' }}>
                                       Bài làm / Đường dẫn nộp bài:
                                     </div>
                                     {isUrl ? (
@@ -530,7 +530,7 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                                         target="_blank"
                                         rel="noreferrer"
                                         style={{
-                                          color: '#0284c7',
+                                          color: 'var(--color-info)',
                                           textDecoration: 'underline',
                                           fontWeight: 600,
                                           wordBreak: 'break-all',
@@ -544,13 +544,13 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                                         <span>{ans.text_response}</span>
                                       </a>
                                     ) : (
-                                      <span style={{ fontWeight: 600, color: '#0f172a', whiteSpace: 'pre-wrap', fontSize: '14px' }}>
+                                      <span style={{ fontWeight: 600, color: 'var(--color-text)', whiteSpace: 'pre-wrap', fontSize: '14px' }}>
                                         {ans.text_response}
                                       </span>
                                     )}
                                   </div>
                                 ) : (
-                                  <div style={{ fontSize: '13px', color: '#64748b', fontStyle: 'italic', padding: '6px 0' }}>
+                                  <div style={{ fontSize: '13px', color: 'var(--color-text-muted)', fontStyle: 'italic', padding: '6px 0' }}>
                                     (Học sinh không đính kèm tệp bài làm)
                                   </div>
                                 )}
@@ -560,15 +560,15 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                                     style={{
                                       marginTop: '8px',
                                       padding: '10px 12px',
-                                      background: '#eff6ff',
+                                      background: 'var(--color-info-soft)',
                                       border: '1px solid #bfdbfe',
                                       borderRadius: '6px',
                                     }}
                                   >
-                                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#1d4ed8', marginBottom: '4px' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-info)', marginBottom: '4px' }}>
                                       Gợi ý / Tiêu chí chấm điểm (Đối chiếu):
                                     </div>
-                                    <div style={{ fontSize: '13px', color: '#1e40af', whiteSpace: 'pre-wrap', lineHeight: '1.4' }}>
+                                    <div style={{ fontSize: '13px', color: 'var(--color-info)', whiteSpace: 'pre-wrap', lineHeight: '1.4' }}>
                                       {questionInfo.correct_answer}
                                     </div>
                                   </div>
@@ -578,10 +578,10 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                           </div>
 
                           {/* Case 5.8, 5.9: Sửa/Override điểm câu hỏi kèm comment */}
-                          <div style={{ marginTop: '10px', padding: '8px 12px', background: '#ffffff', borderRadius: '6px', border: '1px solid #cbd5e1', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <div style={{ marginTop: '10px', padding: '8px 12px', background: 'var(--color-surface)', borderRadius: '6px', border: '1px solid var(--color-control-border)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>
+                                <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text)' }}>
                                   {ans.is_auto_graded ? 'Điểm câu (MCQ tự chấm):' : 'Điểm câu hỏi:'}
                                 </label>
                                 <input
@@ -591,9 +591,9 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                                   max={questionInfo?.points || 10}
                                   value={answersFeedback[ans.question_id]?.score ?? ans.score ?? 0}
                                   onChange={(e) => handleAnswerFeedbackChange(ans.question_id, 'score', e.target.value, ans.is_auto_graded)}
-                                  style={{ width: '65px', padding: '3px 6px', fontSize: '13px', borderRadius: '4px', border: '1px solid #cbd5e1', fontWeight: 600 }}
+                                  style={{ width: '65px', padding: '3px 6px', fontSize: '13px', borderRadius: '4px', border: '1px solid var(--color-control-border)', fontWeight: 600 }}
                                 />
-                                <span style={{ fontSize: '12px', color: '#64748b' }}>/ {questionInfo?.points || 1}đ</span>
+                                <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>/ {questionInfo?.points || 1}đ</span>
                               </div>
 
                               {(answersFeedback[ans.question_id]?.is_overridden || ans.is_overridden) && (
@@ -608,7 +608,7 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                               placeholder="Nhận xét riêng cho câu này (hoặc lý do sửa/override điểm)..."
                               value={answersFeedback[ans.question_id]?.comment ?? ans.comment ?? ''}
                               onChange={(e) => handleAnswerFeedbackChange(ans.question_id, 'comment', e.target.value)}
-                              style={{ width: '100%', padding: '4px 8px', fontSize: '12px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
+                              style={{ width: '100%', padding: '4px 8px', fontSize: '12px', borderRadius: '4px', border: '1px solid var(--color-control-border)' }}
                             />
                           </div>
                         </div>
@@ -617,8 +617,8 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                   </div>
 
                   {/* Form chấm điểm */}
-                  <form onSubmit={handleGrade} style={{ background: '#fff5f0', padding: '16px', borderRadius: '10px', border: '1px solid #fed7aa' }}>
-                    <h4 style={{ margin: '0 0 12px 0', color: '#c2410c', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <form onSubmit={handleGrade} style={{ background: 'var(--color-primary-soft)', padding: '16px', borderRadius: '10px', border: '1px solid #fed7aa' }}>
+                    <h4 style={{ margin: '0 0 12px 0', color: 'var(--color-primary-strong)', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <Award size={16} />
                       <span>Nhập điểm & Nhận xét của gia sư:</span>
                     </h4>
@@ -683,7 +683,7 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
               <button
                 type="button"
                 className="btn-outline-gray"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#0284c7' }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--color-info)' }}
                 onClick={handlePublishAllResults}
                 disabled={submitting}
               >

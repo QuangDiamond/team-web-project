@@ -358,9 +358,9 @@ function ClassSessionFormModal({ session, initialValues, onClose, onSave, onSucc
             style={{
               marginTop: '12px',
               padding: '12px 14px',
-              backgroundColor: '#f8fafc',
+              backgroundColor: 'var(--color-surface-subtle)',
               borderRadius: '8px',
-              border: '1px solid #e2e8f0',
+              border: '1px solid var(--color-border)',
             }}
           >
             <label
@@ -371,7 +371,7 @@ function ClassSessionFormModal({ session, initialValues, onClose, onSave, onSucc
                 cursor: 'pointer',
                 fontWeight: 600,
                 fontSize: '13px',
-                color: '#0f172a',
+                color: 'var(--color-text)',
               }}
             >
               <input
@@ -390,7 +390,7 @@ function ClassSessionFormModal({ session, initialValues, onClose, onSave, onSucc
                     style={{
                       fontSize: '12px',
                       fontWeight: 600,
-                      color: '#475569',
+                      color: 'var(--color-text-muted)',
                       display: 'block',
                       marginBottom: '6px',
                     }}
@@ -423,9 +423,9 @@ function ClassSessionFormModal({ session, initialValues, onClose, onSave, onSucc
                             padding: '4px 10px',
                             borderRadius: '6px',
                             border: '1px solid',
-                            borderColor: isChecked ? '#ea580c' : '#cbd5e1',
-                            backgroundColor: isChecked ? '#fff7ed' : '#ffffff',
-                            color: isChecked ? '#c2410c' : '#334155',
+                            borderColor: isChecked ? 'var(--color-primary-strong)' : 'var(--color-control-border)',
+                            backgroundColor: isChecked ? 'var(--color-primary-soft)' : 'var(--color-white)',
+                            color: isChecked ? 'var(--color-primary-strong)' : 'var(--color-text)',
                             fontSize: '12px',
                             fontWeight: isChecked ? 700 : 500,
                             cursor: 'pointer',
@@ -625,7 +625,7 @@ function ClassSchedule({ classId, sessions, isLoading, error, onRetry, onSaveSes
           <button
             type="button"
             className="btn btn-outline btn-sm"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#ea580c', borderColor: '#fdba74' }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--color-primary-strong)', borderColor: '#fdba74' }}
             onClick={() => setIsChangeRequestsOpen(true)}
           >
             <RotateCcw size={14} aria-hidden="true" />
@@ -715,7 +715,7 @@ function ClassSchedule({ classId, sessions, isLoading, error, onRetry, onSaveSes
                               onClick={() => setAttendanceSession(event.session)}
                               title={event.session.status === 'COMPLETED' ? 'Đã điểm danh (Bấm để xem/sửa)' : 'Điểm danh học sinh'}
                               aria-label="Điểm danh học sinh"
-                              style={{ color: event.session.status === 'COMPLETED' ? '#16a34a' : undefined }}
+                              style={{ color: event.session.status === 'COMPLETED' ? 'var(--color-success)' : undefined }}
                             >
                               <UserCheck size={13} aria-hidden="true" />
                             </button>

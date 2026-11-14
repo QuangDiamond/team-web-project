@@ -227,7 +227,7 @@ export default function LearningActivityChart() {
         </div>
       ) : error ? (
         <div className="activity-chart-state">
-          <p style={{ color: '#dc2626' }}>{error}</p>
+          <p style={{ color: 'var(--color-error)' }}>{error}</p>
         </div>
       ) : !chartCoordinates ? (
         <div className="activity-chart-state">
@@ -259,14 +259,14 @@ export default function LearningActivityChart() {
             <defs>
               {/* Gradient cho vùng điểm số */}
               <linearGradient id={scoreGradId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#f26b3a" stopOpacity="0.28" />
-                <stop offset="100%" stopColor="#f26b3a" stopOpacity="0.01" />
+                <stop offset="0%" stopColor="var(--color-primary-strong)" stopOpacity="0.28" />
+                <stop offset="100%" stopColor="var(--color-primary-strong)" stopOpacity="0.01" />
               </linearGradient>
 
               {/* Gradient cho vùng hoạt động */}
               <linearGradient id={activityGradId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#0284c7" stopOpacity="0.22" />
-                <stop offset="100%" stopColor="#0284c7" stopOpacity="0.01" />
+                <stop offset="0%" stopColor="var(--color-info)" stopOpacity="0.22" />
+                <stop offset="100%" stopColor="var(--color-info)" stopOpacity="0.01" />
               </linearGradient>
             </defs>
 
@@ -284,7 +284,7 @@ export default function LearningActivityChart() {
                     y1={y}
                     x2={chartCoordinates.width - chartCoordinates.paddingRight}
                     y2={y}
-                    stroke="#f1f5f9"
+                    stroke="var(--color-surface-subtle)"
                     strokeWidth="1"
                     strokeDasharray={level === 0 ? 'none' : '4 4'}
                   />
@@ -316,7 +316,7 @@ export default function LearningActivityChart() {
               <path
                 d={chartCoordinates.activityPathD}
                 fill="none"
-                stroke="#0284c7"
+                stroke="var(--color-info)"
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -328,7 +328,7 @@ export default function LearningActivityChart() {
               <path
                 d={chartCoordinates.scorePathD}
                 fill="none"
-                stroke="#ea580c"
+                stroke="var(--color-primary-strong)"
                 strokeWidth="3"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -355,7 +355,7 @@ export default function LearningActivityChart() {
                       y1={chartCoordinates.paddingTop}
                       x2={actCoord.x}
                       y2={chartCoordinates.paddingTop + chartCoordinates.chartHeight}
-                      stroke="#cbd5e1"
+                      stroke="var(--color-control-border)"
                       strokeWidth="1.5"
                       strokeDasharray="3 3"
                     />
@@ -367,8 +367,8 @@ export default function LearningActivityChart() {
                       cx={actCoord.x}
                       cy={actCoord.y}
                       r={isHovered ? 6 : 4}
-                      fill="#ffffff"
-                      stroke="#0284c7"
+                      fill="var(--color-surface)"
+                      stroke="var(--color-info)"
                       strokeWidth="2.5"
                       style={{ cursor: 'pointer', transition: 'r 0.15s ease' }}
                     />
@@ -380,8 +380,8 @@ export default function LearningActivityChart() {
                       cx={scoreCoord.x}
                       cy={scoreCoord.y}
                       r={isHovered ? 7 : 5}
-                      fill="#ffffff"
-                      stroke="#ea580c"
+                      fill="var(--color-surface)"
+                      stroke="var(--color-primary-strong)"
                       strokeWidth="3"
                       style={{ cursor: 'pointer', transition: 'r 0.15s ease' }}
                     />

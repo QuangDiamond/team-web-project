@@ -98,7 +98,7 @@ export default function ClassroomAnnouncementsTab({
       {isOwner && (
         <form className="announcement-composer" onSubmit={handlePostAnnouncement}>
           <div className="composer-header" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Pencil size={16} color="#e85a2c" />
+            <Pencil size={16} color="var(--color-primary-strong)" />
             <span>Đăng thông báo mới cho lớp học</span>
           </div>
           <textarea
@@ -151,7 +151,7 @@ export default function ClassroomAnnouncementsTab({
         {announcements.length === 0 ? (
           <div className="classroom-empty-state" style={{ padding: '40px 20px' }}>
             <div className="empty-icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
-              <Megaphone size={44} color="#94a3b8" />
+              <Megaphone size={44} color="var(--color-text-muted)" />
             </div>
             <h3>Chưa có thông báo nào trên bảng tin</h3>
             <p>Hãy đăng bài đầu tiên để chào mừng học sinh hoặc dặn dò lịch học!</p>
