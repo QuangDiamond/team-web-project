@@ -1,5 +1,6 @@
 import { toast } from 'sonner';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Mail } from 'lucide-react';
 import { usePagedList } from '../../hooks/usePagedList';
 import { acceptInvitation, declineInvitation, getReceivedInvitations } from '../../services/invitationService';
@@ -15,6 +16,7 @@ const PAGE_SIZE = 10;
 
 // Gia sư xem và phản hồi lời mời của phụ huynh: Chấp nhận mở hội thoại 1-1, Từ chối để bỏ qua
 export default function ReceivedInvitations() {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [detailInvitation, setDetailInvitation] = useState(null);
   const list = usePagedList(getReceivedInvitations, { page: page, limit: PAGE_SIZE });
@@ -29,6 +31,16 @@ export default function ReceivedInvitations() {
     }
     // Tải lại để hiện trạng thái thật từ server (kể cả khi thao tác lỗi vì lời mời vừa đổi trạng thái)
     await list.reload();
+  };
+
+  // Yêu cầu còn mở thì mở trang chi tiết chung với trang tìm yêu cầu; không còn mở (trang đó trả 404) thì xem bằng modal
+  const handleViewDetails = (invitation) => {
+    const request = invitation.request;
+    if (request && request.is_available) {
+      navigate(`/tutor/requests/${request._id}`);
+      return;
+    }
+    setDetailInvitation(invitation);
   };
 
   const handleAccept = (invitation) => handleAction(acceptInvitation, invitation, "Đã chấp nhận lời mời và mở cuộc trò chuyện.");
@@ -47,7 +59,7 @@ export default function ReceivedInvitations() {
             invitations={list.data.items}
             onAccept={handleAccept}
             onDecline={handleDecline}
-            onViewDetails={setDetailInvitation}
+            onViewDetails={handleViewDetails}
           />
         )}
       </ListState>

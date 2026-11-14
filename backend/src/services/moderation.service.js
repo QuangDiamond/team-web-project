@@ -11,6 +11,36 @@ import { Review } from '../models/Review.js';
 import { Message } from '../models/Message.js';
 import { Notification } from '../models/Notification.js';
 
+// Nhãn tiếng Việt hiển thị cho người dùng (cùng cách gọi với frontend components/moderation/moderationLabels.js)
+const ACTION_LABELS = {
+  NONE: 'Bỏ qua báo cáo',
+  CONTENT_HIDDEN: 'Tạm ẩn nội dung',
+  CONTENT_REMOVED: 'Gỡ bỏ nội dung',
+  WARNING_SENT: 'Gửi cảnh cáo',
+  USER_BANNED: 'Khóa tài khoản',
+};
+
+const TARGET_TYPE_LABELS = {
+  POST: 'bài đăng gia sư',
+  REQUEST: 'yêu cầu tìm gia sư',
+  REVIEW: 'đánh giá',
+  MESSAGE: 'tin nhắn',
+  USER: 'tài khoản',
+  CLASSROOM: 'lớp học',
+};
+
+const REPORT_STATUS_LABELS = {
+  RESOLVED: 'đã xử lý',
+  DISMISSED: 'đã bỏ qua',
+};
+
+const getLabel = (labels, value) => {
+  if (labels[value]) {
+    return labels[value];
+  }
+  return value;
+};
+
 const loadTargetPreview = async (report) => {
   if (!report.target_id || !mongoose.isValidObjectId(report.target_id)) {
     return null;
@@ -208,7 +238,7 @@ export const resolveReport = async (adminUser, reportId, payload) => {
     existingReport.status === ENUMS.ContentReportsStatus.DISMISSED
   ) {
     throw new AppError(
-      `Báo cáo vi phạm này đã được xử lý trước đó (E1 - Trạng thái: ${existingReport.status}).`,
+      `Báo cáo vi phạm này đã được xử lý trước đó (trạng thái: ${getLabel(REPORT_STATUS_LABELS, existingReport.status)}).`,
       409
     );
   }
@@ -321,12 +351,15 @@ export const resolveReport = async (adminUser, reportId, payload) => {
     ip_address: '127.0.0.1',
   });
 
+  const actionLabel = getLabel(ACTION_LABELS, action);
+  const targetTypeLabel = getLabel(TARGET_TYPE_LABELS, existingReport.target_type);
+
   if (existingReport.reporter_user_id) {
     await Notification.create({
       recipient_user_id: existingReport.reporter_user_id,
       category: ENUMS.NotificationsCategory.SYSTEM,
       title: 'Cập nhật kết quả xử lý báo cáo vi phạm',
-      body: `Báo cáo của bạn về mục [${existingReport.target_type}] đã được Admin xử lý với quyết định: ${action}. Ghi chú: ${admin_note.trim()}`,
+      body: `Báo cáo của bạn về ${targetTypeLabel} đã được Admin xử lý với quyết định: ${actionLabel}. Ghi chú: ${admin_note.trim()}`,
       target_type: null,
       target_id: null,
       is_read: false,
@@ -351,7 +384,7 @@ export const resolveReport = async (adminUser, reportId, payload) => {
       recipient_user_id: targetPreview.author_id,
       category: ENUMS.NotificationsCategory.SYSTEM,
       title: 'Thông báo kiểm duyệt nội dung từ Quản trị viên',
-      body: `Nội dung [${existingReport.target_type}] của bạn đã được Admin kiểm duyệt với quyết định: ${action}. Lý do: ${admin_note.trim()}`,
+      body: `Nội dung ${targetTypeLabel} của bạn đã được Admin kiểm duyệt với quyết định: ${actionLabel}. Lý do: ${admin_note.trim()}`,
       target_type: null,
       target_id: null,
       is_read: false,
@@ -371,7 +404,7 @@ export const resolveReport = async (adminUser, reportId, payload) => {
       ...updatedReport,
       target_preview: targetPreview,
     },
-    message: `Đã xử lý báo cáo thành công với hành động: ${action}`,
+    message: `Đã xử lý báo cáo thành công với hành động: ${actionLabel}.`,
   };
 };
 
