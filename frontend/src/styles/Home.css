@@ -594,58 +594,7 @@
   line-height: 1.6;
 }
 
-/* ==========================================================================
-   Featured Tutors Section
-   ========================================================================== */
-.tutors-section {
-  padding: 96px 0;
-  background: var(--gray-50);
-}
-
-.tutors-header-wrapper {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  flex-wrap: wrap;
-  margin-bottom: 48px;
-}
-
-.tutors-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 24px;
-}
-
-.tutor-card {
-  background: white;
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--gray-200);
-  padding: 24px;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.25s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.tutor-card:hover {
-  box-shadow: var(--shadow-lg);
-  border-color: rgba(244, 103, 58, 0.25);
-  transform: translateY(-4px);
-}
-
-.tutor-card-top {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 18px;
-}
-
-.tutor-card-top > div:last-child {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
+/* Kept for RateTutorModal, which reuses these tutor header classes */
 .tutor-avatar {
   flex-shrink: 0;
   width: 50px;
@@ -665,71 +614,10 @@
   color: var(--gray-900);
 }
 
-.home-page .tutor-avatar img {
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  object-fit: cover;
-}
-
 .tutor-subject {
   font-size: 0.8rem;
   color: var(--gray-500);
   margin-top: 2px;
-}
-
-.tutor-stats-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-top: 1px solid var(--gray-100);
-  border-bottom: 1px solid var(--gray-100);
-  margin-bottom: 18px;
-  font-size: 0.85rem;
-}
-
-.tutor-rating {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: 700;
-  color: var(--gray-800);
-}
-
-.tutor-sessions {
-  color: var(--gray-400);
-  font-size: 0.8rem;
-}
-
-.tutor-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: auto;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.tutor-price {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--gray-900);
-}
-
-.btn-view-profile {
-  font-size: 0.82rem;
-  font-weight: 600;
-  background: var(--primary-light);
-  color: var(--primary);
-  padding: 8px 14px;
-  border-radius: var(--radius-md);
-  transition: all 0.15s ease;
-}
-
-.btn-view-profile:hover {
-  background: var(--primary);
-  color: white;
 }
 
 /* ==========================================================================
@@ -899,9 +787,6 @@
   .features-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .tutors-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
   .testimonials-grid {
     grid-template-columns: 1fr;
   }
@@ -915,7 +800,6 @@
     padding: 40px 0;
   }
   .features-section,
-  .tutors-section,
   .testimonials-section {
     padding: 56px 0;
   }
@@ -941,9 +825,6 @@
     width: 100%;
   }
   .features-grid {
-    grid-template-columns: 1fr;
-  }
-  .tutors-grid {
     grid-template-columns: 1fr;
   }
   .cta-title {

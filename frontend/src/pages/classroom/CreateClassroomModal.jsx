@@ -44,7 +44,6 @@ export default function CreateClassroomModal({
 
   const [allClassroomsList, setAllClassroomsList] = useState([]);
   const [agreements, setAgreements] = useState([]);
-  const [loadingAgreements, setLoadingAgreements] = useState(false);
   const [useAgreement, setUseAgreement] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -94,9 +93,6 @@ export default function CreateClassroomModal({
         })
         .catch((err) => {
           console.warn('[UC21] Không lấy được danh sách thỏa thuận:', err.message);
-        })
-        .finally(() => {
-          setLoadingAgreements(false);
         });
     }
   }, [isOpen, initialAgreementId]);

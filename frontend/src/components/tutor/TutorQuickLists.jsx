@@ -3,14 +3,13 @@ import { Mail, Send, Search } from 'lucide-react';
 import { usePagedList } from '../../hooks/usePagedList';
 import { getMyApplications } from '../../services/applicationService';
 import { getReceivedInvitations } from '../../services/invitationService';
-import { getSuggestedRequests } from '../../services/tutorRequestService';
+import { getRandomSuggestedRequests } from '../../services/tutorRequestService';
 import CompactList from '../common/CompactList';
 import ListState from '../common/ListState';
 import SectionCard from '../common/SectionCard';
 import { APPLICATION_STATUS, formatBudget, getModeLabel, getStatusBadge } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 
-const SUGGESTION_PARAMS = { page: 1, limit: 3 };
 const INVITATION_PARAMS = { status: 'PENDING', page: 1, limit: 3 };
 const APPLICATION_PARAMS = { page: 1, limit: 3 };
 
@@ -54,7 +53,7 @@ const toApplicationItem = (application) => {
 
 // Các khối xem nhanh của Tutor Dashboard. Chỉ render khi gia sư đã có hồ sơ (các API này trả 409 nếu chưa có)
 export default function TutorQuickLists() {
-  const suggestions = usePagedList(getSuggestedRequests, SUGGESTION_PARAMS);
+  const suggestions = usePagedList(getRandomSuggestedRequests, {});
   const invitations = usePagedList(getReceivedInvitations, INVITATION_PARAMS);
   const applications = usePagedList(getMyApplications, APPLICATION_PARAMS);
 

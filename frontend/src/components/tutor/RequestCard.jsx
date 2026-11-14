@@ -4,7 +4,7 @@ import { formatBudget, getModeLabel } from '../../constants/requestLabels';
 import { formatDate } from '../../utils/dateFormat';
 
 // Thẻ request cho gia sư (Figma: card trong Find Students). Không có thông tin phụ huynh / học sinh
-export default function RequestCard({ request, onToggleSave, onApply }) {
+export default function RequestCard({ request, onToggleSave, onApply, readOnly = false }) {
   const navigate = useNavigate();
 
   // Request đã lưu nhưng đã đóng / hết hạn
@@ -68,20 +68,22 @@ export default function RequestCard({ request, onToggleSave, onApply }) {
         </p>
       </div>
       <div className="request-card-actions">
-        <button
-          type="button"
-          className="dashboard-icon-button"
-          aria-label={saveLabel}
-          title={saveLabel}
-          aria-pressed={request.is_bookmarked}
-          onClick={() => onToggleSave(request)}
-        >
-          <SaveIcon size={18} aria-hidden="true" />
-        </button>
+        {!readOnly && (
+          <button
+            type="button"
+            className="dashboard-icon-button"
+            aria-label={saveLabel}
+            title={saveLabel}
+            aria-pressed={request.is_bookmarked}
+            onClick={() => onToggleSave(request)}
+          >
+            <SaveIcon size={18} aria-hidden="true" />
+          </button>
+        )}
         <button type="button" className="btn btn-outline btn-sm" onClick={() => navigate(`/tutor/requests/${request._id}`)}>
           Chi tiết
         </button>
-        {applyButton}
+        {!readOnly && applyButton}
       </div>
     </li>
   );

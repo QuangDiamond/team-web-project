@@ -35,6 +35,7 @@ export default function FormInput({
           placeholder={placeholder}
           autoComplete={autoComplete}
           disabled={disabled}
+          maxLength={maxLength}
           required={required}
           aria-invalid={error ? 'true' : 'false'}
           aria-describedby={describedBy}
