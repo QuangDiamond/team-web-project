@@ -167,3 +167,4 @@ Chuẩn bị trước 2 tab trình duyệt:
 | **Chi tiết lớp chia 4 Tab** | `frontend/src/pages/classroom/ClassroomDetail.jsx` | Import và render 4 Tab components |
 | **Làm bài tập & nộp bài** | `frontend/src/pages/classroom/DoAssignmentModal.jsx` | Xử lý radio button trắc nghiệm & submit form |
 | **Gia sư chấm điểm bài nộp** | `frontend/src/pages/classroom/GradeAssignmentPage.jsx` | Chấm điểm tự luận, nhập feedback và công bố điểm |
+
