@@ -12,6 +12,8 @@ Bài đăng quảng cáo dịch vụ dạy học của **chính gia sư**. Chỉ
 | 409 | Chưa có hồ sơ gia sư; bài đang `PENDING_MODERATION` (không sửa / đổi trạng thái / xóa được) |
 | 422 | Dữ liệu không hợp lệ |
 
+`price` phải lớn hơn 1000 (VND) và không quá 100.000.000, nếu không trả 422.
+
 Item trả về: `_id, title, subject_name, grade_level, teaching_mode, price` (number), `schedule, description, status, is_locked` (đang chờ kiểm duyệt), `created_at, updated_at`.
 
 ## GET `/mine`

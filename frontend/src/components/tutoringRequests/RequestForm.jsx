@@ -71,8 +71,8 @@ const validate = (values) => {
   const budget = Number(values.budget);
   if (values.budget === '' || Number.isNaN(budget)) {
     errors.budget = "Vui lòng nhập ngân sách";
-  } else if (budget <= 0) {
-    errors.budget = "Ngân sách phải lớn hơn 0";
+  } else if (budget <= 1000) {
+    errors.budget = "Ngân sách phải lớn hơn 1.000đ";
   } else if (budget > 100000000) {
     errors.budget = "Ngân sách quá lớn";
   }

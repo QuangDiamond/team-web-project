@@ -72,7 +72,7 @@ export default function SuggestionsPanel({ requestId }) {
 
       <ListState
         list={list}
-        empty={{ icon: SearchX, title: 'Chưa có gia sư phù hợp', description: 'Chưa có gia sư đăng ký giảng dạy cả môn học và trình độ này trong hồ sơ.' }}
+        empty={{ icon: SearchX, title: 'Chưa có gia sư phù hợp', description: 'Chưa có gia sư có hồ sơ hoặc bài đăng phù hợp cả môn học và trình độ này.' }}
       >
         {data && (
           <ul className="ai-list">

@@ -232,7 +232,8 @@ export const updateRequest = async (user, requestId, data) => {
 
 /**
  * Xóa hẳn request của chính phụ huynh cùng đơn ứng tuyển, lời mời, bookmark và gợi ý liên quan.
- * Không xóa được nếu request đã có hội thoại với gia sư (đã Continue / Accept). Credit đã dùng không hoàn lại.
+ * Vẫn xóa được khi request đã có hội thoại với gia sư: hội thoại được giữ lại, chỉ bỏ liên kết tới request.
+ * Credit đã dùng không hoàn lại.
  * DB local là standalone (không có transaction): xóa dữ liệu liên quan trước, request sau cùng; lỗi giữa chừng thì
  * request vẫn còn và bấm xóa lại được.
  * @param {Object} user - req.user { id, role }
@@ -248,10 +249,8 @@ export const deleteRequest = async (user, requestId) => {
     throw new AppError('Tutoring request not found', 404);
   }
 
-  const hasConversation = await Conversation.exists({ request_id: request._id });
-  if (hasConversation) {
-    throw new AppError('This request already has a conversation with a tutor and cannot be deleted', 409);
-  }
+  // Giữ lại các cuộc trò chuyện (lịch sử chat); chỉ gỡ liên kết tới request đã xóa để không còn id trỏ vào dữ liệu không tồn tại
+  await Conversation.updateMany({ request_id: request._id }, { $set: { request_id: null } });
 
   await ApplyRequest.deleteMany({ request_id: request._id });
   await TutorInvitation.deleteMany({ request_id: request._id });

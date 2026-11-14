@@ -154,6 +154,8 @@ const MESSAGES = {
   'Invalid status': 'Trạng thái không hợp lệ.',
   'Invalid session mode': 'Hình thức học không hợp lệ.',
   'Price must be positive': 'Giá phải lớn hơn 0.',
+  'Price must be greater than 1000': 'Học phí phải lớn hơn 1.000đ.',
+  'Budget must be greater than 1000': 'Ngân sách phải lớn hơn 1.000đ.',
   'At least one weight must be greater than 0': 'Ít nhất một trọng số phải lớn hơn 0.',
   'Session mode must be ONLINE, OFFLINE or HYBRID': 'Vui lòng chọn hình thức học trực tuyến, trực tiếp hoặc kết hợp.',
   'Location is required for in-person or hybrid sessions': 'Vui lòng nhập địa điểm cho buổi học trực tiếp hoặc kết hợp.',
