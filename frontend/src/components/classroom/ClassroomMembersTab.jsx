@@ -14,8 +14,6 @@ export default function ClassroomMembersTab({
   loadingMembers,
   isOwner,
   studentCount,
-  parentMembers,
-  studentMembers,
   onOpenAddMember,
   onSelectRemoveMember,
   onCopy,

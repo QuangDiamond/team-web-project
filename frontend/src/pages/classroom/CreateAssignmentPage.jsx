@@ -125,7 +125,7 @@ export default function CreateAssignmentPage() {
           ? cls.topics
           : [];
         setTopics(topicList);
-      } catch (topErr) {
+      } catch {
         if (Array.isArray(cls?.topics)) {
           topicList = cls.topics;
           setTopics(topicList);

@@ -40,6 +40,13 @@ Then open a Pull Request into `develop`.
 - `style:` formatting
 - `perf:` performance
 
+## Checks before committing
+
+- `npm install` at the repo root enables the pre-commit hook (`.githooks/pre-commit`, via `git config core.hooksPath .githooks`).
+  It runs frontend lint + build and backend lint for the parts you staged.
+- Read every lint error, even in files you did not touch: `no-undef` means the page will crash when opened.
+- After merging or resolving conflicts, also run `npm run smoke` (see `scripts/README.md`) to open every page per role.
+
 ## Backend layering
 
 `Route -> Middleware -> Controller -> Service (business logic only) -> Model -> MongoDB`

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { GraduationCap, AlertTriangle, Check, X, Plus, ExternalLink } from 'lucide-react';
 import { createClassroom, getConfirmedAgreements, getMyClassrooms } from '../../services/classroomService';
 import { useSubjectNames } from '../../hooks/useSubjectNames';
-import { formatVnd } from '../../utils/formatCurrency';
 
 function applyAgreementToForm(form, agreement) {
   const subject = agreement.derived_subject || agreement.agreed_subject || form.subject || '';
@@ -75,7 +74,6 @@ export default function CreateClassroomModal({
         })
         .catch(() => {});
 
-      setLoadingAgreements(true);
       getConfirmedAgreements()
         .then((res) => {
           if (res?.data && Array.isArray(res.data)) {

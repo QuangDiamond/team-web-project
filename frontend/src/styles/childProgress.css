@@ -7,6 +7,11 @@
   gap: 16px;
 }
 
+/* Nút nằm trong .page-stack (flex dọc) nên phải tự căn, nếu không sẽ giãn hết chiều ngang */
+.child-progress-recheck {
+  align-self: center;
+}
+
 .child-selector {
   min-width: 260px;
   max-width: 360px;
