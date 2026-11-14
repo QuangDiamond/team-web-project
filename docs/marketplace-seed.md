@@ -36,6 +36,7 @@ Mật khẩu chung: `Abc123456!`. Chỉ lưu bcrypt hash với cost 10, giống 
 - Mỗi yêu cầu trong 12 bài ban đầu có 2 lời mời đến 2 gia sư khác, chưa ứng tuyển vào yêu cầu đó. Tổng 24 lời mời: 8 `PENDING`, 8 `ACCEPTED`, 8 `DECLINED`.
 - Lời mời theo schema hiện tại gắn với **request + tutor profile**, không gắn trực tiếp với ID bài đăng gia sư. Gia sư được mời có bài đăng cùng môn/trình độ; không thêm trường mới vào schema.
 - 32 phòng chat cho 24 đơn được tiếp tục và 8 lời mời được chấp nhận, mỗi phòng 2 tin nhắn mẫu. Đơn bị bỏ qua/lời mời bị từ chối không có phòng chat.
+- Đánh giá: mỗi gia sư demo có 3–5 kết nối cũ đã `CONFIRMED` (phòng chat không gắn yêu cầu + thỏa thuận), mỗi kết nối 1 đánh giá `APPROVED` từ một phụ huynh khác nhau. Tổng 63 đánh giá, điểm 3–5 sao kèm điểm kiến thức/đúng giờ/giao tiếp; khoảng một nửa có phản hồi của gia sư. Sau khi nạp, script tính lại `average_rating` của 16 hồ sơ demo theo công thức như khi phụ huynh gửi đánh giá (trung bình các đánh giá `APPROVED`, làm tròn 2 chữ số) — đây là trường duy nhất của dữ liệu cũ bị cập nhật.
 - Mỗi tài khoản được cấp 20 credits; có lịch sử cấp và trừ theo đơn/lời mời, số dư còn dương. Không tạo giao dịch PSP, không gửi email hoặc thông báo ra ngoài.
 
 Mở `/tutors`, danh sách bài đăng, `/tutor/requests`, gợi ý, ứng tuyển, lời mời và tin nhắn bằng các tài khoản trên. Phụ huynh có thể mở chi tiết từng yêu cầu để thấy cùng lúc gia sư đang chờ, bị từ chối và được tiếp tục.

@@ -35,6 +35,10 @@ const NAMES = [
   // Khác
   'rev_1', 'noti_1', 'noti_2', 'noti_3', 'pcl_ha_an', 'pcl_tuan_binh', 'pcl_ha_chi',
   'evt_chi', 'prt_tuan', 'sess_minh', 'audit_1', 'report_1',
+  // Demo thông báo (tin nhắn mới, lịch học cho phụ huynh) và báo cáo vi phạm đang chờ Admin xử lý
+  'msg_7', 'noti_msg_minh', 'noti_ses_ha',
+  'req_hoa10', 'post_lan_ielts', 'report_2', 'report_3',
+  'noti_report_2_author', 'noti_report_2_admin', 'noti_report_3_author', 'noti_report_3_admin',
 ];
 
 const FIXED_ID_VALUES = {

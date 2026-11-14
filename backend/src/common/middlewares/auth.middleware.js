@@ -56,6 +56,12 @@ export const authentication = async (req, res, next) =>{
     return next();
 }
 
+// Cho API công khai: không có token thì đi tiếp như khách (req.user rỗng), có token thì xác thực như thường
+export const optionalAuthentication = (req, res, next) => {
+    if (!getToken(req)) return next();
+    return authentication(req, res, next);
+}
+
 // Chặn theo role, luôn đặt sau authentication (cần req.user). Vd: authorize('ADMIN')
 export const authorize = (...allowedRoles) => {
     return (req, res, next) => {

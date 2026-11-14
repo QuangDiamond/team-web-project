@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import Alert from '../common/Alert';
 import FormInput from '../common/FormInput';
@@ -231,7 +232,7 @@ export default function TutorProfileForm({ initialValues, submitLabel, onSubmit 
         setErrors({ ...foundErrors, top: serverErrors });
         setFormError(error.message);
       } else {
-        setFormError(error.message);
+        toast.error(error.message);
       }
     } finally {
       setSubmitting(false);

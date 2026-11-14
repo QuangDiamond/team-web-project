@@ -422,9 +422,12 @@ const getInvitationOfTutor = async (user, invitationId) => {
     throw new AppError('Invitation not found', 404);
   }
   const invitation = await TutorInvitation.findOne({ _id: invitationId, tutor_profile_id: profile._id }).lean();
-  // Lời mời đã bị phụ huynh hủy thì gia sư không còn thấy
-  if (!invitation || invitation.status === TutorInvitationsStatus.CANCELLED) {
+  if (!invitation) {
     throw new AppError('Invitation not found', 404);
+  }
+  // UC15 E1: phụ huynh đã hủy lời mời trong lúc gia sư đang xem
+  if (invitation.status === TutorInvitationsStatus.CANCELLED) {
+    throw new AppError('This invitation is no longer available', 404);
   }
   return { invitation: invitation, profile: profile };
 };

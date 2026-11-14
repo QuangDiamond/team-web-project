@@ -97,15 +97,25 @@ const getClassMaterialOrThrow = async (classroom, materialId) => {
 };
 
 /**
- * Get paginated materials from an active classroom owned by the authenticated tutor
+ * Get paginated materials of a classroom: the owner tutor sees all, students see materials of their class,
+ * parents see only materials shared with all members
  * @param {Object} user - Authenticated user { id, role }
  * @param {string} classId - Classroom ID
  * @param {{ page: number, limit: number }} query - Pagination options
  * @returns {Promise<{ items: Object[], pagination: Object }>}
  */
 export const getClassMaterials = async (user, classId, { page, limit }) => {
-  const classroom = await getOwnedActiveClassroom(user, classId);
+  let classroom;
+  if (user.role === ENUMS.UserRole.TUTOR) {
+    classroom = await getOwnedActiveClassroom(user, classId);
+  } else {
+    classroom = await assertClassroomMemberOrOwner(user, classId);
+  }
+
   const filter = { class_id: classroom._id };
+  if (user.role === ENUMS.UserRole.PARENT) {
+    filter.visibility = ENUMS.ClassMaterialsVisibility.ALL_MEMBERS;
+  }
   const [materials, total] = await Promise.all([
     ClassMaterial.find(filter)
       .sort({ created_at: -1 })

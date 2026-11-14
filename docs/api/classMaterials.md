@@ -21,7 +21,7 @@ Successful response (`201`) returns the created material record. Status codes: `
 
 ## GET `/:classId/materials`
 
-Returns a paginated list of material records for the tutor's active classroom. Uses the same authentication, tutor role, ownership, and active-class checks. Query: `page` (default `1`) and `limit` (default `10`, maximum `100`). Response data contains `items` and `pagination`.
+Returns a paginated list of material records. The owner tutor uses the same ownership and active-class checks as above. A student must be an ACTIVE member of the class; a parent must have an ACCEPTED linked child who is an ACTIVE member, and only sees materials with `visibility = ALL_MEMBERS`. Others get 403. Query: `page` (default `1`) and `limit` (default `10`, maximum `100`). Response data contains `items` and `pagination`.
 
 ## PATCH `/:classId/materials/:materialId`
 

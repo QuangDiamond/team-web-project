@@ -11,14 +11,15 @@ test('navbar highlights only the selected section and links to the parent public
       import { MemoryRouter } from 'react-router-dom';
       import Layout from './src/layouts/Layout.jsx';
       const render = (path) => renderToStaticMarkup(<MemoryRouter initialEntries={[path]}><Layout /></MemoryRouter>);
-      for (const path of ['/', '/#features', '/#featured-tutors', '/#how-it-works', '/profile']) {
+      for (const path of ['/', '/#features', '/#how-it-works', '/tutors', '/requests', '/profile']) {
         const nav = render(path).match(/<div class="nav-links">([\\s\\S]*?)<\\/div>/)[1];
         const active = [...nav.matchAll(/<a[^>]*class="nav-link active"[^>]*href="([^"]+)"/g)];
         assert.equal(active.length, path === '/profile' ? 0 : 1, path);
         if (active.length) assert.equal(active[0][1], path);
       }
       const page = render('/');
-      assert.match(page, /href="\\/parents\\/parent1"[^>]*>Test parent<\\/a>/);
+      assert.match(page, /href="\\/parents\\/parent1"/);
+      assert.match(page, /title="Test parent"/);
       globalThis.__navbarUser = { _id: 'tutor1', role: 'TUTOR', full_name: 'Test tutor' };
       const tutor = render('/');
       assert.match(tutor, /href="\\/tutor\\/profile"/);
@@ -33,6 +34,7 @@ test('navbar highlights only the selected section and links to the parent public
       build.onLoad({ filter: /.*/, namespace: 'navbar-mock' }, () => ({ contents: `
         export const useAuth = () => ({ user: globalThis.__navbarUser || { id: 'parent1', role: 'PARENT', full_name: 'Test parent' }, logout: async () => {} });
         export const getUnreadCount = async () => ({ data: { unreadCount: 0 } });
+        export const notificationService = { getNotifications: async () => ({ data: { items: [] } }), markAsRead: async () => {}, markAllAsRead: async () => {} };
         export const getMyProfile = async () => ({ data: { profile: null } });
       ` }));
     } }],

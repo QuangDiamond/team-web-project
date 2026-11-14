@@ -1,6 +1,7 @@
+import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft, CircleCheck, LoaderCircle } from 'lucide-react';
+import { ChevronLeft, LoaderCircle } from 'lucide-react';
 import { createPost, getMyPost, updatePost } from '../../services/tutorPostService';
 import Alert from '../../components/common/Alert';
 import SectionCard from '../../components/common/SectionCard';
@@ -15,7 +16,6 @@ export default function TutorPostForm() {
   const navigate = useNavigate();
 
   const [state, setState] = useState({ loading: isEdit, error: null, post: null });
-  const [savedPost, setSavedPost] = useState(null);
 
   useEffect(() => {
     if (!isEdit) {
@@ -45,7 +45,17 @@ export default function TutorPostForm() {
     } else {
       response = await createPost({ ...payload, status: status });
     }
-    setSavedPost(response.data);
+    let title = "Đã lưu bài đăng";
+    let description = "Đã lưu thay đổi của bạn.";
+    if (!isEdit && response.data.status === 'PUBLISHED') {
+      title = "Đã xuất bản bài đăng";
+      description = "Phụ huynh có thể tìm thấy bạn trong danh sách gia sư gợi ý.";
+    } else if (!isEdit) {
+      title = "Đã lưu bản nháp";
+      description = "Đăng bài từ danh sách bài đăng khi bạn đã sẵn sàng.";
+    }
+    toast.success(title, { description });
+    navigate('/tutor/posts');
   };
 
   if (state.loading) {
@@ -69,28 +79,6 @@ export default function TutorPostForm() {
           <Alert type="error">{state.error.message}</Alert>
         )}
         <Link to="/tutor/posts" className="link">Quay lại bài đăng của tôi</Link>
-      </div>
-    );
-  }
-
-  if (savedPost) {
-    let title = "Đã lưu bài đăng";
-    let description = "Đã lưu thay đổi của bạn.";
-    if (!isEdit && savedPost.status === 'PUBLISHED') {
-      title = "Đã xuất bản bài đăng";
-      description = "Phụ huynh có thể tìm thấy bạn trong danh sách gia sư gợi ý.";
-    } else if (!isEdit) {
-      title = "Đã lưu bản nháp";
-      description = "Đăng bài từ danh sách bài đăng khi bạn đã sẵn sàng.";
-    }
-    return (
-      <div className="request-success">
-        <span className="request-success-icon" aria-hidden="true"><CircleCheck size={32} /></span>
-        <h2 className="request-success-title">{title}</h2>
-        <p className="item-meta">{description}</p>
-        <button type="button" className="btn btn-primary btn-sm" onClick={() => navigate('/tutor/posts')}>
-          Xem bài đăng của tôi
-        </button>
       </div>
     );
   }

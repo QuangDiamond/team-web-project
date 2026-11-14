@@ -1,5 +1,6 @@
 /* Khu vực dashboard (sidebar, card, modal, bảng...) dùng chung cho các màn đã đăng nhập */
 @import './dashboard.css';
+@import './FloatingChatWidget.css';
 
 * {
   box-sizing: border-box;
@@ -1560,38 +1561,6 @@ body {
   }
 }
 
-/* ---------- Màn "đã lưu / đã đăng" sau khi gửi form (dùng chung cho request, bài đăng...) ---------- */
-.request-success {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  max-width: 480px;
-  margin: 24px auto;
-  padding: 32px 24px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-white);
-  text-align: center;
-}
-
-.request-success-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--color-success-soft);
-  color: var(--color-success);
-}
-
-.request-success-title {
-  margin: 8px 0 0;
-  font-size: 20px;
-  font-weight: 800;
-}
-
 /* ---------- Public Layout (Header & Footer) ---------- */
 .app-layout {
   min-height: 100vh;
@@ -1770,6 +1739,245 @@ body {
   justify-content: center;
   border: 2px solid white;
   box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+/* Quick Dropdowns for Notification & Chat on Navbar */
+.nav-dropdown-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.nav-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  overflow: hidden;
+  animation: navPopoverIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+@keyframes navPopoverIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.nav-popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #ffffff;
+}
+
+.nav-popover-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-popover-count-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.nav-popover-action {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0284c7;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-popover-action:hover {
+  background: #f0f9ff;
+  color: #0369a1;
+}
+
+.nav-popover-list {
+  max-height: 330px;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-popover-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f8fafc;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+  border-left: 3px solid transparent;
+}
+
+.nav-popover-item:hover {
+  background: #f8fafc;
+}
+
+.nav-popover-item.unread {
+  background: #f0f9ff;
+  border-left-color: #0284c7;
+}
+
+/* NotificationBell: mỗi thông báo là một <button> nên cần bỏ style mặc định của button */
+button.nav-popover-item {
+  background: transparent;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 1px solid #f8fafc;
+  font: inherit;
+  text-align: left;
+}
+
+button.nav-popover-item:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+button.nav-popover-item .nav-popover-desc {
+  display: block;
+}
+
+/* Chuông trong header dashboard dùng style dashboard-icon-button, cần relative để đặt badge */
+.nav-dropdown-wrap .dashboard-icon-button {
+  position: relative;
+}
+
+.nav-dropdown-wrap .dashboard-icon-button.active {
+  color: var(--primary);
+}
+
+.nav-popover-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #eff6ff;
+  color: #0284c7;
+  font-size: 16px;
+}
+
+.nav-popover-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.nav-popover-heading {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 2px 0;
+  line-height: 1.35;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.nav-popover-time {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 400;
+  flex-shrink: 0;
+}
+
+.nav-popover-desc {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-popover-empty {
+  padding: 32px 20px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-popover-footer {
+  padding: 10px 16px;
+  border-top: 1px solid #f1f5f9;
+  background: #f8fafc;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0284c7;
+  text-decoration: none;
+  display: block;
+  transition: all 0.15s;
+}
+
+.nav-popover-footer:hover {
+  background: #f1f5f9;
+  color: #0369a1;
+}
+
+.nav-chat-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.nav-chat-role-chip {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  text-transform: uppercase;
 }
 
 .btn-ghost {
@@ -1959,4 +2167,56 @@ body {
     gap: 12px;
     text-align: center;
   }
+}
+
+/* Form đề xuất thỏa thuận (UC16) — dùng ở SC22 My Agreements và SC11 Messages */
+.modal.agreement-proposal-modal { width: min(860px, calc(100vw - 32px)); max-width: 860px; }
+.agreement-proposal-form { padding: 24px; }
+.agreement-proposal-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.agreement-proposal-fields .form-field { min-width: 0; }
+.agreement-proposal-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; padding-top: 20px; border-top: 1px solid var(--color-border); }
+@media (max-width: 600px) {
+  .agreement-proposal-form { padding: 16px; }
+  .agreement-proposal-fields { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .agreement-proposal-actions .btn { flex: 1 1 180px; }
+}
+
+/* ReportContentButton (UC38): nút báo cáo bài đăng / yêu cầu và hộp thoại chọn lý do */
+.report-content-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-muted);
+}
+
+.report-content-button:hover:not(:disabled) {
+  color: var(--color-error);
+}
+
+.report-content-form {
+  display: grid;
+  gap: 12px;
+}
+
+.report-content-target {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.report-content-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.report-content-submit {
+  background: var(--color-error);
+  color: var(--color-white);
+}
+
+.report-content-submit:hover:not(:disabled) {
+  background: #a51f1f;
 }

@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 import Modal from '../common/Modal';
 import Alert from '../common/Alert';
@@ -75,7 +76,7 @@ export default function PreferencesDialog({
       await notificationService.updatePreferences(payload);
       onSaved('Đã lưu cài đặt nhận thông báo.');
     } catch (failure) {
-      setError(failure.message || 'Không thể lưu cài đặt.');
+      toast.error(failure.message || 'Không thể lưu cài đặt.');
     } finally {
       setSubmitting(false);
     }

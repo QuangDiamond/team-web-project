@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import Modal from '../common/Modal';
 import FormInput from '../common/FormInput';
@@ -86,7 +87,6 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
   const isCreating = !plan;
   const [values, setValues] = useState(() => getInitialValues(plan));
   const [errors, setErrors] = useState({});
-  const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const planLabel = plan ? `gói ${getPlanTitle(plan.name)} dành cho ${getTargetRoleLabel(plan.target_role)}` : '';
@@ -125,7 +125,6 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setFormError('');
 
     const newErrors = validatePlanForm(values);
     const name = values.name.trim();
@@ -179,7 +178,7 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
     } catch (error) {
       const fieldErrors = toFieldErrors(error.errors);
       setErrors(fieldErrors);
-      setFormError(error.message);
+      toast.error(error.message);
       focusFirstInvalidField(PLAN_FIELDS, fieldErrors);
       setSubmitting(false);
     }
@@ -194,7 +193,6 @@ export default function PlanEditDialog({ plan, onClose, onSaved }) {
       className="plan-edit-modal"
     >
       <form onSubmit={handleSubmit} noValidate>
-        {formError && <Alert type="error">{formError}</Alert>}
 
         <div className="form-grid">
           {isCreating && (

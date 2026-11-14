@@ -12,15 +12,19 @@ import {
   Pencil,
   Plus,
   Trash2,
+  UserCheck,
+  Video,
+  RotateCcw,
 } from 'lucide-react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import Alert from '../../components/common/Alert';
 import FormInput from '../../components/common/FormInput';
 import FormSelect from '../../components/common/FormSelect';
 import Modal from '../../components/common/Modal';
-import Toast from '../../components/common/Toast';
 import ClassroomTopicsAndMaterials from '../../components/tutorClassroom/ClassroomTopicsAndMaterials';
 import SessionAttendance from './SessionAttendance';
+import AttendanceModal from '../../components/classroom/AttendanceModal';
+import TutorChangeRequestsModal from '../../components/classroom/TutorChangeRequestsModal';
 import {
   createClassTopic,
   createClassMaterial,
@@ -147,10 +151,7 @@ function getSessionLayout(sessions, hourStart, hourEnd, hourHeights, colorByClas
     const startTime = new Date(session.start_time);
     const endTime = new Date(session.end_time);
     const startOffset = (startTime.getHours() - hourStart) * 60 + startTime.getMinutes();
-    const endOffset = Math.min(
-      (hourEnd - hourStart) * 60,
-      (endTime.getHours() * 60) + endTime.getMinutes() - (hourStart * 60),
-    );
+    const durationMinutes = Math.max(30, (endTime.getTime() - startTime.getTime()) / 60000);
 
     return {
       session: session,
@@ -272,6 +273,9 @@ function ClassSessionFormModal({ session, sessions, initialValues, defaultClassI
       status: session.status || 'SCHEDULED',
     };
   });
+  const [isRepeating, setIsRepeating] = useState(false);
+  const [selectedDays, setSelectedDays] = useState(['MON']);
+  const [repeatEndDate, setRepeatEndDate] = useState('');
   const [formError, setFormError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -318,6 +322,8 @@ function ClassSessionFormModal({ session, sessions, initialValues, defaultClassI
     setFieldErrors((currentErrors) => ({ ...currentErrors, [field]: '' }));
     setFormError('');
   };
+
+  const isEditing = Boolean(session);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -369,8 +375,6 @@ function ClassSessionFormModal({ session, sessions, initialValues, defaultClassI
     setFormError(result.message);
     setFieldErrors(result.errors || {});
   };
-
-  const isEditing = Boolean(session);
 
   return (
     <Modal title={isEditing ? 'Chỉnh sửa buổi học' : 'Tạo buổi học'} onClose={onClose}>
@@ -531,8 +535,9 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
   const attendancePreviewRef = useRef(null);
   const [sessionToEdit, setSessionToEdit] = useState(null);
   const [sessionToDelete, setSessionToDelete] = useState(null);
+  const [attendanceSession, setAttendanceSession] = useState(null);
+  const [isChangeRequestsOpen, setIsChangeRequestsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState('');
   const days = getWeekDays(weekStart);
   const today = new Date();
   const weekSessions = useMemo(() => sessions
@@ -640,7 +645,7 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
       setSessionToDelete(null);
       return;
     }
-    setDeleteError(result.message);
+    toast.error(result.message);
   };
 
   if (isLoading) {
@@ -677,6 +682,15 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
           </div>
         </div>
         <div className="schedule-toolbar-actions">
+          <button
+            type="button"
+            className="btn btn-outline btn-sm"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#ea580c', borderColor: '#fdba74' }}
+            onClick={() => setIsChangeRequestsOpen(true)}
+          >
+            <RotateCcw size={14} aria-hidden="true" />
+            <span>Yêu cầu đổi lịch</span>
+          </button>
           <button type="button" className="btn btn-primary btn-sm" onClick={() => openCreateForm(null)}>
             <Plus size={15} aria-hidden="true" />
             Tạo buổi học
@@ -701,7 +715,13 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
         )}
         {selectedSlotError && <p className="schedule-slot-error" role="status">{selectedSlotError}</p>}
         <div className="schedule-calendar-scroll">
-          <div className="schedule-calendar" style={{ '--schedule-grid-height': `${gridHeight}px` }}>
+          <div
+            className="schedule-calendar"
+            style={{
+              '--schedule-grid-height': `${gridHeight}px`,
+              '--schedule-hour-height': `${HOUR_HEIGHT}px`,
+            }}
+          >
             <div className="schedule-calendar-corner" aria-hidden="true" />
             {days.map((day) => (
               <div
@@ -807,7 +827,6 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
                               type="button"
                               className="schedule-event-action schedule-event-delete-action"
                               onClick={() => {
-                                setDeleteError('');
                                 setSessionToDelete(event.session);
                               }}
                               disabled={sessionHasStarted}
@@ -822,6 +841,36 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
                           <Clock3 size={12} aria-hidden="true" />
                           {formatSessionTime(event.session)}
                         </span>
+                        <div className="schedule-event-footer">
+                          <span
+                            className={`schedule-status-pill ${
+                              event.session.status === 'CANCELLED'
+                                ? 'status-cancelled'
+                                : event.session.status === 'COMPLETED'
+                                ? 'status-completed'
+                                : 'status-scheduled'
+                            }`}
+                          >
+                            {event.session.status === 'CANCELLED'
+                              ? 'Đã hủy'
+                              : event.session.status === 'COMPLETED'
+                              ? 'Đã học xong'
+                              : 'Sắp tới'}
+                          </span>
+                          {event.session.meeting_link && (
+                            <a
+                              className="schedule-join-btn"
+                              href={event.session.meeting_link}
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              title="Vào phòng học"
+                            >
+                              <Video size={11} aria-hidden="true" />
+                              <span>Vào học</span>
+                            </a>
+                          )}
+                        </div>
                       </article>
                     );
                   })}
@@ -874,7 +923,6 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
           <p className="class-session-delete-copy">
             Bạn có chắc muốn xóa “{sessionToDelete.title || 'Buổi học'}” không? Thao tác này không thể hoàn tác.
           </p>
-          {deleteError && <Alert type="error"><p>{deleteError}</p></Alert>}
           <div className="class-session-form-actions">
             <button
               type="button"
@@ -895,6 +943,27 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
           </div>
         </Modal>
       )}
+
+      {/* Modal điểm danh học sinh (UC26.A2) */}
+      <AttendanceModal
+        isOpen={Boolean(attendanceSession)}
+        onClose={() => setAttendanceSession(null)}
+        session={attendanceSession}
+        classId={classId}
+        onSuccess={() => {
+          onRetry();
+        }}
+      />
+
+      {/* Modal xét duyệt yêu cầu đổi / hủy lịch học từ học viên (UC27 & UC28) */}
+      <TutorChangeRequestsModal
+        isOpen={isChangeRequestsOpen}
+        onClose={() => setIsChangeRequestsOpen(false)}
+        classId={classId}
+        onSuccess={() => {
+          onRetry();
+        }}
+      />
     </section>
   );
 }
@@ -938,12 +1007,6 @@ export default function MyClassDetail({
   const [sessionsError, setSessionsError] = useState('');
   const classroom = embedded ? providedClassroom : location.state && location.state.classroom;
   const canLoadClassroom = classroom && String(classroom._id) === classId;
-
-  const showToast = (type, message) => {
-    setToast({ id: Date.now(), type: type, message: message });
-  };
-
-  const closeToast = () => setToast(null);
 
   useEffect(() => {
     if (!canLoadClassroom) {
@@ -1021,8 +1084,8 @@ export default function MyClassDetail({
     return (
       <div className="class-detail-page">
         <Alert type="info">
-          <p>Open this class from My Class to load its details.</p>
-          <Link to="/tutor/classes" className="link">Back to My Class</Link>
+          <p>Vui lòng mở lớp học này từ danh sách Lớp của tôi để tải thông tin chi tiết.</p>
+          <Link to="/tutor/classes" className="link">Quay lại Lớp của tôi</Link>
         </Alert>
       </div>
     );
@@ -1039,38 +1102,33 @@ export default function MyClassDetail({
       showToast('success', response.message);
       return true;
     } catch (error) {
-      setCreateTopicError(error.message);
-      showToast('error', error.message);
+      toast.error(error.message);
       return false;
     }
   };
 
   const handleUpdateTopic = async (topicId, topicName) => {
-    setTopicActionError('');
     try {
       const response = await updateClassTopic(classId, topicId, { name: topicName });
       setTopics((currentTopics) => currentTopics.map((topic) => (
         topic._id === topicId ? response.data : topic
       )));
-      showToast('success', response.message);
+      toast.success(response.message);
       return true;
     } catch (error) {
-      setTopicActionError(error.message);
-      showToast('error', error.message);
+      toast.error(error.message);
       return false;
     }
   };
 
   const handleDeleteTopic = async (topicId) => {
-    setTopicActionError('');
     try {
       const response = await deleteClassTopic(classId, topicId);
       setTopics((currentTopics) => currentTopics.filter((topic) => topic._id !== topicId));
-      showToast('success', response.message);
+      toast.success(response.message);
       return true;
     } catch (error) {
-      setTopicActionError(error.message);
-      showToast('error', error.message);
+      toast.error(error.message);
       return false;
     }
   };
@@ -1086,8 +1144,7 @@ export default function MyClassDetail({
       showToast('success', response.message);
       return true;
     } catch (error) {
-      setCreateMaterialError(error.message);
-      showToast('error', error.message);
+      toast.error(error.message);
       return false;
     }
   };
@@ -1110,8 +1167,7 @@ export default function MyClassDetail({
       }
       return true;
     } catch (error) {
-      setCreateMaterialError(error.message);
-      showToast('error', error.message);
+      toast.error(error.message);
       return false;
     }
   };
@@ -1132,8 +1188,7 @@ export default function MyClassDetail({
       }
       return true;
     } catch (error) {
-      setCreateMaterialError(error.message);
-      showToast('error', error.message);
+      toast.error(error.message);
       return false;
     }
   };
@@ -1202,7 +1257,7 @@ export default function MyClassDetail({
     try {
       const response = await deleteClassSession(targetClassId, sessionId);
       setSessions((currentSessions) => currentSessions.filter((session) => session._id !== sessionId));
-      showToast('success', response.message);
+      toast.success(response.message);
       return { success: true, message: response.message };
     } catch (error) {
       return { success: false, message: error.message };
@@ -1220,9 +1275,9 @@ export default function MyClassDetail({
   if (embedded) {
     return (
       <>
-        <Toast toast={toast} onClose={closeToast} />
         {activeTab === 'materials' && (
           <ClassroomTopicsAndMaterials
+            classId={classId}
             topics={topics}
             newlyCreatedTopicId={newlyCreatedTopicId}
             materials={materials}
@@ -1248,6 +1303,7 @@ export default function MyClassDetail({
         )}
         {activeTab === 'schedule' && (
           <ClassSchedule
+            classId={classId}
             sessions={sessions}
             classId={classId}
             isLoading={sessionsLoading}
@@ -1263,10 +1319,9 @@ export default function MyClassDetail({
 
   return (
     <div className="class-detail-page">
-      <Toast toast={toast} onClose={closeToast} />
       <Link to="/tutor/classes" className="class-detail-back-link">
         <ArrowLeft size={16} aria-hidden="true" />
-        <span>Back to My Class</span>
+        <span>Quay lại Lớp của tôi</span>
       </Link>
 
       <section className="class-detail-hero">
@@ -1274,15 +1329,15 @@ export default function MyClassDetail({
           <div className="class-detail-icon" aria-hidden="true"><BookOpen size={22} /></div>
           <span className="status-badge tone-success">{classroom.status}</span>
         </div>
-        <h1>{classroom.name || 'Untitled class'}</h1>
+        <h1>{classroom.name || 'Lớp học'}</h1>
         {classMeta.length > 0 && <p className="class-detail-subtitle">{classMeta.join(' · ')}</p>}
         {classroom.description && <p className="class-detail-description">{classroom.description}</p>}
         {classroom.capacity !== null && classroom.capacity !== undefined && (
-          <div className="class-detail-facts"><span>Capacity {classroom.capacity}</span></div>
+          <div className="class-detail-facts"><span>Sĩ số: {classroom.capacity} học viên</span></div>
         )}
       </section>
 
-      <div className="class-detail-tabs" role="tablist" aria-label="Class details">
+      <div className="class-detail-tabs" role="tablist" aria-label="Chi tiết lớp học">
         {CLASS_TABS.map(({ id, label, Icon }) => (
           <button
             key={id}
@@ -1309,6 +1364,7 @@ export default function MyClassDetail({
       >
         {activeTab === 'materials' && (
           <ClassroomTopicsAndMaterials
+            classId={classId}
             topics={topics}
             newlyCreatedTopicId={newlyCreatedTopicId}
             materials={materials}
@@ -1334,6 +1390,7 @@ export default function MyClassDetail({
         )}
         {activeTab === 'schedule' && (
           <ClassSchedule
+            classId={classId}
             sessions={sessions}
             classId={classId}
             isLoading={sessionsLoading}
