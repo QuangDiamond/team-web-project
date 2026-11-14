@@ -33,7 +33,8 @@ classMaterialRoutes.post(
   validateClassMaterialFileContent,
   createClassMaterial,
 );
-classMaterialRoutes.get('/:classId/materials', authentication, tutorOnly, getClassMaterials);
+// Học sinh / phụ huynh trong lớp cũng được xem tài liệu (SC36), quyền kiểm tra trong service
+classMaterialRoutes.get('/:classId/materials', authentication, getClassMaterials);
 classMaterialRoutes.patch(
   '/:classId/materials/:materialId',
   authentication,

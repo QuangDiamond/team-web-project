@@ -42,3 +42,18 @@ Successful response:
 ```
 
 Status codes: `200` success, `401` missing or invalid authentication, `422` invalid pagination query.
+
+## Access rules for class read endpoints
+
+`GET /:id/announcements`, `GET /:id/members`, `GET /:id/assignments`, `GET /:id/groups` and
+`GET /assignments/:assignmentId` only allow:
+
+- the tutor who owns the class,
+- a student who is an `ACTIVE` member of the class,
+- a parent with an `ACCEPTED` linked child who is an `ACTIVE` member of the class,
+- an admin.
+
+Anyone else gets `403`; an unknown class id gets `404`.
+
+`GET /:id/assignments` returns only `PUBLISHED` assignments to students and parents. For students and parents,
+`questions[].correct_answer` is removed until the tutor publishes the results (`results_published_at`).

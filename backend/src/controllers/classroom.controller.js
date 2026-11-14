@@ -137,6 +137,7 @@ export const deleteClassroom = asyncHandler(async (req, res) => {
 export const getClassAnnouncements = asyncHandler(async (req, res) => {
   const announcements = await classroomService.getClassAnnouncements({
     classroomId: req.params.id,
+    user: req.user,
   });
 
   return responseCommon(res, announcements, 'Lấy danh sách thông báo thành công', 200, responseCode.SUCCESSED);
@@ -198,6 +199,7 @@ export const togglePinAnnouncement = asyncHandler(async (req, res) => {
 export const getClassMembers = asyncHandler(async (req, res) => {
   const members = await classroomService.getClassMembers({
     classroomId: req.params.id,
+    user: req.user,
   });
 
   return responseCommon(res, members, 'Lấy danh sách thành viên lớp thành công', 200, responseCode.SUCCESSED);

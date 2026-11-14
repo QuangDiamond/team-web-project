@@ -44,10 +44,12 @@ export default function ClassroomAssignmentsTab({
       <div className="members-toolbar">
         <div>
           <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', color: '#0f172a' }}>
-            Quản lý bài tập & Chấm điểm
+            {isOwner ? 'Quản lý bài tập & Chấm điểm' : 'Bài tập của lớp'}
           </h3>
           <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>
-            Tạo bài tập trắc nghiệm, tự luận, nộp tệp và tự động chấm điểm bài làm của học sinh.
+            {isOwner
+              ? 'Tạo bài tập trắc nghiệm, tự luận, nộp tệp và tự động chấm điểm bài làm của học sinh.'
+              : 'Làm bài, theo dõi hạn nộp và xem điểm, nhận xét của gia sư.'}
           </p>
         </div>
 

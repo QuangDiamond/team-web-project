@@ -43,6 +43,7 @@ import ClassroomMembersTab from '../../components/classroom/ClassroomMembersTab'
 import ClassroomAssignmentsTab from '../../components/classroom/ClassroomAssignmentsTab';
 import ClassroomChatTab from '../../components/classroom/ClassroomChatTab';
 import ClassroomScheduleTab from '../../components/classroom/ClassroomScheduleTab';
+import ClassroomMaterialsTab from '../../components/classroom/ClassroomMaterialsTab';
 import MyClassDetail from '../tutor/MyClassDetail';
 import './classroom.css';
 
@@ -595,15 +596,14 @@ export default function ClassroomDetail() {
             <MessageSquare size={15} />
             <span>Nhóm Chat lớp</span>
           </button>
-          {user?.role === 'TUTOR' && (
-            <button
-              type="button"
-              className={`tab-btn ${activeTab === 'materials' ? 'active' : ''}`}
-              onClick={() => setActiveTab('materials')}
-            >
-              <BookOpen size={15} aria-hidden="true" /> Tài liệu &amp; chủ đề
-            </button>
-          )}
+          <button
+            type="button"
+            className={`tab-btn ${activeTab === 'materials' ? 'active' : ''}`}
+            onClick={() => setActiveTab('materials')}
+          >
+            <BookOpen size={15} aria-hidden="true" />
+            {user?.role === 'TUTOR' ? ' Tài liệu & chủ đề' : ' Tài liệu'}
+          </button>
           <button
             type="button"
             className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`}
@@ -688,13 +688,17 @@ export default function ClassroomDetail() {
       {/* ==========================================
           TAB 5: TÀI LIỆU & LỊCH LỚP HỌC
           ========================================== */}
-      {activeTab === 'materials' && user?.role === 'TUTOR' && (
-        <MyClassDetail
-          embedded
-          classId={id}
-          classroom={classroom}
-          activeTab="materials"
-        />
+      {activeTab === 'materials' && (
+        user?.role === 'TUTOR' ? (
+          <MyClassDetail
+            embedded
+            classId={id}
+            classroom={classroom}
+            activeTab="materials"
+          />
+        ) : (
+          <ClassroomMaterialsTab classId={id} />
+        )
       )}
 
       {activeTab === 'schedule' && (

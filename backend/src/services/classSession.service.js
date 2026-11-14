@@ -25,7 +25,7 @@ const SESSION_NOTIFICATION_TITLES = {
  * @param {string} classId - Classroom ID
  * @returns {Promise<Object>} Classroom document
  */
-const assertClassroomMemberOrOwner = async (user, classId) => {
+export const assertClassroomMemberOrOwner = async (user, classId) => {
   if (!mongoose.isValidObjectId(classId)) {
     throw new AppError('Classroom not found', 404);
   }
@@ -45,7 +45,7 @@ const assertClassroomMemberOrOwner = async (user, classId) => {
       (tutorProfile && String(classroom.tutor_profile_id) === String(tutorProfile._id)) ||
       String(classroom.tutor_profile_id) === String(user.id);
     if (!isOwner) {
-      throw new AppError('Forbidden: Only classroom owner can view class sessions', 403);
+      throw new AppError('Forbidden: Only the classroom owner can access this classroom', 403);
     }
     return classroom;
   }
