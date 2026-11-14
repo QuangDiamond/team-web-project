@@ -28,6 +28,8 @@ export default function Combobox({
   autoFocus = false,
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const containerRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -36,6 +38,7 @@ export default function Combobox({
     function handleClickOutside(event) {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
         setIsOpen(false);
+        setIsTyping(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -44,29 +47,63 @@ export default function Combobox({
     };
   }, []);
 
-  const trimmedVal = (value || '').trim().toLowerCase();
-
-  // Lọc các tùy chọn phù hợp theo từ khóa người dùng gõ
+  // Khi click mở dropdown: luôn hiển thị TOÀN BỘ lựa chọn có sẵn.
+  // Khi người dùng chủ động gõ phím (isTyping = true): lọc theo từ khóa đang gõ.
   const filteredOptions = useMemo(() => {
-    if (!trimmedVal) return options;
-    return options.filter((opt) => opt && opt.toLowerCase().includes(trimmedVal));
-  }, [options, trimmedVal]);
+    if (!isTyping || !searchQuery.trim()) {
+      return options;
+    }
+    const query = searchQuery.trim().toLowerCase();
+    return options.filter((opt) => opt && opt.toLowerCase().includes(query));
+  }, [options, isTyping, searchQuery]);
+
+  const hasExactMatch = useMemo(() => {
+    const currentVal = (value || '').trim().toLowerCase();
+    return options.some((opt) => opt && opt.trim().toLowerCase() === currentVal);
+  }, [options, value]);
 
   const handleSelectOption = (opt) => {
     if (onChange) onChange(opt);
+    setIsTyping(false);
+    setSearchQuery('');
     setIsOpen(false);
   };
 
   const handleInputChange = (e) => {
-    if (onChange) onChange(e.target.value);
+    const val = e.target.value;
+    setIsTyping(true);
+    setSearchQuery(val);
+    if (onChange) onChange(val);
     if (!isOpen) setIsOpen(true);
+  };
+
+  const handleInputFocus = () => {
+    setIsTyping(false); // Khi mới focus hoặc click vào ô: hiển thị TOÀN BỘ các lựa chọn
+    setIsOpen(true);
   };
 
   const toggleDropdown = () => {
     if (disabled) return;
+    setIsTyping(false); // Khi bấm nút mũi tên toggle: luôn hiển thị TOÀN BỘ các lựa chọn
     setIsOpen((prev) => !prev);
     if (!isOpen && inputRef.current) {
       inputRef.current.focus();
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      setIsOpen(false);
+      setIsTyping(false);
+    } else if (e.key === 'Enter') {
+      // Khi nhấn Enter, nếu chỉ có 1 lựa chọn khớp thì chọn luôn, ngược lại đóng dropdown
+      if (filteredOptions.length === 1 && isTyping) {
+        e.preventDefault();
+        handleSelectOption(filteredOptions[0]);
+      } else {
+        setIsOpen(false);
+        setIsTyping(false);
+      }
     }
   };
 
@@ -84,7 +121,8 @@ export default function Combobox({
           name={name}
           value={value}
           onChange={handleInputChange}
-          onFocus={() => setIsOpen(true)}
+          onFocus={handleInputFocus}
+          onKeyDown={handleKeyDown}
           placeholder={placeholder}
           required={required}
           disabled={disabled}
@@ -147,6 +185,27 @@ export default function Combobox({
             listStyle: 'none',
           }}
         >
+          {/* Lựa chọn tùy chỉnh nếu người dùng gõ từ khóa mới chưa có trong danh sách */}
+          {isTyping && searchQuery.trim() && !hasExactMatch && (
+            <li
+              onClick={() => {
+                setIsTyping(false);
+                setIsOpen(false);
+              }}
+              style={{
+                padding: '8px 12px',
+                fontSize: '13px',
+                cursor: 'pointer',
+                backgroundColor: 'var(--color-surface-subtle, #f8fafc)',
+                color: 'var(--color-primary-strong, #ea580c)',
+                borderBottom: '1px solid var(--color-border, #e2e8f0)',
+                fontWeight: 600,
+              }}
+            >
+              + Dùng giá trị tự nhập: &quot;{searchQuery.trim()}&quot;
+            </li>
+          )}
+
           {filteredOptions.length > 0 ? (
             filteredOptions.map((opt) => {
               const isSelected = opt.toLowerCase() === (value || '').toLowerCase().trim();
@@ -186,7 +245,7 @@ export default function Combobox({
                 fontStyle: 'italic',
               }}
             >
-              Gõ &quot;{value}&quot; để sử dụng giá trị mới
+              Nhấn ra ngoài hoặc nhấn Enter để dùng giá trị &quot;{value}&quot;
             </li>
           )}
         </ul>
@@ -194,4 +253,3 @@ export default function Combobox({
     </div>
   );
 }
-
