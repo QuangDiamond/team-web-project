@@ -40,7 +40,8 @@ Text fields use the same contact masking as the public profile. The frontend req
 
 ## GET /tutors/:profileId
 
-Public; no authentication required. `profileId` is a TutorProfile ID, not a User ID.
+Guests need no authentication (`optionalAuthentication`). A logged-in STUDENT or ADMIN gets 403 `Forbidden`:
+public profiles are only for tutors and parents. `profileId` is a TutorProfile ID, not a User ID.
 The tutor must have `is_complete: true` and an ACTIVE TUTOR account.
 A direct profile view may have zero published posts.
 
@@ -73,7 +74,7 @@ descending as a tie breaker. Review author IDs, contacts and agreement IDs are e
 ## GET /parents/:userId
 
 Requires the existing authentication middleware (Bearer token or auth cookie),
-then `authorize('TUTOR', 'PARENT', 'ADMIN')`. Missing/invalid authentication returns
+then `authorize('TUTOR', 'PARENT')` (students and admins do not use public profiles). Missing/invalid authentication returns
 401; a disallowed caller role returns 403. The target must be an ACTIVE PARENT.
 
 The exact `data` fields are:

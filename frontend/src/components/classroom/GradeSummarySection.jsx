@@ -1,4 +1,5 @@
 import { Award, Send, Loader2, Calculator } from 'lucide-react';
+import { limitScoreInput } from '../../utils/gradeScore';
 
 export default function GradeSummarySection({
   totalPoints = 10,
@@ -40,7 +41,7 @@ export default function GradeSummarySection({
             min="0"
             max={totalPoints}
             value={finalScore}
-            onChange={(e) => onFinalScoreChange(e.target.value)}
+            onChange={(e) => onFinalScoreChange(limitScoreInput(e.target.value, totalPoints, finalScore))}
             required
             className="grade-final-score-input"
           />

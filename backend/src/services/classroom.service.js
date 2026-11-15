@@ -2623,6 +2623,49 @@ export const deleteAssignment = async ({ assignmentId, tutorProfile }) => {
  * Gia sư chấm điểm và nhận xét bài nộp (UC26)
  * Công bố điểm cho cả học viên và phụ huynh
  */
+/**
+ * Kiểm tra điểm khi chấm: tổng điểm trong 0..total_points (mặc định 10), điểm từng câu trong 0..points của câu (mặc định 1)
+ * @param {Object} assignment - Assignment có questions[]
+ * @param {{ final_score?: number|string, answers_feedback?: Object[] }} data - dữ liệu chấm điểm gia sư gửi lên
+ * @returns {void} ném AppError 422 kèm lỗi theo field nếu có điểm không hợp lệ
+ */
+export const validateGradeScores = (assignment, data) => {
+  const errors = {};
+  const maxFinalScore = assignment.total_points || 10;
+  const finalScore = parseFloat(data.final_score) || 0;
+  if (finalScore < 0 || finalScore > maxFinalScore) {
+    errors.final_score = [`Tổng điểm phải từ 0 đến ${maxFinalScore}`];
+  }
+
+  const maxPointsByQuestionId = new Map();
+  for (const question of assignment.questions || []) {
+    maxPointsByQuestionId.set(String(question._id), question.points || 1);
+  }
+  const answersFeedback = Array.isArray(data.answers_feedback) ? data.answers_feedback : [];
+  const questionErrors = [];
+  answersFeedback.forEach((feedback, index) => {
+    if (feedback.score === undefined) {
+      return;
+    }
+    const maxPoints = maxPointsByQuestionId.get(String(feedback.question_id));
+    if (maxPoints === undefined) {
+      return;
+    }
+    const score = parseFloat(feedback.score) || 0;
+    if (score < 0 || score > maxPoints) {
+      questionErrors.push(`Câu ${index + 1}: điểm phải từ 0 đến ${maxPoints}`);
+    }
+  });
+  if (questionErrors.length > 0) {
+    errors.answers_feedback = questionErrors;
+  }
+
+  if (Object.keys(errors).length > 0) {
+    const firstMessage = Object.values(errors)[0][0];
+    throw new AppError(firstMessage, 422, errors);
+  }
+};
+
 export const gradeSubmission = async ({ submissionId, tutorProfile, data }) => {
   const { final_score, overall_feedback, answers_feedback = [] } = data;
 
@@ -2644,6 +2687,7 @@ export const gradeSubmission = async ({ submissionId, tutorProfile, data }) => {
   if (!isCreator && !isClassOwner) {
     throw new AppError('Chỉ gia sư phụ trách bài tập này mới có quyền chấm điểm', 403);
   }
+  validateGradeScores(assignment, data);
 
   submission.final_score = parseFloat(final_score) || 0;
   submission.overall_feedback = overall_feedback ? overall_feedback.trim() : '';

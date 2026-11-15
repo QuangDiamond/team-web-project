@@ -106,9 +106,9 @@ export const router = createBrowserRouter([
           { path: 'profile', element: <Profile /> },
           { path: 'join-class', element: <JoinClassPage /> },
           { path: 'join-class/:code', element: <JoinClassPage /> },
-          // Hồ sơ công khai (gia sư, phụ huynh) chỉ xem được khi đã đăng nhập
+          // Hồ sơ công khai (gia sư, phụ huynh) chỉ dành cho gia sư và phụ huynh đã đăng nhập; học sinh, admin không cần
           {
-            element: <PrivateRoute />,
+            element: <PrivateRoute roles={['TUTOR', 'PARENT']} />,
             children: [
               { path: 'tutors/:profileId', element: <PublicProfile role="TUTOR" /> },
               { path: 'parents/:userId', element: <PublicProfile role="PARENT" /> },

@@ -12,7 +12,7 @@ Fields:
 - `title`: required, trimmed, up to 200 characters.
 - `material_type`: `DOCUMENT`, `SLIDE`, `VIDEO`, or `LINK`.
 - `visibility`: required; `ALL_MEMBERS` or `STUDENTS_ONLY`.
-- For `DOCUMENT`, `SLIDE`, or `VIDEO`, `file` is required; maximum 20 MB. Allowed extensions: `.pdf`, `.doc`, `.docx`, `.ppt`, `.pptx`, `.xls`, `.xlsx`, `.jpg`, `.png`, `.mp4`, `.zip`.
+- For `DOCUMENT`, `SLIDE`, or `VIDEO`, `file` is required; maximum 10 MB (`.mp4` maximum 20 MB). The backend accepts up to 20 MB for every type, but Cloudinary (Free plan) rejects non-video files over 10 MB, which returns `502`. Allowed extensions: `.pdf`, `.doc`, `.docx`, `.ppt`, `.pptx`, `.xls`, `.xlsx`, `.jpg`, `.png`, `.mp4`, `.zip`.
 - For `LINK`, send `file_url` containing a valid URL and omit `file`. The backend saves that URL directly and stores `file_size: null`; no Cloudinary upload occurs.
 
 The backend sets `class_id` from the route and `uploader_profile_id` from the authenticated tutor profile. For files, `file_url` / `file_size` come from Cloudinary; for links, `file_url` is the submitted URL and `file_size` is `null`. Configure `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` in the backend environment.

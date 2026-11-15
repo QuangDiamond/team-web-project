@@ -1,5 +1,6 @@
 import { CheckCircle2, AlertTriangle, FileText, ExternalLink } from 'lucide-react';
 import { getAttachmentUrl } from '../../utils/fileUrl';
+import { getQuestionMaxPoints, limitScoreInput } from '../../utils/gradeScore';
 
 export default function GradeQuestionReview({
   questions = [],
@@ -281,15 +282,20 @@ export default function GradeQuestionReview({
                     type="number"
                     step="0.25"
                     min="0"
-                    max={questionInfo?.points || 10}
+                    max={getQuestionMaxPoints(questionInfo)}
                     value={currentFeedback.score}
                     onChange={(e) =>
-                      onAnswerFeedbackChange(qId, 'score', e.target.value, ans.is_auto_graded)
+                      onAnswerFeedbackChange(
+                        qId,
+                        'score',
+                        limitScoreInput(e.target.value, getQuestionMaxPoints(questionInfo), currentFeedback.score),
+                        ans.is_auto_graded
+                      )
                     }
                     className="grade-q-score-input"
                   />
                   <span style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>
-                    / {questionInfo?.points || 1}đ
+                    / {getQuestionMaxPoints(questionInfo)}đ
                   </span>
                 </div>
 

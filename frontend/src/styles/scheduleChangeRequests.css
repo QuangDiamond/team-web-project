@@ -138,6 +138,18 @@
   font-size: 12px;
 }
 
+.schedule-change-time-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .schedule-change-time-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
 .schedule-change-form-actions {
   justify-content: flex-end;
   gap: 8px;

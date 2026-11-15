@@ -206,18 +206,29 @@ test('empty public lists use default pagination, including tutors without publis
   assert.deepEqual(parent.requests, empty);
 });
 
-test('routes allow guest tutor viewing and authenticate/authorize parent viewing', () => {
+test('routes allow guests, tutors and parents to view profiles; students and admins are blocked', () => {
   const tutor = discoveryRoutes.stack.find((layer) => layer.route.path === '/tutors/:profileId').route;
   const parent = discoveryRoutes.stack.find((layer) => layer.route.path === '/parents/:userId').route;
   assert.equal(tutor.methods.get, true);
-  assert.equal(tutor.stack.length, 1);
+  assert.equal(tutor.stack.length, 3);
+  const blockTutorProfile = tutor.stack[1].handle;
+  blockTutorProfile({}, {}, (error) => assert.equal(error, undefined));
+  for (const role of ['TUTOR', 'PARENT']) {
+    blockTutorProfile({ user: { role } }, {}, (error) => assert.equal(error, undefined));
+  }
+  for (const role of ['STUDENT', 'ADMIN']) {
+    blockTutorProfile({ user: { role } }, {}, (error) => assert.equal(error.status, 403));
+  }
+
   assert.equal(parent.methods.get, true);
   assert.equal(parent.stack[0].handle, authentication);
   const authorize = parent.stack[1].handle;
-  for (const role of ['TUTOR', 'PARENT', 'ADMIN']) {
+  for (const role of ['TUTOR', 'PARENT']) {
     authorize({ user: { role } }, {}, (error) => assert.equal(error, undefined));
   }
-  authorize({ user: { role: 'STUDENT' } }, {}, (error) => assert.equal(error.status, 403));
+  for (const role of ['STUDENT', 'ADMIN']) {
+    authorize({ user: { role } }, {}, (error) => assert.equal(error.status, 403));
+  }
   authorize({}, {}, (error) => assert.equal(error.status, 401));
 });
 

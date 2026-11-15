@@ -41,6 +41,7 @@ const MESSAGES = {
   'Schedule change requests must be submitted at least 12 hours before the session': 'Cần gửi đề nghị đổi lịch trước buổi học ít nhất 12 giờ.',
   'Schedule change requests are only available for classes with one active student': 'Chỉ lớp có đúng một học sinh đang hoạt động mới dùng đề nghị đổi lịch. Lớp nhiều học sinh cần gia sư đổi lịch trực tiếp.',
   'Proposed session time must be in the future': 'Thời gian đề xuất phải ở tương lai.',
+  'Proposed time is the same as the current session time': 'Giờ đề xuất đang trùng với giờ hiện tại của buổi học. Hãy chọn giờ khác.',
   'A pending schedule change request already exists for this session': 'Buổi học này đã có một đề nghị đổi lịch đang chờ xử lý.',
   'Schedule changes can only be accepted before the session starts and for a future time': 'Chỉ có thể chấp nhận đổi lịch trước khi buổi học bắt đầu và sang một thời điểm trong tương lai.',
   'A reason is required when rejecting a schedule change request': 'Vui lòng nhập lý do khi từ chối đề nghị đổi lịch.',

@@ -968,6 +968,7 @@ export default function MySchedule() {
         <ScheduleChangeFormModal
           session={scheduleChangeSession}
           mode={scheduleChangeMode}
+          otherSessions={sessions}
           onClose={() => setScheduleChangeSession(null)}
           onSaved={handleScheduleChangeSaved}
         />

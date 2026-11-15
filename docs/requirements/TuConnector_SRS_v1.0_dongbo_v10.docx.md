@@ -520,7 +520,7 @@ Data-level rules: Parents query/update only their own requests, agreements, cred
 | BR-09 | Parent–child link | A parent sends a link request to a student account; the link becomes active only after the student accepts it (Pending → Accepted / Declined). A parent sees only the data of accepted linked children. |
 | BR-10 | Sessions | A tutor cannot have overlapping sessions. Changes are synchronised to Google Calendar within 1 minute when connected; reminders are sent 24 hours and 30 minutes before a session. |
 | BR-11 | Assignments | Submissions after the deadline are marked Late and accepted only if the tutor enabled late submission. |
-| BR-12 | Files | Max 20 MB per file (avatar 5 MB). Allowed: pdf, doc/docx, ppt/pptx, xls/xlsx, jpg, png, mp4, zip. |
+| BR-12 | Files | Max 10 MB per file, except mp4 max 20 MB (avatar 5 MB); the 10 MB cap comes from the Cloudinary Free plan. Allowed: pdf, doc/docx, ppt/pptx, xls/xlsx, jpg, png, mp4, zip. |
 | BR-13 | AI usage | Each user has an AI quota per monthly plan cycle (set per plan in UC39). AI output is a draft; tutors must review before publishing to students. Failed AI calls do not consume quota. |
 | BR-14 | Chat permission | Only members can read/send in a group. A 1-1 chat between a parent and a tutor is allowed only after an application is continued by the parent or an invitation is continued by the tutor. |
 | BR-15 | Contact protection | Tutor/parent phone numbers and emails are hidden and auto-masked in public profiles, posts and requests; inside an opened 1-1 conversation both sides may share them (contact card). |

@@ -13,14 +13,28 @@ const SCHEDULE_REGEX = new RegExp(
   `^((?:${DAY_PATTERN})(?:, (?:${DAY_PATTERN}))*) · (\\d{1,2}):(\\d{2}) (AM|PM) - (\\d{1,2}):(\\d{2}) (AM|PM)$`
 );
 
-// Giờ hợp lệ: giờ 1-12, phút 0-59
+const MAX_HOUR = 12;
+
+// Ô giờ chỉ nhận số nguyên 0-12: bỏ ký tự không phải số, tối đa 2 chữ số; vượt 12 thì giữ giá trị cũ
+export const sanitizeHourInput = (rawValue, previousValue) => {
+  const digits = String(rawValue).replace(/\D/g, '').slice(0, 2);
+  if (digits === '') {
+    return '';
+  }
+  if (Number(digits) > MAX_HOUR) {
+    return previousValue;
+  }
+  return digits;
+};
+
+// Giờ hợp lệ: giờ 0-12 (0 và 12 AM đều là nửa đêm), phút 0-59
 export const isValidTime = (time) => {
   if (time.hour === '' || time.minute === '') {
     return false;
   }
   const hour = Number(time.hour);
   const minute = Number(time.minute);
-  if (!Number.isInteger(hour) || hour < 1 || hour > 12) {
+  if (!Number.isInteger(hour) || hour < 0 || hour > MAX_HOUR) {
     return false;
   }
   if (!Number.isInteger(minute) || minute < 0 || minute > 59) {

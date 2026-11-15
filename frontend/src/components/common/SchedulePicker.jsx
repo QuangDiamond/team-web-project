@@ -1,9 +1,13 @@
 import { useState } from 'react';
-import { EMPTY_TIME, WEEK_DAYS, formatSchedule, isValidTime, parseSchedule, toMinutes } from '../../utils/schedule';
+import { EMPTY_TIME, WEEK_DAYS, formatSchedule, isValidTime, parseSchedule, sanitizeHourInput, toMinutes } from '../../utils/schedule';
 
 function TimeFields({ idPrefix, legend, time, disabled, onChange }) {
   const handleField = (event) => {
     onChange({ ...time, [event.target.dataset.field]: event.target.value });
+  };
+
+  const handleHour = (event) => {
+    onChange({ ...time, hour: sanitizeHourInput(event.target.value, time.hour) });
   };
 
   return (
@@ -12,15 +16,16 @@ function TimeFields({ idPrefix, legend, time, disabled, onChange }) {
       <input
         id={`${idPrefix}-hour`}
         type="number"
-        min="1"
+        min="0"
         max="12"
+        step="1"
         inputMode="numeric"
         placeholder="giờ"
-        aria-label={`${legend} - giờ`}
-        data-field="hour"
+        aria-label={`${legend} - giờ (0-12)`}
+        title="Nhập giờ từ 0 đến 12"
         value={time.hour}
         disabled={disabled}
-        onChange={handleField}
+        onChange={handleHour}
       />
       <span className="schedule-time-colon" aria-hidden="true">:</span>
       <input

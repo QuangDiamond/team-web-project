@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { getSubmissionsForAssignment, gradeSubmission, publishAssignmentResults } from '../../services/classroomService';
 import { getAttachmentUrl } from '../../utils/fileUrl';
+import { getQuestionMaxPoints, limitScoreInput } from '../../utils/gradeScore';
 
 export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGraded }) {
   const [submissions, setSubmissions] = useState([]);
@@ -589,12 +590,17 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                                   type="number"
                                   step="0.25"
                                   min="0"
-                                  max={questionInfo?.points || 10}
+                                  max={getQuestionMaxPoints(questionInfo)}
                                   value={answersFeedback[ans.question_id]?.score ?? ans.score ?? 0}
-                                  onChange={(e) => handleAnswerFeedbackChange(ans.question_id, 'score', e.target.value, ans.is_auto_graded)}
+                                  onChange={(e) => handleAnswerFeedbackChange(
+                                    ans.question_id,
+                                    'score',
+                                    limitScoreInput(e.target.value, getQuestionMaxPoints(questionInfo), answersFeedback[ans.question_id]?.score ?? ans.score ?? 0),
+                                    ans.is_auto_graded
+                                  )}
                                   style={{ width: '65px', padding: '3px 6px', fontSize: '13px', borderRadius: '4px', border: '1px solid var(--color-control-border)', fontWeight: 600 }}
                                 />
-                                <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>/ {questionInfo?.points || 1}đ</span>
+                                <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>/ {getQuestionMaxPoints(questionInfo)}đ</span>
                               </div>
 
                               {(answersFeedback[ans.question_id]?.is_overridden || ans.is_overridden) && (
@@ -634,7 +640,7 @@ export default function GradeSubmissionModal({ isOpen, onClose, assignment, onGr
                         min="0"
                         max={assignment.total_points || 10}
                         value={finalScore}
-                        onChange={(e) => setFinalScore(e.target.value)}
+                        onChange={(e) => setFinalScore(limitScoreInput(e.target.value, assignment.total_points || 10, finalScore))}
                         required
                         style={{ width: '130px', padding: '8px', fontSize: '15px', fontWeight: 600 }}
                       />

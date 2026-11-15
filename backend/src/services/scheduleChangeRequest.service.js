@@ -9,7 +9,7 @@ import { ScheduleChangeRequest } from '../models/ScheduleChangeRequest.js';
 import { TutorProfile } from '../models/TutorProfile.js';
 import { User } from '../models/User.js';
 import { ENUMS } from '../models/enums.js';
-import { updateClassSession } from './classSession.service.js';
+import { ensureNoSessionOverlap, updateClassSession } from './classSession.service.js';
 import { getOwnedActiveClassroom, getStudentActiveClassroom } from './topic.service.js';
 import { getTutorProfileOrThrow } from './tutorContext.service.js';
 
@@ -88,6 +88,21 @@ const validateRequestableSession = (session, studentIds) => {
   }
   if (studentIds.length !== 1) {
     throw new AppError('Schedule change requests are only available for classes with one active student', 422);
+  }
+};
+
+/**
+ * Reject a proposal that keeps the session at exactly its current time
+ * @param {Object} session - Class session
+ * @param {Date} proposedStartTime - Proposed start time
+ * @param {Date} proposedEndTime - Proposed end time
+ * @returns {void}
+ */
+const ensureProposalChangesTime = (session, proposedStartTime, proposedEndTime) => {
+  const sameStart = proposedStartTime.getTime() === new Date(session.start_time).getTime();
+  const sameEnd = proposedEndTime.getTime() === new Date(session.end_time).getTime();
+  if (sameStart && sameEnd) {
+    throw new AppError('Proposed time is the same as the current session time', 422);
   }
 };
 
@@ -308,6 +323,10 @@ export const createScheduleChangeRequest = async (user, data) => {
   if (data.proposed_start_time <= new Date()) {
     throw new AppError('Proposed session time must be in the future', 422);
   }
+
+  // giờ đề xuất phải khác giờ hiện tại và ko được trùng buổi khác của tutor (bỏ qua chính buổi đang xin đổi)
+  ensureProposalChangesTime(session, data.proposed_start_time, data.proposed_end_time);
+  await ensureNoSessionOverlap(classroom, data.proposed_start_time, data.proposed_end_time, session._id);
 
   // tag: cần xem lại. 
   // validate xem có ScheduleChangerequest khác cũng tồn tại của session này ko nếu có thì bắn lỗi 
@@ -548,6 +567,8 @@ export const updateScheduleChangeRequest = async (user, requestId, data) => {
   if (data.proposed_start_time <= now) {
     throw new AppError('Proposed session time must be in the future', 422);
   }
+  ensureProposalChangesTime(session, data.proposed_start_time, data.proposed_end_time);
+  await ensureNoSessionOverlap(classroom, data.proposed_start_time, data.proposed_end_time, session._id);
 
   const updatedRequest = await ScheduleChangeRequest.findOneAndUpdate(
     { _id: request._id, status: ENUMS.ScheduleChangeRequestsStatus.PENDING },

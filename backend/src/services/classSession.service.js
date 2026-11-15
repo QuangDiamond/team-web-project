@@ -190,7 +190,7 @@ const validateFutureStartTime = (startTime) => {
  * @param {string | null} excludedSessionId - Session ID to ignore while updating
  * @returns {Promise<void>}
  */
-const ensureNoSessionOverlap = async (classroom, startTime, endTime, excludedSessionId = null) => {
+export const ensureNoSessionOverlap = async (classroom, startTime, endTime, excludedSessionId = null) => {
   const activeClassrooms = await Classroom.find({
     tutor_profile_id: classroom.tutor_profile_id,
     status: ENUMS.ClassroomsStatus.ACTIVE,
@@ -645,6 +645,18 @@ export const createScheduleChangeRequest = async (user, classId, sessionId, data
   });
   if (existingPending) {
     throw new AppError('Buổi học này đã có một yêu cầu đổi lịch đang chờ gia sư phản hồi', 409);
+  }
+
+  if (data.request_type === ENUMS.ScheduleChangeRequestsRequestType.MOVE) {
+    if (data.proposed_start_time <= now) {
+      throw new AppError('Proposed session time must be in the future', 422);
+    }
+    const sameStart = data.proposed_start_time.getTime() === classSession.start_time.getTime();
+    const sameEnd = data.proposed_end_time.getTime() === classSession.end_time.getTime();
+    if (sameStart && sameEnd) {
+      throw new AppError('Proposed time is the same as the current session time', 422);
+    }
+    await ensureNoSessionOverlap(classroom, data.proposed_start_time, data.proposed_end_time, classSession._id);
   }
 
   const changeRequest = await ScheduleChangeRequest.create({

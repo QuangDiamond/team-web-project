@@ -6,6 +6,16 @@ const dateTimeSchema = z
   .datetime({ offset: true, message: 'Time must be a valid ISO datetime with timezone' })
   .transform((value) => new Date(value));
 
+// Cùng giới hạn thời lượng với lúc tạo buổi học (classSessionSchema)
+const MIN_DURATION_MS = 15 * 60 * 1000;
+const MAX_DURATION_MS = 300 * 60 * 1000;
+const DURATION_MESSAGE = 'Thời lượng đề xuất phải từ 15 phút đến 300 phút (5 tiếng)';
+
+const hasValidDuration = (data) => {
+  const durationMs = data.proposed_end_time.getTime() - data.proposed_start_time.getTime();
+  return durationMs >= MIN_DURATION_MS && durationMs <= MAX_DURATION_MS;
+};
+
 export const createScheduleChangeRequestSchema = z
   .strictObject({
     session_id: objectIdSchema,
@@ -16,6 +26,10 @@ export const createScheduleChangeRequestSchema = z
   .refine((data) => data.proposed_end_time > data.proposed_start_time, {
     path: ['proposed_end_time'],
     message: 'End time must be after start time',
+  })
+  .refine(hasValidDuration, {
+    path: ['proposed_end_time'],
+    message: DURATION_MESSAGE,
   });
 
 export const respondScheduleChangeRequestSchema = z
@@ -37,4 +51,8 @@ export const updateScheduleChangeRequestSchema = z
   .refine((data) => data.proposed_end_time > data.proposed_start_time, {
     path: ['proposed_end_time'],
     message: 'End time must be after start time',
+  })
+  .refine(hasValidDuration, {
+    path: ['proposed_end_time'],
+    message: DURATION_MESSAGE,
   });

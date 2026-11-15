@@ -6,7 +6,7 @@ test('schedule helpers format, parse and reject invalid times', async () => {
   const compiled = await build({
     stdin: { resolveDir: process.cwd(), loader: 'js', contents: `
       import assert from 'node:assert/strict';
-      import { formatSchedule, parseSchedule } from './src/utils/schedule.js';
+      import { formatSchedule, parseSchedule, sanitizeHourInput } from './src/utils/schedule.js';
       import { toSelectOptions } from './src/utils/selectOptions.js';
       import { GRADE_LEVELS } from './src/constants/gradeLevels.js';
 
@@ -28,6 +28,16 @@ test('schedule helpers format, parse and reject invalid times', async () => {
       assert.equal(formatSchedule(['T2'], time('4', '60', 'AM'), time('5', '0', 'AM')), '');
       assert.equal(formatSchedule(['T2'], time('6', '0', 'PM'), time('6', '0', 'PM')), '');
       assert.equal(formatSchedule(['T2'], time('7', '0', 'PM'), time('6', '0', 'PM')), '');
+
+      // Ô giờ chỉ nhận 0-12: vượt 12 giữ giá trị cũ, bỏ ký tự không phải số
+      assert.equal(sanitizeHourInput('0', ''), '0');
+      assert.equal(sanitizeHourInput('12', '1'), '12');
+      assert.equal(sanitizeHourInput('13', '1'), '1');
+      assert.equal(sanitizeHourInput('99', '9'), '9');
+      assert.equal(sanitizeHourInput('-3', ''), '3');
+      assert.equal(sanitizeHourInput('1.5', '1'), '1');
+      assert.equal(sanitizeHourInput('', '5'), '');
+      assert.equal(formatSchedule(['T2'], time('0', '0', 'AM'), time('1', '0', 'AM')), 'T2 · 0:00 AM - 1:00 AM');
 
       // 12 AM là nửa đêm, 12 PM là buổi trưa
       assert.equal(formatSchedule(['CN'], time('12', '0', 'AM'), time('1', '5', 'AM')), 'CN · 12:00 AM - 1:05 AM');

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { FileText, Search } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 import { usePagedList } from '../../hooks/usePagedList';
 import { searchPosts } from '../../services/discoveryService';
 import { formatBudget, getModeLabel } from '../../constants/requestLabels';
@@ -9,10 +10,11 @@ import { getInitials } from '../../utils/getInitials';
 import ListState from '../common/ListState';
 import Pagination from '../common/Pagination';
 import TutorSearchFilters from './TutorSearchFilters';
+import { canViewPublicProfile } from '../../utils/publicProfileAccess';
 
 const PAGE_SIZE = 9;
 
-function PostCard({ post }) {
+function PostCard({ post, canViewProfile }) {
   const tags = [post.subject_name, post.grade_level, getModeLabel(post.teaching_mode)].filter(Boolean);
   let priceText = 'Liên hệ học phí';
   if (post.price !== null && post.price !== undefined) {
@@ -41,17 +43,21 @@ function PostCard({ post }) {
         <span className="directory-price-tag">{priceText}</span>
       </p>
       <p className="item-meta">Đăng ngày {formatDate(post.created_at)}</p>
-      <div className="directory-card-actions">
-        <Link to={`/tutors/${post.tutor.profile_id}`} className="btn btn-outline btn-sm">Xem hồ sơ gia sư</Link>
-      </div>
+      {canViewProfile && (
+        <div className="directory-card-actions">
+          <Link to={`/tutors/${post.tutor.profile_id}`} className="btn btn-outline btn-sm">Xem hồ sơ gia sư</Link>
+        </div>
+      )}
     </li>
   );
 }
 
 // Tab "Bài đăng" của trang /tutors: bài đăng công khai (PUBLISHED) của gia sư, mới nhất trước
 export default function TutorPostDirectory() {
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [filters, setFilters] = useState(() => Object.fromEntries(searchParams));
+  const canViewProfile = canViewPublicProfile(user);
 
   const params = { ...Object.fromEntries(searchParams), limit: PAGE_SIZE };
   delete params.tab;
@@ -112,7 +118,7 @@ export default function TutorPostDirectory() {
       >
         {list.data && (
           <ul className="directory-grid directory-grid-3">
-            {list.data.items.map((post) => <PostCard key={post._id} post={post} />)}
+            {list.data.items.map((post) => <PostCard key={post._id} post={post} canViewProfile={canViewProfile} />)}
           </ul>
         )}
       </ListState>

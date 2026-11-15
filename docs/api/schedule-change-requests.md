@@ -21,7 +21,7 @@ Returns requests for sessions in the caller's classrooms, including request dire
 }
 ```
 
-The session must not be cancelled or started, the request must be submitted at least 12 hours before its start, and the class must have exactly one active student. Only one pending request is allowed per session. For classes with multiple active students, students cannot submit requests; the tutor changes the schedule directly and active students receive notifications.
+The session must not be cancelled or started, the request must be submitted at least 12 hours before its start, and the class must have exactly one active student. Only one pending request is allowed per session. The proposed time must be in the future, differ from the session's current time, last 15–300 minutes (`422` otherwise), and must not overlap another non-cancelled session of the tutor in any active class (`409` otherwise; the session being moved is ignored). The same checks apply when the requester edits a pending request. For classes with multiple active students, students cannot submit requests; the tutor changes the schedule directly and active students receive notifications.
 
 ## Respond to a request
 

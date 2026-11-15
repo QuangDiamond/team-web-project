@@ -39,7 +39,9 @@ const ALLOWED_FILE_MIME_TYPES = {
   zip: ['application/zip', 'application/x-zip-compressed', 'application/octet-stream'],
 };
 
-const MAX_CLASS_MATERIAL_SIZE = 20 * 1024 * 1024;
+// Cloudinary gói Free: ảnh/PDF và file raw (doc, ppt, xls, zip) tối đa 10 MB; MP4 theo giới hạn 20 MB của backend
+const MAX_CLASS_MATERIAL_SIZE_MB = 10;
+const MAX_VIDEO_MATERIAL_SIZE_MB = 20;
 
 const formatFileSize = (fileSize) => {
   if (!fileSize) return 'Không rõ dung lượng';
@@ -49,7 +51,7 @@ const formatFileSize = (fileSize) => {
 
 const MATERIAL_ACCEPT = '.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.png,.mp4,.zip';
 
-const MATERIAL_FILE_HELP = 'Cho phép PDF, DOC/DOCX, PPT/PPTX, XLS/XLSX, JPG, PNG, MP4, ZIP. Tối đa 20 MB.';
+const MATERIAL_FILE_HELP = 'Cho phép PDF, DOC/DOCX, PPT/PPTX, XLS/XLSX, JPG, PNG, MP4, ZIP. Tối đa 10 MB (riêng MP4 tối đa 20 MB).';
 
 const MATERIAL_TYPE_HELP = 'Chọn Liên kết để lưu URL, hoặc chọn loại tệp để tải tệp lên.';
 
@@ -174,8 +176,12 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material, er
       return;
     }
 
-    if (selectedFile.size > MAX_CLASS_MATERIAL_SIZE) {
-      setFileError('File vượt quá 20 MB. Vui lòng nén file hoặc chọn file nhỏ hơn.');
+    let maxSizeMb = MAX_CLASS_MATERIAL_SIZE_MB;
+    if (extension === 'mp4') {
+      maxSizeMb = MAX_VIDEO_MATERIAL_SIZE_MB;
+    }
+    if (selectedFile.size > maxSizeMb * 1024 * 1024) {
+      setFileError(`File ${extension.toUpperCase()} tối đa ${maxSizeMb} MB. Vui lòng nén file hoặc chọn file nhỏ hơn.`);
       setFile(null);
       event.target.value = '';
     }

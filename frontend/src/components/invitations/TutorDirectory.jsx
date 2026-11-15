@@ -11,6 +11,7 @@ import ListState from '../common/ListState';
 import Pagination from '../common/Pagination';
 import InviteTutorDialog from '../publicProfile/InviteTutorDialog';
 import TutorSearchFilters from './TutorSearchFilters';
+import { canViewPublicProfile } from '../../utils/publicProfileAccess';
 
 const PAGE_SIZE = 12;
 
@@ -21,7 +22,7 @@ function RatingText({ rating }) {
   return <span className="directory-rating"><Star size={15} aria-hidden="true" /> {Number(rating).toFixed(1)}</span>;
 }
 
-function TutorRow({ tutor, onInvite }) {
+function TutorRow({ tutor, onInvite, canViewProfile }) {
   let categories = tutor.teaching_categories || [];
   if (categories.length === 0) {
     categories = tutor.subjects.map((name) => ({ type: 'subjects', category_id: name, name }));
@@ -57,7 +58,7 @@ function TutorRow({ tutor, onInvite }) {
         {priceText ? <span className="directory-price-tag">{priceText}</span> : 'Liên hệ học phí'}
       </p>
       <div className="directory-card-actions">
-        <Link to={`/tutors/${tutor.profile_id}`} className="btn btn-outline btn-sm">Xem hồ sơ</Link>
+        {canViewProfile && <Link to={`/tutors/${tutor.profile_id}`} className="btn btn-outline btn-sm">Xem hồ sơ</Link>}
         <button type="button" className="btn btn-primary btn-sm" onClick={() => onInvite(tutor)}>Mời</button>
       </div>
     </li>
@@ -71,6 +72,7 @@ export default function TutorDirectory() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filters, setFilters] = useState(() => Object.fromEntries(searchParams));
   const [invitingTutor, setInvitingTutor] = useState(null);
+  const canViewProfile = canViewPublicProfile(user);
 
   const params = { ...Object.fromEntries(searchParams), limit: PAGE_SIZE };
   delete params.area;
@@ -148,7 +150,7 @@ export default function TutorDirectory() {
         {list.data && (
           <ul className="directory-grid">
             {list.data.items.map((tutor) => (
-              <TutorRow key={tutor.profile_id} tutor={tutor} onInvite={handleInvite} />
+              <TutorRow key={tutor.profile_id} tutor={tutor} onInvite={handleInvite} canViewProfile={canViewProfile} />
             ))}
           </ul>
         )}

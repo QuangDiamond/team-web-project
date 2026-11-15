@@ -26,6 +26,24 @@ export function formatShortDay(date) {
   return `${WEEKDAY_SHORT[value.getDay()]} ${value.getDate()}/${value.getMonth() + 1}`;
 }
 
+// Tìm lý do giờ đề xuất bị trùng: 'SAME_TIME' nếu y hệt giờ hiện tại, buổi bị trùng nếu chồng giờ, null nếu hợp lệ.
+// Hai buổi sát nhau (kết thúc = bắt đầu) cũng tính là trùng, giống backend (ensureNoSessionOverlap).
+export function findProposalConflict(session, proposedStart, proposedEnd, otherSessions) {
+  const startMs = new Date(proposedStart).getTime();
+  const endMs = new Date(proposedEnd).getTime();
+  const sameStart = startMs === new Date(session.start_time).getTime();
+  const sameEnd = endMs === new Date(session.end_time).getTime();
+  if (sameStart && sameEnd) return 'SAME_TIME';
+
+  const conflictingSession = otherSessions.find((otherSession) => {
+    if (otherSession._id === session._id || otherSession.status === 'CANCELLED') return false;
+    const otherStartMs = new Date(otherSession.start_time).getTime();
+    const otherEndMs = new Date(otherSession.end_time).getTime();
+    return startMs <= otherEndMs && endMs >= otherStartMs;
+  });
+  return conflictingSession || null;
+}
+
 // Yêu cầu PENDING nhưng buổi gốc đã bắt đầu hoặc giờ đề xuất đã qua → không thể phản hồi nữa
 // (backend cũng chặn phản hồi trong trường hợp này; DB không có trạng thái EXPIRED nên chỉ suy ra ở giao diện)
 export function isRequestExpired(request, now = new Date()) {

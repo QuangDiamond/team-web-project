@@ -123,6 +123,7 @@ export default function StudentSchedule() {
         <ScheduleChangeFormModal
           session={scheduleChangeSession}
           mode="REQUEST"
+          otherSessions={sessions}
           onClose={() => setScheduleChangeSession(null)}
           onSaved={() => {
             setScheduleChangeSession(null);
