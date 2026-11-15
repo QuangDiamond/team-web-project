@@ -142,7 +142,17 @@ export function AuthProvider({ children }) {
     });
   }, []);
 
-  const value = { user, initializing, loggedOutByUser, clearLoggedOutByUser, accountLockedOnStart, login, register, completeGoogleRegister, logout, resetPassword, changePassword, updateAvatarUrl };
+  // Gia sư lưu hồ sơ xong: /dashboard không còn chuyển sang trang hồ sơ nữa
+  const markTutorProfileComplete = useCallback(() => {
+    setUser((previous) => {
+      if (!previous) return previous;
+      const updated = { ...previous, tutor_profile_complete: true };
+      try { localStorage.setItem('user', JSON.stringify(updated)); } catch {}
+      return updated;
+    });
+  }, []);
+
+  const value = { user, initializing, loggedOutByUser, clearLoggedOutByUser, accountLockedOnStart, login, register, completeGoogleRegister, logout, resetPassword, changePassword, updateAvatarUrl, markTutorProfileComplete };
 
   return (
     <AuthContext.Provider value={value}>

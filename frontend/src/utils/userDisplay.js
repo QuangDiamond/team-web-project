@@ -12,6 +12,7 @@ export const USER_STATUS_OPTIONS = [
   { value: 'ACTIVE', label: 'Đang hoạt động', tone: 'green' },
   { value: 'SUSPENDED', label: 'Tạm khóa', tone: 'amber' },
   { value: 'BANNED', label: 'Bị cấm', tone: 'red' },
+  { value: 'UNVERIFIED', label: 'Chưa xác minh email', tone: 'gray' },
 ];
 
 const AUDIT_ACTION_LABELS = {
@@ -90,6 +91,10 @@ export const getAvailableStatusActions = (accountStatus) => {
   }
   if (accountStatus === 'SUSPENDED') {
     return ['REACTIVATE', 'BAN'];
+  }
+  // UNVERIFIED chỉ thành ACTIVE khi user tự bấm link xác minh email (UC01)
+  if (accountStatus === 'UNVERIFIED') {
+    return ['SUSPEND', 'BAN'];
   }
   return ['REACTIVATE', 'SUSPEND'];
 };

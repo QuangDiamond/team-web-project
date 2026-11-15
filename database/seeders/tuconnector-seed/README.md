@@ -41,3 +41,12 @@ Chọn collection → **Add Data → Import JSON or CSV file** → chọn `json/
 - Token, session, cache AI có TTL index nên hạn để `FAR_FUTURE`, nếu không MongoDB sẽ tự xóa.
 - Số dư `User.credit_wallet.balance` phải bằng tổng `amount` trong `CREDIT_TRANSACTIONS` của user đó.
 - Mật khẩu mẫu: `Tuconnector@123`. `password_hash` trong seed là giá trị giả, đăng nhập thật cần hash bcrypt thật.
+
+## Tài khoản demo lớp học (`classroomFixture.js`)
+- Mật khẩu chung `Abc123456!` (giống `demo.tutorXX` / `demo.parentXX` của `marketplaceFixture.js`).
+- 24 học sinh `demo.student01@example.com` … `demo.student24@example.com`:
+  - `student01`–`student14`: đã liên kết phụ huynh (`demo.parent01`–`demo.parent07`, mỗi phụ huynh 2 con).
+  - `student15`–`student16`: phụ huynh (`demo.parent08`, `demo.parent09`) đã mời, học sinh chưa xác nhận (PENDING).
+  - `student17`–`student24`: không có phụ huynh.
+- 16 gia sư `demo.tutor01`–`demo.tutor16` mỗi người 1 lớp (gói Free giới hạn 1 lớp), 5–8 học sinh/lớp, mã lớp `DEMOCL01`…`DEMOCL16`.
+

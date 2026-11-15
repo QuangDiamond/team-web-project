@@ -2,7 +2,9 @@
 
 .login-options {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
   margin: -4px 0 20px;
   font-size: 14px;
 }

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { BookOpen, ChevronDown, FileText, Pencil, Plus, Search, Sparkles, Trash2, Upload } from 'lucide-react';
+import { BookOpen, ChevronDown, FileText, Pencil, Plus, Search, Trash2, Upload } from 'lucide-react';
 import EmptyState from '../common/EmptyState';
 import FormInput from '../common/FormInput';
 import FormSelect from '../common/FormSelect';
@@ -8,14 +7,14 @@ import Modal from '../common/Modal';
 import Alert from '../common/Alert';
 
 const MATERIAL_TYPE_OPTIONS = [
-  { value: 'DOCUMENT', label: 'Tài liệu (Document)' },
-  { value: 'SLIDE', label: 'Bài giảng / Slide' },
-  { value: 'VIDEO', label: 'Video bài giảng' },
-  { value: 'LINK', label: 'Liên kết web (Link)' },
+  { value: 'DOCUMENT', label: 'Tài liệu' },
+  { value: 'SLIDE', label: 'Bài trình chiếu' },
+  { value: 'VIDEO', label: 'Video' },
+  { value: 'LINK', label: 'Liên kết' },
 ];
 
 const VISIBILITY_OPTIONS = [
-  { value: 'ALL_MEMBERS', label: 'Tất cả thành viên trong lớp' },
+  { value: 'ALL_MEMBERS', label: 'Tất cả thành viên lớp' },
   { value: 'STUDENTS_ONLY', label: 'Chỉ học sinh' },
 ];
 
@@ -50,15 +49,15 @@ const formatFileSize = (fileSize) => {
 
 const MATERIAL_ACCEPT = '.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.png,.mp4,.zip';
 
-const MATERIAL_FILE_HELP = 'Định dạng hỗ trợ: pdf, doc/docx, ppt/pptx, xls/xlsx, jpg, png, mp4, zip. Dung lượng tối đa 20 MB.';
+const MATERIAL_FILE_HELP = 'Cho phép PDF, DOC/DOCX, PPT/PPTX, XLS/XLSX, JPG, PNG, MP4, ZIP. Tối đa 20 MB.';
 
-const MATERIAL_TYPE_HELP = 'Chọn Liên kết để lưu địa chỉ URL, hoặc chọn danh mục để tải tệp lên.';
+const MATERIAL_TYPE_HELP = 'Chọn Liên kết để lưu URL, hoặc chọn loại tệp để tải tệp lên.';
 
 const MATERIAL_TYPE_PLACEHOLDER = 'Chọn loại tài liệu';
 
-const MATERIAL_VISIBILITY_PLACEHOLDER = 'Chọn đối tượng được xem tài liệu';
+const MATERIAL_VISIBILITY_PLACEHOLDER = 'Chọn người được xem tài liệu';
 
-const MATERIAL_TOPIC_NONE = { value: '', label: 'Không thuộc chủ đề nào' };
+const MATERIAL_TOPIC_NONE = { value: '', label: 'Không gắn chủ đề' };
 const ALL_MATERIAL_TOPICS = '__all_topics__';
 const UNASSIGNED_MATERIAL_TOPIC = '__unassigned_topic__';
 
@@ -82,7 +81,7 @@ const isWebLink = (fileUrl) => {
   }
 };
 
-function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material }) {
+function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material, error }) {
   const [title, setTitle] = useState(material ? material.title : '');
   const [materialType, setMaterialType] = useState(material ? material.material_type : '');
   const [topicId, setTopicId] = useState(material && material.topic_id ? material.topic_id : '');
@@ -251,11 +250,12 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material }) 
   };
 
   return (
-    <Modal title={material ? 'Chỉnh sửa tài liệu lớp học' : 'Tải lên tài liệu lớp học'} onClose={onClose}>
+    <Modal title={material ? 'Chỉnh sửa tài liệu lớp học' : 'Tải tài liệu lên lớp'} onClose={onClose}>
       <form className="class-create-form" onSubmit={handleSubmit} noValidate>
+        {error && <Alert type="error"><strong>{material ? 'Không thể cập nhật tài liệu' : 'Không thể tải tài liệu lên'}</strong><p>{error}</p></Alert>}
         <FormInput
           id="material-title"
-          label="Tiêu đề tài liệu"
+          label="Tiêu đề"
           value={title}
           onChange={(event) => {
             setTitle(event.target.value);
@@ -263,7 +263,7 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material }) 
             clearValidationError('form');
           }}
           error={validationErrors.title}
-          placeholder="Ví dụ: Đề cương bài giảng số 1"
+          placeholder="Ví dụ: Ghi chú bài học"
           autoComplete="off"
           maxLength={200}
         />
@@ -277,7 +277,7 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material }) 
             }
           }}
         >
-          <label htmlFor="material-topic-search" className="form-label">Chủ đề bài học</label>
+          <label htmlFor="material-topic-search" className="form-label">Chủ đề</label>
           <div className="class-material-topic-control form-control">
             <Search size={16} aria-hidden="true" />
             <input
@@ -370,7 +370,7 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material }) 
         />
         <FormSelect
           id="material-visibility"
-          label="Quyền xem tài liệu"
+          label="Phạm vi hiển thị"
           value={visibility}
           onChange={(event) => {
             setVisibility(event.target.value);
@@ -384,7 +384,7 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material }) 
         {materialType === 'LINK' ? (
           <FormInput
             id="material-file-url"
-            label="Đường dẫn URL"
+            label="Đường dẫn"
             type="url"
             value={fileUrl}
             onChange={(event) => {
@@ -393,12 +393,12 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material }) 
               clearValidationError('form');
             }}
             error={validationErrors.fileUrl}
-            placeholder="https://example.com/tai-lieu"
+            placeholder="https://example.com/resource"
             autoComplete="url"
           />
         ) : (
           <div className="form-field">
-            <label htmlFor="material-file-button" className="form-label">Tệp đính kèm</label>
+            <label htmlFor="material-file-button" className="form-label">Tệp</label>
             <div className={`class-material-file-picker${fileError || validationErrors.file ? ' has-error' : ''}`}>
               <button
                 id="material-file-button"
@@ -445,7 +445,7 @@ function CreateMaterialModal({ onClose, onCreate, onUpdate, topics, material }) 
   );
 }
 
-function DeleteMaterialModal({ material, onClose, onDelete }) {
+function DeleteMaterialModal({ material, onClose, onDelete, error }) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = () => {
@@ -459,17 +459,18 @@ function DeleteMaterialModal({ material, onClose, onDelete }) {
   return (
     <Modal title="Xóa tài liệu" onClose={onClose}>
       <div className="class-create-form">
-        <p>Bạn có chắc muốn xóa “{material.title}” khỏi lớp học này?</p>
+        <p>Xóa “{material.title}” khỏi lớp học này?</p>
+        {error && <Alert type="error"><p>{error}</p></Alert>}
         <div className="modal-actions">
           <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={isDeleting}>Hủy</button>
-          <button type="button" className="btn btn-outline btn-sm class-delete-confirm-button" onClick={handleDelete} disabled={isDeleting}>{isDeleting ? 'Đang xóa...' : 'Xác nhận xóa'}</button>
+          <button type="button" className="btn btn-outline btn-sm class-delete-confirm-button" onClick={handleDelete} disabled={isDeleting}>{isDeleting ? 'Đang xóa...' : 'Xóa tài liệu'}</button>
         </div>
       </div>
     </Modal>
   );
 }
 
-function CreateTopicModal({ onClose, onCreate }) {
+function CreateTopicModal({ onClose, onCreate, error }) {
   const [topicName, setTopicName] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
@@ -487,17 +488,18 @@ function CreateTopicModal({ onClose, onCreate }) {
   };
 
   return (
-    <Modal title="Tạo chủ đề bài học" onClose={onClose}>
+    <Modal title="Tạo chủ đề" onClose={onClose}>
       <form className="class-create-form" onSubmit={handleSubmit}>
         <FormInput
           id="topic-name"
           label="Tên chủ đề"
           value={topicName}
           onChange={(event) => setTopicName(event.target.value)}
-          placeholder="Ví dụ: Chương 1: Đạo hàm và Ứng dụng"
+          placeholder="Ví dụ: Chương 1"
           autoComplete="off"
         />
-        <p className="class-form-note">Chủ đề này sẽ được lưu vào lộ trình học tập của lớp.</p>
+        {error && <Alert type="error"><p>{error}</p></Alert>}
+        <p className="class-form-note">Chủ đề sẽ được lưu vào lớp học.</p>
         <div className="modal-actions">
           <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={isSaving}>Hủy</button>
           <button type="submit" className="btn btn-primary btn-sm" disabled={!topicName.trim() || isSaving}>{isSaving ? 'Đang lưu...' : 'Tạo chủ đề'}</button>
@@ -507,7 +509,7 @@ function CreateTopicModal({ onClose, onCreate }) {
   );
 }
 
-function EditTopicModal({ topic, onClose, onUpdate }) {
+function EditTopicModal({ topic, onClose, onUpdate, error }) {
   const [topicName, setTopicName] = useState(topic.name);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -533,6 +535,7 @@ function EditTopicModal({ topic, onClose, onUpdate }) {
           onChange={(event) => setTopicName(event.target.value)}
           autoComplete="off"
         />
+        {error && <Alert type="error"><p>{error}</p></Alert>}
         <div className="modal-actions">
           <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={isSaving}>Hủy</button>
           <button type="submit" className="btn btn-primary btn-sm" disabled={!topicName.trim() || isSaving}>{isSaving ? 'Đang lưu...' : 'Lưu thay đổi'}</button>
@@ -542,7 +545,7 @@ function EditTopicModal({ topic, onClose, onUpdate }) {
   );
 }
 
-function DeleteTopicModal({ topic, onClose, onDelete }) {
+function DeleteTopicModal({ topic, onClose, onDelete, error }) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = () => {
@@ -556,10 +559,11 @@ function DeleteTopicModal({ topic, onClose, onDelete }) {
   return (
     <Modal title="Xóa chủ đề" onClose={onClose}>
       <div className="class-create-form">
-        <p>Bạn có chắc muốn xóa “{topic.name}”? Các tài liệu thuộc chủ đề này vẫn được giữ lại nhưng sẽ không còn liên kết chủ đề.</p>
+        <p>Xóa “{topic.name}”? Tài liệu liên kết với chủ đề vẫn được giữ lại nhưng sẽ bỏ liên kết.</p>
+        {error && <Alert type="error"><p>{error}</p></Alert>}
         <div className="modal-actions">
           <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={isDeleting}>Hủy</button>
-          <button type="button" className="btn btn-outline btn-sm class-delete-confirm-button" onClick={handleDelete} disabled={isDeleting}>{isDeleting ? 'Đang xóa...' : 'Xác nhận xóa'}</button>
+          <button type="button" className="btn btn-outline btn-sm class-delete-confirm-button" onClick={handleDelete} disabled={isDeleting}>{isDeleting ? 'Đang xóa...' : 'Xóa chủ đề'}</button>
         </div>
       </div>
     </Modal>
@@ -567,17 +571,21 @@ function DeleteTopicModal({ topic, onClose, onDelete }) {
 }
 
 export default function ClassroomTopicsAndMaterials({
-  classId,
   topics,
   newlyCreatedTopicId,
   materials,
   topicsLoading,
   topicsError,
+  createTopicError,
+  createTopicNotice,
+  topicActionError,
   onRetryTopics,
   onCreateTopic,
   onUpdateTopic,
   onDeleteTopic,
   onCreateMaterial,
+  createMaterialError,
+  createMaterialNotice,
   newlyCreatedMaterialId,
   materialsLoading,
   materialsError,
@@ -624,23 +632,26 @@ export default function ClassroomTopicsAndMaterials({
         <div className="class-detail-section-heading">
           <span className="class-detail-section-icon" aria-hidden="true"><BookOpen size={18} /></span>
           <div>
-            <h2 id="class-topics-title">Chủ đề bài học</h2>
-            <p>Kế hoạch và lộ trình học tập của lớp</p>
+            <h2 id="class-topics-title">Chủ đề</h2>
+            <p>Kế hoạch học tập của lớp</p>
           </div>
           <button type="button" className="btn btn-outline btn-sm class-create-button" onClick={() => setModal('topic')}>
             <Plus size={14} aria-hidden="true" />
-            <span>Thêm chủ đề</span>
+            <span>Tạo chủ đề</span>
           </button>
         </div>
+        {createTopicError && <Alert type="error"><p>{createTopicError}</p></Alert>}
+        {createTopicNotice && <Alert type="success"><p>{createTopicNotice}</p></Alert>}
+        {topicActionError && <Alert type="error"><p>{topicActionError}</p></Alert>}
         {topicsError ? (
           <Alert type="error">
             <p>{topicsError}</p>
             <button type="button" className="btn btn-outline btn-sm" onClick={onRetryTopics}>Thử lại</button>
           </Alert>
         ) : topicsLoading ? (
-          <p role="status">Đang tải danh sách chủ đề...</p>
+          <p role="status">Đang tải chủ đề...</p>
         ) : topics.length === 0 ? (
-          <EmptyState icon={BookOpen} title="Chưa có chủ đề nào" description="Tạo chủ đề để sắp xếp lộ trình học tập cho lớp." />
+          <EmptyState icon={BookOpen} title="Chưa có chủ đề" description="Tạo chủ đề để sắp xếp nội dung học tập của lớp." />
         ) : (
           <ol className="class-topic-list">
             {topics.map((topic, index) => (
@@ -663,30 +674,10 @@ export default function ClassroomTopicsAndMaterials({
                   <span>{topic.name}</span>
                 </button>
                 <span className="class-topic-actions">
-                  {classId && (
-                    <Link
-                      to={`/tutor/classes/${classId}/assignments/new?topic=${encodeURIComponent(topic.name || '')}`}
-                      className="btn btn-outline btn-sm"
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        color: 'var(--color-primary-strong)',
-                        borderColor: '#fdba74',
-                        background: 'var(--color-primary-soft)',
-                        textDecoration: 'none',
-                        fontWeight: 600,
-                      }}
-                      title={`Tạo bài tập tự động bằng AI từ chủ đề "${topic.name}"`}
-                    >
-                      <Sparkles size={14} color="var(--color-primary-strong)" aria-hidden="true" />
-                      <span>AI tạo bài tập</span>
-                    </Link>
-                  )}
                   <button
                     type="button"
                     className="btn btn-outline btn-sm"
-                    aria-label={`Sửa ${topic.name}`}
+                    aria-label={`Chỉnh sửa ${topic.name}`}
                     onClick={() => setModal({ type: 'edit-topic', topic: topic })}
                   >
                     <Pencil size={14} aria-hidden="true" />
@@ -712,14 +703,18 @@ export default function ClassroomTopicsAndMaterials({
         <div className="class-detail-section-heading">
           <span className="class-detail-section-icon" aria-hidden="true"><FileText size={18} /></span>
           <div>
-            <h2 id="class-materials-title">Tài liệu lớp học</h2>
-            <p>Tài nguyên và tài liệu chia sẻ cho học viên</p>
+            <h2 id="class-materials-title">Tài liệu</h2>
+            <p>Tài nguyên chia sẻ với học sinh</p>
           </div>
           <button type="button" className="btn btn-outline btn-sm class-create-button" onClick={() => setModal('material')}>
             <Plus size={14} aria-hidden="true" />
             <span>Thêm tài liệu</span>
           </button>
         </div>
+        {createMaterialError && <Alert type="error"><p>{createMaterialError}</p></Alert>}
+        {createMaterialNotice && (
+          <Alert type={createMaterialNotice.type}><p>{createMaterialNotice.message}</p></Alert>
+        )}
         {materialsError ? (
           <Alert type="error">
             <p>{materialsError}</p>
@@ -728,7 +723,7 @@ export default function ClassroomTopicsAndMaterials({
         ) : materialsLoading ? (
           <p role="status">Đang tải tài liệu...</p>
         ) : materials.length === 0 ? (
-          <EmptyState icon={FileText} title="Chưa có tài liệu nào" description="Thêm tài liệu hoặc liên kết cho học viên trong lớp." />
+          <EmptyState icon={FileText} title="Chưa có tài liệu" description="Thêm tài nguyên để chia sẻ với học sinh trong lớp." />
         ) : (
           <>
             <div className="class-material-search-filters">
@@ -787,33 +782,13 @@ export default function ClassroomTopicsAndMaterials({
                           {isPreviewOpen ? 'Đóng' : 'Mở'}
                         </button>
                       ) : material.file_url ? (
-                        <a className="btn btn-outline btn-sm" href={material.file_url} target="_blank" rel="noreferrer">Mở xem</a>
+                        <a className="btn btn-outline btn-sm" href={material.file_url} target="_blank" rel="noreferrer">Mở</a>
                       ) : null}
-                      {classId && (
-                        <Link
-                          to={`/tutor/classes/${classId}/assignments/new?materialId=${material._id}&materialTitle=${encodeURIComponent(material.title || '')}`}
-                          className="btn btn-outline btn-sm"
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                            color: 'var(--color-primary-strong)',
-                            borderColor: '#fdba74',
-                            background: 'var(--color-primary-soft)',
-                            textDecoration: 'none',
-                            fontWeight: 600,
-                          }}
-                          title="Tạo bài tập tự động bằng AI từ tài liệu này"
-                        >
-                          <Sparkles size={14} color="var(--color-primary-strong)" aria-hidden="true" />
-                          <span>AI tạo bài tập</span>
-                        </Link>
-                      )}
                       <span className="class-topic-actions">
                         <button
                           type="button"
                           className="btn btn-outline btn-sm"
-                          aria-label={`Sửa ${material.title}`}
+                          aria-label={`Thay thế ${material.title}`}
                           onClick={() => setModal({ type: 'edit-material', material: material })}
                         >
                           <Pencil size={14} aria-hidden="true" />
@@ -877,13 +852,13 @@ export default function ClassroomTopicsAndMaterials({
         </section>
       )}
 
-      {modal === 'topic' && <CreateTopicModal onClose={() => setModal('')} onCreate={onCreateTopic} />}
+      {modal === 'topic' && <CreateTopicModal onClose={() => setModal('')} onCreate={onCreateTopic} error={createTopicError} />}
       {modal === 'material' && (
         <CreateMaterialModal
           onClose={() => setModal('')}
           onCreate={onCreateMaterial}
           topics={topics}
-
+          error={createMaterialError}
         />
       )}
       {modal.type === 'edit-material' && (
@@ -893,7 +868,7 @@ export default function ClassroomTopicsAndMaterials({
           onUpdate={onUpdateMaterial}
           topics={topics}
           material={modal.material}
-
+          error={createMaterialError}
         />
       )}
       {modal.type === 'delete-material' && (
@@ -901,11 +876,11 @@ export default function ClassroomTopicsAndMaterials({
           material={modal.material}
           onClose={() => setModal('')}
           onDelete={onDeleteMaterial}
-
+          error={createMaterialError}
         />
       )}
-      {modal.type === 'edit-topic' && <EditTopicModal topic={modal.topic} onClose={() => setModal('')} onUpdate={onUpdateTopic} />}
-      {modal.type === 'delete-topic' && <DeleteTopicModal topic={modal.topic} onClose={() => setModal('')} onDelete={onDeleteTopic} />}
+      {modal.type === 'edit-topic' && <EditTopicModal topic={modal.topic} onClose={() => setModal('')} onUpdate={onUpdateTopic} error={topicActionError} />}
+      {modal.type === 'delete-topic' && <DeleteTopicModal topic={modal.topic} onClose={() => setModal('')} onDelete={onDeleteTopic} error={topicActionError} />}
     </div>
   );
 }

@@ -12,6 +12,32 @@ The `/tutors` frontend requests 12 tutors per page and displays up to 4 category
 When profile categories are empty, cards fall back to subjects from published posts.
 Profiles with fewer than 4 categories show only their available categories.
 
+## GET /posts
+
+Public (no login), used by the "Bài đăng" tab of the `/tutors` page (`/tutors?tab=posts`).
+Lists `PUBLISHED` tutor posts, newest first, only from complete profiles whose tutor account is `ACTIVE`.
+
+Query: `page` (default 1), `limit` (default 10, max 100), optional `q` (title, subject or description,
+case-insensitive), `subject`, `grade` (exact name, case-insensitive), `mode` (`ONLINE` | `OFFLINE` | `HYBRID`),
+`min_price`, `max_price` (VND per session; `max_price` must be ≥ `min_price`, otherwise 422).
+
+```json
+{
+  "success": 1,
+  "message": "Get tutor posts successfully",
+  "data": {
+    "items": [{
+      "_id": "...", "title": "...", "subject_name": "Toán", "grade_level": "Lớp 9", "teaching_mode": "ONLINE",
+      "price": 200000, "schedule": "Tối 2-4-6", "description": "...", "created_at": "...",
+      "tutor": { "profile_id": "...", "full_name": "...", "avatar_url": null, "average_rating": 4.5 }
+    }],
+    "pagination": { "page": 1, "limit": 12, "total": 1, "totalPages": 1 }
+  }
+}
+```
+Text fields use the same contact masking as the public profile. The frontend requests 9 posts per page (3x3 grid);
+"Xem hồ sơ gia sư" opens `/tutors/:profileId` (login required).
+
 ## GET /tutors/:profileId
 
 Public; no authentication required. `profileId` is a TutorProfile ID, not a User ID.

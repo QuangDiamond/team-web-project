@@ -22,10 +22,15 @@ const roleRule = z.enum(REGISTER_ROLES, "Role must be one of these ['TUTOR', 'PA
 
 const agreeTermsRule = z.literal(true, "You must agree to the Terms of Service");
 
+// UC01-2 / UC02-11: email không phân biệt hoa thường, luôn lưu và tìm theo chữ thường
+const emailRule = z.string("Input must be email").trim().toLowerCase().email("Input must be email");
+
+const LOGIN_REQUIRED_MESSAGE = "Email and password are required";
+
 export const registerSchema = z
   .object({
     full_name: fullNameRule,
-    email: z.string().trim().email("Input must be email"),
+    email: emailRule,
     password: passwordRule,
     confirm_password: z.string().min(1, "Confirm password is required"),
     role: roleRule,
@@ -36,13 +41,21 @@ export const registerSchema = z
     path: ["confirm_password"],
   });
 
+// UC02-3 (E1): chỉ bắt buộc nhập, không kiểm tra độ dài mật khẩu khi đăng nhập
 export const loginSchema = z.object({
-  email: z.string().email("Input must be email").min(1, "Email is required"),
-  password: z.string().min(8, "Password must have at least 8 character"),
+  email: z
+    .string(LOGIN_REQUIRED_MESSAGE)
+    .trim()
+    .toLowerCase()
+    .min(1, LOGIN_REQUIRED_MESSAGE)
+    .email("Input must be email"),
+  password: z.string(LOGIN_REQUIRED_MESSAGE).min(1, LOGIN_REQUIRED_MESSAGE),
+  // UC02-7: "Remember me (7 days)"
+  remember_me: z.boolean("Remember me must be true or false").default(false),
 });
 
 export const resendVerificationSchema = z.object({
-  email: z.string().trim().email("Input must be email"),
+  email: emailRule,
 });
 
 export const forgotPasswordSchema = resendVerificationSchema;

@@ -11,8 +11,12 @@ const getPlanDetail = (billing) => {
     return 'Gói Miễn phí, không cần gia hạn';
   }
   if (subscription && subscription.expires_at) {
-    // D17: chưa có tự gia hạn nên ghi "Expires on"
-    return `Hết hạn vào ${formatDate(subscription.expires_at)}`;
+    // D17: chưa có tự gia hạn nên ghi "Expires on". Gói đã mua thêm sẽ chạy từ ngày hết hạn này (UC17)
+    let detail = `Hết hạn vào ${formatDate(subscription.expires_at)}`;
+    if (billing.next_plan) {
+      detail = `${detail}. Sau đó chuyển sang ${getPlanTitle(billing.next_plan.name)} đến ${formatDate(billing.next_plan.expires_at)}`;
+    }
+    return detail;
   }
   return '—';
 };

@@ -78,4 +78,5 @@ module.exports = [
     student_profile: { full_name: 'Phạm Bảo Chi', grade_level: 'Lớp 11' },
   }),
   ...require('../marketplaceFixture').users,
+  ...require('../classroomFixture').users,
 ];

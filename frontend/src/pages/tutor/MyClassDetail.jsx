@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
@@ -13,16 +12,15 @@ import {
   Pencil,
   Plus,
   Trash2,
-  RotateCcw,
 } from 'lucide-react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import Alert from '../../components/common/Alert';
 import FormInput from '../../components/common/FormInput';
 import FormSelect from '../../components/common/FormSelect';
 import Modal from '../../components/common/Modal';
+import Toast from '../../components/common/Toast';
 import ClassroomTopicsAndMaterials from '../../components/tutorClassroom/ClassroomTopicsAndMaterials';
 import SessionAttendance from './SessionAttendance';
-import TutorChangeRequestsModal from '../../components/classroom/TutorChangeRequestsModal';
 import {
   createClassTopic,
   createClassMaterial,
@@ -47,6 +45,7 @@ import {
 } from '../../utils/sessionAvailability';
 import '../../styles/classDetail.css';
 import '../../styles/mySchedule.css';
+import '../../styles/legacyClassSchedule.css';
 
 const SESSION_PAGE_SIZE = 100;
 const HOUR_HEIGHT = 72;
@@ -204,16 +203,6 @@ function getSessionLayout(sessions, hourStart, hourEnd, hourHeights, colorByClas
   return positionedEvents;
 }
 
-const SESSION_STATUS_DISPLAY = {
-  SCHEDULED: { className: 'status-scheduled', label: 'Sắp tới' },
-  CANCELLED: { className: 'status-cancelled', label: 'Đã hủy' },
-  COMPLETED: { className: 'status-completed', label: 'Đã học xong' },
-};
-
-function getSessionStatusDisplay(status) {
-  return SESSION_STATUS_DISPLAY[status] || SESSION_STATUS_DISPLAY.SCHEDULED;
-}
-
 function formatSessionTime(session) {
   const startTime = new Date(session.start_time);
   const endTime = new Date(session.end_time);
@@ -284,9 +273,6 @@ function ClassSessionFormModal({ session, sessions, initialValues, defaultClassI
       status: session.status || 'SCHEDULED',
     };
   });
-  const [isRepeating, setIsRepeating] = useState(false);
-  const [selectedDays, setSelectedDays] = useState(['MON']);
-  const [repeatEndDate, setRepeatEndDate] = useState('');
   const [formError, setFormError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -334,8 +320,6 @@ function ClassSessionFormModal({ session, sessions, initialValues, defaultClassI
     setFormError('');
   };
 
-  const isEditing = Boolean(session);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     setFormError('');
@@ -363,52 +347,17 @@ function ClassSessionFormModal({ session, sessions, initialValues, defaultClassI
       return;
     }
 
-    // BR-10: Thời lượng từ 15 phút đến 300 phút (5 tiếng)
-    const durationMinutes = Math.round((endTime.getTime() - startTime.getTime()) / (60 * 1000));
-    if (durationMinutes < 15 || durationMinutes > 300) {
-      setFieldErrors({ end_time: 'Thời lượng buổi học phải từ 15 phút đến 300 phút (5 tiếng).' });
-      return;
-    }
-
+    setIsSubmitting(true);
     const sessionData = {
       title: values.title.trim(),
       start_time: startTime.toISOString(),
       end_time: endTime.toISOString(),
       meeting_link: values.meeting_link.trim() || null,
     };
-    // Backend does not accept status on create; new sessions always start SCHEDULED
     if (session) {
       sessionData.status = values.status;
     }
 
-    // Quy tắc lặp lại hàng tuần (BR-10: Tối đa 6 tháng)
-    if (!isEditing && isRepeating) {
-      if (selectedDays.length === 0) {
-        setFormError('Vui lòng chọn ít nhất 1 ngày trong tuần để lặp lại.');
-        return;
-      }
-      if (!repeatEndDate) {
-        setFormError('Vui lòng chọn ngày kết thúc cho chu kỳ lặp lại.');
-        return;
-      }
-      const endRepeat = new Date(`${repeatEndDate}T23:59:59`);
-      const maxRepeat = new Date(startTime.getTime() + 185 * 24 * 60 * 60 * 1000);
-      if (endRepeat <= startTime) {
-        setFormError('Ngày kết thúc chu kỳ lặp lại phải sau ngày học đầu tiên.');
-        return;
-      }
-      if (endRepeat > maxRepeat) {
-        setFormError('Chu kỳ lặp lại không được vượt quá 6 tháng theo quy định BR-10.');
-        return;
-      }
-
-      sessionData.repeat = {
-        days_of_week: selectedDays,
-        end_date: endRepeat.toISOString(),
-      };
-    }
-
-    setIsSubmitting(true);
     const sessionClassId = session ? session.class_id : defaultClassId;
     const result = await onSave(sessionData, session ? session._id : null, sessionClassId);
     setIsSubmitting(false);
@@ -418,13 +367,14 @@ function ClassSessionFormModal({ session, sessions, initialValues, defaultClassI
       onClose();
       return;
     }
-    toast.error(result.message);
+    setFormError(result.message);
     setFieldErrors(result.errors || {});
   };
 
-  return (
-    <Modal title={isEditing ? 'Chỉnh sửa buổi học' : 'Tạo buổi học mới'} onClose={onClose}>
+  const isEditing = Boolean(session);
 
+  return (
+    <Modal title={isEditing ? 'Chỉnh sửa buổi học' : 'Tạo buổi học'} onClose={onClose}>
       <form className="class-create-form class-session-create-form" onSubmit={handleSubmit}>
         <FormInput
           id="class-session-title"
@@ -432,7 +382,7 @@ function ClassSessionFormModal({ session, sessions, initialValues, defaultClassI
           value={values.title}
           onChange={(event) => handleChange('title', event.target.value)}
           error={getFirstFieldError(fieldErrors, 'title')}
-          placeholder="Ví dụ: Bài giảng Hàm số và Đồ thị"
+          placeholder="Ví dụ: Buổi học Đại số"
           maxLength={200}
           disabled={isSubmitting}
         />
@@ -527,7 +477,7 @@ function ClassSessionFormModal({ session, sessions, initialValues, defaultClassI
         </div>
         <FormInput
           id="class-session-meeting-link"
-          label="Link phòng học trực tuyến (không bắt buộc)"
+          label="Liên kết buổi học (không bắt buộc)"
           value={values.meeting_link}
           onChange={(event) => handleChange('meeting_link', event.target.value)}
           placeholder="https://meet.google.com/..."
@@ -559,113 +509,6 @@ function ClassSessionFormModal({ session, sessions, initialValues, defaultClassI
             disabled={isSubmitting}
           />
         )}
-
-        {/* Cấu hình lặp lại (Chỉ khả dụng khi tạo mới) */}
-        {!isEditing && (
-          <div
-            style={{
-              marginTop: '12px',
-              padding: '12px 14px',
-              backgroundColor: 'var(--color-surface-subtle)',
-              borderRadius: '8px',
-              border: '1px solid var(--color-border)',
-            }}
-          >
-            <label
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                cursor: 'pointer',
-                fontWeight: 600,
-                fontSize: '13px',
-                color: 'var(--color-text)',
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={isRepeating}
-                onChange={(e) => setIsRepeating(e.target.checked)}
-                disabled={isSubmitting}
-              />
-              <span>Lặp lại hàng tuần theo lịch (Tối đa 6 tháng)</span>
-            </label>
-
-            {isRepeating && (
-              <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div>
-                  <span
-                    style={{
-                      fontSize: '12px',
-                      fontWeight: 600,
-                      color: 'var(--color-text-muted)',
-                      display: 'block',
-                      marginBottom: '6px',
-                    }}
-                  >
-                    Các thứ trong tuần:
-                  </span>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                    {[
-                      { key: 'MON', label: 'T2' },
-                      { key: 'TUE', label: 'T3' },
-                      { key: 'WED', label: 'T4' },
-                      { key: 'THU', label: 'T5' },
-                      { key: 'FRI', label: 'T6' },
-                      { key: 'SAT', label: 'T7' },
-                      { key: 'SUN', label: 'CN' },
-                    ].map((day) => {
-                      const isChecked = selectedDays.includes(day.key);
-                      return (
-                        <button
-                          key={day.key}
-                          type="button"
-                          onClick={() => {
-                            if (isChecked) {
-                              setSelectedDays(selectedDays.filter((d) => d !== day.key));
-                            } else {
-                              setSelectedDays([...selectedDays, day.key]);
-                            }
-                          }}
-                          style={{
-                            padding: '4px 10px',
-                            borderRadius: '6px',
-                            border: '1px solid',
-                            borderColor: isChecked ? 'var(--color-primary-strong)' : 'var(--color-control-border)',
-                            backgroundColor: isChecked ? 'var(--color-primary-soft)' : 'var(--color-white)',
-                            color: isChecked ? 'var(--color-primary-strong)' : 'var(--color-text)',
-                            fontSize: '12px',
-                            fontWeight: isChecked ? 700 : 500,
-                            cursor: 'pointer',
-                          }}
-                        >
-                          {day.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="form-field" style={{ margin: 0 }}>
-                  <label className="form-label" htmlFor="repeat-end-date" style={{ fontSize: '12px' }}>
-                    Lặp lại đến ngày (Tối đa 6 tháng):
-                  </label>
-                  <div className="form-control">
-                    <input
-                      id="repeat-end-date"
-                      type="date"
-                      value={repeatEndDate}
-                      onChange={(e) => setRepeatEndDate(e.target.value)}
-                      disabled={isSubmitting}
-                      required={isRepeating}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
         {formError && <Alert type="error"><p>{formError}</p></Alert>}
         <div className="class-session-form-actions">
           <button type="button" className="btn btn-outline btn-sm" onClick={onClose} disabled={isSubmitting}>
@@ -689,8 +532,8 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
   const attendancePreviewRef = useRef(null);
   const [sessionToEdit, setSessionToEdit] = useState(null);
   const [sessionToDelete, setSessionToDelete] = useState(null);
-  const [isChangeRequestsOpen, setIsChangeRequestsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
   const days = getWeekDays(weekStart);
   const today = new Date();
   const weekSessions = useMemo(() => sessions
@@ -791,13 +634,14 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
       return;
     }
     setIsDeleting(true);
+    setDeleteError('');
     const result = await onDeleteSession(sessionToDelete._id, sessionToDelete.class_id);
     setIsDeleting(false);
     if (result.success) {
       setSessionToDelete(null);
       return;
     }
-    toast.error(result.message);
+    setDeleteError(result.message);
   };
 
   if (isLoading) {
@@ -834,15 +678,6 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
           </div>
         </div>
         <div className="schedule-toolbar-actions">
-          <button
-            type="button"
-            className="btn btn-outline btn-sm"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--color-primary-strong)', borderColor: '#fdba74' }}
-            onClick={() => setIsChangeRequestsOpen(true)}
-          >
-            <RotateCcw size={14} aria-hidden="true" />
-            <span>Yêu cầu đổi lịch</span>
-          </button>
           <button type="button" className="btn btn-primary btn-sm" onClick={() => openCreateForm(null)}>
             <Plus size={15} aria-hidden="true" />
             Tạo buổi học
@@ -867,13 +702,7 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
         )}
         {selectedSlotError && <p className="schedule-slot-error" role="status">{selectedSlotError}</p>}
         <div className="schedule-calendar-scroll">
-          <div
-            className="schedule-calendar"
-            style={{
-              '--schedule-grid-height': `${gridHeight}px`,
-              '--schedule-hour-height': `${HOUR_HEIGHT}px`,
-            }}
-          >
+          <div className="schedule-calendar" style={{ '--schedule-grid-height': `${gridHeight}px` }}>
             <div className="schedule-calendar-corner" aria-hidden="true" />
             {days.map((day) => (
               <div
@@ -979,6 +808,7 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
                               type="button"
                               className="schedule-event-action schedule-event-delete-action"
                               onClick={() => {
+                                setDeleteError('');
                                 setSessionToDelete(event.session);
                               }}
                               disabled={sessionHasStarted}
@@ -993,11 +823,6 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
                           <Clock3 size={12} aria-hidden="true" />
                           {formatSessionTime(event.session)}
                         </span>
-                        <div className="schedule-event-footer">
-                          <span className={`schedule-status-pill ${getSessionStatusDisplay(event.session.status).className}`}>
-                            {getSessionStatusDisplay(event.session.status).label}
-                          </span>
-                        </div>
                       </article>
                     );
                   })}
@@ -1050,6 +875,7 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
           <p className="class-session-delete-copy">
             Bạn có chắc muốn xóa “{sessionToDelete.title || 'Buổi học'}” không? Thao tác này không thể hoàn tác.
           </p>
+          {deleteError && <Alert type="error"><p>{deleteError}</p></Alert>}
           <div className="class-session-form-actions">
             <button
               type="button"
@@ -1070,16 +896,6 @@ function ClassSchedule({ sessions, classId, isLoading, error, onRetry, onSaveSes
           </div>
         </Modal>
       )}
-
-      {/* Modal xét duyệt yêu cầu đổi / hủy lịch học từ học viên (UC27 & UC28) */}
-      <TutorChangeRequestsModal
-        isOpen={isChangeRequestsOpen}
-        onClose={() => setIsChangeRequestsOpen(false)}
-        classId={classId}
-        onSuccess={() => {
-          onRetry();
-        }}
-      />
     </section>
   );
 }
@@ -1104,10 +920,16 @@ export default function MyClassDetail({
     }
   }, [classId, embedded, location.search]);
 
+  const [toast, setToast] = useState(null);
   const [topics, setTopics] = useState([]);
   const [newlyCreatedTopicId, setNewlyCreatedTopicId] = useState(null);
   const [topicsLoading, setTopicsLoading] = useState(true);
   const [topicsError, setTopicsError] = useState('');
+  const [createTopicError, setCreateTopicError] = useState('');
+  const [createTopicNotice, setCreateTopicNotice] = useState('');
+  const [topicActionError, setTopicActionError] = useState('');
+  const [createMaterialError, setCreateMaterialError] = useState('');
+  const [createMaterialNotice, setCreateMaterialNotice] = useState(null);
   const [newlyCreatedMaterialId, setNewlyCreatedMaterialId] = useState(null);
   const [materials, setMaterials] = useState([]);
   const [materialsLoading, setMaterialsLoading] = useState(true);
@@ -1117,6 +939,12 @@ export default function MyClassDetail({
   const [sessionsError, setSessionsError] = useState('');
   const classroom = embedded ? providedClassroom : location.state && location.state.classroom;
   const canLoadClassroom = classroom && String(classroom._id) === classId;
+
+  const showToast = (type, message) => {
+    setToast({ id: Date.now(), type: type, message: message });
+  };
+
+  const closeToast = () => setToast(null);
 
   useEffect(() => {
     if (!canLoadClassroom) {
@@ -1194,66 +1022,80 @@ export default function MyClassDetail({
     return (
       <div className="class-detail-page">
         <Alert type="info">
-          <p>Vui lòng mở lớp học này từ danh sách Lớp của tôi để tải thông tin chi tiết.</p>
-          <Link to="/tutor/classes" className="link">Quay lại Lớp của tôi</Link>
+          <p>Open this class from My Class to load its details.</p>
+          <Link to="/tutor/classes" className="link">Back to My Class</Link>
         </Alert>
       </div>
     );
   }
 
   const handleCreateTopic = async (topicName) => {
+    setCreateTopicError('');
+    setCreateTopicNotice('');
     try {
       const response = await createClassTopic(classId, { name: topicName });
       setTopics((currentTopics) => [...currentTopics, response.data]);
       setNewlyCreatedTopicId(response.data._id);
-      toast.success(response.message);
+      setCreateTopicNotice(response.message);
+      showToast('success', response.message);
       return true;
     } catch (error) {
-      toast.error(error.message);
+      setCreateTopicError(error.message);
+      showToast('error', error.message);
       return false;
     }
   };
 
   const handleUpdateTopic = async (topicId, topicName) => {
+    setTopicActionError('');
     try {
       const response = await updateClassTopic(classId, topicId, { name: topicName });
       setTopics((currentTopics) => currentTopics.map((topic) => (
         topic._id === topicId ? response.data : topic
       )));
-      toast.success(response.message);
+      showToast('success', response.message);
       return true;
     } catch (error) {
-      toast.error(error.message);
+      setTopicActionError(error.message);
+      showToast('error', error.message);
       return false;
     }
   };
 
   const handleDeleteTopic = async (topicId) => {
+    setTopicActionError('');
     try {
       const response = await deleteClassTopic(classId, topicId);
       setTopics((currentTopics) => currentTopics.filter((topic) => topic._id !== topicId));
-      toast.success(response.message);
+      showToast('success', response.message);
       return true;
     } catch (error) {
-      toast.error(error.message);
+      setTopicActionError(error.message);
+      showToast('error', error.message);
       return false;
     }
   };
 
   const handleCreateMaterial = async (formData) => {
+    setCreateMaterialError('');
+    setCreateMaterialNotice(null);
     try {
       const response = await createClassMaterial(classId, formData);
       setMaterials((currentMaterials) => [...currentMaterials, response.data]);
       setNewlyCreatedMaterialId(response.data._id);
-      toast.success(response.message);
+      setCreateMaterialNotice({ type: 'success', message: response.message });
+      showToast('success', response.message);
       return true;
     } catch (error) {
-      toast.error(error.message);
+      setCreateMaterialError(error.message);
+      showToast('error', error.message);
       return false;
     }
   };
 
   const handleUpdateMaterial = async (materialId, formData) => {
+    setCreateMaterialError('');
+    setCreateMaterialNotice(null);
     try {
       const response = await updateClassMaterial(classId, materialId, formData);
       setMaterials((currentMaterials) => currentMaterials.map((material) => (
@@ -1261,30 +1103,38 @@ export default function MyClassDetail({
       )));
       if (response.data.old_file_deleted === false) {
         const message = 'Tài liệu đã cập nhật, nhưng chưa xóa được file cũ trên Cloudinary.';
-        toast.info(message);
+        setCreateMaterialNotice({ type: 'info', message });
+        showToast('success', message);
       } else {
-        toast.success(response.message);
+        setCreateMaterialNotice({ type: 'success', message: response.message });
+        showToast('success', response.message);
       }
       return true;
     } catch (error) {
-      toast.error(error.message);
+      setCreateMaterialError(error.message);
+      showToast('error', error.message);
       return false;
     }
   };
 
   const handleDeleteMaterial = async (materialId) => {
+    setCreateMaterialError('');
+    setCreateMaterialNotice(null);
     try {
       const response = await deleteClassMaterial(classId, materialId);
       setMaterials((currentMaterials) => currentMaterials.filter((material) => material._id !== materialId));
       if (response.data.cloudinary_deleted === false) {
         const message = 'Đã xóa tài liệu, nhưng chưa xóa được file trên Cloudinary.';
-        toast.info(message);
+        setCreateMaterialNotice({ type: 'info', message });
+        showToast('success', message);
       } else {
-        toast.success(response.message);
+        setCreateMaterialNotice({ type: 'success', message: response.message });
+        showToast('success', response.message);
       }
       return true;
     } catch (error) {
-      toast.error(error.message);
+      setCreateMaterialError(error.message);
+      showToast('error', error.message);
       return false;
     }
   };
@@ -1325,30 +1175,24 @@ export default function MyClassDetail({
         response = await createClassSession(targetClassId, sessionData);
       }
 
-      // A repeating create returns several sessions, so reload the whole schedule
-      if (sessionData.repeat) {
-        const tutorSessions = await getAllTutorSessions();
-        setSessions(tutorSessions);
-      } else {
-        setSessions((currentSessions) => {
-          const oldSession = currentSessions.find((session) => session._id === sessionId);
-          const className = oldSession?.class_name
-            || (String(targetClassId) === String(classId) ? classroom.name : 'Lớp chưa đặt tên');
-          const updatedSession = { ...response.data, class_name: className };
-          if (sessionId) {
-            return currentSessions.map((session) => (
-              session._id === sessionId ? updatedSession : session
-            ));
-          }
-          return [...currentSessions, updatedSession];
-        });
-      }
+      setSessions((currentSessions) => {
+        const oldSession = currentSessions.find((session) => session._id === sessionId);
+        const className = oldSession?.class_name
+          || (String(targetClassId) === String(classId) ? classroom.name : 'Lớp chưa đặt tên');
+        const updatedSession = { ...response.data, class_name: className };
+        if (sessionId) {
+          return currentSessions.map((session) => (
+            session._id === sessionId ? updatedSession : session
+          ));
+        }
+        return [...currentSessions, updatedSession];
+      });
       const successMessage = response.message || (
         sessionId
           ? 'Đã cập nhật buổi học thành công.'
           : 'Đã tạo buổi học thành công.'
       );
-      toast.success(successMessage);
+      showToast('success', successMessage);
       return { success: true, message: successMessage, session: response.data };
     } catch (error) {
       return { success: false, message: error.message, errors: error.errors };
@@ -1359,7 +1203,7 @@ export default function MyClassDetail({
     try {
       const response = await deleteClassSession(targetClassId, sessionId);
       setSessions((currentSessions) => currentSessions.filter((session) => session._id !== sessionId));
-      toast.success(response.message);
+      showToast('success', response.message);
       return { success: true, message: response.message };
     } catch (error) {
       return { success: false, message: error.message };
@@ -1376,20 +1220,25 @@ export default function MyClassDetail({
 
   if (embedded) {
     return (
-      <>
+      <div className="legacy-ui">
+        <Toast toast={toast} onClose={closeToast} />
         {activeTab === 'materials' && (
           <ClassroomTopicsAndMaterials
-            classId={classId}
             topics={topics}
             newlyCreatedTopicId={newlyCreatedTopicId}
             materials={materials}
             topicsLoading={topicsLoading}
             topicsError={topicsError}
+            createTopicError={createTopicError}
+            createTopicNotice={createTopicNotice}
+            topicActionError={topicActionError}
             onRetryTopics={handleRetryLoadingTopics}
             onCreateTopic={handleCreateTopic}
             onUpdateTopic={handleUpdateTopic}
             onDeleteTopic={handleDeleteTopic}
             onCreateMaterial={handleCreateMaterial}
+            createMaterialError={createMaterialError}
+            createMaterialNotice={createMaterialNotice}
             newlyCreatedMaterialId={newlyCreatedMaterialId}
             materialsLoading={materialsLoading}
             materialsError={materialsError}
@@ -1409,15 +1258,17 @@ export default function MyClassDetail({
             onDeleteSession={handleDeleteSession}
           />
         )}
-      </>
+      </div>
     );
   }
 
   return (
+    <div className="legacy-ui">
     <div className="class-detail-page">
+      <Toast toast={toast} onClose={closeToast} />
       <Link to="/tutor/classes" className="class-detail-back-link">
         <ArrowLeft size={16} aria-hidden="true" />
-        <span>Quay lại Lớp của tôi</span>
+        <span>Back to My Class</span>
       </Link>
 
       <section className="class-detail-hero">
@@ -1425,15 +1276,15 @@ export default function MyClassDetail({
           <div className="class-detail-icon" aria-hidden="true"><BookOpen size={22} /></div>
           <span className="status-badge tone-success">{classroom.status}</span>
         </div>
-        <h1>{classroom.name || 'Lớp học'}</h1>
+        <h1>{classroom.name || 'Untitled class'}</h1>
         {classMeta.length > 0 && <p className="class-detail-subtitle">{classMeta.join(' · ')}</p>}
         {classroom.description && <p className="class-detail-description">{classroom.description}</p>}
         {classroom.capacity !== null && classroom.capacity !== undefined && (
-          <div className="class-detail-facts"><span>Sĩ số: {classroom.capacity} học viên</span></div>
+          <div className="class-detail-facts"><span>Capacity {classroom.capacity}</span></div>
         )}
       </section>
 
-      <div className="class-detail-tabs" role="tablist" aria-label="Chi tiết lớp học">
+      <div className="class-detail-tabs" role="tablist" aria-label="Class details">
         {CLASS_TABS.map(({ id, label, Icon }) => (
           <button
             key={id}
@@ -1460,17 +1311,21 @@ export default function MyClassDetail({
       >
         {activeTab === 'materials' && (
           <ClassroomTopicsAndMaterials
-            classId={classId}
             topics={topics}
             newlyCreatedTopicId={newlyCreatedTopicId}
             materials={materials}
             topicsLoading={topicsLoading}
             topicsError={topicsError}
+            createTopicError={createTopicError}
+            createTopicNotice={createTopicNotice}
+            topicActionError={topicActionError}
             onRetryTopics={handleRetryLoadingTopics}
             onCreateTopic={handleCreateTopic}
             onUpdateTopic={handleUpdateTopic}
             onDeleteTopic={handleDeleteTopic}
             onCreateMaterial={handleCreateMaterial}
+            createMaterialError={createMaterialError}
+            createMaterialNotice={createMaterialNotice}
             newlyCreatedMaterialId={newlyCreatedMaterialId}
             materialsLoading={materialsLoading}
             materialsError={materialsError}
@@ -1491,6 +1346,7 @@ export default function MyClassDetail({
           />
         )}
       </div>
+    </div>
     </div>
   );
 }

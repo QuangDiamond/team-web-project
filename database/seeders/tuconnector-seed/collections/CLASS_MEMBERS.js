@@ -9,4 +9,5 @@ module.exports = [
   { _id: ids.mem_chi_lan_anh8, class_id: ids.class_anh8_lan, user_id: ids.user_student_chi, joined_at: d('2026-10-25T19:10:00+07:00'), status: 'ACTIVE', removal_reason: null },
   { _id: ids.mem_chi_huy_ly11, class_id: ids.class_ly11_huy, user_id: ids.user_student_chi, joined_at: d('2026-10-25T19:15:00+07:00'), status: 'ACTIVE', removal_reason: null },
   { _id: ids.mem_an_huy_ly10, class_id: ids.class_ly10_huy, user_id: ids.user_student_an, joined_at: d('2026-10-25T19:20:00+07:00'), status: 'ACTIVE', removal_reason: null },
+  ...require('../classroomFixture').members,
 ];

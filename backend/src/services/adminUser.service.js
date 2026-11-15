@@ -239,7 +239,7 @@ export const createAdmin = async (data, admin) => {
   // Admin do Admin tạo không cần bấm link kích hoạt email
   const newAdmin = await User.findByIdAndUpdate(
     createdUser._id,
-    { email_verify_status: true, is_onboarded: true },
+    { email_verify_status: true, is_onboarded: true, account_status: 'ACTIVE' },
     { new: true }
   );
 
