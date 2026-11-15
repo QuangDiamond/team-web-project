@@ -570,6 +570,20 @@ function DeleteTopicModal({ topic, onClose, onDelete, error }) {
   );
 }
 
+// Đếm ngược số giây còn lại trước khi thông báo tự ẩn (MyClassDetail ẩn thông báo sau 10 giây)
+function NoticeCountdown({ seconds = 10 }) {
+  const [secondsLeft, setSecondsLeft] = useState(seconds);
+  useEffect(() => {
+    const timer = setInterval(() => setSecondsLeft((value) => Math.max(value - 1, 0)), 1000);
+    return () => clearInterval(timer);
+  }, []);
+  return (
+    <span style={{ marginLeft: 8, fontSize: 12, opacity: 0.75, whiteSpace: 'nowrap' }} aria-hidden="true">
+      (tự ẩn sau {secondsLeft}s)
+    </span>
+  );
+}
+
 export default function ClassroomTopicsAndMaterials({
   topics,
   newlyCreatedTopicId,
@@ -641,7 +655,7 @@ export default function ClassroomTopicsAndMaterials({
           </button>
         </div>
         {createTopicError && <Alert type="error"><p>{createTopicError}</p></Alert>}
-        {createTopicNotice && <Alert type="success"><p>{createTopicNotice}</p></Alert>}
+        {createTopicNotice && <Alert type="success"><p>{createTopicNotice}<NoticeCountdown /></p></Alert>}
         {topicActionError && <Alert type="error"><p>{topicActionError}</p></Alert>}
         {topicsError ? (
           <Alert type="error">
@@ -713,7 +727,7 @@ export default function ClassroomTopicsAndMaterials({
         </div>
         {createMaterialError && <Alert type="error"><p>{createMaterialError}</p></Alert>}
         {createMaterialNotice && (
-          <Alert type={createMaterialNotice.type}><p>{createMaterialNotice.message}</p></Alert>
+          <Alert type={createMaterialNotice.type}><p>{createMaterialNotice.message}<NoticeCountdown /></p></Alert>
         )}
         {materialsError ? (
           <Alert type="error">

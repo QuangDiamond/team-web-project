@@ -930,6 +930,20 @@ export default function MyClassDetail({
   const [topicActionError, setTopicActionError] = useState('');
   const [createMaterialError, setCreateMaterialError] = useState('');
   const [createMaterialNotice, setCreateMaterialNotice] = useState(null);
+
+  // Thông báo tạo/sửa chủ đề và tài liệu tự ẩn sau 10 giây
+  const NOTICE_TIMEOUT_MS = 10000;
+  useEffect(() => {
+    if (!createTopicNotice) return undefined;
+    const timer = setTimeout(() => setCreateTopicNotice(''), NOTICE_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [createTopicNotice]);
+  useEffect(() => {
+    if (!createMaterialNotice) return undefined;
+    const timer = setTimeout(() => setCreateMaterialNotice(null), NOTICE_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [createMaterialNotice]);
+
   const [newlyCreatedMaterialId, setNewlyCreatedMaterialId] = useState(null);
   const [materials, setMaterials] = useState([]);
   const [materialsLoading, setMaterialsLoading] = useState(true);
