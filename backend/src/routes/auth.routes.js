@@ -3,6 +3,7 @@ import { validator } from '../common/validator/validator.js';
 import {
     login,
     logout,
+    refresh,
     me,
     register,
     verifyEmail,
@@ -38,7 +39,9 @@ authRoute.post('/resend-verification', validator(resendVerificationSchema), rese
 authRoute.get('/google', googleRedirect)
 authRoute.get('/oauth/redirect', googleCallback)
 authRoute.post('/google/complete', validator(googleCompleteSchema), googleComplete)
-// Logout chỉ xóa cookie, token hết hạn vẫn phải logout được nên không qua authentication
+// Logout thu hồi phiên + xóa cookie, token hết hạn vẫn phải logout được nên không qua authentication
 authRoute.post('/logout', logout)
+// Refresh dùng khi access token đã hết hạn nên không qua authentication; refresh token đọc từ cookie httpOnly
+authRoute.post('/refresh', refresh)
 
 authRoute.get('/me', authentication, me)

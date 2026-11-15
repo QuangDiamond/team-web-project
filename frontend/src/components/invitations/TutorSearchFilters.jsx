@@ -4,7 +4,8 @@ import { toSelectOptions } from '../../utils/selectOptions';
 import Alert from '../common/Alert';
 import { TEACHING_MODES, AVAILABILITY_OPTIONS } from '../../constants/requestLabels';
 
-export default function TutorSearchFilters({ filters, onChange }) {
+// forPosts: tab Bài đăng chỉ lọc theo thông tin của bài đăng, ẩn đánh giá và trạng thái nhận lớp của hồ sơ
+export default function TutorSearchFilters({ filters, onChange, forPosts = false }) {
   const categories = useSubjectNames();
   const handleChange = (event) => {
     onChange({ ...filters, [event.target.name]: event.target.value });
@@ -16,7 +17,7 @@ export default function TutorSearchFilters({ filters, onChange }) {
     <div className="directory-filters">
       <FormSelect id="subject" label="Môn học" value={value('subject')} onChange={handleChange} placeholder="Tất cả môn học" options={toSelectOptions(categories.subjectNames, value('subject'))} disabled={categories.loading} />
       <FormSelect id="mode" label="Hình thức" value={value('mode')} onChange={handleChange} placeholder="Tất cả hình thức" options={TEACHING_MODES} />
-      <FormSelect id="min_rating" label="Đánh giá" value={value('min_rating')} onChange={handleChange} placeholder="Tất cả đánh giá" options={[{ value: '4', label: 'Từ 4 sao' }, { value: '4.5', label: 'Từ 4,5 sao' }, { value: '5', label: '5 sao' }]} />
+      {!forPosts && <FormSelect id="min_rating" label="Đánh giá" value={value('min_rating')} onChange={handleChange} placeholder="Tất cả đánh giá" options={[{ value: '4', label: 'Từ 4 sao' }, { value: '4.5', label: 'Từ 4,5 sao' }, { value: '5', label: '5 sao' }]} />}
       <fieldset className="directory-price-range">
         <legend>Học phí (₫/buổi)</legend>
         <div className="directory-price-inputs">
@@ -30,7 +31,7 @@ export default function TutorSearchFilters({ filters, onChange }) {
       <summary>Bộ lọc nâng cao</summary>
       <div className="directory-extra-grid">
       <FormSelect id="grade" label="Cấp học / Trình độ" value={value('grade')} onChange={handleChange} placeholder="Tất cả trình độ" options={toSelectOptions(categories.gradeNames, value('grade'))} disabled={categories.loading} />
-      <FormSelect id="availability" label="Trạng thái nhận lớp" value={value('availability')} onChange={handleChange} placeholder="Tất cả trạng thái" options={AVAILABILITY_OPTIONS} />
+      {!forPosts && <FormSelect id="availability" label="Trạng thái nhận lớp" value={value('availability')} onChange={handleChange} placeholder="Tất cả trạng thái" options={AVAILABILITY_OPTIONS} />}
       </div>
     </details>
     </>

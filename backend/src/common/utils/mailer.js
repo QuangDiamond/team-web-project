@@ -99,3 +99,73 @@ export const sendAdminInviteEmail = async (toEmail, fullName, temporaryPassword,
     `,
   });
 };
+
+const formatBillDate = (value) => {
+  return new Date(value).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+};
+
+const formatBillAmount = (value) => {
+  return `${Number(value).toLocaleString('vi-VN')} VND`;
+};
+
+/**
+ * Gửi bill khi thanh toán thành công (UC17): thông tin đơn, gói / credit pack và thời gian hiệu lực của gói
+ * @param {string} toEmail - email người mua
+ * @param {string} fullName - tên người mua
+ * @param {Object} bill - { order_code, paid_at, amount, payment_method, receipt_url, plan, period, pack }
+ *   plan: { name, billing_period, monthly_credits, ai_quota, max_classrooms } | null
+ *   period: { start_date, expires_at, is_scheduled } | null
+ *   pack: { name, quantity, credit_amount } | null
+ * @returns {Promise<void>}
+ */
+export const sendPaymentReceiptEmail = async (toEmail, fullName, bill) => {
+  const rows = [
+    ['Order code', bill.order_code],
+    ['Paid at', new Date(bill.paid_at).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })],
+    ['Payment method', bill.payment_method || '-'],
+  ];
+
+  if (bill.plan) {
+    let classLimit = 'Unlimited';
+    if (bill.plan.max_classrooms !== null && bill.plan.max_classrooms !== undefined) {
+      classLimit = String(bill.plan.max_classrooms);
+    }
+    rows.push(['Plan', bill.plan.name]);
+    rows.push(['Billing period', bill.plan.billing_period]);
+    rows.push(['Credits per month', String(bill.plan.monthly_credits ?? 0)]);
+    rows.push(['AI quota per month', String(bill.plan.ai_quota ?? 0)]);
+    rows.push(['Classroom limit', classLimit]);
+  }
+  if (bill.period) {
+    rows.push(['Start date', formatBillDate(bill.period.start_date)]);
+    rows.push(['End date', formatBillDate(bill.period.expires_at)]);
+  }
+  if (bill.pack) {
+    rows.push(['Credit pack', bill.pack.name]);
+    rows.push(['Quantity', String(bill.pack.quantity)]);
+    rows.push(['Total credits', String(bill.pack.credit_amount * bill.pack.quantity)]);
+  }
+  rows.push(['Total paid', formatBillAmount(bill.amount)]);
+
+  const tableRows = rows
+    .map(([label, value]) => `<tr><td style="padding:4px 12px 4px 0;color:#555">${escapeHtml(label)}</td><td style="padding:4px 0"><b>${escapeHtml(value)}</b></td></tr>`)
+    .join('');
+
+  let scheduleNote = '';
+  if (bill.period && bill.period.is_scheduled) {
+    scheduleNote = '<p>Your current plan stays active until it ends. The new plan, its credits and AI quota start on the start date above.</p>';
+  }
+
+  await transporter.sendMail({
+    from: env.smtpUser,
+    to: toEmail,
+    subject: `TuConnector payment receipt ${bill.order_code}`,
+    html: `
+      <p>Hello ${escapeHtml(fullName)},</p>
+      <p>Thank you for your payment. Here is your bill.</p>
+      <table>${tableRows}</table>
+      ${scheduleNote}
+      <p>View or print the receipt: <a href="${escapeHtml(bill.receipt_url)}">${escapeHtml(bill.receipt_url)}</a></p>
+    `,
+  });
+};

@@ -15,3 +15,15 @@ export const tutorSearchSchema = paginationQuerySchema.extend({
 }).refine((data) => data.min_price === undefined || data.max_price === undefined || data.min_price <= data.max_price, {
   path: ['max_price'], message: 'Maximum price must be greater than or equal to minimum price',
 });
+
+// Danh sách bài đăng công khai của gia sư trên trang /tutors (tab Bài đăng)
+export const postSearchSchema = paginationQuerySchema.extend({
+  q: textFilter,
+  subject: textFilter,
+  grade: textFilter,
+  mode: z.enum(['ONLINE', 'OFFLINE', 'HYBRID']).optional(),
+  min_price: z.coerce.number().min(0).max(1000000000).optional(),
+  max_price: z.coerce.number().min(0).max(1000000000).optional(),
+}).refine((data) => data.min_price === undefined || data.max_price === undefined || data.min_price <= data.max_price, {
+  path: ['max_price'], message: 'Maximum price must be greater than or equal to minimum price',
+});

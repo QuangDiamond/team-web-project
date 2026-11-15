@@ -47,4 +47,5 @@ module.exports = [
     capacity: 10, join_code: 'HUYLY10', invite_link: 'https://tuconnector.vn/join/HUYLY10', status: 'ACTIVE',
     created_at: d('2026-10-25T09:00:00+07:00'), updated_at: d('2026-10-25T09:00:00+07:00'), topics: [],
   },
+  ...require('../classroomFixture').classrooms,
 ];

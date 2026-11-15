@@ -13,12 +13,19 @@ export default function CurrentPlanBanner({ billing }) {
     expiryLabel = `Đến ngày ${formatDate(billing.subscription.expires_at)}`;
   }
 
+  // Gói đã mua, chạy khi gói hiện tại hết hạn (UC17)
+  let nextPlanLabel = '';
+  if (billing.next_plan) {
+    nextPlanLabel = `Gói tiếp theo: ${getPlanTitle(billing.next_plan.name)} từ ${formatDate(billing.next_plan.start_date)} đến ${formatDate(billing.next_plan.expires_at)}`;
+  }
+
   return (
     <dl className="card current-plan">
       <div>
         <dt>Gói hiện tại</dt>
         <dd>{planLabel}</dd>
         <dd className="current-plan-note">{expiryLabel}</dd>
+        {nextPlanLabel && <dd className="current-plan-note">{nextPlanLabel}</dd>}
       </div>
       <div>
         <dt>Số dư credits</dt>

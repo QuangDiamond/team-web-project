@@ -14,6 +14,9 @@ import '../../styles/login.css';
 
 const LOGIN_FIELDS = ['email', 'password'];
 const LOCKED_MESSAGE = 'Tài khoản của bạn đã bị tạm ngưng hoặc bị cấm. Vui lòng liên hệ bộ phận hỗ trợ.';
+// Phải giống hệt LOGIN_LOCKED_MESSAGE của backend (auth.service.js), BR-02
+const LOGIN_LOCKED_RAW_MESSAGE = 'Your account is locked after too many failed login attempts. Please reset your password via Forgot Password';
+const LOGIN_LOCKED_MESSAGE = 'Tài khoản đã bị khóa do nhập sai mật khẩu quá 5 lần. Vui lòng đặt lại mật khẩu bằng chức năng Quên mật khẩu.';
 
 // Thông báo theo query backend gắn khi redirect về /login
 const getRedirectNotice = (searchParams) => {
@@ -43,6 +46,7 @@ export default function Login() {
   const [searchParams] = useSearchParams();
 
   const [values, setValues] = useState({ email: '', password: '' });
+  const [rememberMe, setRememberMe] = useState(false);
   const [errors, setErrors] = useState({});
   const [notVerified, setNotVerified] = useState(false);
 
@@ -94,7 +98,7 @@ export default function Login() {
     }
 
     setSubmitting(true);
-    const result = await login({ email: values.email.trim(), password: values.password });
+    const result = await login({ email: values.email.trim(), password: values.password, remember_me: rememberMe });
     setSubmitting(false);
 
     // login() đã lưu user vào AuthContext, GuestRoute sẽ tự chuyển tới trang theo role
@@ -108,6 +112,10 @@ export default function Login() {
     if (error?.status === 403 && (error.rawMessage || error.message) === 'Account not verified') {
       setNotVerified(true);
       toast.error('Tài khoản của bạn chưa được xác minh. Vui lòng kiểm tra email hoặc gửi lại email xác minh bên dưới.');
+      return;
+    }
+    if (error?.status === 403 && error.rawMessage === LOGIN_LOCKED_RAW_MESSAGE) {
+      toast.error(LOGIN_LOCKED_MESSAGE);
       return;
     }
     if (error?.status === 403) {
@@ -156,6 +164,16 @@ export default function Login() {
         />
 
         <div className="login-options">
+          <label className="checkbox">
+            <input
+              id="remember_me"
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(event) => setRememberMe(event.target.checked)}
+              disabled={submitting}
+            />
+            <span>Ghi nhớ đăng nhập (7 ngày)</span>
+          </label>
           <Link to="/forgot-password" className="link">Quên mật khẩu?</Link>
         </div>
 

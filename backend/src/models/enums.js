@@ -1,7 +1,7 @@
 // Enum dùng chung cho các model, sinh từ các Enum trong tuconnector_erd_3_mongo_embedded.dbml
 export const ENUMS = Object.freeze({
   PlanTargetRole: Object.freeze({ TUTOR: 'TUTOR', PARENT: 'PARENT' }),
-  UserAccountStatus: Object.freeze({ ACTIVE: 'ACTIVE', BANNED: 'BANNED', SUSPENDED: 'SUSPENDED' }),
+  UserAccountStatus: Object.freeze({ ACTIVE: 'ACTIVE', BANNED: 'BANNED', SUSPENDED: 'SUSPENDED', UNVERIFIED: 'UNVERIFIED' }),
   TutorProfilesAvailabilityStatus: Object.freeze({ AVAILABLE: 'AVAILABLE', NOT_AVAILABLE: 'NOT_AVAILABLE' }),
   ReviewsStatus: Object.freeze({ APPROVED: 'APPROVED', PENDING_MODERATION: 'PENDING_MODERATION', REJECTED: 'REJECTED' }),
   TutorPostsTeachingMode: Object.freeze({ ONLINE: 'ONLINE', OFFLINE: 'OFFLINE', HYBRID: 'HYBRID' }),

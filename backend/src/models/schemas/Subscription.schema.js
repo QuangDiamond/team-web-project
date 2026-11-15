@@ -20,6 +20,10 @@ export const subscriptionSchema = new Schema(
     start_date:        { type: Date, default: null },
     // Timestamp tạo subscription
     created_at:        { type: Date, default: null },
+    // Gói đã mua khi đang dùng gói trả phí còn hạn, chạy từ next_start_date (= ngày hết hạn gói hiện tại)
+    next_plan_id:      { type: Schema.Types.ObjectId, ref: 'Plan', default: null },
+    next_start_date:   { type: Date, default: null },
+    next_expires_at:   { type: Date, default: null },
   },
   { _id: false }
 );

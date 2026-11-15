@@ -14,6 +14,11 @@ export const getAll = async () => {
 
 export const createUser = async (newUser, registerType = 'Regular') => {
   const isOAuth = registerType === 'OAuth2';
+  // UC01 POST-1: đăng ký email/mật khẩu là UNVERIFIED đến khi bấm link; Google đã xác minh email nên ACTIVE
+  let accountStatus = 'UNVERIFIED';
+  if (isOAuth) {
+    accountStatus = 'ACTIVE';
+  }
   try {
     return await User.create({
       full_name: newUser.full_name,
@@ -25,6 +30,7 @@ export const createUser = async (newUser, registerType = 'Regular') => {
       google_account: isOAuth ? newUser.google_account : null,
       has_password: !isOAuth,
       email_verify_status: isOAuth,
+      account_status: accountStatus,
       is_onboarded: isOAuth,
     });
   } catch (error) {
@@ -36,7 +42,8 @@ export const createUser = async (newUser, registerType = 'Regular') => {
 export const updateUserLogin = async (userId) => {
   return User.findByIdAndUpdate(
     userId,
-    { last_login_at: new Date() },
+    // BR-02: đăng nhập thành công thì đếm lại số lần sai từ 0
+    { last_login_at: new Date(), failed_login_attempts: 0 },
     { new: true, timestamps: false }
   ).select('-password_hash');
 };

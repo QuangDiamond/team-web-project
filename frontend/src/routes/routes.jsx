@@ -70,6 +70,9 @@ function WorkspaceRedirect() {
   const location = useLocation();
   const profileReturn = getPublicProfileReturn();
   if (location.pathname === '/dashboard' && profileReturn) return <Navigate to={profileReturn} replace />;
+  // UC01-A2: gia sư chưa hoàn thiện hồ sơ thì vào trang hồ sơ (UC05) thay vì dashboard
+  const isIncompleteTutor = user.role === 'TUTOR' && user.tutor_profile_complete === false;
+  if (location.pathname === '/dashboard' && isIncompleteTutor) return <Navigate to="/tutor/profile" replace />;
   const prefixes = { STUDENT: '/student', PARENT: '/parent', TUTOR: '/tutor', ADMIN: '/admin' };
   const prefix = prefixes[user.role];
   if (!prefix) return <Navigate to="/" replace />;

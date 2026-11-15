@@ -1,29 +1,25 @@
 import { isIP } from 'node:net';
 import crypto from 'crypto';
+import mongoose from 'mongoose';
 import { User } from '../models/User.js';
 import { Plan } from '../models/Plan.js';
 import { CreditPack } from '../models/CreditPack.js';
 import { PaymentOrder } from '../models/PaymentOrder.js';
-import { CreditTransaction } from '../models/CreditTransaction.js';
 import { AppError } from '../common/utils/AppError.js';
 import * as pspClient from '../common/utils/pspClient.js';
+import { sendPaymentReceiptEmail } from '../common/utils/mailer.js';
 import { env } from '../config/environment.js';
 import { FREE_PLAN_NAME, calculatePlanCharge, toPlanResponse, toCreditPackResponse } from './plan.service.js';
+import {
+  activateScheduledPlan,
+  addCredits,
+  addMonths,
+  hasConflictingScheduledPlan,
+  schedulePlanPurchase,
+} from './subscription.service.js';
 
 // BR-06: đơn chờ thanh toán hết hạn sau 15 phút (PAYMENT_ORDERS không có field expires_at nên tính từ created_at)
 const ORDER_TTL_MS = 15 * 60 * 1000;
-
-/**
- * Cộng thêm số tháng vào một ngày
- * @param {Date} date - ngày gốc
- * @param {number} months - số tháng cộng thêm
- * @returns {Date} ngày mới
- */
-const addMonths = (date, months) => {
-  const result = new Date(date);
-  result.setMonth(result.getMonth() + months);
-  return result;
-};
 
 /**
  * Thời điểm đơn hết hạn (created_at + 15 phút)
@@ -86,72 +82,33 @@ const findFreePlan = async (role) => {
 };
 
 /**
- * Cộng credit vào ví (tạo ví nếu chưa có) bằng $inc nguyên tử và ghi lịch sử CreditTransaction
- * @param {Object} userId - id của user
- * @param {number} amount - số credit cộng thêm
- * @param {string} type - MONTHLY_GRANT | PURCHASE
- * @param {Date|null} expiresAt - hạn dùng credit (credit mua từ pack để null = vĩnh viễn)
- * @returns {Promise<void>}
- */
-const addCredits = async (userId, amount, type, expiresAt) => {
-  // Ví null thì không $inc được, tạo ví số dư 0 trước
-  await User.updateOne({ _id: userId, credit_wallet: null }, { $set: { credit_wallet: { balance: 0 } } });
-  await User.updateOne({ _id: userId }, { $inc: { 'credit_wallet.balance': amount } });
-  await CreditTransaction.create({
-    user_id: userId,
-    amount: amount,
-    type: type,
-    expires_at: expiresAt,
-  });
-};
-
-/**
- * Nâng cấp / gia hạn gói cho user sau khi thanh toán thành công.
- * D8: đang còn hạn thì cộng dồn thời hạn. D7: cấp ngay credit tháng đầu (MONTHLY_GRANT)
+ * Áp gói vừa mua cho user sau khi thanh toán thành công (UC17 #13, xem schedulePlanPurchase).
+ * Gói áp dụng ngay thì cấp luôn credit tháng đầu (D7); gói chờ thì cấp khi gói đó bắt đầu
  * @param {Object} order - PaymentOrder đã SUCCESS (item_type = PLAN_UPGRADE)
- * @returns {Promise<void>}
+ * @param {Object} session - mongoose session của transaction đang chạy
+ * @returns {Promise<{ plan: Object, period: Object }|null>} null nếu cần xử lý tay
  */
-const applyPlanUpgrade = async (order) => {
-  const user = await User.findById(order.user_id);
-  const plan = await Plan.findById(order.plan_id);
+const applyPlanUpgrade = async (order, session) => {
+  const user = await User.findById(order.user_id).session(session);
+  const plan = await Plan.findById(order.plan_id).session(session);
   if (!user || !plan) {
     console.error(`Paid order ${order.order_code}: user or plan not found, needs manual handling`);
-    return;
+    return null;
   }
 
   const now = new Date();
-  const currentSubscription = user.subscription;
-  let isExtending = false;
-  if (currentSubscription && currentSubscription.status === 'ACTIVE' && currentSubscription.expires_at > now) {
-    isExtending = true;
+  const purchase = schedulePlanPurchase(user.subscription, plan._id, order.duration_months, now);
+  if (!purchase) {
+    console.error(`Paid order ${order.order_code}: another plan is already scheduled, needs manual handling`);
+    return null;
   }
 
-  let newSubscription;
-  if (isExtending) {
-    newSubscription = {
-      plan_id: plan._id,
-      status: 'ACTIVE',
-      start_date: currentSubscription.start_date,
-      expires_at: addMonths(currentSubscription.expires_at, order.duration_months),
-      ai_quota_used: currentSubscription.ai_quota_used,
-      ai_quota_reset_at: currentSubscription.ai_quota_reset_at,
-      created_at: currentSubscription.created_at,
-    };
-  } else {
-    newSubscription = {
-      plan_id: plan._id,
-      status: 'ACTIVE',
-      start_date: now,
-      expires_at: addMonths(now, order.duration_months),
-      ai_quota_used: 0,
-      ai_quota_reset_at: addMonths(now, 1),
-      created_at: now,
-    };
+  await User.updateOne({ _id: user._id }, { $set: { subscription: purchase.subscription } }, { session });
+  if (!purchase.period.is_scheduled) {
+    // Credit tháng có hạn 1 tháng (job cấp credit hàng tháng chưa làm, xem docs/TODO.md)
+    await addCredits(user._id, plan.monthly_credits, 'MONTHLY_GRANT', addMonths(now, 1), session);
   }
-
-  await User.updateOne({ _id: user._id }, { $set: { subscription: newSubscription } });
-  // Credit tháng có hạn 1 tháng (job cấp credit hàng tháng chưa làm, xem docs/TODO.md)
-  await addCredits(user._id, plan.monthly_credits, 'MONTHLY_GRANT', addMonths(now, 1));
+  return { plan: plan, period: purchase.period };
 };
 
 /**
@@ -159,14 +116,56 @@ const applyPlanUpgrade = async (order) => {
  * @param {Object} order - PaymentOrder đã SUCCESS (item_type = CREDIT_PACK)
  * @returns {Promise<void>}
  */
-const applyCreditPackPurchase = async (order) => {
-  const creditPack = await CreditPack.findById(order.pack_id);
+const applyCreditPackPurchase = async (order, session) => {
+  const creditPack = await CreditPack.findById(order.pack_id).session(session);
   if (!creditPack) {
     console.error(`Paid order ${order.order_code}: credit pack not found, needs manual handling`);
-    return;
+    return null;
   }
   const totalCredits = creditPack.credit_amount * order.quantity;
-  await addCredits(order.user_id, totalCredits, 'PURCHASE', null);
+  await addCredits(order.user_id, totalCredits, 'PURCHASE', null, session);
+  return { pack: creditPack };
+};
+
+/**
+ * Gửi bill qua email sau khi thanh toán thành công. Lỗi gửi mail chỉ ghi log, không ảnh hưởng đơn đã thanh toán
+ * @param {Object} order - PaymentOrder đã SUCCESS
+ * @param {Object|null} benefit - kết quả applyPlanUpgrade / applyCreditPackPurchase
+ * @returns {Promise<void>}
+ */
+const sendPaymentBill = async (order, benefit) => {
+  const buyer = await User.findById(order.user_id).select('full_name email');
+  if (!buyer || !buyer.email) {
+    return;
+  }
+  const bill = {
+    order_code: order.order_code,
+    paid_at: order.paid_at,
+    amount: order.amount,
+    payment_method: order.payment_method,
+    receipt_url: order.receipt.receipt_url,
+    plan: null,
+    period: null,
+    pack: null,
+  };
+  if (benefit && benefit.plan) {
+    bill.plan = {
+      name: benefit.plan.name,
+      billing_period: benefit.plan.billing_period,
+      monthly_credits: benefit.plan.monthly_credits,
+      ai_quota: benefit.plan.ai_quota,
+      max_classrooms: benefit.plan.max_classrooms,
+    };
+    bill.period = benefit.period;
+  }
+  if (benefit && benefit.pack) {
+    bill.pack = {
+      name: benefit.pack.name,
+      quantity: order.quantity,
+      credit_amount: benefit.pack.credit_amount,
+    };
+  }
+  await sendPaymentReceiptEmail(buyer.email, buyer.full_name, bill);
 };
 
 /**
@@ -196,9 +195,10 @@ export const getCatalog = async (role) => {
  * Gói hiện tại, thời hạn, số dư credit và AI quota còn lại của user (UC17, UC18).
  * Subscription hết hạn hoặc chưa có thì coi như đang dùng gói Free của role
  * @param {string} userId - id user đang đăng nhập
- * @returns {Promise<{ plan: Object|null, subscription: Object|null, credit_balance: number, ai_quota_left: number }>}
+ * @returns {Promise<{ plan: Object|null, subscription: Object|null, next_plan: Object|null, credit_balance: number, ai_quota_left: number }>}
  */
 export const getMyBilling = async (userId) => {
+  await activateScheduledPlan(userId);
   const user = await User.findById(userId);
   if (!user) {
     throw new AppError('User not found', 404);
@@ -248,9 +248,26 @@ export const getMyBilling = async (userId) => {
     planData = { _id: plan._id, name: plan.name, is_free: plan.name === FREE_PLAN_NAME };
   }
 
+  // Gói đã mua, chạy khi gói hiện tại hết hạn (UC17 #13)
+  let nextPlanData = null;
+  if (hasActiveSubscription && subscription.next_plan_id) {
+    const nextPlan = await Plan.findById(subscription.next_plan_id);
+    let nextPlanName = null;
+    if (nextPlan) {
+      nextPlanName = nextPlan.name;
+    }
+    nextPlanData = {
+      _id: subscription.next_plan_id,
+      name: nextPlanName,
+      start_date: subscription.next_start_date,
+      expires_at: subscription.next_expires_at,
+    };
+  }
+
   return {
     plan: planData,
     subscription: subscriptionData,
+    next_plan: nextPlanData,
     credit_balance: creditBalance,
     ai_quota_left: aiQuotaLeft,
   };
@@ -286,6 +303,12 @@ export const createOrder = async (user, data, payerIp) => {
     }
     if (plan.name === FREE_PLAN_NAME) {
       throw new AppError('The Free plan cannot be purchased', 422, { plan_id: ['The Free plan cannot be purchased'] });
+    }
+    await activateScheduledPlan(user.id);
+    const buyer = await User.findById(user.id).select('subscription');
+    if (buyer && hasConflictingScheduledPlan(buyer.subscription, plan._id, new Date())) {
+      const message = 'You already have another plan scheduled to start after your current plan';
+      throw new AppError(message, 409, { plan_id: [message] });
     }
     const planCharge = calculatePlanCharge(plan);
     amount = planCharge.amount;
@@ -416,7 +439,7 @@ export const cancelOrder = async (userId, orderCode) => {
 /**
  * Áp kết quả thanh toán (webhook PSP hoặc trang thanh toán giả). Idempotent (E2): đơn không tồn tại hoặc
  * không còn PENDING thì bỏ qua và ghi log. Đơn quá hạn -> EXPIRED. FAILED -> không đổi gì khác (E1).
- * SUCCESS -> lưu paid_at, receipt rồi nâng cấp gói hoặc cộng credit
+ * SUCCESS -> lưu paid_at, receipt rồi nâng cấp gói hoặc cộng credit (cùng transaction), sau đó gửi bill qua email
  * @param {string} orderCode - mã đơn
  * @param {'SUCCESS'|'FAILED'} result - kết quả thanh toán
  * @returns {Promise<Object|null>} đơn sau khi xử lý, null nếu không tìm thấy
@@ -448,30 +471,47 @@ export const applyPaymentResult = async (orderCode, result) => {
     return PaymentOrder.findById(order._id);
   }
 
-  const now = new Date();
-  // Điều kiện status PENDING đảm bảo chỉ 1 request được cộng quyền lợi dù kết quả gửi về nhiều lần
-  const paidOrder = await PaymentOrder.findOneAndUpdate(
-    { _id: order._id, status: 'PENDING' },
-    {
-      status: 'SUCCESS',
-      paid_at: now,
-      receipt: {
-        receipt_url: `${env.corsOrigin}/receipts/${order.order_code}`,
-        created_at: now,
-      },
-    },
-    { new: true }
-  );
+  // Đổi trạng thái đơn và cộng quyền lợi trong 1 transaction: lỗi giữa chừng thì đơn vẫn PENDING, không mất quyền lợi
+  let paidOrder = null;
+  let benefit = null;
+  const session = await mongoose.startSession();
+  try {
+    await session.withTransaction(async () => {
+      const now = new Date();
+      // Điều kiện status PENDING đảm bảo chỉ 1 request được cộng quyền lợi dù kết quả gửi về nhiều lần
+      paidOrder = await PaymentOrder.findOneAndUpdate(
+        { _id: order._id, status: 'PENDING' },
+        {
+          status: 'SUCCESS',
+          paid_at: now,
+          receipt: {
+            receipt_url: `${env.corsOrigin}/receipts/${order.order_code}`,
+            created_at: now,
+          },
+        },
+        { new: true, session }
+      );
+      if (!paidOrder) {
+        return;
+      }
+      if (paidOrder.item_type === 'PLAN_UPGRADE') {
+        benefit = await applyPlanUpgrade(paidOrder, session);
+      } else {
+        benefit = await applyCreditPackPurchase(paidOrder, session);
+      }
+    });
+  } finally {
+    await session.endSession();
+  }
+
   if (!paidOrder) {
     console.warn(`Payment result ignored: order ${orderCode} was processed by another request`);
     return PaymentOrder.findById(order._id);
   }
 
-  if (paidOrder.item_type === 'PLAN_UPGRADE') {
-    await applyPlanUpgrade(paidOrder);
-  } else {
-    await applyCreditPackPurchase(paidOrder);
-  }
+  sendPaymentBill(paidOrder, benefit).catch((error) => {
+    console.error(`Could not send the bill for order ${orderCode}:`, error.message);
+  });
   return paidOrder;
 };
 

@@ -74,6 +74,7 @@ export default function TutorDirectory() {
 
   const params = { ...Object.fromEntries(searchParams), limit: PAGE_SIZE };
   delete params.area;
+  delete params.tab;
   const list = usePagedList(searchTutors, params);
 
   const handleSearch = (event) => {
