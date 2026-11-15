@@ -49,6 +49,12 @@ const buildDeepLink = (notification, role) => {
   if (notification.category === 'SYSTEM' && normalizedRole === 'ADMIN') {
     return '/admin/moderation';
   }
+  // Thông báo hệ thống không gắn nội dung cụ thể (vd: kết quả xử lý báo cáo, liên kết phụ huynh–con):
+  // Phụ huynh/Gia sư/Học sinh không có trang riêng cho loại này nên mở trang Thông báo để đọc đầy đủ.
+  const hasNoTarget = !notification.target_type;
+  if (notification.category === 'SYSTEM' && hasNoTarget) {
+    return `${base}/notifications`;
+  }
   return `${base}/dashboard`;
 };
 

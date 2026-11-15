@@ -112,6 +112,27 @@ test('getNotifications: thông báo tin nhắn 1-1 trỏ thẳng tới hội tho
   assert.equal(result.notifications[1].deepLink, '/tutor/contracts');
 });
 
+test('getNotifications: thông báo hệ thống không gắn nội dung (kết quả xử lý báo cáo) mở trang Thông báo thay vì Tổng quan', async (t) => {
+  const classId = newId();
+  const sortedResult = (value) => ({ sort: () => ({ limit: () => ({ lean: async () => value }) }) });
+  const notifications = [
+    { _id: newId(), category: 'SYSTEM', title: 'Cập nhật kết quả xử lý báo cáo vi phạm', target_type: null, target_id: null },
+    { _id: newId(), category: 'SYSTEM', title: 'Lớp có thông báo mới', target_type: 'CLASSROOM', target_id: classId },
+  ];
+  t.mock.method(Notification, 'find', () => sortedResult(notifications));
+  t.mock.method(Notification, 'countDocuments', async () => 2);
+
+  const parentResult = await notificationService.getNotifications({ id: newId(), role: 'PARENT' });
+  assert.equal(parentResult.notifications[0].deepLink, '/parent/notifications');
+  assert.equal(parentResult.notifications[1].deepLink, '/parent/dashboard');
+
+  const tutorResult = await notificationService.getNotifications({ id: newId(), role: 'TUTOR' });
+  assert.equal(tutorResult.notifications[0].deepLink, '/tutor/notifications');
+
+  const adminResult = await notificationService.getNotifications({ id: newId(), role: 'ADMIN' });
+  assert.equal(adminResult.notifications[0].deepLink, '/admin/moderation');
+});
+
 test('UC38 reportSchema: chỉ nhận POST/REQUEST, ObjectId hợp lệ và lý do 5-500 ký tự', async () => {
   const { reportSchema } = await import('../../src/common/validator/reportSchema.js');
   const valid = reportSchema.safeParse({ target_type: 'POST', target_id: newId(), reason: '  Spam hoặc trùng lặp  ' });

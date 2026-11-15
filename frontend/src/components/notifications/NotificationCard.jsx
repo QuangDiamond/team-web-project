@@ -1,5 +1,14 @@
 import { ArrowRight, Check, CheckCheck, Clock3, Mail, Smartphone, Trash2 } from 'lucide-react';
 import { getNotificationCategory, getRelativeTime } from './notificationDisplay';
+
+// Thẻ này nằm trên trang Thông báo, nên link dẫn về chính trang Thông báo thì không cần nút "Xem chi tiết"
+const hasDetailPage = (deepLink) => {
+  if (!deepLink) {
+    return false;
+  }
+  return !deepLink.endsWith('/notifications');
+};
+
 export default function NotificationCard({
   item,
   busy,
@@ -41,7 +50,7 @@ export default function NotificationCard({
         })}
         </div>}
         <div className="noti-item-actions">
-          {item.deepLink && <button type="button" className="btn btn-outline btn-sm" onClick={() => onOpen(item)} disabled={busy}>Xem chi tiết <ArrowRight size={16} aria-hidden="true" /></button>}
+          {hasDetailPage(item.deepLink) && <button type="button" className="btn btn-outline btn-sm" onClick={() => onOpen(item)} disabled={busy}>Xem chi tiết <ArrowRight size={16} aria-hidden="true" /></button>}
           {!item.is_read && <button type="button" className="btn btn-outline btn-sm" onClick={() => onRead(item._id)} disabled={busy}><Check size={16} aria-hidden="true" />Đánh dấu đã đọc</button>}
           <button type="button" className="dashboard-icon-button noti-delete" aria-label={`Xóa thông báo: ${item.title}`} onClick={() => onDelete(item._id)} disabled={busy}><Trash2 size={18} aria-hidden="true" /></button>
         </div>
