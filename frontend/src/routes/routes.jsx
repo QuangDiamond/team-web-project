@@ -29,6 +29,7 @@ import ClassroomsPage from '../pages/classroom/ClassroomsPage';
 import ClassroomDetail from '../pages/classroom/ClassroomDetail';
 import CreateAssignmentPage from '../pages/classroom/CreateAssignmentPage';
 import GradeAssignmentPage from '../pages/classroom/GradeAssignmentPage';
+import DoAssignmentPage from '../pages/classroom/DoAssignmentPage';
 import JoinClassPage from '../pages/classroom/JoinClassPage';
 import PlansPricing from '../pages/admin/PlansPricing';
 import Categories from '../pages/admin/Categories';
@@ -154,6 +155,8 @@ export const router = createBrowserRouter([
               { path: 'dashboard', element: <StudentDashboard />, handle: { title: "Tổng quan" } },
               { path: 'classes', element: <ClassroomsPage />, handle: { title: 'Lớp học của tôi' } },
               { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
+              { path: 'classes/:id/assignments/:assignmentId', element: <DoAssignmentPage />, handle: { title: 'Làm bài tập' } },
+              { path: 'assignments/:assignmentId', element: <DoAssignmentPage />, handle: { title: 'Làm bài tập' } },
               { path: 'schedule', element: <StudentSchedule />, handle: { title: 'Lịch học' } },
               { path: 'assignments', element: <StudentAssignmentsPage />, handle: { title: "Tất cả bài tập" } },
               { path: 'parent-links', element: <ParentLinks />, handle: { title: "Liên kết phụ huynh" } },
@@ -178,6 +181,7 @@ export const router = createBrowserRouter([
               { path: 'dashboard', element: <ParentDashboard />, handle: { title: "Tổng quan" } },
               { path: 'classes', element: <ClassroomsPage />, handle: { title: 'Lớp học của con' } },
               { path: 'classes/:id', element: <ClassroomDetail />, handle: { title: 'Chi tiết lớp học' } },
+              { path: 'classes/:id/assignments/:assignmentId', element: <DoAssignmentPage />, handle: { title: 'Chi tiết bài tập' } },
               { path: 'change-password', element: <ChangePassword />, handle: { title: "Bảo mật tài khoản" } },
               { path: 'requests', element: <TutoringRequests />, handle: { title: "Yêu cầu tìm gia sư của tôi" } },
               { path: 'requests/new', element: <TutoringRequestForm />, handle: { title: "Tạo yêu cầu tìm gia sư" } },
@@ -227,6 +231,7 @@ export const router = createBrowserRouter([
               { path: 'classes/:id/assignments/new', element: <CreateAssignmentPage />, handle: { title: 'Tạo bài tập mới' } },
               { path: 'classes/:id/assignments/:assignmentId/edit', element: <CreateAssignmentPage />, handle: { title: 'Chỉnh sửa bài tập' } },
               { path: 'classes/:id/assignments/:assignmentId/grade', element: <GradeAssignmentPage />, handle: { title: 'Chấm điểm bài tập' } },
+              { path: 'classes/:id/assignments/:assignmentId', element: <DoAssignmentPage />, handle: { title: 'Xem bài tập' } },
               { path: 'change-password', element: <ChangePassword />, handle: { title: "Bảo mật tài khoản" } },
               { path: 'requests', element: <BrowseRequests />, handle: { title: "Tìm yêu cầu" } },
               { path: 'requests/suggested', element: <SuggestedRequests />, handle: { title: 'Gợi ý' } },

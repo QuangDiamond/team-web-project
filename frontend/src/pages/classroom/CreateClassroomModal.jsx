@@ -4,6 +4,48 @@ import { useNavigate } from 'react-router-dom';
 import { GraduationCap, AlertTriangle, Check, X, Plus, ExternalLink } from 'lucide-react';
 import { createClassroom, getConfirmedAgreements, getMyClassrooms } from '../../services/classroomService';
 import { useSubjectNames } from '../../hooks/useSubjectNames';
+import Combobox from '../../components/common/Combobox';
+
+const DEFAULT_SUBJECTS = [
+  'Toán',
+  'Ngữ văn',
+  'Tiếng Anh',
+  'Vật lý',
+  'Hóa học',
+  'Sinh học',
+  'Lịch sử',
+  'Địa lý',
+  'Tin học',
+  'Khoa học tự nhiên',
+  'Lịch sử và Địa lý',
+  'Giáo dục công dân',
+  'Tiếng Pháp',
+  'Tiếng Nhật',
+  'Tiếng Trung',
+  'Tiếng Hàn',
+];
+
+const DEFAULT_GRADES = [
+  'Mầm non',
+  'Lớp 1',
+  'Lớp 2',
+  'Lớp 3',
+  'Lớp 4',
+  'Lớp 5',
+  'Lớp 6',
+  'Lớp 7',
+  'Lớp 8',
+  'Lớp 9',
+  'Lớp 10',
+  'Lớp 11',
+  'Lớp 12',
+  'Ôn thi vào 10',
+  'Ôn thi Đại học',
+  'IELTS',
+  'TOEIC',
+  'Tiếng Anh giao tiếp',
+  'Đại học / Cao đẳng',
+];
 
 function applyAgreementToForm(form, agreement) {
   const subject = agreement.derived_subject || agreement.agreed_subject || form.subject || '';
@@ -32,6 +74,16 @@ export default function CreateClassroomModal({
 }) {
   const navigate = useNavigate();
   const { subjectNames, gradeNames, loading: loadingCategories, error: categoryError } = useSubjectNames();
+
+  const subjectOptions = useMemo(() => {
+    const list = Array.isArray(subjectNames) && subjectNames.length > 0 ? subjectNames : DEFAULT_SUBJECTS;
+    return Array.from(new Set([...list, ...DEFAULT_SUBJECTS]));
+  }, [subjectNames]);
+
+  const gradeOptions = useMemo(() => {
+    const list = Array.isArray(gradeNames) && gradeNames.length > 0 ? gradeNames : DEFAULT_GRADES;
+    return Array.from(new Set([...list, ...DEFAULT_GRADES]));
+  }, [gradeNames]);
   const [formData, setFormData] = useState({
     name: '',
     subject: '',
@@ -438,37 +490,29 @@ export default function CreateClassroomModal({
                   <label htmlFor="subject">
                     Môn học <span className="required">*</span>
                   </label>
-                  <input
-                    type="text"
+                  <Combobox
                     id="subject"
                     name="subject"
-                    list="subject-suggestions"
-                    placeholder="VD: Toán, Tiếng Anh, Lý..."
                     value={formData.subject}
-                    onChange={handleChange}
+                    onChange={(val) => setFormData((prev) => ({ ...prev, subject: val }))}
+                    options={subjectOptions}
+                    placeholder="VD: Toán, Tiếng Anh, Lý..."
                     required
                   />
-                  <datalist id="subject-suggestions">
-                    {subjectNames.map((name) => <option key={name} value={name} />)}
-                  </datalist>
                 </div>
 
                 <div className="form-group">
                   <label htmlFor="grade">
                     Khối / Trình độ <span style={{ color: 'var(--color-text-muted)', fontSize: '12px' }}>(tùy chọn)</span>
                   </label>
-                  <input
-                    type="text"
+                  <Combobox
                     id="grade"
                     name="grade"
-                    list="grade-suggestions"
-                    placeholder="Tìm lớp, IELTS, TOEIC... (mặc định: Chung)"
                     value={formData.grade}
-                    onChange={handleChange}
+                    onChange={(val) => setFormData((prev) => ({ ...prev, grade: val }))}
+                    options={gradeOptions}
+                    placeholder="Tìm lớp, IELTS, TOEIC... (mặc định: Chung)"
                   />
-                  <datalist id="grade-suggestions">
-                    {gradeNames.map((name) => <option key={name} value={name} />)}
-                  </datalist>
                 </div>
               </div>
 

@@ -65,6 +65,17 @@ export const assertClassroomMemberOrOwner = async (user, classId) => {
   }
 
   if (user.role === ENUMS.UserRole.PARENT) {
+    // 1. Phụ huynh là thành viên trực tiếp của lớp (đã tham gia bằng mã hoặc gia sư thêm)
+    const isDirectMember = await ClassMember.findOne({
+      class_id: classId,
+      user_id: user.id,
+      status: ENUMS.ClassMembersStatus.ACTIVE,
+    });
+    if (isDirectMember) {
+      return classroom;
+    }
+
+    // 2. Hoặc con của phụ huynh đang tham gia lớp học này
     const childrenLinks = await ParentChildLink.find({
       parent_user_id: user.id,
       status: ENUMS.ParentChildLinksStatus.ACCEPTED,
@@ -76,7 +87,7 @@ export const assertClassroomMemberOrOwner = async (user, classId) => {
       status: ENUMS.ClassMembersStatus.ACTIVE,
     });
     if (!isChildMember) {
-      throw new AppError('Forbidden: Con của bạn chưa tham gia lớp học này', 403);
+      throw new AppError('Forbidden: Bạn chưa tham gia lớp học này và con của bạn cũng chưa tham gia lớp', 403);
     }
     return classroom;
   }

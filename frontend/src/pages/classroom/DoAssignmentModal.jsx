@@ -15,14 +15,19 @@ import {
   RotateCcw,
   Send,
   Loader2,
+  UploadCloud,
+  FileText,
+  Trash2,
 } from 'lucide-react';
 import { submitAssignment } from '../../services/classroomService';
 import { useAuth } from '../../hooks/useAuth.jsx';
+import { getAttachmentUrl, formatFileSize } from '../../utils/fileUrl';
 
 export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmitted }) {
   const { user } = useAuth();
   const isParent = user?.role === 'PARENT';
   const [answers, setAnswers] = useState({});
+  const [uploadedFiles, setUploadedFiles] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
@@ -41,9 +46,17 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
     setError('');
     // Pre-fill answers from previous submission if any, otherwise load from localStorage (Case 6.2)
     const initialAnswers = {};
+    const initialFiles = {};
     if (mySubmission?.answers) {
       mySubmission.answers.forEach((ans) => {
         initialAnswers[ans.question_id] = ans.text_response || '';
+        if (ans.file_url) {
+          initialFiles[ans.question_id] = {
+            file_name: ans.text_response && !ans.text_response.startsWith('http') ? ans.text_response : 'Tệp bài làm đã nộp',
+            file_url: ans.file_url,
+            file_size: ans.file_size,
+          };
+        }
       });
     } else if (autoSaveKey) {
       try {
@@ -59,6 +72,7 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
       }
     }
     setAnswers(initialAnswers);
+    setUploadedFiles(initialFiles);
   };
 
   useEffect(() => {
@@ -91,11 +105,61 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
     });
   };
 
+  const handleSelectFile = (questionId, event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const DISALLOWED_EXTENSIONS = ['.exe', '.bat', '.cmd', '.sh', '.bin', '.msi', '.com'];
+    const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+    const lowerName = file.name.toLowerCase();
+
+    if (DISALLOWED_EXTENSIONS.some((ext) => lowerName.endsWith(ext))) {
+      toast.error(`Tệp "${file.name}" không hợp lệ. Không chấp nhận tệp thực thi (.exe, .bat, ...)`);
+      event.target.value = '';
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error(`Tệp "${file.name}" vượt quá dung lượng tối đa cho phép là 20MB.`);
+      event.target.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result;
+      setUploadedFiles((prev) => ({
+        ...prev,
+        [questionId]: {
+          file_name: file.name,
+          file_size: file.size,
+          file_data: base64,
+          mime_type: file.type || 'application/octet-stream',
+        },
+      }));
+      toast.success(`Đã chọn tệp "${file.name}" (${formatFileSize(file.size)})`);
+    };
+    reader.onerror = () => {
+      toast.error('Không thể đọc tệp. Vui lòng thử lại.');
+    };
+    reader.readAsDataURL(file);
+    event.target.value = '';
+  };
+
+  const handleRemoveFile = (questionId) => {
+    setUploadedFiles((prev) => {
+      const next = { ...prev };
+      delete next[questionId];
+      return next;
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!canSubmit) {
-      return setError('Không thể nộp bài tập do chính sách thời hạn hoặc số lần nộp');
+      toast.error('Không thể nộp bài tập do chính sách thời hạn hoặc số lần nộp');
+      return;
     }
 
     // Case 6.6 & 6.7: Kiểm tra định dạng tệp và dung lượng
@@ -106,17 +170,35 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
         if (fileVal && typeof fileVal === 'string') {
           const lower = fileVal.trim().toLowerCase();
           if (DISALLOWED_EXTENSIONS.some((ext) => lower.endsWith(ext) || lower.includes(`${ext}?`))) {
-            setError('Tệp đính kèm không hợp lệ. Hệ thống không cho phép tải lên tệp thực thi (.exe, .bat, ...)');
+            toast.error('Tệp đính kèm không hợp lệ. Hệ thống không cho phép tải lên tệp thực thi (.exe, .bat, ...)');
             return;
           }
         }
       }
     }
 
-    const formattedAnswers = (assignment.questions || []).map((q) => ({
-      question_id: q._id,
-      text_response: answers[q._id] || '',
-    }));
+    const formattedAnswers = (assignment.questions || []).map((q) => {
+      const uploaded = uploadedFiles[q._id];
+      const ansObj = {
+        question_id: q._id,
+        text_response: answers[q._id] || (uploaded ? uploaded.file_name : ''),
+      };
+
+      if (uploaded) {
+        if (uploaded.file_data) {
+          ansObj.file_data = uploaded.file_data;
+          ansObj.file_name = uploaded.file_name;
+          ansObj.file_size = uploaded.file_size;
+        } else if (uploaded.file_url) {
+          ansObj.file_url = uploaded.file_url;
+          ansObj.file_size = uploaded.file_size;
+        }
+      } else if (q.question_type === 'FILE_UPLOAD' && answers[q._id]) {
+        ansObj.file_url = answers[q._id];
+      }
+
+      return ansObj;
+    });
 
     try {
       setSubmitting(true);
@@ -457,25 +539,147 @@ export default function DoAssignmentModal({ isOpen, onClose, assignment, onSubmi
 
                     {/* Nộp tệp / đính kèm URL (FILE_UPLOAD) */}
                     {q.question_type === 'FILE_UPLOAD' && (
-                      <div>
-                        <input
-                          type="text"
-                          placeholder="Dán liên kết tệp nộp bài (Google Drive, Figma, GitHub, Dropbox...)"
-                          value={answers[q._id] || ''}
-                          onChange={(e) => handleAnswerChange(q._id, e.target.value)}
-                          disabled={!canSubmit}
-                          style={{
-                            width: '100%',
-                            padding: '10px 12px',
-                            borderRadius: '8px',
-                            border: '1px solid var(--color-control-border)',
-                            fontSize: '14px',
-                            background: 'var(--color-surface)',
-                          }}
-                        />
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <Info size={13} color="var(--color-info)" />
-                          <span>Hỗ trợ tệp tài liệu, hình ảnh, mã nguồn (tối đa 20MB). Không chấp nhận tệp thực thi (.exe, .bat, ...). Hãy đảm bảo liên kết ở chế độ công khai để gia sư chấm bài.</span>
+                      <div className="file-upload-question-box" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {/* Nếu đã chọn tệp từ máy hoặc có tệp đã nộp */}
+                        {uploadedFiles[q._id] ? (
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              padding: '12px 14px',
+                              background: 'var(--color-primary-soft, #fff7ed)',
+                              border: '1px solid #fdba74',
+                              borderRadius: '8px',
+                              gap: '12px',
+                            }}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+                              <div
+                                style={{
+                                  width: '36px',
+                                  height: '36px',
+                                  borderRadius: '8px',
+                                  background: 'var(--color-primary-strong, #ea580c)',
+                                  color: '#fff',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  flexShrink: 0,
+                                }}
+                              >
+                                <FileText size={18} />
+                              </div>
+                              <div style={{ minWidth: 0, overflow: 'hidden' }}>
+                                <div
+                                  style={{
+                                    fontWeight: 600,
+                                    fontSize: '13px',
+                                    color: 'var(--color-text)',
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                  }}
+                                  title={uploadedFiles[q._id].file_name}
+                                >
+                                  {uploadedFiles[q._id].file_name}
+                                </div>
+                                <div style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>
+                                  {formatFileSize(uploadedFiles[q._id].file_size) || 'Tệp đính kèm'}
+                                  {uploadedFiles[q._id].file_url && (
+                                    <>
+                                      {' • '}
+                                      <a
+                                        href={getAttachmentUrl(uploadedFiles[q._id].file_url)}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        style={{ color: 'var(--color-primary-strong)', textDecoration: 'underline' }}
+                                      >
+                                        Mở xem tệp
+                                      </a>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            {canSubmit && (
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveFile(q._id)}
+                                title="Xóa tệp này để chọn lại"
+                                style={{
+                                  background: 'transparent',
+                                  border: 'none',
+                                  color: 'var(--color-error, #ef4444)',
+                                  cursor: 'pointer',
+                                  padding: '6px',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                  fontSize: '12px',
+                                  fontWeight: 500,
+                                }}
+                              >
+                                <Trash2 size={15} />
+                                <span>Xóa</span>
+                              </button>
+                            )}
+                          </div>
+                        ) : (
+                          /* Nút bấm chọn tệp từ máy */
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
+                            <label
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                padding: '9px 16px',
+                                background: canSubmit ? 'var(--color-primary-soft, #fff7ed)' : 'var(--color-surface-subtle)',
+                                color: canSubmit ? 'var(--color-primary-strong, #ea580c)' : 'var(--color-text-muted)',
+                                border: '1px dashed #fdba74',
+                                borderRadius: '8px',
+                                cursor: canSubmit ? 'pointer' : 'not-allowed',
+                                fontSize: '13px',
+                                fontWeight: 600,
+                                transition: 'all 0.2s ease',
+                              }}
+                            >
+                              <UploadCloud size={16} />
+                              <span>Tải tệp lên từ thiết bị (PDF, Word, Ảnh...)</span>
+                              <input
+                                type="file"
+                                onChange={(e) => handleSelectFile(q._id, e)}
+                                disabled={!canSubmit}
+                                style={{ display: 'none' }}
+                                accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.gif,.webp,.zip,.rar,.7z"
+                              />
+                            </label>
+                          </div>
+                        )}
+
+                        {/* Ô nhập liên kết hoặc ghi chú bổ sung */}
+                        <div>
+                          <input
+                            type="text"
+                            placeholder={uploadedFiles[q._id] ? "Ghi chú thêm về bài làm (tùy chọn)..." : "Hoặc dán liên kết tệp nộp bài (Google Drive, Figma, GitHub, Dropbox...)"}
+                            value={answers[q._id] || ''}
+                            onChange={(e) => handleAnswerChange(q._id, e.target.value)}
+                            disabled={!canSubmit}
+                            style={{
+                              width: '100%',
+                              padding: '9px 12px',
+                              borderRadius: '8px',
+                              border: '1px solid var(--color-control-border)',
+                              fontSize: '13px',
+                              background: 'var(--color-surface)',
+                            }}
+                          />
+                        </div>
+
+                        <div style={{ fontSize: '12px', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <Info size={13} color="var(--color-info)" style={{ flexShrink: 0 }} />
+                          <span>Hỗ trợ tệp PDF, Word, PowerPoint, Excel, Hình ảnh, Zip (tối đa 20MB). Không chấp nhận tệp thực thi (.exe, .bat).</span>
                         </div>
                       </div>
                     )}

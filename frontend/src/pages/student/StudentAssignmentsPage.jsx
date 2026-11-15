@@ -1,6 +1,5 @@
-import { toast } from 'sonner';
 import { useState, useEffect, useCallback, useId } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   ClipboardList,
   Search,
@@ -20,8 +19,6 @@ import {
   getAllStudentAssignments,
   getJoinedClasses,
 } from '../../services/studentDashboardService';
-import { getAssignmentDetail } from '../../services/classroomService';
-import DoAssignmentModal from '../classroom/DoAssignmentModal';
 import Pagination from '../../components/common/Pagination';
 import { formatDate } from '../../utils/dateFormat';
 import '../../styles/studentAssignments.css';
@@ -35,6 +32,7 @@ const TABS = [
 ];
 
 export default function StudentAssignmentsPage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClassId, setSelectedClassId] = useState('');
@@ -47,10 +45,6 @@ export default function StudentAssignmentsPage() {
   const [counts, setCounts] = useState({ ALL: 0, PENDING: 0, SUBMITTED: 0, GRADED: 0, OVERDUE: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
-  // Target modal
-  const [doAssignmentTarget, setDoAssignmentTarget] = useState(null);
-  const [loadingDetailId, setLoadingDetailId] = useState(null);
 
   const searchInputId = useId();
   const classSelectId = useId();
@@ -114,18 +108,8 @@ export default function StudentAssignmentsPage() {
   }, [fetchAssignments]);
 
   // 4. Mở bài làm
-  const handleOpenAssignment = async (assignmentId) => {
-    try {
-      setLoadingDetailId(assignmentId);
-      const res = await getAssignmentDetail(assignmentId);
-      if (res?.data) {
-        setDoAssignmentTarget(res.data);
-      }
-    } catch (err) {
-      toast.error(err?.response?.data?.message || err.message || 'Không thể tải chi tiết bài tập');
-    } finally {
-      setLoadingDetailId(null);
-    }
+  const handleOpenAssignment = (assignmentId) => {
+    navigate(`/student/assignments/${assignmentId}`);
   };
 
   return (
@@ -272,8 +256,6 @@ export default function StudentAssignmentsPage() {
                     badgeLabel = 'Quá hạn';
                   }
 
-                  const isOpening = loadingDetailId === item._id;
-
                   return (
                     <div key={item._id} className={`assignment-card-item ${cardModifier}`}>
                       {/* Card top */}
@@ -377,11 +359,8 @@ export default function StudentAssignmentsPage() {
                             type="button"
                             className="assignment-btn-action assignment-btn-primary"
                             onClick={() => handleOpenAssignment(item._id)}
-                            disabled={isOpening}
                           >
-                            {isOpening ? (
-                              <Loader2 size={14} className="spin" />
-                            ) : sub ? (
+                            {sub ? (
                               <RotateCcw size={14} />
                             ) : (
                               <PenTool size={14} />
@@ -393,9 +372,8 @@ export default function StudentAssignmentsPage() {
                             type="button"
                             className="assignment-btn-action assignment-btn-outline"
                             onClick={() => handleOpenAssignment(item._id)}
-                            disabled={isOpening}
                           >
-                            {isOpening ? <Loader2 size={14} className="spin" /> : <Eye size={14} />}
+                            <Eye size={14} />
                             <span>Xem chi tiết & Điểm</span>
                           </button>
                         ) : (
@@ -433,16 +411,6 @@ export default function StudentAssignmentsPage() {
               />
             </>
           )}
-
-      {/* Modal làm bài / Xem lại bài tập */}
-      <DoAssignmentModal
-        isOpen={Boolean(doAssignmentTarget)}
-        onClose={() => setDoAssignmentTarget(null)}
-        assignment={doAssignmentTarget}
-        onSubmitted={() => {
-          fetchAssignments(pagination.page);
-        }}
-      />
     </div>
   );
 }

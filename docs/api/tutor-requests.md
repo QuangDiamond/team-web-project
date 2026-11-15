@@ -24,7 +24,7 @@ Item: `_id, available, title, subject_name, grade_level, teaching_mode, budget, 
 `{ subjects: [], grades: [] }` lấy từ các request đang mở, để đổ vào dropdown lọc.
 
 ## GET `/:id`
-Chi tiết một request đang mở (cùng dạng item).
+Chi tiết một request đang mở (cùng dạng item), thêm trường `invitation`: lời mời của phụ huynh gửi cho chính gia sư này về request, dạng `{ _id, status, message, credits_spent, created_at }`, hoặc `null` nếu không có (lời mời đã bị phụ huynh hủy cũng trả `null`).
 
 ## GET `/bookmarks`
 Request đã lưu (`page`, `limit`), lưu gần nhất trước, thêm `saved_at`. Request đã đóng / hết hạn vẫn hiện nhưng `available = false` và chỉ còn `_id, title, subject_name`.

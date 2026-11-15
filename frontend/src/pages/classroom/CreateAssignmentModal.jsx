@@ -56,7 +56,6 @@ export default function CreateAssignmentModal({
     },
   ]);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
 
   const formatDateForInput = (dateStr) => {
     if (!dateStr) return '';
@@ -107,7 +106,6 @@ export default function CreateAssignmentModal({
         },
       ]);
     }
-    setError('');
     setShowAiPrompt(false);
   };
 
@@ -229,13 +227,15 @@ export default function CreateAssignmentModal({
 
   const handleSubmit = async (submitStatus = status) => {
     if (!title.trim()) {
-      return setError('Vui lòng nhập tiêu đề bài tập');
+      toast.error('Vui lòng nhập tiêu đề bài tập');
+      return;
     }
 
     // Case 5.7: Lớp chưa có student -> Publish khi lớp trống thì báo lỗi precondition
     if (submitStatus === 'PUBLISHED') {
       if (studentCount === 0) {
-        return setError('Lớp học chưa có học sinh nào tham gia. Không thể xuất bản bài tập khi lớp chưa có học sinh.');
+        toast.error('Lớp học chưa có học sinh nào tham gia. Không thể xuất bản bài tập khi lớp chưa có học sinh.');
+        return;
       }
 
       // Case 5.5: MCQ thiếu đáp án -> Publish MCQ không có answer key thì báo lỗi validation
@@ -244,7 +244,8 @@ export default function CreateAssignmentModal({
           const q = questions[i];
           if (q.question_type === 'MULTIPLE_CHOICE') {
             if (!q.correct_answer || !String(q.correct_answer).trim()) {
-              return setError(`Câu hỏi trắc nghiệm số ${i + 1} chưa có đáp án đúng (answer key). Vui lòng chọn đáp án trước khi xuất bản.`);
+              toast.error(`Câu hỏi trắc nghiệm số ${i + 1} chưa có đáp án đúng (answer key). Vui lòng chọn đáp án trước khi xuất bản.`);
+              return;
             }
           }
         }
@@ -255,16 +256,17 @@ export default function CreateAssignmentModal({
     if (dueDate) {
       const d = new Date(dueDate);
       if (isNaN(d.getTime())) {
-        return setError('Hạn nộp bài (due date) không hợp lệ');
+        toast.error('Hạn nộp bài (due date) không hợp lệ');
+        return;
       }
       if (d.getTime() < Date.now() - 60000) {
-        return setError('Hạn nộp bài không được ở trong quá khứ. Vui lòng chọn thời điểm trong tương lai.');
+        toast.error('Hạn nộp bài không được ở trong quá khứ. Vui lòng chọn thời điểm trong tương lai.');
+        return;
       }
     }
 
     try {
       setSubmitting(true);
-      setError('');
 
       const payload = {
         title: title.trim(),
@@ -284,10 +286,10 @@ export default function CreateAssignmentModal({
       let res;
       if (isEditing) {
         res = await updateAssignment(assignmentToEdit._id, payload);
-        toast.success(submitStatus === 'PUBLISHED' ? 'Đã xuất bản bài tập!' : 'Đã cập nhật bản nháp bài tập!');
+        toast.success(submitStatus === 'PUBLISHED' ? 'Cập nhật và xuất bản bài tập thành công!' : 'Đã cập nhật bản nháp bài tập thành công!');
       } else {
         res = await createAssignment(classroomId, payload);
-        toast.success(submitStatus === 'PUBLISHED' ? 'Tạo và xuất bản bài tập thành công!' : 'Đã lưu bản nháp bài tập!');
+        toast.success(submitStatus === 'PUBLISHED' ? 'Tạo và xuất bản bài tập thành công!' : 'Đã lưu bản nháp bài tập thành công!');
       }
 
       if (onAssignmentCreated) {
@@ -316,13 +318,6 @@ export default function CreateAssignmentModal({
 
         <form onSubmit={(e) => { e.preventDefault(); handleSubmit(status); }}>
           <div className="modal-body" style={{ maxHeight: '72vh', overflowY: 'auto' }}>
-            {error && (
-              <div className="error-alert">
-                <AlertTriangle size={18} style={{ flexShrink: 0 }} />
-                <div>{error}</div>
-              </div>
-            )}
-
             {isQuestionLocked && (
               <div style={{ background: 'var(--color-warning-soft)', border: '1px solid #fde68a', color: 'var(--color-warning)', padding: '10px 14px', borderRadius: '8px', marginBottom: '14px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Lock size={16} style={{ flexShrink: 0 }} />

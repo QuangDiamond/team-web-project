@@ -51,14 +51,27 @@ function AssignmentRow({ assignment }) {
       <span className="student-row-icon" aria-hidden="true">
         <ClipboardList size={18} />
       </span>
-      <div className="student-row-body">
+      <div className="student-row-body" style={{ flex: 1 }}>
         <div className="student-row-heading">
-          <p className="student-row-title">{assignment.title}</p>
+          <Link
+            to={`/student/assignments/${assignment._id}`}
+            className="student-row-title"
+            style={{ textDecoration: 'none', color: 'var(--color-text)', fontWeight: 600 }}
+          >
+            {assignment.title}
+          </Link>
           <span className={`status-badge tone-${badge.tone}`}>{badge.label}</span>
         </div>
         <p className="student-row-meta">{metaParts.join(' · ')}</p>
         {overdueNote}
       </div>
+      <Link
+        to={`/student/assignments/${assignment._id}`}
+        className="btn-outline-gray"
+        style={{ fontSize: '12px', padding: '6px 12px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap' }}
+      >
+        Làm bài →
+      </Link>
     </li>
   );
 }

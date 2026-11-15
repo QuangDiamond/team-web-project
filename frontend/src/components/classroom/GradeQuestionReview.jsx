@@ -1,4 +1,5 @@
 import { CheckCircle2, AlertTriangle, FileText, ExternalLink } from 'lucide-react';
+import { getAttachmentUrl } from '../../utils/fileUrl';
 
 export default function GradeQuestionReview({
   questions = [],
@@ -202,7 +203,7 @@ export default function GradeQuestionReview({
                     <div className="grade-answer-label">Tệp bài làm đính kèm của học sinh:</div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                       <a
-                        href={ans.file_url}
+                        href={getAttachmentUrl(ans.file_url)}
                         target="_blank"
                         rel="noreferrer"
                         className="btn-outline-gray"
