@@ -18,9 +18,12 @@ PSP client HMAC, tạo / tra cứu / hủy payment và xác thực webhook đã 
 
 - [ ] Job cấp credit hàng tháng cho gói Pro (D7: hiện chỉ cấp tháng đầu khi thanh toán) và trừ credit tháng
       hết hạn (`EXPIRED_GRANT`), reset `ai_quota_used`. Cần scheduler.
-- [ ] Thanh toán thành công: đổi trạng thái đơn và cộng quyền lợi chưa nằm trong transaction (Mongo local
-      standalone). Nếu lỗi giữa chừng, đơn `SUCCESS` mà chưa cộng credit (đã log `needs manual handling` khi
-      thiếu plan/pack). Bọc `session.withTransaction` khi chạy replica set.
+- [x] Thanh toán thành công: đổi trạng thái đơn và cộng quyền lợi nằm trong `session.withTransaction` (15/11/2026,
+      cần MongoDB replica set). Thiếu plan/pack vẫn log `needs manual handling`.
+- [x] Đổi gói khi đang dùng gói trả phí: gói mới chờ đến khi gói hiện tại hết hạn (D27), gửi bill qua email.
+- [ ] Gói chờ (D27) được kích hoạt lúc user gửi request (chưa có job nền). User không đăng nhập thì `subscription`
+      trong DB vẫn là gói cũ cho tới request kế tiếp; thống kê Admin đọc thẳng DB có thể lệch. Làm bằng job khi có
+      scheduler.
 - [ ] `PAYMENT_ORDERS` không có field `expires_at`, `payment_id` (PSP), số credit chốt lúc đặt: hiện hạn đơn
       tính từ `created_at + 15 phút`, payment_id tra lại bằng `GET /payments?order_id=`, credit của pack lấy theo
       giá trị lúc thanh toán thành công. **Người dùng quyết định không đổi schema (05/11/2026)**: giữ nguyên, chỉ
@@ -46,8 +49,8 @@ PSP client HMAC, tạo / tra cứu / hủy payment và xác thực webhook đã 
 - [ ] "Thu hồi phiên" làm bằng cách `authentication` đọc user từ DB mỗi request (D19): khóa / đổi role có hiệu lực
       ngay. Chưa có danh sách phiên đăng nhập (UserSession) để xem / đăng xuất từng thiết bị; mỗi request thêm 1 query
       `User.findById` (có thể cache ngắn hạn nếu cần).
-- [ ] (Có từ trước) Email ở register / login phân biệt hoa thường: `A@x.com` và `a@x.com` thành 2 tài khoản, đăng nhập
-      phải gõ đúng hoa thường. Chỉ API tạo Admin (UC37) đã lưu chữ thường + kiểm tra trùng không phân biệt hoa thường.
+- [x] Email ở register / login / resend / forgot / Google được chuẩn hóa chữ thường (15/11/2026).
+- [ ] Dữ liệu cũ: tài khoản đã lưu email có chữ hoa trước 15/11/2026 cần sửa tay về chữ thường mới đăng nhập được.
 - [ ] Admin mới đăng nhập bằng mật khẩu tạm chưa bị bắt đổi mật khẩu ở lần đầu (D20, cần UC04 đổi mật khẩu).
 - [ ] "Thông báo cho user": chỉ gửi email, chưa có thông báo in-app (UC33).
 

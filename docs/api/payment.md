@@ -41,12 +41,15 @@ Gói hiện tại (UC17, UC18 dùng lại).
 {
   "plan": { "_id": "...", "name": "PRO", "is_free": false },
   "subscription": { "status": "ACTIVE", "start_date": "...", "expires_at": "..." },
+  "next_plan": { "_id": "...", "name": "PRO_YEARLY", "start_date": "...", "expires_at": "..." },
   "credit_balance": 120,
   "ai_quota_left": 100
 }
 ```
 - Subscription còn hạn → gói của subscription; hết hạn hoặc chưa có → gói Free của role.
 - `subscription`: `null` nếu chưa từng mua; `status: "EXPIRED"` nếu đã quá `expires_at`.
+- `next_plan`: gói đã mua nhưng chưa chạy (D27), `null` nếu không có. Chạy từ `start_date` (= `subscription.expires_at`).
+- Trước khi trả kết quả, gói chờ đã tới ngày bắt đầu được kích hoạt (`activateScheduledPlan`).
 - `ai_quota_left` = `plan.ai_quota` − `ai_quota_used` (không âm).
 
 ## POST `/orders`
@@ -72,6 +75,7 @@ Body (một trong hai):
 |---|---|
 | 201 | Tạo thành công |
 | 404 | `Plan not found` / `Credit pack not found` (không tồn tại hoặc đang tắt) |
+| 409 | `You already have another plan scheduled to start after your current plan` (đã có gói chờ khác, D27) |
 | 422 | Sai dữ liệu; `This plan is not available for your role`; `The Free plan cannot be purchased`; `This credit pack is not available for your role` |
 | 503 | PSP configuration is incomplete |
 | 502 | PSP request failed, timed out, or returned an invalid response. Order remains PENDING for reconciliation |
@@ -107,12 +111,25 @@ Hủy đơn `PENDING` của chính mình (E1). Không có body.
 - Đơn không tồn tại hoặc không còn `PENDING` → bỏ qua, ghi log (E2, idempotent).
 - Đơn quá hạn → `EXPIRED`, không cộng gì.
 - `FAILED` → đơn `FAILED`, không thay đổi gì khác (E1).
-- `SUCCESS` → đơn `SUCCESS` + `paid_at` + `receipt`, rồi:
-  - `PLAN_UPGRADE`: đặt `user.subscription` (ACTIVE). Đang còn hạn thì **cộng dồn** `expires_at` (D8), không thì
-    bắt đầu từ bây giờ. Cộng ngay `monthly_credits` của gói vào ví + `CreditTransaction` `MONTHLY_GRANT`
-    (hạn 1 tháng) (D7).
+- `SUCCESS` → đơn `SUCCESS` + `paid_at` + `receipt` và cộng quyền lợi **trong cùng 1 transaction** (lỗi giữa chừng
+  thì đơn vẫn `PENDING`), rồi:
+  - `PLAN_UPGRADE` (D27):
+    - Đang Free / gói đã hết hạn: đặt `user.subscription` (ACTIVE) từ bây giờ, cộng ngay `monthly_credits` vào ví +
+      `CreditTransaction` `MONTHLY_GRANT` (hạn 1 tháng) (D7).
+    - Đang dùng gói trả phí còn hạn (mua gói khác hoặc gia hạn): gói hiện tại giữ nguyên; gói mới lưu vào
+      `subscription.next_plan_id`, `next_start_date` (= `expires_at` hiện tại), `next_expires_at`. Credit tháng và
+      AI quota của gói mới chỉ được cấp khi gói đó bắt đầu. Mua thêm đúng gói đang chờ → cộng dồn `next_expires_at`.
   - `CREDIT_PACK`: cộng `credit_amount × quantity` vào ví + `CreditTransaction` `PURCHASE` (không hết hạn).
+  - Sau khi commit: gửi bill qua email cho người mua (mã đơn, ngày trả, phương thức, số tiền; gói: tên, chu kỳ,
+    credit/tháng, AI quota, giới hạn lớp, **ngày bắt đầu, ngày kết thúc**; credit pack: tên, số lượng, tổng credit).
+    Gửi mail lỗi chỉ ghi log.
 - Chỉ một request chuyển được `PENDING → SUCCESS` (update có điều kiện), nên kết quả gửi trùng không cộng hai lần.
+
+## Kích hoạt gói chờ (`activateScheduledPlan`, D27)
+- Chưa có job nền: kiểm tra khi user gửi request (middleware `authentication`, `GET /me`, `POST /orders`).
+- Khi `next_start_date <= now`: `plan_id/start_date/expires_at` lấy từ `next_*`, `ai_quota_used = 0`,
+  `ai_quota_reset_at = start_date + 1 tháng`, xóa `next_*`, cộng `monthly_credits` của gói mới (`MONTHLY_GRANT`).
+  Update có điều kiện theo `next_plan_id` + `next_start_date` nên chỉ một request kích hoạt.
 
 ## POST `/psp/webhook`
 PSP gọi server-to-server nên không qua `authentication`; xác thực bằng chữ ký HMAC-SHA256 + timestamp.

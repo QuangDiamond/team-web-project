@@ -8,6 +8,7 @@ import nodemailer from 'nodemailer';
 import { OAuth2Client } from 'google-auth-library';
 import { User } from '../../src/models/User.js';
 import { PasswordResetToken } from '../../src/models/PasswordResetToken.js';
+import { UserSession } from '../../src/models/UserSession.js';
 import { issueToken, passwordVersion } from '../../src/common/utils/authSession.js';
 import { authentication } from '../../src/common/middlewares/auth.middleware.js';
 import { forgotPasswordSchema, resetPasswordSchema, changePasswordSchema } from '../../src/common/validator/authSchema.js';
@@ -48,8 +49,14 @@ function setup(t, overrides = {}) {
       password_hash: originalHash, account_status: 'ACTIVE', email_verify_status: true,
       failed_login_attempts: 5, is_login_locked: true, ...overrides,
     }),
-    record: null, mails: [], writes: [], failWrite: false, failCleanup: false,
+    record: null, mails: [], writes: [], sessions: [], failWrite: false, failCleanup: false,
   };
+  t.mock.method(UserSession, 'create', async (session) => { state.sessions.push({ ...session }); return session; });
+  t.mock.method(UserSession, 'updateMany', async (filter, update) => {
+    for (const session of state.sessions) {
+      if (String(session.user_id) === String(filter.user_id)) Object.assign(session, update.$set);
+    }
+  });
   // Isolate the link origin from the local environment; array configurations are covered separately.
   const originalCorsOrigin = env.corsOrigin;
   env.corsOrigin = 'https://trusted.example';
@@ -117,7 +124,7 @@ test('authentication real Mongoose projection includes password_hash explicitly'
     t.mock.method(realQuery, 'exec', async () => {
       realQuery._applyPaths();
       assert.deepEqual(realQuery._fieldsForExec(), {
-        role: 1, account_status: 1, password_hash: 1,
+        role: 1, account_status: 1, password_hash: 1, 'subscription.next_start_date': 1,
       });
       return user;
     });
@@ -255,6 +262,7 @@ test('recovery stores only SHA256, expires in 15 minutes and rotates once after 
 test('reset consumes once, revokes all sessions, clears login lock and sends no password', async (t) => {
   const state = setup(t);
   const oldToken = issueToken(state.user);
+  state.sessions.push({ user_id: state.user._id, refresh_token: 'old-session-hash', is_revoked: false });
   const token = await requestLink(state);
   const results = await Promise.allSettled([
     service.resetPassword({ token, new_password: NEW_PASSWORD }),
@@ -268,6 +276,7 @@ test('reset consumes once, revokes all sessions, clears login lock and sends no 
   assert.equal(state.user.account_status, 'ACTIVE');
   assert.equal(state.record, null);
   assert.equal((await authenticate(oldToken)).error.status, 401);
+  assert.equal(state.sessions[0].is_revoked, true, 'reset revokes every refresh-token session');
   await assert.rejects(service.resetPassword({ token, new_password: NEW_PASSWORD }), { status: 410 });
   await setImmediate();
   const notification = state.mails.at(-1);
@@ -322,6 +331,7 @@ test('change replaces only current session, returns safe user, invalidates reset
     user: { id: String(state.user._id) }, body: { current_password: OLD_PASSWORD, new_password: NEW_PASSWORD },
   });
   assert.equal(res.statusCode, 200);
+  assert.equal(state.sessions.filter((session) => !session.is_revoked).length, 1, 'change issues one new session');
   assert.equal(res.body.data.has_password, true);
   assert.equal(res.body.data.id, String(state.user._id));
   assert.equal('user' in res.body.data, false, 'data is the user directly');
@@ -421,7 +431,10 @@ test('reset controller clears cookie without issuing a replacement session', asy
 });
 
 test('email and Google login retain original hash when login update excludes it', async (t) => {
-  const state = setup(t, { google_account: { google_id: 'google-test', google_email: 'user@example.com' } });
+  const state = setup(t, {
+    google_account: { google_id: 'google-test', google_email: 'user@example.com' },
+    failed_login_attempts: 0, is_login_locked: false,
+  });
   t.mock.method(User, 'findOne', () => {
     const document = new User(state.user.toObject());
     const promise = Promise.resolve(document);

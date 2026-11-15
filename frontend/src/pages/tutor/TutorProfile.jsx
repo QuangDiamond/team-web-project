@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LoaderCircle } from 'lucide-react';
 import { getMyProfile, saveMyProfile } from '../../services/tutorProfileService';
+import { useAuth } from '../../hooks/useAuth';
 import Alert from '../../components/common/Alert';
 import AvatarUpload from '../../components/common/AvatarUpload';
 import SectionCard from '../../components/common/SectionCard';
@@ -12,6 +13,7 @@ import '../../styles/tutorProfile.css';
 // Hồ sơ gia sư của chính mình: tạo lần đầu hoặc chỉnh sửa. Cần có hồ sơ để duyệt request, ứng tuyển và đăng bài
 export default function TutorProfile() {
   const navigate = useNavigate();
+  const { markTutorProfileComplete } = useAuth();
   const [state, setState] = useState({ loading: true, error: null, profile: null, fullName: '' });
   // Đổi key để form dựng lại với dữ liệu vừa lưu
   const [formVersion, setFormVersion] = useState(0);
@@ -36,10 +38,13 @@ export default function TutorProfile() {
 
   const handleSubmit = async (payload) => {
     const response = await saveMyProfile(payload);
+    // Hồ sơ nháp tạo lúc đăng ký (is_complete = false) cũng tính là lần lưu đầu tiên
+    const isFirstSave = !state.profile || state.profile.is_complete !== true;
     setState({ ...state, profile: response.data.profile });
     setFormVersion(formVersion + 1);
+    markTutorProfileComplete();
     let msg = "Đã lưu hồ sơ.";
-    if (response.data.created) {
+    if (response.data.created || isFirstSave) {
       msg = "Hồ sơ đã sẵn sàng. Bạn có thể xem yêu cầu, ứng tuyển và tạo bài đăng.";
     }
     toast.success(msg, {

@@ -4,8 +4,9 @@ import { URL } from 'node:url';
 import bcrypt from 'bcryptjs';
 import { User } from '../models/User.js';
 import { PasswordResetToken } from '../models/PasswordResetToken.js';
+import { UserSession } from '../models/UserSession.js';
 import { AppError } from '../common/utils/AppError.js';
-import { issueToken, passwordVersion } from '../common/utils/authSession.js';
+import { issueToken, passwordVersion, createSession } from '../common/utils/authSession.js';
 import { sendPasswordResetEmail, sendPasswordChangedEmail } from '../common/utils/mailer.js';
 import { env } from '../config/environment.js';
 
@@ -77,6 +78,8 @@ const updatePassword = async (user, passwordHash) => {
     failed_login_attempts: 0, is_login_locked: false,
   } }, { new: true });
   if (!updatedUser) throw new AppError('Password changed or account unavailable. Please try again', 409);
+  // UC02-6: đổi / đặt lại mật khẩu thì thu hồi mọi phiên (refresh token) của user
+  await UserSession.updateMany({ user_id: user._id, is_revoked: false }, { $set: { is_revoked: true } });
   await PasswordResetToken.deleteMany({ user_id: user._id });
   Promise.resolve().then(() => sendPasswordChangedEmail(user.email, user.full_name))
     .catch(() => console.error('Password change notification failed'));
@@ -119,9 +122,10 @@ export const resetPassword = async ({ token, new_password }) => {
  * Change an existing password or set the first password for a Google-only account.
  * @param {string} userId - Authenticated user's ID
  * @param {Object} data - { current_password?, new_password }
- * @returns {Promise<{user: Object, token: string}>} Safe refreshed user and replacement session
+ * @param {boolean} remember - keep the "Remember me" choice of the current session for the new one
+ * @returns {Promise<{user: Object, token: string, refreshToken: string}>} Safe refreshed user and replacement session
  */
-export const changePassword = async (userId, { current_password, new_password }) => {
+export const changePassword = async (userId, { current_password, new_password }, remember = false) => {
   const user = await User.findById(userId).select('+password_hash');
   if (!user || user.account_status !== 'ACTIVE') throw new AppError('Account unavailable', 403);
   if (user.password_hash) {
@@ -144,5 +148,6 @@ export const changePassword = async (userId, { current_password, new_password })
   safeUser.id = String(updatedUser._id);
   delete safeUser.password_hash;
   safeUser.has_password = Boolean(updatedUser.password_hash);
-  return { user: safeUser, token: issueToken(updatedUser) };
+  const refreshToken = await createSession(updatedUser._id, remember);
+  return { user: safeUser, token: issueToken(updatedUser), refreshToken: refreshToken };
 };
