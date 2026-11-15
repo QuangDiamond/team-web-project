@@ -16,7 +16,7 @@ Mọi endpoint cần đăng nhập + role `ADMIN` (401 chưa đăng nhập, 403 
 Danh sách user, mới nhất trước.
 - `q`: tìm trong họ tên **hoặc** email, không phân biệt hoa thường, so khớp nguyên văn (ký tự đặc biệt được escape), tối đa 100 ký tự
 - `role`: `PARENT` | `TUTOR` | `STUDENT` | `ADMIN`
-- `status`: `ACTIVE` | `SUSPENDED` | `BANNED`
+- `status`: `ACTIVE` | `SUSPENDED` | `BANNED` | `UNVERIFIED` (chưa xác minh email, UC01)
 - `from` / `to`: ngày tạo tài khoản, dạng `YYYY-MM-DD` theo giờ Việt Nam, lấy trọn ngày (giống UC18)
 - Sai giá trị → 422. `page` / `limit` sai thì dùng mặc định (limit tối đa 100)
 
@@ -50,7 +50,7 @@ Danh sách user, mới nhất trước.
 
 ## PATCH `/users/:id/status`
 Body: `{ "account_status": "SUSPENDED", "reason": "Spam reports" }`
-- `account_status`: `ACTIVE` | `SUSPENDED` | `BANNED`; `reason`: trim, 1–500 ký tự
+- `account_status`: `ACTIVE` | `SUSPENDED` | `BANNED`; `reason`: trim, 1–500 ký tự (không đổi sang `UNVERIFIED`)
 
 | Status | Khi nào |
 |---|---|

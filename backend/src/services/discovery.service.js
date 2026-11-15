@@ -6,7 +6,7 @@ import { Review } from '../models/Review.js';
 import { ParentRequest } from '../models/ParentRequest.js';
 import { AppError } from '../common/utils/AppError.js';
 import { getPagination, buildPagination } from '../common/utils/pagination.js';
-import { decimalToNumber, getRequestCutoff } from '../common/utils/requestRules.js';
+import { decimalToNumber, escapeRegex, getRequestCutoff } from '../common/utils/requestRules.js';
 import { maskContact } from '../common/utils/contactMask.js';
 
 const UNAVAILABLE = 'This profile is not available';
@@ -152,5 +152,86 @@ export const getParentPublicProfile = async (userId, query = {}) => {
       })),
       pagination: buildPagination(page, limit, total),
     },
+  };
+};
+
+/**
+ * Public PUBLISHED tutor posts for the /tutors "Bài đăng" tab, newest first.
+ * Only posts of complete profiles whose tutor account is ACTIVE are listed (same rule as the public profile).
+ * @param {Object} query - { q?, subject?, grade?, mode?, min_price?, max_price?, page, limit }
+ * @returns {Promise<{ items: Object[], pagination: Object }>}
+ */
+export const listPublicPosts = async ({ q, subject, grade, mode, min_price, max_price, page, limit }) => {
+  // shortcut: loads every active tutor id per request; switch to an aggregation $lookup if tutors grow to many thousands
+  const tutorUsers = await User.find({ role: 'TUTOR', account_status: 'ACTIVE' }).select('_id full_name avatar_url').lean();
+  const userById = new Map(tutorUsers.map((tutorUser) => [String(tutorUser._id), tutorUser]));
+  const profiles = await TutorProfile.find({ user_id: { $in: tutorUsers.map((tutorUser) => tutorUser._id) }, is_complete: true })
+    .select('_id user_id avatar_url average_rating')
+    .lean();
+  const profileById = new Map(profiles.map((profile) => [String(profile._id), profile]));
+
+  const postFilter = { status: 'PUBLISHED', profile_id: { $in: profiles.map((profile) => profile._id) } };
+  if (subject) {
+    postFilter.subject_name = new RegExp(`^${escapeRegex(subject)}$`, 'i');
+  }
+  if (grade) {
+    postFilter.grade_level = new RegExp(`^${escapeRegex(grade)}$`, 'i');
+  }
+  if (mode) {
+    postFilter.teaching_mode = mode;
+  }
+  if (min_price !== undefined || max_price !== undefined) {
+    postFilter.price = {};
+    if (min_price !== undefined) {
+      postFilter.price.$gte = min_price;
+    }
+    if (max_price !== undefined) {
+      postFilter.price.$lte = max_price;
+    }
+  }
+  if (q) {
+    const pattern = new RegExp(escapeRegex(q), 'i');
+    postFilter.$or = [{ title: pattern }, { subject_name: pattern }, { description: pattern }];
+  }
+
+  const [posts, total] = await Promise.all([
+    TutorPost.find(postFilter)
+      .select(`${POST_FIELDS} profile_id created_at`)
+      .sort({ created_at: -1, _id: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean(),
+    TutorPost.countDocuments(postFilter),
+  ]);
+
+  return {
+    items: posts.map((post) => {
+      const profile = profileById.get(String(post.profile_id));
+      const tutorUser = userById.get(String(profile.user_id));
+      let avatarUrl = null;
+      if (tutorUser.avatar_url) {
+        avatarUrl = tutorUser.avatar_url;
+      } else if (profile.avatar_url) {
+        avatarUrl = profile.avatar_url;
+      }
+      return {
+        _id: String(post._id),
+        title: maskContact(post.title),
+        subject_name: maskContact(post.subject_name),
+        grade_level: maskContact(post.grade_level),
+        teaching_mode: post.teaching_mode,
+        price: decimalToNumber(post.price),
+        schedule: maskContact(post.schedule),
+        description: maskContact(post.description),
+        created_at: post.created_at,
+        tutor: {
+          profile_id: String(profile._id),
+          full_name: maskContact(tutorUser.full_name),
+          avatar_url: avatarUrl,
+          average_rating: profile.average_rating ?? null,
+        },
+      };
+    }),
+    pagination: buildPagination(page, limit, total),
   };
 };

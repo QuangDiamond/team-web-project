@@ -13,7 +13,7 @@ export const userQuerySchema = z
   .object({
     q: z.string().trim().max(100, 'Search text must be at most 100 characters').optional(),
     role: z.enum(['PARENT', 'TUTOR', 'STUDENT', 'ADMIN'], "Role must be one of these ['PARENT', 'TUTOR', 'STUDENT', 'ADMIN']").optional(),
-    status: z.enum(['ACTIVE', 'SUSPENDED', 'BANNED'], "Status must be one of these ['ACTIVE', 'SUSPENDED', 'BANNED']").optional(),
+    status: z.enum(['ACTIVE', 'SUSPENDED', 'BANNED', 'UNVERIFIED'], "Status must be one of these ['ACTIVE', 'SUSPENDED', 'BANNED', 'UNVERIFIED']").optional(),
     from: dayRule,
     to: dayRule,
   })

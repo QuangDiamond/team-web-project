@@ -81,6 +81,7 @@ ensureCollection("User", {
         "ACTIVE",
         "BANNED",
         "SUSPENDED",
+        "UNVERIFIED",
         null
       ]
     },
@@ -256,6 +257,24 @@ ensureCollection("User", {
           ]
         },
         "created_at": {
+          "bsonType": [
+            "date",
+            "null"
+          ]
+        },
+        "next_plan_id": {
+          "bsonType": [
+            "objectId",
+            "null"
+          ]
+        },
+        "next_start_date": {
+          "bsonType": [
+            "date",
+            "null"
+          ]
+        },
+        "next_expires_at": {
           "bsonType": [
             "date",
             "null"

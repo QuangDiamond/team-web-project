@@ -56,6 +56,10 @@ const MESSAGES = {
   'Account unavailable': 'Tài khoản không khả dụng.',
   'Account has no linked Google login': 'Tài khoản chưa liên kết đăng nhập Google.',
   'Invalid username or password': 'Email hoặc mật khẩu không đúng.',
+  'Email or password is incorrect': 'Email hoặc mật khẩu không đúng.',
+  'Email and password are required': 'Vui lòng nhập email và mật khẩu.',
+  'Your account is locked after too many failed login attempts. Please reset your password via Forgot Password': 'Tài khoản đã bị khóa do nhập sai mật khẩu quá 5 lần. Vui lòng đặt lại mật khẩu bằng chức năng Quên mật khẩu.',
+  'Invalid or expired refresh token': 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
   'Current password is incorrect': 'Mật khẩu hiện tại không đúng.',
   'New password must differ from the current password': 'Mật khẩu mới phải khác mật khẩu hiện tại.',
   'Password changed or account unavailable. Please try again': 'Mật khẩu đã thay đổi hoặc tài khoản không khả dụng. Vui lòng thử lại.',
@@ -122,6 +126,7 @@ const MESSAGES = {
   'Credit pack not found': 'Không tìm thấy gói credits.',
   'Free plan price must be 0': 'Gói miễn phí phải có giá bằng 0.',
   'The Free plan cannot be purchased': 'Không thể mua gói miễn phí.',
+  'You already have another plan scheduled to start after your current plan': 'Bạn đã có một gói khác chờ chạy sau gói hiện tại. Chỉ có thể mua thêm đúng gói đang chờ.',
   'This plan is not available for your role': 'Gói dịch vụ không dành cho vai trò của bạn.',
   'This credit pack is not available for your role': 'Gói credits không dành cho vai trò của bạn.',
   'Order not found': 'Không tìm thấy đơn thanh toán.',
@@ -201,7 +206,7 @@ const FIELDS = {
 };
 
 const STATES = {
-  PENDING: 'đang chờ', DRAFT: 'bản nháp', ACTIVE: 'đang hoạt động', SUSPENDED: 'tạm khóa', BANNED: 'bị cấm',
+  PENDING: 'đang chờ', DRAFT: 'bản nháp', ACTIVE: 'đang hoạt động', SUSPENDED: 'tạm khóa', BANNED: 'bị cấm', UNVERIFIED: 'chưa xác minh email',
   OPEN: 'đang mở', CLOSED: 'đã đóng', CANCELLED: 'đã hủy', EXPIRED: 'đã hết hạn',
   ACCEPTED: 'đã chấp nhận', DECLINED: 'đã từ chối', CONTINUED: 'đã tiếp tục trao đổi',
   SKIPPED: 'đã bỏ qua', WITHDRAWN: 'đã rút', IN_PROGRESS: 'đang thực hiện',

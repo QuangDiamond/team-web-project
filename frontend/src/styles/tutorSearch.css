@@ -82,6 +82,8 @@
 .directory-extra-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 240px)); gap: 16px; margin-top: 12px; }
 .directory-results-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 8px 0 24px; }
 .directory-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+/* Tab Bài đăng: lưới 3x3 (9 bài / trang); các breakpoint bên dưới vẫn giảm xuống 2 và 1 cột */
+.directory-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .directory-card { display: flex; flex-direction: column; min-width: 0; padding: 16px; border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-white); box-shadow: 0 2px 6px rgb(0 0 0 / 2%); transition: box-shadow var(--transition), border-color var(--transition); }
 .directory-card:hover { border-color: var(--color-primary); box-shadow: 0 8px 20px rgb(0 0 0 / 6%); }
 .directory-card-title { margin: 0 0 4px; font-size: 15px; line-height: 1.4; font-weight: 700; }
@@ -136,3 +138,11 @@
 @media (max-width: 480px) {
   .request-directory .request-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Tab Gia sư / Bài đăng trong hero của trang /tutors */
+.directory-tabs { display: inline-flex; gap: 4px; margin-top: 20px; padding: 4px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-white); }
+.directory-tabs button { min-height: 40px; padding: 8px 20px; border: 0; border-radius: 9px; background: transparent; color: var(--color-text-muted); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: background var(--transition), color var(--transition); }
+.directory-tabs button:hover,
+.directory-tabs button.is-active { background: var(--color-primary-soft); color: var(--color-primary-strong); }
+.directory-tabs button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.app-layout .directory-tabs { background: var(--color-surface); }

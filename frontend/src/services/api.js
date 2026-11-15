@@ -64,20 +64,49 @@ api.interceptors.response.use(
     }
     return res.data;
   },
-  (err) => {
+  async (err) => {
     const apiError = toApiError(err);
     const isAccountLocked = apiError.status === 403 && apiError.rawMessage === ACCOUNT_LOCKED_MESSAGE;
     if (isAccountLocked && handleAccountLocked) {
       handleAccountLocked();
     }
-    const requestPath = err.config?.url || '';
+    const originalRequest = err.config;
+    let requestPath = '';
+    if (originalRequest && originalRequest.url) {
+      requestPath = originalRequest.url;
+    }
     const isProtectedRequest = !requestPath.startsWith('/auth/v1/') ||
       requestPath === '/auth/v1/me' || requestPath === '/auth/v1/change-password';
+
+    // UC02-6: access token (30 phút) hết hạn thì xin token mới bằng refresh token rồi gửi lại request, chỉ 1 lần
+    const canRetry = apiError.status === 401 && isProtectedRequest && originalRequest && !originalRequest.isRetryAfterRefresh;
+    if (canRetry) {
+      const refreshed = await refreshSessionOnce();
+      if (refreshed) {
+        originalRequest.isRetryAfterRefresh = true;
+        return api(originalRequest);
+      }
+    }
+
     if (apiError.status === 401 && isProtectedRequest && handleSessionExpired) {
       handleSessionExpired();
     }
     return Promise.reject(apiError);
   }
 );
+
+// Nhiều request hết hạn cùng lúc thì chỉ gọi /refresh 1 lần (refresh token bị xoay vòng sau mỗi lần dùng)
+let refreshPromise = null;
+const refreshSessionOnce = () => {
+  if (!refreshPromise) {
+    refreshPromise = api.post('/auth/v1/refresh')
+      .then(() => true)
+      .catch(() => false)
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+  return refreshPromise;
+};
 
 export default api;

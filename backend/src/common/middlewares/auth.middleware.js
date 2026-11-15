@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { User } from '../../models/User.js';
 import { passwordVersion } from '../utils/authSession.js';
+import { activateScheduledPlan } from '../../services/subscription.service.js';
 
 export const ACCOUNT_LOCKED_MESSAGE = 'Your account has been suspended or banned';
 
@@ -38,7 +39,7 @@ export const authentication = async (req, res, next) =>{
         return next(new AppError('Invalid or expired token', 401));
     }
 
-    const user = await User.findById(payload.sub).select('role account_status password_hash');
+    const user = await User.findById(payload.sub).select('role account_status password_hash subscription.next_start_date');
     if(!user){
         return next(new AppError('Unauthorize', 401));
     }
@@ -47,6 +48,12 @@ export const authentication = async (req, res, next) =>{
     }
     if (payload.password_version !== passwordVersion(user.password_hash)) {
         return next(new AppError('Invalid or expired token', 401));
+    }
+
+    // UC17 (D27): chưa có job nền nên chuyển sang gói đã hẹn ở request đầu tiên sau ngày bắt đầu
+    const nextStartDate = user.subscription ? user.subscription.next_start_date : null;
+    if (nextStartDate && nextStartDate <= new Date()) {
+        await activateScheduledPlan(user._id);
     }
 
     req.user = {
